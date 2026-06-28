@@ -1,0 +1,141 @@
+# Conclusions
+
+This is the short version of the project so far.
+
+The project asks whether conservative JPEG XL can make very high-resolution
+PixelShift camera scanning practical for film archiving. The point is not that
+lossy JPEG XL is identical to raw. It is not. The question is whether, at the
+same storage budget, a better-sampled image stored with careful JPEG XL settings
+can preserve more useful film information than a lower-resolution raw capture.
+
+## Current Answer
+
+The current practical answer is:
+
+- Do not delete original DNG, ARW, or other raw/lossless masters based on this
+  evidence alone.
+- JPEG XL lossless can preserve a chosen 16-bit rendered/extracted image state
+  exactly, but the storage savings were modest in the tested PixelShift2DNG
+  files.
+- Conservative lossy JPEG XL remains promising as a compact secondary master or
+  working archive format.
+- JPEG XL distance `0.05` is the most interesting lossy candidate tested so far.
+- JPEG XL distance `0.10` looks too aggressive for an archival claim without
+  much stronger evidence.
+
+The deeper hypothesis remains alive: a very high-resolution PixelShift scan
+stored as conservative JPEG XL may be a better practical representation of a
+film frame than a much lower-resolution single-shot raw file stored losslessly,
+if both choices consume about the same disk space.
+
+## Why This Is Plausible
+
+Film scanning is not only about preserving numeric precision. It is also about
+sampling the physical structure of the film:
+
+- dye clouds
+- grain-like texture
+- scratches and dust
+- edge detail
+- subtle local density variation
+
+If a lower-resolution capture barely resolves that structure, it may preserve
+many precise numbers without preserving enough of the original object. A
+higher-resolution PixelShift image may capture more relevant spatial structure,
+even if conservative lossy compression slightly changes some pixel values.
+
+That tradeoff is the heart of this project.
+
+## What The Tests Support
+
+The private exploratory tests support these points:
+
+- PixelShift2DNG output tested here behaves like demosaiced/merged RGB image
+  data, not like the original sequence of sensor raw files.
+- Lossless JPEG XL round-tripped extracted 16-bit linear image data exactly.
+- Lossless JPEG XL did not save enough space to solve the storage problem by
+  itself.
+- Negative inversion and strong tonal edits can amplify small JPEG XL errors.
+- A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
+  aggressive distances after inversion, while reducing one selected DNG to about
+  half its size.
+
+The public tests support these points:
+
+- The repository now has a reproducible public test pipeline.
+- Public latitude-stress v2 tests show that `d=0.10` is consistently worse than
+  `d=0.05`.
+- Density-based negative-print transforms expose larger high-percentile errors
+  than identity comparison, which is relevant to color-negative workflows.
+- The current public results make `d=0.05` look like a reasonable conservative
+  candidate to keep testing, not a proven replacement for raw.
+
+## What The Tests Do Not Prove
+
+The tests do not prove that lossy JPEG XL is archival-safe as the only master.
+
+They do not prove that `d=0.05` will survive every future edit, inversion style,
+film stock, exposure error, or color-management workflow.
+
+They do not prove that PixelShift is always superior. PixelShift can fail or
+lose its advantage through movement, registration errors, lens limits,
+diffraction, lighting issues, or unstable film holders.
+
+They also do not prove that the public test images fully represent real
+camera-scanned negatives. The public data is useful and reproducible, but the
+project still needs anonymous real negative scans.
+
+## Practical Recommendation Today
+
+For irreplaceable work:
+
+- Keep original raw/DNG files when possible.
+- Use JPEG XL lossless when exact preservation of a chosen rendered state is
+  needed and modest savings are still useful.
+- Treat JPEG XL `d=0.05` as a compact experimental master or working master, not
+  as the only archive copy.
+- Be very cautious with `d=0.10` for archival use.
+- Test after the edits that matter: inversion, color balancing, curves, shadow
+  lifting, highlight recovery, and wide-gamut export.
+
+For a storage-constrained camera-scanning workflow, the interesting candidate is
+not "replace everything with lossy JPEG XL." It is:
+
+```text
+capture more real film detail with high-resolution PixelShift,
+then use conservative JPEG XL only after testing the exact workflow.
+```
+
+## What Would Change The Recommendation
+
+The case for JPEG XL would become stronger if:
+
+- anonymous real color-negative PixelShift scans repeat the public v2 pattern
+- blind visual comparisons do not reveal meaningful differences at `d=0.05`
+- latitude-stress tests remain clean after stronger film-like transforms
+- physical target measurements show a clear sampling advantage for the
+  higher-resolution PixelShift workflow
+- results are reproduced by other people with different scanners, cameras,
+  films, and software
+
+The case would become weaker if:
+
+- `d=0.05` produces visible artifacts after realistic inversion and grading
+- errors cluster in skin tones, dense shadows, highlights, or smooth color
+  transitions
+- PixelShift registration or lens limits erase the expected resolution advantage
+- metadata or color-management handling proves fragile in common software
+
+## Bottom Line
+
+JPEG XL is not magic raw compression. It throws information away when used
+lossily.
+
+But film archiving under a fixed storage budget is not only a per-pixel
+precision problem. It is also a sampling problem. If conservative JPEG XL makes
+it practical to store much better-sampled scans, it may preserve more of what
+matters in the film frame than a smaller raw capture that never sampled that
+detail in the first place.
+
+That is still a hypothesis, but it is now specific enough to test.
+

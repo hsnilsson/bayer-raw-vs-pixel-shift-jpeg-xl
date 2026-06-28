@@ -1,0 +1,22 @@
+[project]
+name = "jxl-archive-test"
+version = "0.1.0"
+description = "Compare rendered DNG/TIFF image states through JPEG XL archival encode/decode tests."
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "Pillow",
+]
+
+[project.optional-dependencies]
+tiff = ["tifffile"]
+public-tests = ["tifffile"]
+
+[project.scripts]
+jxl-archive-test = "jxl_archive_test:main"
+
+[tool.setuptools]
+py-modules = ["jxl_archive_test"]
+
+[tool.setuptools.package-dir]
+"" = "src"

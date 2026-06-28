@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:07.649070+00:00",
+  "file": "testdata\\fadgi_opendice\\negative_35mm_2\\Negative 35mm_2.tif",
+  "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative%2035mm_2.tif",
+  "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+  "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+  "role": "standardized transmissive target image for objective digitization-quality checks",
+  "bytes": 83911364,
+  "sha256": "67cec06ac97398963bc774efc85d82f81b4fd9b8f15b1d6f373f41ebd756b74e"
+}

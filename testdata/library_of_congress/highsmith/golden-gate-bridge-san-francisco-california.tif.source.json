@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:08.920376+00:00",
+  "file": "testdata\\library_of_congress\\highsmith\\golden-gate-bridge-san-francisco-california.tif",
+  "url": "https://tile.loc.gov/storage-services/master/pnp/highsm/20800/20829a.tif",
+  "source_page": "https://www.loc.gov/item/2013630257/",
+  "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+  "role": "public-domain photographic imagery for visual JXL stress tests",
+  "bytes": 216940422,
+  "sha256": "dccf7e68cee5a49ea89b51a59f360f94f6f89792312fc45e6862397a78d7bae3"
+}

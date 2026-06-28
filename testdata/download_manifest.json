@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "notes": [
+    "Direct FADGI/OpenDICE files are deterministic and are the best starting point for standardized target testing.",
+    "Library of Congress entries are resolved through the LOC API at download time, then locked with SHA-256 in downloaded_manifest.json."
+  ],
+  "direct_downloads": [
+    {
+      "id": "fadgi-opendice-negative-35mm-1-target",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative_35mm_ICC.tif",
+      "path": "testdata/fadgi_opendice/negative_35mm_1/Negative_35mm_ICC.tif",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "standardized transmissive target image for objective digitization-quality checks",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-negative-35mm-1-reference",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_35mm_Negative.txt",
+      "path": "testdata/fadgi_opendice/negative_35mm_1/Profile_35mm_Negative.txt",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "reference values for OpenDICE analysis",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-negative-35mm-2-target",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative%2035mm_2.tif",
+      "path": "testdata/fadgi_opendice/negative_35mm_2/Negative 35mm_2.tif",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "standardized transmissive target image for objective digitization-quality checks",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-negative-35mm-2-reference",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_35mm_Negative2.txt",
+      "path": "testdata/fadgi_opendice/negative_35mm_2/Profile_35mm_Negative2.txt",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "reference values for OpenDICE analysis",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-positive-35mm-target",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Positive%2035mm.tif",
+      "path": "testdata/fadgi_opendice/positive_35mm/Positive 35mm.tif",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "standardized transmissive target image for objective digitization-quality checks",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-positive-35mm-reference",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_35mmPositive.txt",
+      "path": "testdata/fadgi_opendice/positive_35mm/Profile_35mmPositive.txt",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "reference values for OpenDICE analysis",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-negative-120-target",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/120_target.tif",
+      "path": "testdata/fadgi_opendice/negative_120x120/120_target.tif",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "standardized transmissive target image for objective digitization-quality checks",
+      "sha256": null
+    },
+    {
+      "id": "fadgi-opendice-negative-120-reference",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_Negative120.txt",
+      "path": "testdata/fadgi_opendice/negative_120x120/Profile_Negative120.txt",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "reference values for OpenDICE analysis",
+      "sha256": null
+    }
+  ],
+  "loc_queries": [
+    {
+      "id": "loc-highsmith-public-domain",
+      "api_url": "https://www.loc.gov/photos/?fo=json&c=25&fa=contributor:highsmith,+carol+m.",
+      "path": "testdata/library_of_congress/highsmith",
+      "count": 3,
+      "prefer_extensions": [".tif", ".tiff", ".jp2", ".png", ".jpg", ".jpeg"],
+      "source_page": "https://www.loc.gov/pictures/collection/highsm/",
+      "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+      "role": "public-domain photographic imagery for visual JXL stress tests"
+    }
+  ]
+}

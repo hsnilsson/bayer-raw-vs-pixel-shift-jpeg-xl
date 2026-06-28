@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:07.569748+00:00",
+  "file": "testdata\\fadgi_opendice\\negative_35mm_1\\Profile_35mm_Negative.txt",
+  "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_35mm_Negative.txt",
+  "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+  "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+  "role": "reference values for OpenDICE analysis",
+  "bytes": 271,
+  "sha256": "79f13e90cd23119e322e9629632d4ae8c1df641e7590e826af74fd1a5b02933c"
+}

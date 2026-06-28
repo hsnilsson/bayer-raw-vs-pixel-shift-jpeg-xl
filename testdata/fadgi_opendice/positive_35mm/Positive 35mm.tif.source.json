@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:07.731333+00:00",
+  "file": "testdata\\fadgi_opendice\\positive_35mm\\Positive 35mm.tif",
+  "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Positive%2035mm.tif",
+  "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+  "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+  "role": "standardized transmissive target image for objective digitization-quality checks",
+  "bytes": 91437382,
+  "sha256": "17a6b0cdc916e535cb8aaa389c3b3d5e8b4d67b89048feeb3bf4b67931b85c9b"
+}

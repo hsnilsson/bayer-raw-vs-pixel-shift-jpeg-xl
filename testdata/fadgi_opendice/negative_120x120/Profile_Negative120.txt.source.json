@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:08.275682+00:00",
+  "file": "testdata\\fadgi_opendice\\negative_120x120\\Profile_Negative120.txt",
+  "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Profile_Negative120.txt",
+  "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+  "rights": "FADGI/OpenDICE reference data from digitizationguidelines.gov. Verify source terms before redistribution.",
+  "role": "reference values for OpenDICE analysis",
+  "bytes": 327,
+  "sha256": "cbda289471c75d52785e3efd4cea562aa9bf2e3542f8b6b11f1d6d32b11c86f7"
+}

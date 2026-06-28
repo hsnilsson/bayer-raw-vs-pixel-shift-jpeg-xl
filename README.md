@@ -1,0 +1,141 @@
+# JPEG XL vs DNG/PixelShift
+
+Work in progress: a reproducible investigation into whether conservative JPEG XL
+compression can be a practical archive strategy for high-resolution camera scans
+of film.
+
+The central question is not simply "is JPEG XL identical to DNG?" It is:
+
+> Given a fixed storage budget, can a better-sampled image stored as conservative
+> JPEG XL preserve more relevant information about a film original than a lower
+> resolution raw capture?
+
+Current working hypothesis:
+
+- DNG or another lossless/raw-like master remains the safest per-pixel archive
+  representation.
+- For camera-scanned film, spatial sampling can matter more than preserving every
+  last bit of scanner/camera precision.
+- A 240 MP PixelShift capture stored as carefully tested JPEG XL may preserve
+  more useful film structure than a 61 MP Bayer raw file at similar storage cost.
+- This remains a hypothesis until repeated across public, non-private test
+  material.
+
+## Current Evidence
+
+Private exploratory tests found that:
+
+- JPEG XL lossless round-tripped the extracted 16-bit linear image data exactly.
+- Lossless JPEG XL saved only modest space for the tested PixelShift2DNG files.
+- Lossy JPEG XL errors were amplified by negative inversion and strong tonal
+  edits.
+- In one FilmLab-based ProPhoto test, JPEG XL distance `0.05` reduced one DNG to
+  about half its size while producing a much smaller post-inversion error than
+  more aggressive settings.
+- FilmLab 3.5.0 appeared to mishandle direct import of some lossy JXL color
+  profiles, so measured FilmLab tests used `djxl` decoding followed by an
+  ICC-preserved PNG bridge.
+
+These results are not yet a universal archival recommendation.
+
+## Repository Map
+
+- [CONCLUSIONS.md](CONCLUSIONS.md): short executive summary and current
+  practical recommendation
+- [LICENSE](LICENSE): license for original project code and documentation
+- [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md): rights notes for public test data
+- [REPRODUCIBILITY.md](REPRODUCIBILITY.md): clean reproduction path for the
+  public tests
+- [NEXT_STEPS.md](NEXT_STEPS.md): remaining research and publication decisions
+- [METHODOLOGY.md](METHODOLOGY.md): planned and current test methodology
+- [RESULTS.md](RESULTS.md): current result summary and interpretation
+- [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public
+  latitude stress test with density-based negative-print transforms
+- [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
+- [TESTDATA.md](TESTDATA.md): public test data sources and rights notes
+- [docs/research-log.md](docs/research-log.md): project history and decisions
+- [docs/publication-checklist.md](docs/publication-checklist.md): privacy and
+  release checklist
+- [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
+  targets and images
+- [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
+  local pre-publication safety audit
+- [scripts/run_public_latitude_stress.py](scripts/run_public_latitude_stress.py):
+  run reproducible JPEG XL stress tests on public TIFF crops
+- [scripts/make_public_crop_panels.py](scripts/make_public_crop_panels.py):
+  create reference/candidate/diff panels from public stress-test output
+- [src/jxl_archive_test.py](src/jxl_archive_test.py): helper CLI for comparing
+  rendered image states and JPEG XL encode/decode tests
+
+## Quick Start
+
+Install the helper package:
+
+```powershell
+python -m pip install -e .
+```
+
+Download public test data:
+
+```powershell
+python scripts\download_testdata.py
+```
+
+Run a publication safety audit:
+
+```powershell
+python scripts\audit_publication_safety.py
+```
+
+Run all lightweight publication-readiness checks:
+
+```powershell
+python scripts\check_publication_ready.py
+```
+
+Run the current public latitude-stress v2 pipeline:
+
+```powershell
+python scripts\run_public_latitude_v2.py --publish-figures
+```
+
+For a fuller clean-clone path, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+Compare already-rendered files:
+
+```powershell
+jxl-archive-test compare-rendered "D:\scan-tests\reference.tif" `
+  "D:\scan-tests\candidate.tif" `
+  --name candidate `
+  --out-dir "D:\scan-tests\compare_results"
+```
+
+Run JPEG XL encode/decode tests from one reference TIFF:
+
+```powershell
+jxl-archive-test encode-test "D:\scan-tests\reference.tif" `
+  --out-dir "D:\scan-tests\jxl_results"
+```
+
+Render DNG files using a command template:
+
+```powershell
+jxl-archive-test render-dng "D:\scan-tests\reference.dng" `
+  "D:\scan-tests\candidate.dng" `
+  --render-command 'darktable-cli "{input}" "{output}"' `
+  --out-dir "D:\scan-tests\rendered_dngs"
+```
+
+The important rule is to compare the same rendered image state. Comparing a DNG
+container directly with a TIFF, PNG, or JXL file usually answers the wrong
+question.
+
+## Status
+
+This repo is close to a public-review state, but it is still a research project,
+not an archival recommendation. Private scans and generated local outputs are
+intentionally ignored by Git. Public samples should be downloaded or stored under
+`testdata/` with source sidecars and SHA-256 hashes.
+
+For the shortest current interpretation, start with
+[CONCLUSIONS.md](CONCLUSIONS.md).

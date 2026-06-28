@@ -1,0 +1,22 @@
+	D
+Patch1	1.34
+Patch2	1.16
+Patch3	0.99
+Patch4	0.86
+Patch5	0.73
+Patch6	0.58
+Patch7	0.45
+Patch8	0.35
+Patch9	0.2
+Patch10	0.04
+Patch11	1.34
+Patch12	1.16
+Patch13	0.99
+Patch14	0.86
+Patch15	0.73
+Patch16	0.58
+Patch17	0.45
+Patch18	0.35
+Patch19	0.2
+Patch20	0.04
+

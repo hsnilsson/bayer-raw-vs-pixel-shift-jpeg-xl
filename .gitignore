@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.venv/
+.agents/
+.codex/
+results/
+work/
+outputs/
+input/
+profiles/
+jxl_test_out/
+*.egg-info/
+*.download
+
+# Root-level private scan artifacts. Public test images should live under testdata/.
+/*.arw
+/*.ARW
+/*.dng
+/*.DNG
+/*.tif
+/*.tiff
+/*.TIF
+/*.TIFF
+/*.xmp
+/*.XMP

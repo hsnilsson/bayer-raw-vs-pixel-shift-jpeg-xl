@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-06-28T19:10:10.100036+00:00",
+  "file": "testdata\\library_of_congress\\highsmith\\roadside-wildflowers-and-some-dandelion-remnants-in-bent-county-colorado.tif",
+  "url": "https://tile.loc.gov/storage-services/master/pnp/highsm/38900/38939a.tif",
+  "source_page": "https://www.loc.gov/item/2017688831/",
+  "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+  "role": "public-domain photographic imagery for visual JXL stress tests",
+  "bytes": 301960276,
+  "sha256": "f72ad502187a890d11123be9ae5c93ba3b8b37a7ed1a8008e82637d415ae1721"
+}
