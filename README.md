@@ -74,13 +74,16 @@ These results are not yet a universal archival recommendation.
 Install the helper package:
 
 ```powershell
-python -m pip install -e .
+python -m pip install -e ".[public-tests]"
 ```
 
-Download public test data:
+Use the bundled Git LFS test data, or download public test data:
 
 ```powershell
-python scripts\download_testdata.py
+git lfs install
+git lfs pull
+
+python scripts\download_testdata.py --include-loc --loc-count 3
 ```
 
 Run a publication safety audit:
