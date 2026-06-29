@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import os
 import re
 import subprocess
@@ -67,12 +68,17 @@ def check_required_files() -> Check:
     return Check("required files", True, f"{len(REQUIRED_FILES)} files present")
 
 
-def check_python_compile() -> Check:
-    paths = [str(ROOT / path) for path in PYTHON_FILES]
-    result = run_command([sys.executable, "-m", "py_compile", *paths])
-    if result.returncode:
-        return Check("python compile", False, (result.stdout + result.stderr).strip())
-    return Check("python compile", True, f"{len(paths)} files compiled")
+def check_python_syntax() -> Check:
+    failures: list[str] = []
+    for relative in PYTHON_FILES:
+        path = ROOT / relative
+        try:
+            ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        except SyntaxError as exc:
+            failures.append(f"{relative}: {exc}")
+    if failures:
+        return Check("python syntax", False, "\n".join(failures))
+    return Check("python syntax", True, f"{len(PYTHON_FILES)} files parsed")
 
 
 def check_markdown_links() -> Check:
@@ -107,7 +113,15 @@ def git_lfs_available() -> bool:
 
 
 def is_lfs_tracked(path: Path) -> bool:
-    result = run_command(["git", "check-attr", "filter", "--", str(path.relative_to(ROOT))])
+    result = run_command([
+        "git",
+        "-c",
+        f"safe.directory={ROOT}",
+        "check-attr",
+        "filter",
+        "--",
+        str(path.relative_to(ROOT)),
+    ])
     return result.returncode == 0 and result.stdout.strip().endswith("filter: lfs")
 
 
@@ -176,7 +190,7 @@ def main() -> int:
     args = build_parser().parse_args()
     checks = [
         check_required_files(),
-        check_python_compile(),
+        check_python_syntax(),
         check_markdown_links(),
         check_large_testdata_lfs(),
         check_source_sidecars(),

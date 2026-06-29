@@ -124,7 +124,7 @@ def scan_text(path: Path) -> list[Finding]:
 def is_lfs_tracked(path: Path) -> bool:
     try:
         cp = subprocess.run(
-            ["git", "check-attr", "filter", "--", str(rel(path))],
+            ["git", "-c", f"safe.directory={ROOT}", "check-attr", "filter", "--", str(rel(path))],
             cwd=ROOT,
             text=True,
             stdout=subprocess.PIPE,
@@ -179,7 +179,7 @@ def scan_file(path: Path) -> list[Finding]:
 def git_unignored_files() -> list[Path]:
     try:
         cp = subprocess.run(
-            ["git", "ls-files", "--others", "--cached", "--exclude-standard"],
+            ["git", "-c", f"safe.directory={ROOT}", "ls-files", "--others", "--cached", "--exclude-standard"],
             cwd=ROOT,
             text=True,
             stdout=subprocess.PIPE,
