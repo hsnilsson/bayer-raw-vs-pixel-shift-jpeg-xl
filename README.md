@@ -47,6 +47,8 @@ These results are not yet a universal archival recommendation.
 - [REPRODUCIBILITY.md](REPRODUCIBILITY.md): clean reproduction path for the
   public tests
 - [NEXT_STEPS.md](NEXT_STEPS.md): remaining research and publication decisions
+- [docs/publication-summary.md](docs/publication-summary.md): short shareable
+  summary for public review
 - [METHODOLOGY.md](METHODOLOGY.md): planned and current test methodology
 - [RESULTS.md](RESULTS.md): current result summary and interpretation
 - [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public

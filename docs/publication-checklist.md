@@ -27,6 +27,8 @@ Before publishing or pushing a release branch:
   latest public run, even though `results/` itself is ignored.
 - Review [NEXT_STEPS.md](../NEXT_STEPS.md) and make sure any known blockers are
   either handled or intentionally left for later.
+- Review [docs/publication-summary.md](publication-summary.md) before sharing so
+  the public framing matches the current evidence.
 
 ## Safe To Publish By Default
 
