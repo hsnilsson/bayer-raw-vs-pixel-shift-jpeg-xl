@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+GIT_SAFE_DIRECTORY = ROOT.as_posix()
 WARN_SIZE = 50 * 1024 * 1024
 IGNORED_LINK_DIRS = {".git", "results", "outputs", "work", "input", ".agents", ".codex"}
 REQUIRED_FILES = [
@@ -116,7 +117,7 @@ def is_lfs_tracked(path: Path) -> bool:
     result = run_command([
         "git",
         "-c",
-        f"safe.directory={ROOT}",
+        f"safe.directory={GIT_SAFE_DIRECTORY}",
         "check-attr",
         "filter",
         "--",
