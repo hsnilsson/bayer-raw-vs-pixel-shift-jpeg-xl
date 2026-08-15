@@ -74,6 +74,71 @@ reference crop, convert scan values to approximate transmittance, map
 transmittance to density with `-log(transmittance)`, then apply print-like
 contrast curves.
 
+#### Why XYB Requires A Post-Inversion Test
+
+Lossy JPEG XL commonly converts linear RGB to the perceptual, opponent-color
+XYB space before transform coding and quantization. The encoder then spends bits
+according to the visual appearance of the image being encoded. For a film scan,
+that image is still the orange-masked, low-contrast negative; the encoder does
+not know which variations a later negative conversion will expand. The libjxl
+[architecture overview](https://github.com/libjxl/libjxl/blob/main/doc/xl_overview.md)
+describes the linear RGB to XYB path and its perceptually guided adaptive
+quantization. Its
+[format overview](https://github.com/libjxl/libjxl/blob/main/doc/format_overview.md)
+also distinguishes XYB data from data stored in the original color profile.
+
+The distinction is not that a simple inversion inherently magnifies error. If
+`p = 1 - n`, then an input error `epsilon` becomes `-epsilon`: its absolute size
+is unchanged. Real negative processing is more demanding. Per-channel film-base
+normalization, orange-mask removal, white balance, and steep tone curves can all
+apply gains greater than one. Density conversion is especially relevant:
+
+```text
+D = -log(T)          |dD/dT| = 1/T
+```
+
+At low transmittance, a small error in `T` can therefore become a much larger
+density error. Clipping can also move nearly equal reference and candidate
+values to different sides of a hard boundary. This is a mismatch between the
+domain used for the lossy decision and the domain in which the archived image
+will later be judged; it is not evidence that XYB is defective or that the same
+risk is unique to JPEG XL.
+
+For every lossy track, record the actual internal path when the available tools
+expose it:
+
+- VarDCT or Modular mode
+- original-profile or XYB color path (`uses_original_profile` in libjxl)
+- signaled primaries and transfer function
+- source ICC profile or declared input color encoding
+- decoder output profile and bit depth
+
+For DNG files with embedded JPEG XL, inspect a representative segment (tile or
+strip) from each JXL-compressed IFD:
+
+```powershell
+python scripts\inspect_dng_jxl_color_path.py "D:\scan-tests\candidate.dng"
+```
+
+The helper copies only the selected compressed segment to a temporary directory,
+runs `jxlinfo`, reports the header and inferred path, and deletes the temporary
+copy. It does not decode or publish image pixels. Multiple representative
+segments must still be checked before treating a per-file result as uniform.
+
+Two diagnostic controls would isolate this mechanism more directly:
+
+1. Compare XYB with original-profile/no-color-transform encoding at a matched
+   file size, where the encoder API supports both paths.
+2. Compare `encode negative -> decode -> invert` with `invert losslessly ->
+   encode positive` at a matched file size. The second path is not a proposed
+   negative master; it tests whether optimizing the wrong visual state accounts
+   for part of the post-inversion error.
+
+The main archive test must still apply one fixed transform, with parameters
+estimated from the reference, to both reference and candidate. A separate
+end-to-end test may let the inverter estimate each image independently to reveal
+whether codec error also destabilizes automatic film-base or color estimation.
+
 Create visual panels from a result directory:
 
 ```powershell

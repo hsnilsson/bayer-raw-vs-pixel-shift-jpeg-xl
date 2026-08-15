@@ -5,24 +5,27 @@ practical work. It is intentionally conservative: the claim is not that this
 repository invented JPEG XL archiving, raw compression, PixelShift, or film
 camera scanning. The claim is narrower.
 
-Current reading: adjacent work exists, but I have not found the same combination
-of:
+Review status: primary standards and vendor documentation were rechecked on
+2026-08-15. The literature and prior-art search is deliberately non-exhaustive;
+it supports cautious project positioning, not a definitive novelty claim.
+
+Adjacent work exists, but this review did not identify the same combination of:
 
 - camera-scanned film
 - high-resolution PixelShift captures
-- demosaiced or linear DNG-style masters from PixelShift2DNG
+- merged, full-color LinearRaw DNG masters from PixelShift2DNG
 - JPEG XL lossless and conservative lossy tests
 - negative inversion or latitude-stress transforms
 - a fixed-storage-budget comparison against lower-resolution raw capture
 
 That combination is the useful niche of this project.
 
-## JPEG XL As A Serious Image Format
+## JPEG XL As A Standardized Image Format
 
-JPEG XL is not a hobby codec. It is standardized as ISO/IEC 18181 and is
-positioned by JPEG as a modern image coding system for web delivery,
-professional photography, high bit depth, wide color gamut, HDR, progressive
-coding, and both lossy and lossless compression:
+JPEG XL is standardized as ISO/IEC 18181 and is positioned by JPEG as a modern
+image coding system for web delivery, professional photography, high bit depth,
+wide color gamut, HDR, progressive coding, and both lossy and lossless
+compression:
 
 - [JPEG XL official overview](https://jpeg.org/jpegxl/)
 - [JPEG XL reference implementation, libjxl](https://github.com/libjxl/libjxl)
@@ -56,12 +59,20 @@ camera raw data:
 
 - [Adobe Digital Negative page](https://helpx.adobe.com/camera-raw/digital-negative.html)
 - [DNG Specification 1.7.1.0, PDF](https://helpx.adobe.com/content/dam/help/en/camera-raw/digital-negative/jcr_content/root/content/flex/items/position/position-par/download_section_733958301/download-1/DNG_Spec_1_7_1_0.pdf)
+- [PixelShift2DNG user manual, version 1.1](https://updates.fastrawviewer.com/data/PS2DNG/PixelShift2DNG-Manual-ENG.pdf)
+
+The PixelShift2DNG manual says that the program combines 4 or 16 source files
+into one full-color DNG. The files examined in this project report three-channel
+16-bit `LinearRaw` image data. That output is a merged raw-like state, not the
+original CFA samples or source ARW sequence.
 
 DNG 1.7.0.0 added JPEG XL compression. The 1.7.1.0 specification allows JPEG XL
 compression for 8- to 16-bit integer image data and 16-bit floating point image
 data, with supported interpretations including RGB, ColorFilterArray, and
 LinearRaw. It also defines JXL-related tags such as `JXLDistance`, `JXLEffort`,
-and `JXLDecodeSpeed`.
+and `JXLDecodeSpeed`. The specification describes the newer lossy options as
+particularly useful for proxy DNGs; it does not designate lossy JPEG XL DNG as
+an archival master.
 
 This matters a lot: JPEG XL is not merely an external side-format in relation to
 DNG. It is already part of modern DNG as a compression option.
@@ -72,6 +83,8 @@ But that cuts two ways:
   workflows.
 - It also weakens any claim that this project is "discovering" JXL-for-DNG as a
   concept.
+- It establishes format support, not preservation suitability or application
+  interoperability.
 
 The remaining project-specific question is therefore not "can DNG mention JPEG
 XL?" It is:
@@ -92,7 +105,7 @@ stable formats."
 Useful sources:
 
 - [Library of Congress Recommended Formats Statement: Still Image Works](https://www.loc.gov/preservation/resources/rfs/stillimg.html)
-- [Library of Congress format description for DNG](https://www.loc.gov/preservation/digital/formats/fdd/fdd000188.shtml)
+- [Library of Congress format description for DNG 1.6](https://www.loc.gov/preservation/digital/formats/fdd/fdd000628.shtml)
 - [Library of Congress format description for TIFF](https://www.loc.gov/preservation/digital/formats/fdd/fdd000022.shtml)
 - [FADGI Technical Guidelines for Digitizing Cultural Heritage Materials](https://www.digitizationguidelines.gov/guidelines/digitize-technical.html)
 - [FADGI OpenDICE and AutoSFR](https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html)
@@ -120,7 +133,8 @@ recommendation to replace TIFF, DNG, or raw masters with lossy files.
 Recent raw-compression work confirms that raw storage size is a real research
 problem, not just a personal inconvenience.
 
-Relevant examples:
+Relevant examples, both currently arXiv preprints rather than preservation
+standards:
 
 - [RAWIC: Bit-Depth Adaptive Lossless Raw Image Compression](https://arxiv.org/abs/2603.28105)
 - [Raw-JPEG Adapter: Efficient Raw Image Compression with JPEG](https://arxiv.org/abs/2509.19624)
@@ -163,7 +177,9 @@ work. A useful reference is:
 That paper explains why Bayer color filter arrays require demosaicing and how
 shifted raw frames can be merged to increase resolution, reduce aliasing, and
 produce fuller RGB information from multiple samples. It also discusses the need
-for accurate registration and the risk of motion or alignment failure.
+for accurate registration and the risk of motion or alignment failure. The
+PixelShift2DNG manual makes the narrower workflow claim that supported 4- or
+16-frame sequences can be merged into a full-color DNG.
 
 This is not the same as this project, but it supports one important premise:
 single-shot Bayer raw is not a magical complete record of the scene. It is a
@@ -186,14 +202,15 @@ Digital pathology and whole-slide imaging are not film archiving, but they are
 useful analogies because they deal with huge image files, texture, color, and
 the risk that visually acceptable compression can affect later interpretation.
 
-Example:
+Example, currently an arXiv preprint:
 
 - [Deep learning-based compression of giga-resolution whole slide images](https://arxiv.org/abs/2605.17668)
 
-That line of work reinforces a general point: compression should be judged in
-the task domain where the image will be used. For pathology, that means
-diagnostic fidelity. For this repository, it means film inversion, color
-grading, visible grain or dye-cloud structure, and archival flexibility.
+The paper compares JPEG, JPEG 2000, JPEG XL, and learned methods on large image
+pyramids and tissue patches. Its relevance here is limited to the practical
+problem of evaluating very large, textured images. It does not establish
+archival or diagnostic equivalence for any codec, and it supplies no acceptance
+threshold for film scans.
 
 The analogy is useful, but limited. Medical diagnosis and film scanning have
 different risk models, visual structures, tools, and tolerance for irreversible
@@ -204,9 +221,11 @@ loss.
 There is extensive practical knowledge around camera scanning, film inversion,
 raw-vs-TIFF export, scanner comparisons, and workflows using tools such as
 FilmLab, Negative Lab Pro, RawTherapee, darktable, and dedicated film scanners.
-That body of knowledge is important, but much of it lives in forums, videos,
-blog posts, vendor docs, and personal tests rather than in reusable public
-benchmarks.
+The PixelShift2DNG manual is a primary source for the merge workflow itself.
+Much of the broader practitioner evidence lives in forums, videos, blog posts,
+vendor docs, and personal tests rather than in reusable public benchmarks. This
+review therefore treats it as problem-discovery evidence, not as validation of
+the project's archival hypothesis.
 
 This repository can be useful precisely because it tries to make part of that
 discussion reproducible:
@@ -264,6 +283,8 @@ Safer claims:
 
 - "JPEG XL lossless can preserve a chosen decoded/rendered image state exactly,
   if the pipeline is verified."
+- "DNG 1.7 defines JPEG XL compression, but the specification alone does not
+  establish archival suitability or software interoperability."
 - "Conservative lossy JPEG XL remains an interesting candidate for storage
   constrained, high-resolution PixelShift film scans."
 - "`d=0.05` is worth further testing; `d=0.10` currently looks too aggressive for
@@ -271,9 +292,11 @@ Safer claims:
 - "The key unresolved question is whether extra sampling can outweigh
   conservative lossy error at the same storage budget."
 
-## Search Coverage
+## Search Coverage And Limits
 
-Searches performed for this framing included combinations of:
+Searches performed or refreshed through 2026-08-15 used standards and vendor
+documentation, arXiv, general web search, and GitHub. Query combinations
+included:
 
 - `JPEG XL PixelShift DNG film scanning`
 - `PixelShift2DNG JPEG XL`
@@ -288,6 +311,8 @@ Searches performed for this framing included combinations of:
 - GitHub searches for `PixelShift2DNG` with `JPEG XL`, `film scanning` with
   `JPEG XL` and `DNG`, and related terms
 
-No exact duplicate was found in this pass. This should be revisited before any
-strong public novelty claim, especially after adding anonymous real negative
-scans and the planned 61 MP raw versus 240 MP PixelShift comparison.
+No exact duplicate was identified in this pass. Search terms, indexing, and
+unpublished practitioner work limit that result, so it must not be restated as
+"no prior work exists." Refresh the search before any paper, strong public
+novelty claim, or final recommendation, especially after adding anonymous real
+negative scans and the planned 61 MP raw versus 240 MP PixelShift comparison.

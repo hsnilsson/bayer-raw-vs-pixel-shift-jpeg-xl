@@ -32,6 +32,12 @@ Important caveat: ADC lossy `d=0.05` changed the stored image state from
 `WhiteLevel 65535`. That output may still be useful, but it needs a fresh
 controlled render and latitude-stress comparison.
 
+A codestream-header check of the first two embedded tiles in one private file
+pair also found that the lossless output used the original-profile/non-XYB path,
+whereas the lossy `d=0.05` output used XYB. This makes post-inversion testing
+relevant to the ADC path as well as external `.jxl`, but it is not yet a
+multi-file or exhaustive tile result.
+
 See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md).
 
 ### Lossless JPEG XL

@@ -41,10 +41,27 @@ This is not yet proven.
 
 - Add public or anonymized real negative scans.
 - Add FADGI/OpenDICE capture-quality tests.
-- Add an automated latitude stress transform independent of FilmLab.
-- Repeat results across more image types.
-- Publish crops and diff panels.
+- Extend the automated FilmLab-independent latitude stress test to those scans.
+- Add metadata/ICC comparison output.
+- Run the paired 61 MP raw versus 240 MP PixelShift 16 storage-budget test.
+- Repeat results and publish selected crops and diff panels across image types.
 - Invite critique from scanning, archival, and JPEG XL communities.
+
+## Related Work And Research Plan Review
+
+On 2026-08-15, the related-work and research-plan drafts were reviewed against
+the cited primary standards, vendor documentation, papers, and the repository's
+current evidence.
+
+The review made four boundaries explicit:
+
+- DNG 1.7 support for JPEG XL is format support, not an archival endorsement.
+- Recent RAWIC, Raw-JPEG Adapter, and whole-slide examples are preprints and are
+  treated as adjacent evidence, not preservation standards.
+- The primary storage budget covers the retained master plus required sidecars;
+  source capture sequences are reported separately.
+- Same-state codec metrics and cross-resolution sampling evidence are different
+  claims and use different evaluation methods.
 
 ## Public Data And Archived Smoke Test
 

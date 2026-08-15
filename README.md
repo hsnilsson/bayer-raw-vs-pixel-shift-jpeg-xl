@@ -71,6 +71,9 @@ These results are not yet a universal archival recommendation.
   local pre-publication safety audit
 - [scripts/run_public_latitude_stress.py](scripts/run_public_latitude_stress.py):
   run reproducible JPEG XL stress tests on public TIFF crops
+- [scripts/inspect_dng_jxl_color_path.py](scripts/inspect_dng_jxl_color_path.py):
+  inspect embedded DNG/JXL headers and distinguish XYB from original-profile
+  coding
 - [scripts/make_public_crop_panels.py](scripts/make_public_crop_panels.py):
   create reference/candidate/diff panels from public stress-test output
 - [src/jxl_archive_test.py](src/jxl_archive_test.py): helper CLI for comparing

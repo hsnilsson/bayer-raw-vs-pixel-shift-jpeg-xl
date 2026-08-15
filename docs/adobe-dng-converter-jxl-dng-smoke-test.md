@@ -73,6 +73,37 @@ SubIFD JXLEffort: 7
 SubIFD JXLDecodeSpeed: 4
 ```
 
+## Embedded JPEG XL Color Path
+
+The first two tiles in the main `LinearRaw` IFD from one private lossless output
+and its lossy `d=0.05` counterpart were copied byte-for-byte using the TIFF
+`TileOffsets` and `TileByteCounts` tags and inspected with `jxlinfo` from libjxl
+0.11.2. Preview IFDs were kept separate from this comparison.
+
+| ADC output | `jxlinfo` classification | Signaled encoding | Inferred internal color path |
+| --- | --- | --- | --- |
+| lossless JXL DNG | `(possibly) lossless` | Rec.2100 primaries, linear transfer | original profile, non-XYB |
+| lossy JXL DNG `d=0.05` | `lossy` | Rec.2100 primaries, sRGB transfer | XYB |
+
+This inference follows libjxl's `JxlBasicInfo.uses_original_profile` flag. The
+[`jxlinfo` source](https://github.com/libjxl/libjxl/blob/main/tools/jxlinfo.cc)
+prints `(possibly) lossless` when that flag is true and `lossy` when it is false;
+the libjxl
+[format overview](https://github.com/libjxl/libjxl/blob/main/doc/format_overview.md)
+identifies `uses_original_profile = false` as the XYB color path.
+
+This matters because the outer DNG still identifies the image as camera-native
+`LinearRaw`: the DNG container does not imply that its lossy JXL tiles avoid
+perceptual XYB coding. The signaled Rec.2100/sRGB encoding describes the embedded
+JXL conversion path; it does not by itself prove that the rendered DNG is
+Rec.2100/sRGB or that Adobe's decoding is colorimetrically wrong. It does mean
+that the mapping from camera-native channel values through XYB needs the planned
+same-render and post-inversion tests.
+
+This was a header check of two tiles in one private file pair, not a corpus or
+exhaustive tile result. Repeat it across files and representative tiles before
+generalizing the finding, and keep the lossless and lossy paths separate.
+
 ## Size
 
 | File | PixelShift2DNG | ADC lossless JXL DNG | Lossless % | ADC JXL DNG d=0.05 | d=0.05 % |
