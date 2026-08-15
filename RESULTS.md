@@ -10,6 +10,30 @@ For the shortest interpretation of these results, see
 
 ## Private Exploratory Findings
 
+### Adobe DNG Converter JPEG XL DNG Smoke Test
+
+Adobe DNG Converter 18.5 accepted three local PixelShift2DNG files and rewrote
+them as DNG 1.7 files with internal JPEG XL compression.
+
+Lossless output reported `SubIFD Compression: JPEG XL`, `Photometric
+Interpretation: Linear Raw`, and `JXLDistance: 0`. It preserved the main image
+dimensions, crop size, black level, white level, color matrices, camera model,
+lens model, and serial-number metadata checked with ExifTool. Previews were
+regenerated and `Software`/XMP creator tags changed to Adobe DNG Converter.
+
+| File | PixelShift2DNG | ADC lossless JXL DNG | Lossless % | ADC JXL DNG d=0.05 | d=0.05 % |
+|---|---:|---:|---:|---:|---:|
+| `private-scan-1.dng` | 173.54 MiB | 152.25 MiB | 87.7% | 88.41 MiB | 50.9% |
+| `private-scan-2.dng` | 184.65 MiB | 157.83 MiB | 85.5% | 92.51 MiB | 50.1% |
+| `private-scan-3.dng` | 145.80 MiB | 125.60 MiB | 86.1% | 83.95 MiB | 57.6% |
+
+Important caveat: ADC lossy `d=0.05` changed the stored image state from
+`9600 x 6376` with `WhiteLevel 14848` to the cropped `9552 x 6360` image with
+`WhiteLevel 65535`. That output may still be useful, but it needs a fresh
+controlled render and latitude-stress comparison.
+
+See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md).
+
 ### Lossless JPEG XL
 
 Lossless JPEG XL round-tripped extracted 16-bit linear PixelShift2DNG image data

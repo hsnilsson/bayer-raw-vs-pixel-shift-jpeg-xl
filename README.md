@@ -46,6 +46,11 @@ These results are not yet a universal archival recommendation.
 - [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md): rights notes for public test data
 - [REPRODUCIBILITY.md](REPRODUCIBILITY.md): clean reproduction path for the
   public tests
+- [RELATED_WORK.md](RELATED_WORK.md): prior-art and related-work framing
+- [RESEARCH_PLAN.md](RESEARCH_PLAN.md): source-driven plan for the next test
+  tracks
+- [TEST_MATERIAL_STRATEGY.md](TEST_MATERIAL_STRATEGY.md): what input material is
+  needed for credible negative/positive tests
 - [NEXT_STEPS.md](NEXT_STEPS.md): remaining research and publication decisions
 - [docs/publication-summary.md](docs/publication-summary.md): short shareable
   summary for public review
@@ -53,6 +58,8 @@ These results are not yet a universal archival recommendation.
 - [RESULTS.md](RESULTS.md): current result summary and interpretation
 - [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public
   latitude stress test with density-based negative-print transforms
+- [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md):
+  smoke test for rewriting PixelShift2DNG files as DNG 1.7 JPEG XL
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
 - [TESTDATA.md](TESTDATA.md): public test data sources and rights notes
 - [docs/research-log.md](docs/research-log.md): project history and decisions

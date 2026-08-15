@@ -1,0 +1,156 @@
+# Adobe DNG Converter JPEG XL DNG Smoke Test
+
+Date: 2026-08-15
+
+Purpose: test whether Adobe DNG Converter can rewrite existing PixelShift2DNG
+files as DNG 1.7 files with internal JPEG XL compression.
+
+This is a smoke test, not a full archival validation. It verifies that the files
+are written, that the DNG/JXL tags look right, and that key metadata survives.
+It does not yet prove pixel identity or post-inversion safety.
+
+## Tool
+
+Adobe DNG Converter 18.5 for Windows.
+
+Executable:
+
+```powershell
+C:\Program Files\Adobe\Adobe DNG Converter\Adobe DNG Converter.exe
+```
+
+The `-o outputfile.dng inputfile.dng` form returned success but did not write an
+output file in this local test. The working form was:
+
+```powershell
+& "C:\Program Files\Adobe\Adobe DNG Converter\Adobe DNG Converter.exe" `
+  -losslessJXL `
+  -d outputs\adc_jxl_test\lossless_batch `
+  input.dng
+```
+
+For the lossy smoke test:
+
+```powershell
+& "C:\Program Files\Adobe\Adobe DNG Converter\Adobe DNG Converter.exe" `
+  -lossy `
+  -jxl_effort 7 `
+  -jxl_distance 0.05 `
+  -d outputs\adc_jxl_test\lossy_d005_batch `
+  input.dng
+```
+
+## Result
+
+Adobe DNG Converter accepted the PixelShift2DNG files and wrote DNG 1.7 files
+with JPEG XL compression.
+
+For lossless output, ExifTool reported:
+
+```text
+DNGVersion: 1.7.0.0
+DNGBackwardVersion: 1.7.0.0
+SubIFD Compression: JPEG XL
+SubIFD PhotometricInterpretation: Linear Raw
+SubIFD BitsPerSample: 16 16 16
+SubIFD SamplesPerPixel: 3
+SubIFD JXLDistance: 0
+SubIFD JXLEffort: 7
+SubIFD JXLDecodeSpeed: 4
+```
+
+For lossy `d=0.05`, ExifTool reported:
+
+```text
+DNGVersion: 1.7.0.0
+DNGBackwardVersion: 1.7.0.0
+SubIFD Compression: JPEG XL
+SubIFD PhotometricInterpretation: Linear Raw
+SubIFD BitsPerSample: 16 16 16
+SubIFD SamplesPerPixel: 3
+SubIFD JXLDistance: 0.0500000007450581
+SubIFD JXLEffort: 7
+SubIFD JXLDecodeSpeed: 4
+```
+
+## Size
+
+| File | PixelShift2DNG | ADC lossless JXL DNG | Lossless % | ADC JXL DNG d=0.05 | d=0.05 % |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `private-scan-1.dng` | 173.54 MiB | 152.25 MiB | 87.7% | 88.41 MiB | 50.9% |
+| `private-scan-2.dng` | 184.65 MiB | 157.83 MiB | 85.5% | 92.51 MiB | 50.1% |
+| `private-scan-3.dng` | 145.80 MiB | 125.60 MiB | 86.1% | 83.95 MiB | 57.6% |
+
+Interpretation:
+
+- Lossless JPEG XL DNG saved roughly 12-15% on these three files.
+- Lossy `d=0.05` JPEG XL DNG saved roughly 42-50%.
+- Lossless savings are useful but not enough to solve storage by themselves.
+- Lossy DNG/JXL is now a serious candidate for the same storage-budget question,
+  but it needs a fresh pixel/render/inversion test because Adobe DNG Converter
+  changes more than just the compression tags.
+
+## Metadata Notes
+
+For lossless JXL DNG, key image metadata was preserved:
+
+```text
+SubIFD ImageWidth: 9600
+SubIFD ImageHeight: 6376
+DefaultCropSize: 9552 6360
+BlackLevel: 0 0 0
+WhiteLevel: 14848 14848 14848
+ColorMatrix1: unchanged
+ColorMatrix2: unchanged
+AsShotNeutral: unchanged
+Make/Model/LensModel: preserved
+SerialNumber/InternalSerialNumber: preserved
+```
+
+Expected container and preview changes:
+
+- `DNGVersion` changed from `1.4.0.0` to `1.7.0.0`.
+- `DNGBackwardVersion` changed from `1.1.0.0` to `1.7.0.0`.
+- `Software` and XMP creator tags changed to Adobe DNG Converter.
+- Preview and thumbnail images were regenerated.
+- `NewRawImageDigest` changed, as expected after rewriting the raw image data.
+
+For lossy `d=0.05`, Adobe DNG Converter changed the stored main image state:
+
+```text
+SubIFD ImageWidth: 9600 -> 9552
+SubIFD ImageHeight: 6376 -> 6360
+WhiteLevel: 14848 14848 14848 -> 65535 65535 65535
+```
+
+That makes the lossy ADC output a different image state from the original
+PixelShift2DNG file. It may still be valid and useful, but it must be compared
+through a controlled render pipeline rather than treated as a direct
+drop-in-compression change.
+
+## What This Changes
+
+This removes one major blocker from the project. There is now a practical
+off-the-shelf path to:
+
+```text
+PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 with internal JPEG XL
+```
+
+The best current candidate tracks become:
+
+- DNG 1.7 lossless JXL as a more compatible exact-container experiment.
+- DNG 1.7 lossy JXL `d=0.05` as a storage-budget candidate, pending render and
+  inversion stress tests.
+- External `.jxl` remains useful as a codec control, but no longer has to be the
+  only JXL path.
+
+## Still Required
+
+- Verify lossless ADC JXL DNG with an independent DNG/JXL-compatible decoder.
+- Render original PixelShift2DNG and ADC JXL DNG through the same trusted
+  pipeline and compare pixels.
+- Repeat the metadata diff on public/anonymized test material.
+- Test whether RawTherapee, Adobe tools, FilmLab, and other relevant software
+  can open and color-manage the ADC JXL DNG files correctly.
+- Re-run latitude-stress tests on ADC-generated JXL DNG output.
