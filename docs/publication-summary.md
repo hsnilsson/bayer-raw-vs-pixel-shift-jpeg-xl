@@ -25,6 +25,11 @@ film frame versus preserving every numeric value from a smaller capture.
 - A publication-safety audit and a combined readiness check.
 - Cautious conclusions and limitations.
 
+For prior-art and project-positioning context, see:
+
+- [RELATED_WORK.md](../RELATED_WORK.md)
+- [RESEARCH_PLAN.md](../RESEARCH_PLAN.md)
+
 ## Current Practical Result
 
 The current practical result is:
@@ -81,4 +86,3 @@ Useful critique would include:
 - color-management concerns
 - metadata preservation concerns
 - evidence for or against the PixelShift sampling hypothesis
-
