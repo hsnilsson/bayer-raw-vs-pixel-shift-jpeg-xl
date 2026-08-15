@@ -14,7 +14,7 @@ study:
 61 MP single-shot raw/DNG
 versus
 240 MP PixelShift 16 stored as conservative JPEG XL
-at roughly comparable storage cost
+within the predeclared storage tolerance in `RESEARCH_PLAN.md`
 ```
 
 The newest practical path to test is Adobe DNG Converter output:
@@ -25,7 +25,6 @@ PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
 
 ## Ready Without New Images
 
-- Review and refine `RELATED_WORK.md` and `RESEARCH_PLAN.md`.
 - Run `python scripts\check_publication_ready.py` before sharing.
 - Run a clean-clone reproduction test on another machine or in another folder.
 - Review selected v2 public figures in `docs/figures/` and remove any that feel
@@ -67,6 +66,12 @@ PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
 9. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
    measurements if a suitable target capture exists.
 10. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
+
+## Completed
+
+- 2026-08-15: reviewed and finalized `RELATED_WORK.md` and `RESEARCH_PLAN.md`,
+  including source-status caveats, a concrete storage-budget definition, and
+  separate codec, edit-robustness, sampling, and operational gates.
 
 ## Human Decisions Still Needed
 

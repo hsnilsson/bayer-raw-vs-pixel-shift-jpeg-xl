@@ -12,6 +12,51 @@ as conservative JPEG XL preserve more useful film information than a lower
 resolution raw capture?
 ```
 
+Review status: reviewed on 2026-08-15 against the sources summarized in
+[RELATED_WORK.md](RELATED_WORK.md) and against the repository's current public
+and private exploratory results. The plan deliberately separates verified
+measurements, proposed tests, and decisions that still require evidence.
+
+## Scope And Operational Definitions
+
+### Storage Budget
+
+The primary budget unit is the retained master for one film frame:
+
+```text
+single-shot raw/DNG baseline
+versus
+PixelShift 16 JPEG XL DNG candidate plus required preservation sidecars
+```
+
+Source ARW sequence sizes, previews, and temporary working files must be reported
+separately. If the proposed archive policy retains the 4- or 16-file source
+sequence as well as the merged candidate, the project must report that second
+policy explicitly; it cannot use the smaller derived-master total.
+
+A candidate is "size matched" only when its complete retained size is within
+5% of the baseline. If encoder settings cannot meet that tolerance, report the
+nearest candidate below and above the baseline instead of implying an exact
+match.
+
+### Comparison Tracks
+
+The project has four related but distinct outcomes:
+
+1. Codec fidelity: compare identical dimensions and image states before and
+   after JPEG XL encoding.
+2. Edit robustness: apply identical deterministic transforms to reference and
+   candidate states, then compare their outputs.
+3. Sampling value: compare paired captures of the same negative using target
+   measurements and controlled visual review at a declared common output scale.
+4. Operational preservation: test metadata, ICC/color interpretation, decoder
+   independence, and application support.
+
+Pixel metrics such as MAE and PSNR are valid for the first two tracks. They must
+not be presented as direct evidence that a 240 MP image resolves more film detail
+than a 61 MP image unless both are registered to a justified common reference
+and scale.
+
 ## Source-Driven Improvements
 
 ### 1. Treat Preservation Guidance As The Baseline
@@ -70,6 +115,8 @@ Plan impact:
   and reference data support it.
 - Use AutoSFR or an equivalent spatial-frequency method to measure actual
   resolved detail, not only pixel count.
+- Record target version, reference data, capture geometry, magnification, and
+  software configuration; a tool name alone is not a measurement method.
 - Keep visual crop review, but do not let it be the only evidence for the
   sampling claim.
 
@@ -130,9 +177,17 @@ Plan impact:
 
 - Compare a lower-resolution raw capture with a higher-resolution PixelShift
   capture of the same negative.
+- Hold camera, lens, aperture, focus, magnification, film position, illumination,
+  exposure normalization, and rendering choices constant or document every
+  unavoidable difference.
 - Normalize the comparison by storage budget, not just by capture mode.
 - Create JPEG XL candidates from the PixelShift 16 file at distances that bracket
   the target size of the 61 MP raw/DNG baseline.
+- Keep four controls: the 61 MP baseline, the uncompressed or lossless PixelShift
+  16 upper bound, a PixelShift 16 lossless-JXL round trip, and the size-matched
+  lossy PixelShift 16 candidate. Add a PixelShift 16 result downsampled to the
+  declared common output scale when it helps separate sampling from display
+  magnification.
 - Review crops where additional sampling should matter: dye clouds, fine grain,
   lettering, scratches, edge detail, and subtle local density changes.
 - Also check for PixelShift failure: movement, registration artifacts, lens
@@ -178,23 +233,43 @@ Lossless gate:
 - max error `0`
 - MAE `0`
 - metadata/color profile expectations must be documented separately
+- the external `.jxl` path and DNG-internal JXL path must be reported separately
+- at least one independent decoder or render path must confirm the final
+  preservation claim
 
 Conservative lossy candidate gate:
 
+- crop locations and stress categories are selected from the reference before
+  inspecting codec labels
 - no visible artifacts in selected post-inversion crops during close review
 - no objectionable changes in dense shadows, highlights, smooth color, or skin-
   like tones
 - no suspicious per-channel bias
-- high-percentile errors remain low enough to explain and defend
+- numeric acceptance thresholds are frozen after the pilot and before the main
+  corpus is evaluated; raw per-image results remain published even when a gate
+  fails
 - file size meets the storage-budget target
 - results are reproduced across more than one negative
+- blinded visual review records viewer, zoom, display conditions, and whether
+  the reference can be distinguished from the candidate
 
 Sampling gate:
 
 - PixelShift 16 must show real extra film detail over 61 MP single-shot raw
 - the advantage must survive the chosen JPEG XL setting
 - PixelShift artifacts must not outweigh the extra detail
-- the storage budget must be comparable
+- the retained-master size must meet the predeclared 5% tolerance or be reported
+  as a bracketed comparison
+- sampling evidence must use target/SFR results or controlled visual review at a
+  declared common output scale, not cross-resolution MAE or PSNR alone
+
+Operational gate:
+
+- metadata and ICC/color interpretation meet the declared preservation profile
+- the candidate opens and renders consistently in the named archival and editing
+  tools
+- failures are reported per application and version, rather than generalized to
+  the JPEG XL or DNG formats
 
 Publication gate:
 
@@ -206,19 +281,22 @@ Publication gate:
 
 ## Near-Term Execution Order
 
-1. Finish and review the related-work and research-plan documentation.
-2. Add anonymous real-negative test material under ignored local input folders.
-3. Create source sidecars for each new image set.
-4. Run the existing lossless and lossy JPEG XL tests on the new material.
-5. Run latitude-stress tests on the new material.
-6. Add metadata/ICC diff output.
-7. Test Adobe DNG Converter DNG 1.7 JPEG XL output through the same render and
+1. [x] Finish and review the related-work and research-plan documentation
+   (completed 2026-08-15).
+2. [ ] Add anonymous real-negative test material under ignored local input
+   folders.
+3. [ ] Create source sidecars for each new image set.
+4. [ ] Run the existing lossless and lossy JPEG XL tests on the new material.
+5. [ ] Run latitude-stress tests on the new material.
+6. [ ] Add metadata/ICC diff output.
+7. [ ] Test Adobe DNG Converter DNG 1.7 JPEG XL output through the same render and
    metadata gates.
-8. Run the storage-budget comparison: 61 MP raw versus 240 MP PixelShift 16 JXL.
-9. Add target-based capture-quality measurements if a suitable target capture is
-   available.
-10. Update `RESULTS.md`, `CONCLUSIONS.md`, and public figures.
-11. Ask for outside critique only after the real-negative and storage-budget
+8. [ ] Run the storage-budget comparison: 61 MP raw versus 240 MP PixelShift 16
+   JXL.
+9. [ ] Add target-based capture-quality measurements if a suitable target
+   capture is available.
+10. [ ] Update `RESULTS.md`, `CONCLUSIONS.md`, and public figures.
+11. [ ] Ask for outside critique only after the real-negative and storage-budget
     tracks are represented.
 
 ## What To Add Next
@@ -240,6 +318,7 @@ For each image set, add a small sidecar note with:
 - camera, lens, aperture, ISO, light source, and film holder notes
 - privacy status: safe to publish, crop-only, or private
 - whether the source may be committed through Git LFS
+- complete retained-master size and the separately reported source-sequence size
 
 The first new set should prioritize the direct storage-budget comparison. That
 is the test most likely to make the project genuinely useful to other camera
