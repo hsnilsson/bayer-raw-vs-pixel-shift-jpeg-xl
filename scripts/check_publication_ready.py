@@ -36,6 +36,7 @@ REQUIRED_FILES = [
     "scripts/run_public_latitude_stress.py",
     "scripts/make_public_crop_panels.py",
     "scripts/run_public_latitude_v2.py",
+    "tests/test_review_fixes.py",
 ]
 PYTHON_FILES = [
     "scripts/audit_publication_safety.py",
@@ -46,6 +47,7 @@ PYTHON_FILES = [
     "scripts/run_public_latitude_v2.py",
     "scripts/check_publication_ready.py",
     "src/jxl_archive_test.py",
+    "tests/test_review_fixes.py",
 ]
 
 
@@ -85,6 +87,15 @@ def check_python_syntax() -> Check:
     if failures:
         return Check("python syntax", False, "\n".join(failures))
     return Check("python syntax", True, f"{len(PYTHON_FILES)} files parsed")
+
+
+def check_unit_tests() -> Check:
+    result = run_command([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"])
+    output = (result.stdout + result.stderr).strip()
+    if result.returncode:
+        return Check("unit tests", False, output)
+    summary = output.splitlines()[-1] if output else "tests passed"
+    return Check("unit tests", True, summary)
 
 
 def check_markdown_links() -> Check:
@@ -159,15 +170,16 @@ def check_source_sidecars() -> Check:
     return Check("testdata sidecars", True, "downloaded files have source sidecars")
 
 
-def check_tool_versions() -> Check:
+def check_run_provenance() -> Check:
     results_dir = ROOT / "results/public_latitude_stress_v2"
-    metrics = results_dir / "metrics.csv"
-    versions = results_dir / "tool_versions.json"
-    if metrics.exists() and not versions.exists():
-        return Check("tool versions", False, "metrics.csv exists but tool_versions.json is missing")
-    if versions.exists():
-        return Check("tool versions", True, "v2 tool_versions.json exists")
-    return Check("tool versions", True, "no local v2 result directory to check")
+    required_files = ["metrics.csv", "metrics.json", "tool_versions.json", "run_manifest.json"]
+    present = [name for name in required_files if (results_dir / name).exists()]
+    if not present:
+        return Check("run provenance", True, "no local v2 result directory to check")
+    missing = [name for name in required_files if name not in present]
+    if missing:
+        return Check("run provenance", False, "missing: " + ", ".join(missing))
+    return Check("run provenance", True, "v2 run manifest exists")
 
 
 def check_publication_audit(include_ignored: bool) -> Check:
@@ -197,10 +209,11 @@ def main() -> int:
     checks = [
         check_required_files(),
         check_python_syntax(),
+        check_unit_tests(),
         check_markdown_links(),
         check_large_testdata_lfs(),
         check_source_sidecars(),
-        check_tool_versions(),
+        check_run_provenance(),
         check_publication_audit(args.include_ignored),
     ]
 
