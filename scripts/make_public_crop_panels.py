@@ -40,19 +40,28 @@ def read_ppm(path: Path) -> np.ndarray:
     width = int(width_token)
     height = int(height_token)
     max_value = int(max_token)
-    while pos < len(data) and data[pos] in b" \t\r\n":
+    if pos < len(data) and data[pos] in b" \t\r\n":
         pos += 1
+    else:
+        raise ValueError(f"missing PPM header separator in {path}")
 
     if max_value <= 255:
         dtype = np.uint8
         expected = width * height * 3
-        arr = np.frombuffer(data[pos : pos + expected], dtype=dtype)
     elif max_value <= 65535:
         dtype = ">u2"
         expected = width * height * 3 * 2
-        arr = np.frombuffer(data[pos : pos + expected], dtype=dtype).astype(np.uint16)
     else:
         raise ValueError(f"unsupported PPM max value {max_value}")
+
+    actual = len(data) - pos
+    if actual != expected:
+        raise ValueError(
+            f"unexpected PPM raster length in {path}: got {actual}, expected {expected}"
+        )
+    arr = np.frombuffer(data[pos:], dtype=dtype)
+    if max_value > 255:
+        arr = arr.astype(np.uint16)
     return np.ascontiguousarray(arr.reshape((height, width, 3)))
 
 
