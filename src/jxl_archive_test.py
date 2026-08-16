@@ -194,7 +194,7 @@ def align_to_reference(ref: np.ndarray, cand: np.ndarray) -> np.ndarray:
     return cand.astype(ref.dtype, copy=False)
 
 
-def compute_metrics(ref: np.ndarray, cand: np.ndarray, peak: int) -> dict[str, float | int | bool]:
+def compute_metrics(ref: np.ndarray, cand: np.ndarray, peak: int | float) -> dict[str, float | int | bool]:
     ref_f = ref.astype(np.float64)
     cand_f = cand.astype(np.float64)
     diff = cand_f - ref_f
@@ -202,11 +202,15 @@ def compute_metrics(ref: np.ndarray, cand: np.ndarray, peak: int) -> dict[str, f
     mse = float(np.mean(diff * diff))
     rmse = math.sqrt(mse)
     psnr = float("inf") if mse == 0 else 20 * math.log10(peak / rmse)
-    max_error = int(abs_diff.max(initial=0))
+    max_error_value = float(abs_diff.max(initial=0))
+    if np.issubdtype(ref.dtype, np.integer) and np.issubdtype(cand.dtype, np.integer):
+        max_error: float | int = int(max_error_value)
+    else:
+        max_error = max_error_value
     mae = float(abs_diff.mean())
     ssim = global_ssim(ref_f, cand_f, peak)
     return {
-        "exact": bool(max_error == 0),
+        "exact": bool(max_error_value == 0),
         "mae": mae,
         "rmse": rmse,
         "psnr_db": psnr,
@@ -436,7 +440,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     enc_p = sub.add_parser("encode-test", help="encode/decode JXL variants from one rendered reference, then compare")
     add_common(enc_p)
-    enc_p.add_argument("--distance", action="append", default=["0.5", "1.0"], help="JPEG XL distance for high-quality lossy tests; repeatable.")
+    enc_p.add_argument(
+        "--distance",
+        action="append",
+        default=None,
+        help="JPEG XL distance for high-quality lossy tests; repeatable. Defaults to 0.5 and 1.0.",
+    )
     enc_p.add_argument("--effort", default="7", help="cjxl effort, usually 1-9.")
     enc_p.add_argument("--jpeg-quality", default="95", help="ImageMagick JPEG quality for sanity check.")
     enc_p.add_argument("--cjxl", help="path to cjxl executable.")
@@ -483,6 +492,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "encode-test":
+        if args.distance is None:
+            args.distance = ["0.5", "1.0"]
         reference = Path(args.reference)
         if not reference.exists():
             parser.error(f"reference does not exist: {reference}")
