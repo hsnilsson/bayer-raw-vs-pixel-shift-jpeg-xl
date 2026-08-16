@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import platform
 import shutil
@@ -14,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = Path(__file__).resolve().parent
 DEFAULT_CJXL = ROOT / "work/jxl-tools/bin/cjxl.exe"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
+RUN_MANIFEST_NAME = "run_manifest.json"
 
 PUBLIC_V2_INPUTS = [
     ROOT / "testdata/fadgi_opendice/negative_35mm_1/Negative_35mm_ICC.tif",
@@ -24,6 +26,11 @@ PUBLIC_V2_INPUTS = [
     / "testdata/library_of_congress/highsmith/roadside-wildflowers-and-some-dandelion-remnants-in-bent-county-colorado.tif",
     ROOT
     / "testdata/library_of_congress/highsmith/the-caloosahatchee-bridge-carries-us-highway-41-over-the-caloosahatchee-river-in.tif",
+]
+
+PROVENANCE_CODE_FILES = [
+    Path(__file__).resolve(),
+    SCRIPTS / "run_public_latitude_stress.py",
 ]
 
 PANEL_TRANSFORMS = [
@@ -116,23 +123,10 @@ def package_version(name: str) -> str | None:
         return None
 
 
-def git_snapshot() -> dict[str, object]:
-    commit = capture_command(["git", "rev-parse", "--verify", "HEAD"])
-    commit_value = commit["stdout"] if commit.get("returncode") == 0 else None
-    branch = capture_command(["git", "branch", "--show-current"])
-    return {
-        "commit": commit_value,
-        "commit_available": commit_value is not None,
-        "branch": branch["stdout"] if branch.get("returncode") == 0 else None,
-        "status_short": capture_command(["git", "status", "--short"]),
-    }
-
-
-def write_tool_versions(out_dir: Path) -> None:
-    out_dir.mkdir(parents=True, exist_ok=True)
+def collect_tool_versions() -> dict[str, object]:
     cjxl = find_tool("cjxl", DEFAULT_CJXL)
     djxl = find_tool("djxl", DEFAULT_DJXL)
-    versions: dict[str, object] = {
+    return {
         "python": sys.version,
         "platform": platform.platform(),
         "executable": sys.executable,
@@ -152,11 +146,147 @@ def write_tool_versions(out_dir: Path) -> None:
             },
             "git": capture_command(["git", "--version"]),
         },
-        "git": git_snapshot(),
+        "git": {
+            "head": capture_command(["git", "rev-parse", "--verify", "HEAD"]),
+            "status": capture_command(["git", "status", "--short"]),
+        },
     }
-    path = out_dir / "tool_versions.json"
-    path.write_text(json.dumps(versions, indent=2), encoding="utf-8")
-    print(f"Wrote {path.relative_to(ROOT)}")
+
+
+def write_json_atomic(path: Path, data: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def file_identity(path: Path) -> dict[str, str]:
+    return {
+        "path": path.resolve().relative_to(ROOT.resolve()).as_posix(),
+        "sha256": sha256_file(path),
+    }
+
+
+def build_run_context(
+    args: argparse.Namespace,
+    versions: dict[str, object],
+) -> dict[str, object]:
+    tools = versions["tools"]
+    assert isinstance(tools, dict)
+    return {
+        "pipeline": "public_latitude_stress_v2",
+        "parameters": {
+            "crop_size": args.crop_size,
+            "crop": args.crop,
+            "distance": list(args.distance),
+            "effort": str(args.effort),
+        },
+        "inputs": [file_identity(path) for path in PUBLIC_V2_INPUTS],
+        "code": [file_identity(path) for path in PROVENANCE_CODE_FILES],
+        "environment": {
+            "python": versions["python"],
+            "platform": versions["platform"],
+            "packages": versions["packages"],
+            "tools": {
+                "cjxl": tools.get("cjxl"),
+                "djxl": tools.get("djxl"),
+            },
+        },
+    }
+
+
+def stress_artifacts(out_dir: Path) -> dict[str, str]:
+    artifacts: dict[str, str] = {}
+    for path in out_dir.rglob("*"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(out_dir)
+        if relative.parts and relative.parts[0] == "panels":
+            continue
+        if path.name in {RUN_MANIFEST_NAME, "PANELS.md"} or path.name.endswith(".tmp"):
+            continue
+        artifacts[relative.as_posix()] = sha256_file(path)
+    return dict(sorted(artifacts.items()))
+
+
+def write_run_provenance(
+    out_dir: Path,
+    context: dict[str, object],
+    versions: dict[str, object],
+) -> None:
+    required = [out_dir / "metrics.csv", out_dir / "metrics.json"]
+    missing = [path for path in required if not path.is_file()]
+    if missing:
+        raise RuntimeError(
+            "stress run completed without required result files: "
+            + ", ".join(str(path) for path in missing)
+        )
+
+    versions_path = out_dir / "tool_versions.json"
+    write_json_atomic(versions_path, versions)
+    manifest_path = out_dir / RUN_MANIFEST_NAME
+    write_json_atomic(
+        manifest_path,
+        {
+            "schema_version": 1,
+            "context": context,
+            "artifacts": stress_artifacts(out_dir),
+        },
+    )
+    print(f"Wrote {versions_path}")
+    print(f"Wrote {manifest_path}")
+
+
+def validate_reuse(out_dir: Path, expected_context: dict[str, object]) -> None:
+    manifest_path = out_dir / RUN_MANIFEST_NAME
+    if not manifest_path.is_file():
+        raise SystemExit(
+            f"cannot reuse stress results: {manifest_path} is missing; "
+            "rerun without --skip-stress"
+        )
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        raise SystemExit(f"cannot reuse stress results: invalid {manifest_path}: {exc}") from exc
+
+    if manifest.get("schema_version") != 1 or manifest.get("context") != expected_context:
+        raise SystemExit(
+            "cannot reuse stress results: run context does not match; "
+            "rerun without --skip-stress"
+        )
+
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, dict):
+        raise SystemExit("cannot reuse stress results: manifest has no artifact map")
+    required = {"metrics.csv", "metrics.json", "tool_versions.json"}
+    missing_records = sorted(required - set(artifacts))
+    if missing_records:
+        raise SystemExit(
+            "cannot reuse stress results: manifest does not cover "
+            + ", ".join(missing_records)
+        )
+
+    for relative, expected_sha256 in artifacts.items():
+        candidate = Path(relative)
+        if not isinstance(relative, str) or not isinstance(expected_sha256, str):
+            raise SystemExit("cannot reuse stress results: malformed artifact record")
+        if candidate.is_absolute() or ".." in candidate.parts:
+            raise SystemExit(f"cannot reuse stress results: unsafe artifact path {relative}")
+        path = out_dir / candidate
+        if not path.is_file():
+            raise SystemExit(f"cannot reuse stress results: missing artifact {relative}")
+        if sha256_file(path) != expected_sha256:
+            raise SystemExit(f"cannot reuse stress results: changed artifact {relative}")
+
+    print(f"Validated reusable stress results from {manifest_path}")
 
 
 def distance_token(distance: str) -> str:
@@ -186,6 +316,8 @@ def run_stress(args: argparse.Namespace) -> None:
         args.crop,
         "--out-dir",
         str(args.out_dir),
+        "--effort",
+        str(args.effort),
     ]
     for distance in args.distance:
         cmd.extend(["--distance", distance])
@@ -230,6 +362,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out-dir", type=Path, default=ROOT / "results/public_latitude_stress_v2")
     parser.add_argument("--crop-size", type=int, default=2048)
     parser.add_argument("--crop", choices=["center", "upper-left", "lower-right"], default="center")
+    parser.add_argument("--effort", default="7", help="cjxl effort, usually 1-9")
     parser.add_argument(
         "--distance",
         action="append",
@@ -255,9 +388,13 @@ def main() -> int:
         args.distance = ["0.03", "0.05", "0.10"]
 
     require_inputs()
-    write_tool_versions(args.out_dir)
-    if not args.skip_stress:
+    versions = collect_tool_versions()
+    context = build_run_context(args, versions)
+    if args.skip_stress:
+        validate_reuse(args.out_dir, context)
+    else:
         run_stress(args)
+        write_run_provenance(args.out_dir, context, versions)
     if not args.skip_panels:
         run_panels(args)
     if args.publish_figures:
