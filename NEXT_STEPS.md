@@ -23,6 +23,29 @@ The newest practical path to test is Adobe DNG Converter output:
 PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
 ```
 
+## Sole-Master Blocker For Lossy ADC JXL DNG
+
+Lossy Adobe DNG Converter JXL DNG must remain an experimental candidate, not an
+only-master recommendation, until every item below passes:
+
+- render the source PixelShift2DNG and ADC candidate through the same trusted
+  pipeline and register the resulting image areas before comparing them
+- explain and test the observed stored-image changes in crop, dimensions, and
+  `WhiteLevel`, including clipping and recoverable-latitude checks
+- inspect representative main-image JXL tiles across files and record the
+  original-profile/XYB path; apply the same post-inversion stress tests to the
+  actual ADC output
+- compare ADC JXL DNG directly with standalone JXL made from the same 16-bit
+  reference state, both at matched quality settings and near-matched file size
+- pass metadata, ICC/color interpretation, and application-compatibility checks,
+  including at least one independent decode/render path
+- pass blinded visual review on real negatives after realistic inversion and
+  grading
+
+Until this gate passes, conclusions must keep standalone verified JXL and ADC
+JXL DNG as separate archive candidates and must not describe lossy ADC JXL DNG
+as safe as the sole retained master.
+
 ## Ready Without New Images
 
 - Run `python scripts\check_publication_ready.py` before sharing.
@@ -59,13 +82,15 @@ PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
 5. Latitude stress: compare after negative-like transforms, curves, channel
    balancing, shadow lifting, and highlight compression.
 6. Metadata/ICC diff: check what survives, what is lost, and what needs sidecars.
-7. ADC JXL DNG check: test DNG 1.7 lossless and `d=0.05` output through a
-   controlled render pipeline.
-8. Sampling comparison: compare 61 MP raw with 240 MP PixelShift 16 JXL at a
+7. ADC JXL DNG sole-master gate: complete every check in the blocker above;
+   opening successfully or preserving selected tags is not sufficient.
+8. Standalone-versus-DNG JXL decision: compare both candidates from the same
+   reference state and record which, if either, qualifies for sole-master use.
+9. Sampling comparison: compare 61 MP raw with 240 MP PixelShift 16 JXL at a
    similar storage budget.
-9. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
+10. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
    measurements if a suitable target capture exists.
-10. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
+11. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
 
 ## Completed
 

@@ -271,6 +271,27 @@ Operational gate:
 - failures are reported per application and version, rather than generalized to
   the JPEG XL or DNG formats
 
+Additional sole-master gate for lossy Adobe DNG Converter JXL DNG:
+
+- the original PixelShift2DNG and ADC output are rendered through the same
+  trusted pipeline and compared over the same registered crop
+- the observed changes in stored dimensions, crop, and `WhiteLevel` are
+  explained and tested for clipping, rescaling, and loss of editable latitude
+- representative main-image tiles are inspected across files; the inferred
+  original-profile/XYB path is recorded and the actual ADC result is subjected
+  to the same post-inversion stress tests as standalone JXL
+- ADC JXL DNG is compared directly with standalone JXL from the same 16-bit
+  reference state at matched quality settings and near-matched retained size
+- metadata, ICC/color interpretation, named-application behavior, and at least
+  one independent decode/render path pass the operational gate
+- blinded review of real negatives finds no objectionable difference after the
+  declared inversion and grading workflow
+
+Until every item in this additional gate passes, lossy ADC JXL DNG remains an
+experimental candidate and must not be recommended as the sole retained master.
+Successful conversion, plausible tags, or successful opening in one application
+are not sufficient.
+
 Publication gate:
 
 - public or anonymized data only
