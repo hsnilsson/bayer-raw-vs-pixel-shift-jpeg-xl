@@ -35,7 +35,9 @@ publication figures into `docs/figures/public-latitude-v2`. The full generated
 metrics live in `results/public_latitude_stress_v2/metrics.csv`. The generated
 panel index lives in `results/public_latitude_stress_v2/PANELS.md`. The
 tool-version snapshot lives in
-`results/public_latitude_stress_v2/tool_versions.json`. The `results/`
+`results/public_latitude_stress_v2/tool_versions.json`. A matching
+`run_manifest.json` binds the result parameters, input and code hashes, tool
+environment, and generated stress artifacts to that snapshot. The `results/`
 directory is local generated output and is intentionally ignored by Git.
 
 For clean reproduction steps, see [REPRODUCIBILITY.md](../REPRODUCIBILITY.md).

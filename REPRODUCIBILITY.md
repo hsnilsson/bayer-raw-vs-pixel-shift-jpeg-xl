@@ -62,6 +62,7 @@ This writes:
 - `results/public_latitude_stress_v2/metrics.csv`
 - `results/public_latitude_stress_v2/metrics.json`
 - `results/public_latitude_stress_v2/tool_versions.json`
+- `results/public_latitude_stress_v2/run_manifest.json`
 - `results/public_latitude_stress_v2/PANELS.md`
 - selected figures under `docs/figures/public-latitude-v2/`
 
@@ -70,11 +71,17 @@ The `results/` directory is generated local output and is ignored by Git.
 ## Quick Reuse Check
 
 If the heavy encode/decode results already exist, run a light check that only
-records versions and republishes selected figures:
+validates their original provenance and republishes selected figures:
 
 ```powershell
 python scripts\run_public_latitude_v2.py --skip-stress --skip-panels --publish-figures
 ```
+
+Reuse is deliberately strict. `run_manifest.json` must match the requested
+parameters, current input hashes, pipeline-code hashes, Python/package versions,
+JPEG XL tool versions, and recorded artifact hashes. Reuse never rewrites the
+original `tool_versions.json`. Legacy results without a manifest must be rerun
+once without `--skip-stress`.
 
 ## Publication Safety Audit
 
