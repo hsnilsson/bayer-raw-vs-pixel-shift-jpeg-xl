@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import struct
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +15,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import jxl_archive_test  # noqa: E402
+import run_dng_jxl_verification  # noqa: E402
 import make_public_crop_panels  # noqa: E402
 import run_public_latitude_v2  # noqa: E402
 
@@ -147,6 +149,86 @@ class ReuseProvenanceTests(unittest.TestCase):
 
             with self.assertRaisesRegex(SystemExit, "changed artifact metrics.csv"):
                 run_public_latitude_v2.validate_reuse(out_dir, self.context)
+
+
+class DngJxlVerificationTests(unittest.TestCase):
+    class FakeTag:
+        def __init__(self, value: object) -> None:
+            self.value = value
+
+    class FakePage:
+        def __init__(self, value: object) -> None:
+            self.tags = {"DefaultCropSize": DngJxlVerificationTests.FakeTag(value)}
+
+    def test_rational_pair_crop_size_is_not_read_as_denominator(self) -> None:
+        page = self.FakePage((19120, 1, 12736, 1))
+
+        result = run_dng_jxl_verification.tag_int_tuple(
+            page,
+            "DefaultCropSize",
+            (0, 0),
+        )
+
+        self.assertEqual(result, (19120, 12736))
+
+    def test_plain_pair_crop_size_remains_plain_pair(self) -> None:
+        page = self.FakePage((19120, 12736))
+
+        result = run_dng_jxl_verification.tag_int_tuple(
+            page,
+            "DefaultCropSize",
+            (0, 0),
+        )
+
+        self.assertEqual(result, (19120, 12736))
+
+    def test_parse_map_polynomial_opcode_list2(self) -> None:
+        payload = struct.pack(
+            ">iiiiiiiii",
+            0,
+            0,
+            10,
+            20,
+            1,
+            1,
+            1,
+            1,
+            1,
+        ) + struct.pack(">dd", 0.125, 0.5)
+        data = struct.pack(">I", 1)
+        data += struct.pack(">IIII", 8, 0x01030000, 0, len(payload))
+        data += payload
+
+        result = run_dng_jxl_verification.parse_opcode_list2(data)
+
+        self.assertEqual(result[0]["name"], "MapPolynomial")
+        self.assertEqual(result[0]["plane"], 1)
+        self.assertEqual(result[0]["coefficients"], [0.125, 0.5])
+
+    def test_map_polynomial_uses_increasing_coefficient_order(self) -> None:
+        values = np.zeros((2, 2, 3), dtype=np.float32)
+        values[:, :, 1] = 0.5
+        opcode = {
+            "name": "MapPolynomial",
+            "top": 0,
+            "left": 0,
+            "bottom": 2,
+            "right": 2,
+            "plane": 1,
+            "planes": 1,
+            "row_pitch": 1,
+            "col_pitch": 1,
+            "coefficients": [0.125, 0.5],
+        }
+
+        result = run_dng_jxl_verification.apply_opcode_list2(
+            values,
+            [opcode],
+            run_dng_jxl_verification.RasterWindow(0, 0, 2, 2),
+        )
+
+        self.assertTrue(np.allclose(result[:, :, 1], 0.375))
+        self.assertTrue(np.allclose(result[:, :, 0], 0.0))
 
 
 if __name__ == "__main__":

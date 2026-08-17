@@ -159,6 +159,26 @@ PixelShift2DNG file. It may still be valid and useful, but it must be compared
 through a controlled render pipeline rather than treated as a direct
 drop-in-compression change.
 
+Follow-up local tests on a larger PixelShift16 batch found another important
+detail: ADC lossy DNG/JXL files may include `OpcodeList2` `MapPolynomial`
+entries on the main LinearRaw IFD. A raster-level comparison that decodes the
+JXL tiles, divides by `WhiteLevel`, and stops there reports a large false
+domain mismatch. Applying the `OpcodeList2` polynomial maps after linear
+reference normalization brings the same crops back into the expected error
+range and restores the expected ordering between `d=0.03`, `d=0.05`, and
+`d=0.10`.
+
+Use:
+
+```powershell
+python scripts\run_dng_jxl_verification.py --scan-root "D:\scan-tests\batch"
+```
+
+for DNG-raster smoke checks. This is still not a substitute for rendering
+through RawTherapee, Adobe Camera Raw, Lightroom, FilmLab, or another practical
+film workflow; it only makes the low-level DNG/JXL comparison respect the DNG
+opcode processing model.
+
 ## What This Changes
 
 This removes one major blocker from the project. There is now a practical

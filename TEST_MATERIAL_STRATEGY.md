@@ -208,6 +208,30 @@ Positive film should be separate. If included, try to cover:
 Black-and-white should also be separate, because the color-management and
 orange-mask questions are different.
 
+### Near-Term Stock Priority
+
+For the next private capture batch, prioritize common color-negative stocks
+before adding more positive-film material to the main evidence track. Kodak Gold
+200 and Kodak Gold 400 are useful next candidates because they are familiar
+consumer C-41 films, likely relevant to many camera-scanning users, and good
+representatives for the orange-mask inversion workflow this project primarily
+tests.
+
+Use Kodachrome as a separate positive-film track. It is historically and
+personally valuable, and it may be interesting for saturation, density, and
+fine-detail behavior, but it should not be mixed into the core color-negative
+claim. It does not exercise the same orange-mask inversion risk that motivates
+the JPEG XL latitude-stress tests.
+
+Recommended next order:
+
+1. Kodak Gold 200 color negative with high-latitude content.
+2. Kodak Gold 400 color negative with grain/fine texture or deep shadows.
+3. One professional or finer-grain color negative stock, if available.
+4. Kodachrome positive slide, clearly reported as secondary.
+5. Black-and-white negative only after the color-negative and positive tracks
+   are not starving for coverage.
+
 ## Storage-Budget Comparison Sets
 
 The most important material is not just a set of finished DNGs. It is paired
