@@ -330,6 +330,20 @@ Each image set should have a sidecar note with:
 - source file SHA-256 hashes
 - notes about visible content, privacy, and why the frame was selected
 
+For local scan folders, generate an initial machine-readable manifest and
+Markdown sidecar with:
+
+```powershell
+python scripts\create_scan_manifest.py "D:\scan-folder" --film-stock "Kodak Gold 200" --film-type "color negative"
+```
+
+By default this writes `scan_manifest.json` and `scan_manifest.md`, classifies
+camera raw originals, PixelShift2DNG masters, Adobe DNG Converter JXL-DNG
+candidates, previews, and metadata sidecars, and marks files as `keep`,
+`review`, or `regenerate`. Use `--hash` when the folder is stable enough to
+compute SHA-256 hashes for every file. The generated recommendations are triage
+metadata only; they should not be treated as permission to delete originals.
+
 ## Acceptance Criteria For The Corpus
 
 Before calling the study "well represented", the corpus should satisfy:
