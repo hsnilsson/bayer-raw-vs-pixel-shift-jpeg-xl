@@ -83,7 +83,7 @@ def add_local_optional_deps() -> None:
     if env_path:
         candidates.append(Path(env_path))
     candidates.append(Path(r"C:\tmp\jxl_pydeps"))
-    for path in candidates:
+    for path in reversed(candidates):
         if path.is_dir():
             text = str(path)
             if text not in sys.path:
