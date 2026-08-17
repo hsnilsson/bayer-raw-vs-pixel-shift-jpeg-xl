@@ -179,6 +179,12 @@ JXL -> djxl -> 16-bit PNG with original ProPhoto ICC -> FilmLab -> 16-bit ProPho
 Purpose: compare lower-resolution raw capture with higher-resolution PixelShift
 capture as digital representations of the film original.
 
+For primary storage-budget comparisons, the single-shot baseline should be a
+normal camera single-shot ARW. Sony PixelShift `1/1` captures may be retained as
+secondary controls because they are still single Bayer raw frames, but they must
+be labeled separately when they are stored as uncompressed RAW rather than the
+normal compressed single-shot format.
+
 Recommended tools:
 
 - FADGI/OpenDICE target analysis

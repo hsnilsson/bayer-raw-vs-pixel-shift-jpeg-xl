@@ -46,6 +46,7 @@ class CreateScanManifestTests(unittest.TestCase):
         self.assertEqual(capture["pixelshift4_dng"], "_DSC1001-_DSC1004.dng")
         self.assertEqual(capture["pixelshift16_dng"], "_DSC1005-_DSC1020.dng")
         self.assertEqual(capture["adc_levels_for_pixelshift16"], ["d005", "lossless"])
+        self.assertEqual(capture["storage_budget_role"], "primary_candidate")
 
         ps16 = next(item for item in manifest["sequences"] if item["mode"] == "pixelshift16")
         self.assertEqual(ps16["raw_files_present"], 16)
@@ -161,8 +162,54 @@ class CreateScanManifestTests(unittest.TestCase):
         self.assertEqual(capture_sets[0].single_raw, "_DSC2000.ARW")
         self.assertEqual(capture_sets[0].pixelshift4_raw_group, "11")
         self.assertEqual(capture_sets[0].pixelshift16_raw_group, "12")
+        self.assertEqual(capture_sets[0].single_raw_kind, "normal_single_raw")
+        self.assertEqual(capture_sets[0].storage_budget_role, "primary_candidate")
         self.assertIsNone(capture_sets[1].single_raw)
         self.assertEqual(capture_sets[1].pixelshift16_raw_group, "13")
+        self.assertEqual(capture_sets[1].storage_budget_role, "unpaired_secondary")
+
+    def test_pixelshift_one_of_one_single_is_secondary_for_storage_budget(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "_DSC3000.ARW")
+        for number in range(3001, 3005):
+            write_file(root / f"_DSC{number}.ARW")
+        for number in range(3005, 3021):
+            write_file(root / f"_DSC{number}.ARW")
+
+        rows = [
+            {
+                "SourceFile": str(root / "_DSC3000.ARW"),
+                "FileName": "_DSC3000.ARW",
+                "PixelShiftInfo": "Group 20, Shot 1/1 (0x1)",
+            }
+        ]
+        for shot, number in enumerate(range(3001, 3005), start=1):
+            rows.append(
+                {
+                    "SourceFile": str(root / f"_DSC{number}.ARW"),
+                    "FileName": f"_DSC{number}.ARW",
+                    "PixelShiftInfo": f"Group 21, Shot {shot}/4 (0x{shot:x})",
+                }
+            )
+        for shot, number in enumerate(range(3005, 3021), start=1):
+            rows.append(
+                {
+                    "SourceFile": str(root / f"_DSC{number}.ARW"),
+                    "FileName": f"_DSC{number}.ARW",
+                    "PixelShiftInfo": f"Group 22, Shot {shot}/16 (0x{shot:x})",
+                }
+            )
+
+        groups = create_scan_manifest.raw_pixelshift_groups_from_rows(rows, root)
+        capture_sets = create_scan_manifest.build_capture_sets(root, [], groups)
+
+        self.assertEqual(len(capture_sets), 1)
+        self.assertEqual(capture_sets[0].single_raw, "_DSC3000.ARW")
+        self.assertEqual(capture_sets[0].single_raw_kind, "pixelshift1_single_raw")
+        self.assertEqual(capture_sets[0].storage_budget_role, "secondary_only")
+        self.assertIn("exclude from primary", capture_sets[0].notes)
 
 
 if __name__ == "__main__":
