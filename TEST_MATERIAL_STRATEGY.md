@@ -248,6 +248,12 @@ Each storage-budget comparison set should include:
 - Adobe DNG Converter `d=0.03`, `d=0.05`, and `d=0.10` JXL DNG candidates
 - source sidecar with capture and privacy notes
 
+If the single-frame control was captured as Sony PixelShift `1/1`, keep it as
+secondary material only. It is still a single Bayer raw frame, but on the tested
+Sony setup it was stored as uncompressed RAW rather than the normal compressed
+single-shot ARW. That makes it unsuitable as the primary storage-budget baseline
+unless the result is explicitly labeled as a `1/1` PixelShift control.
+
 Minimum:
 
 - 1 full set

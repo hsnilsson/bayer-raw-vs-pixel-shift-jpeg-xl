@@ -103,6 +103,8 @@ class CaptureSet:
     notes: str
     pixelshift4_raw_group: str | None = None
     pixelshift16_raw_group: str | None = None
+    single_raw_kind: str = "unknown"
+    storage_budget_role: str = "review"
 
 
 def parse_stem(stem: str) -> ParsedStem:
@@ -478,6 +480,8 @@ def build_capture_sets_from_dng_sequences(
                 pixelshift16_dng=ps16.dng if ps16 else None,
                 adc_levels_for_pixelshift16=ps16.adc_levels_present if ps16 else [],
                 notes="inferred from filename order",
+                single_raw_kind="filename_inferred_single_raw",
+                storage_budget_role="primary_candidate",
             )
         )
 
@@ -493,6 +497,8 @@ def build_capture_sets_from_dng_sequences(
                 pixelshift16_dng=sequence.dng if sequence.mode == "pixelshift16" else None,
                 adc_levels_for_pixelshift16=sequence.adc_levels_present if sequence.mode == "pixelshift16" else [],
                 notes="sequence without inferred single-shot partner",
+                single_raw_kind="none",
+                storage_budget_role="unpaired_secondary",
             )
         )
     return capture_sets
@@ -539,9 +545,20 @@ def build_capture_sets_from_raw_groups(
             assigned_groups.add(ps4.group_id)
         if ps16:
             assigned_groups.add(ps16.group_id)
+        is_pixelshift1_single = (
+            number in raw_group_by_start
+            and raw_group_by_start[number].mode == "pixelshift1"
+        )
         single_note = "inferred from raw PixelShiftInfo and filename order"
-        if number in raw_group_by_start and raw_group_by_start[number].mode == "pixelshift1":
-            single_note = "single frame is an ExifTool PixelShiftInfo 1/1 group"
+        single_raw_kind = "normal_single_raw"
+        storage_budget_role = "primary_candidate"
+        if is_pixelshift1_single:
+            single_note = (
+                "single frame is an ExifTool PixelShiftInfo 1/1 group; "
+                "exclude from primary storage-budget comparison"
+            )
+            single_raw_kind = "pixelshift1_single_raw"
+            storage_budget_role = "secondary_only"
 
         capture_sets.append(
             CaptureSet(
@@ -554,6 +571,8 @@ def build_capture_sets_from_raw_groups(
                 notes=single_note,
                 pixelshift4_raw_group=ps4.group_id if ps4 else None,
                 pixelshift16_raw_group=ps16.group_id if ps16 else None,
+                single_raw_kind=single_raw_kind,
+                storage_budget_role=storage_budget_role,
             )
         )
 
@@ -571,6 +590,8 @@ def build_capture_sets_from_raw_groups(
                 notes="raw PixelShift group without inferred single-shot partner",
                 pixelshift4_raw_group=group.group_id if group.mode == "pixelshift4" else None,
                 pixelshift16_raw_group=group.group_id if group.mode == "pixelshift16" else None,
+                single_raw_kind="none",
+                storage_budget_role="unpaired_secondary",
             )
         )
     return capture_sets
@@ -734,12 +755,17 @@ def markdown_for_manifest(manifest: dict[str, Any]) -> str:
         )
 
     lines.extend(["", "## Capture Sets", ""])
-    lines.append("| Set | Single | PS4 DNG | PS4 raw group | PS16 DNG | PS16 raw group | ADC levels | Notes |")
-    lines.append("| --- | --- | --- | --- | --- | --- | --- | --- |")
+    lines.append(
+        "| Set | Single | Single kind | Storage role | PS4 DNG | PS4 raw group | "
+        "PS16 DNG | PS16 raw group | ADC levels | Notes |"
+    )
+    lines.append("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
     for item in manifest["capture_sets"]:
         lines.append(
             f"| `{item['set_id']}` | "
             f"{md_path(item['single_raw'])} | "
+            f"`{item.get('single_raw_kind', 'unknown')}` | "
+            f"`{item.get('storage_budget_role', 'review')}` | "
             f"{md_path(item['pixelshift4_dng'])} | "
             f"{md_path(item.get('pixelshift4_raw_group'))} | "
             f"{md_path(item['pixelshift16_dng'])} | "
