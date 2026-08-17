@@ -74,6 +74,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/inspect_dng_jxl_color_path.py](scripts/inspect_dng_jxl_color_path.py):
   inspect embedded DNG/JXL headers and distinguish XYB from original-profile
   coding
+- [scripts/run_dng_jxl_verification.py](scripts/run_dng_jxl_verification.py):
+  compare source DNG files with Adobe DNG Converter DNG/JXL variants on matched
+  active-crop windows, including DNG `OpcodeList2` handling
 - [scripts/make_public_crop_panels.py](scripts/make_public_crop_panels.py):
   create reference/candidate/diff panels from public stress-test output
 - [src/jxl_archive_test.py](src/jxl_archive_test.py): helper CLI for comparing

@@ -125,6 +125,24 @@ runs `jxlinfo`, reports the header and inferred path, and deletes the temporary
 copy. It does not decode or publish image pixels. Multiple representative
 segments must still be checked before treating a per-file result as uniform.
 
+When comparing Adobe DNG Converter lossy DNG/JXL output at the DNG raster level,
+apply DNG processing tags that change the decoded linear-reference domain before
+measuring pixel differences. In current ADC lossy output this includes
+`OpcodeList2` entries such as `MapPolynomial`; per the DNG opcode model,
+`OpcodeList2` is applied after mapping the raw image to linear reference values,
+and `MapPolynomial` stores coefficients in increasing degree order. The local
+helper for this track is:
+
+```powershell
+python scripts\run_dng_jxl_verification.py --scan-root "D:\scan-tests\batch"
+```
+
+The script extracts matched active-crop windows, normalizes by each file's
+`WhiteLevel`, applies supported `OpcodeList2` `MapPolynomial` entries, and then
+runs the same identity and negative-density stress metrics used elsewhere in
+the project. A raw decoder comparison that skips these opcodes is a useful
+diagnostic, but it is not a fair quality metric for ADC lossy DNG/JXL.
+
 Two diagnostic controls would isolate this mechanism more directly:
 
 1. Compare XYB with original-profile/no-color-transform encoding at a matched
