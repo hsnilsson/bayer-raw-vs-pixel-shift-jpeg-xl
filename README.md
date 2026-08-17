@@ -68,7 +68,8 @@ These results are not yet a universal archival recommendation.
 - [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
   targets and images
 - [scripts/create_scan_manifest.py](scripts/create_scan_manifest.py): create
-  private JSON/Markdown sidecars for local camera-scan folders
+  private JSON/Markdown sidecars for local camera-scan folders, including
+  ExifTool-based PixelShift grouping for raw-only imports
 - [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
   local pre-publication safety audit
 - [scripts/run_public_latitude_stress.py](scripts/run_public_latitude_stress.py):

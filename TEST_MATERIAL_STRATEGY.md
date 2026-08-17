@@ -334,15 +334,18 @@ For local scan folders, generate an initial machine-readable manifest and
 Markdown sidecar with:
 
 ```powershell
-python scripts\create_scan_manifest.py "D:\scan-folder" --film-stock "Kodak Gold 200" --film-type "color negative"
+python scripts\create_scan_manifest.py "D:\scan-folder" --film-stock "Kodak Gold 200" --film-type "color negative" --shot-year 1997
 ```
 
 By default this writes `scan_manifest.json` and `scan_manifest.md`, classifies
 camera raw originals, PixelShift2DNG masters, Adobe DNG Converter JXL-DNG
 candidates, previews, and metadata sidecars, and marks files as `keep`,
-`review`, or `regenerate`. Use `--hash` when the folder is stable enough to
-compute SHA-256 hashes for every file. The generated recommendations are triage
-metadata only; they should not be treated as permission to delete originals.
+`review`, or `regenerate`. When ExifTool is available, the manifest also reads
+Sony `PixelShiftInfo` from raw-only ARW imports and records PS4/PS16 groups
+before any DNG masters have been generated. Use `--hash` when the folder is
+stable enough to compute SHA-256 hashes for every file. The generated
+recommendations are triage metadata only; they should not be treated as
+permission to delete originals.
 
 ## Acceptance Criteria For The Corpus
 
