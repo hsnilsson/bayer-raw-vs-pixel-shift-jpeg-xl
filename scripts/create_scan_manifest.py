@@ -4,6 +4,8 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
+import subprocess
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -16,6 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 FRAME_RE = re.compile(r"^(?P<prefix>_?DSC)(?P<number>\d{4,6})$", re.IGNORECASE)
 RANGE_RE = re.compile(
     r"^(?P<prefix>_?DSC)(?P<start>\d{4,6})-(?P=prefix)(?P<end>\d{4,6})$",
+    re.IGNORECASE,
+)
+PIXELSHIFT_INFO_RE = re.compile(
+    r"Group\s+(?P<group>\d+),\s*Shot\s+(?P<shot>\d+)/(?P<total>\d+)",
     re.IGNORECASE,
 )
 
@@ -62,6 +68,31 @@ class SequenceEntry:
 
 
 @dataclass
+class RawPixelShiftFrame:
+    path: str
+    number: int | None
+    group_id: str
+    shot: int
+    expected_shots: int
+    release_mode: str | None
+
+
+@dataclass
+class RawPixelShiftGroup:
+    group_id: str
+    mode: str
+    raw_files_present: int
+    raw_files_expected: int
+    raw_files: list[str]
+    missing_shots: list[int]
+    first_raw: str | None
+    last_raw: str | None
+    first_frame_number: int | None
+    last_frame_number: int | None
+    notes: str
+
+
+@dataclass
 class CaptureSet:
     set_id: str
     single_raw: str | None
@@ -70,6 +101,8 @@ class CaptureSet:
     pixelshift16_dng: str | None
     adc_levels_for_pixelshift16: list[str]
     notes: str
+    pixelshift4_raw_group: str | None = None
+    pixelshift16_raw_group: str | None = None
 
 
 def parse_stem(stem: str) -> ParsedStem:
@@ -109,6 +142,30 @@ def mode_for_sequence(count: int | None) -> str:
     if count and count > 1:
         return f"sequence{count}"
     return "dng"
+
+
+def mode_for_raw_pixelshift(count: int | None) -> str:
+    if count == 1:
+        return "pixelshift1"
+    return mode_for_sequence(count)
+
+
+def parse_pixelshift_info(value: object) -> tuple[str, int, int] | None:
+    if not value:
+        return None
+    match = PIXELSHIFT_INFO_RE.search(str(value))
+    if not match:
+        return None
+    return (
+        match.group("group"),
+        int(match.group("shot")),
+        int(match.group("total")),
+    )
+
+
+def frame_number_from_name(name: str) -> int | None:
+    parsed = parse_stem(Path(name).stem)
+    return parsed.start if parsed.kind == "single" else None
 
 
 def classify_file(path: Path, scan_root: Path, privacy: str) -> FileEntry:
@@ -191,6 +248,156 @@ def adc_candidates(scan_root: Path) -> dict[str, dict[str, Path]]:
     return candidates
 
 
+def exiftool_command(explicit: str | None = None) -> str | None:
+    candidates = []
+    if explicit:
+        candidates.append(explicit)
+    candidates.extend(
+        [
+            r"C:\Program Files\ExifTool\ExifTool.exe",
+            r"C:\Program Files (x86)\ExifTool\ExifTool.exe",
+            "exiftool.exe",
+            "exiftool",
+        ]
+    )
+    for candidate in candidates:
+        path = Path(candidate)
+        if path.is_file():
+            return str(path)
+        found = shutil.which(candidate)
+        if found:
+            return found
+    return None
+
+
+def relpath_from_exif_row(row: dict[str, Any], scan_root: Path) -> str:
+    source = str(row.get("SourceFile") or "")
+    file_name = str(row.get("FileName") or Path(source).name)
+    source_path = Path(source) if source else scan_root / file_name
+    try:
+        return source_path.resolve().relative_to(scan_root.resolve()).as_posix()
+    except ValueError:
+        return file_name
+
+
+def raw_pixelshift_groups_from_rows(
+    rows: list[dict[str, Any]],
+    scan_root: Path,
+) -> list[RawPixelShiftGroup]:
+    frames_by_group: dict[str, list[RawPixelShiftFrame]] = defaultdict(list)
+    for row in rows:
+        parsed_info = parse_pixelshift_info(row.get("PixelShiftInfo"))
+        if not parsed_info:
+            continue
+        group_id, shot, expected_shots = parsed_info
+        path = relpath_from_exif_row(row, scan_root)
+        frames_by_group[group_id].append(
+            RawPixelShiftFrame(
+                path=path,
+                number=frame_number_from_name(Path(path).name),
+                group_id=group_id,
+                shot=shot,
+                expected_shots=expected_shots,
+                release_mode=row.get("ReleaseMode"),
+            )
+        )
+
+    groups: list[RawPixelShiftGroup] = []
+    for group_id, frames in sorted(
+        frames_by_group.items(),
+        key=lambda item: min(
+            (frame.number for frame in item[1] if frame.number is not None),
+            default=10**12,
+        ),
+    ):
+        expected = Counter(frame.expected_shots for frame in frames).most_common(1)[0][0]
+        frames_by_shot = {frame.shot: frame for frame in frames}
+        ordered_frames = sorted(
+            frames,
+            key=lambda frame: (
+                frame.number if frame.number is not None else 10**12,
+                frame.shot,
+                frame.path,
+            ),
+        )
+        numbers = [frame.number for frame in ordered_frames if frame.number is not None]
+        raw_files = [frame.path for frame in ordered_frames]
+        missing_shots = [shot for shot in range(1, expected + 1) if shot not in frames_by_shot]
+        notes = ["ExifTool PixelShiftInfo"]
+        if missing_shots:
+            notes.append("missing shots")
+        if len({frame.expected_shots for frame in frames}) > 1:
+            notes.append("conflicting expected shot counts")
+        groups.append(
+            RawPixelShiftGroup(
+                group_id=group_id,
+                mode=mode_for_raw_pixelshift(expected),
+                raw_files_present=len(frames),
+                raw_files_expected=expected,
+                raw_files=raw_files,
+                missing_shots=missing_shots,
+                first_raw=raw_files[0] if raw_files else None,
+                last_raw=raw_files[-1] if raw_files else None,
+                first_frame_number=min(numbers) if numbers else None,
+                last_frame_number=max(numbers) if numbers else None,
+                notes=", ".join(notes),
+            )
+        )
+    return groups
+
+
+def read_raw_pixelshift_groups(
+    scan_root: Path,
+    *,
+    exiftool: str | None = None,
+) -> tuple[list[RawPixelShiftGroup], dict[str, Any]]:
+    raw_paths = sorted({*scan_root.glob("*.ARW"), *scan_root.glob("*.arw")})
+    status: dict[str, Any] = {
+        "status": "not_run",
+        "tool": None,
+        "raw_files_checked": len(raw_paths),
+        "notes": [],
+    }
+    if not raw_paths:
+        status["status"] = "no_raw_files"
+        return [], status
+
+    tool = exiftool_command(exiftool)
+    if tool is None:
+        status["status"] = "exiftool_not_found"
+        status["notes"].append("Install ExifTool or pass --exiftool to detect raw PixelShift groups.")
+        return [], status
+
+    command = [
+        tool,
+        "-json",
+        "-FileName",
+        "-PixelShiftInfo",
+        "-SequenceNumber",
+        "-ReleaseMode",
+        *[str(path) for path in raw_paths],
+    ]
+    completed = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    status["tool"] = tool
+    if completed.returncode != 0:
+        status["status"] = "exiftool_failed"
+        status["notes"].append(completed.stderr.strip())
+        return [], status
+
+    rows = json.loads(completed.stdout or "[]")
+    groups = raw_pixelshift_groups_from_rows(rows, scan_root)
+    status["status"] = "ok"
+    status["groups_detected"] = len(groups)
+    return groups, status
+
+
 def build_sequences(scan_root: Path, entries_by_path: dict[str, FileEntry]) -> list[SequenceEntry]:
     raw_by_number = root_files(scan_root, ".ARW") | root_files(scan_root, ".arw")
     adc_by_stem = adc_candidates(scan_root)
@@ -226,7 +433,10 @@ def build_sequences(scan_root: Path, entries_by_path: dict[str, FileEntry]) -> l
     return sequences
 
 
-def build_capture_sets(scan_root: Path, sequences: list[SequenceEntry]) -> list[CaptureSet]:
+def build_capture_sets_from_dng_sequences(
+    scan_root: Path,
+    sequences: list[SequenceEntry],
+) -> list[CaptureSet]:
     raw_by_number = root_files(scan_root, ".ARW") | root_files(scan_root, ".arw")
     jpg_by_number = root_files(scan_root, ".JPG") | root_files(scan_root, ".jpg")
     sequence_by_start: dict[int, SequenceEntry] = {}
@@ -288,6 +498,94 @@ def build_capture_sets(scan_root: Path, sequences: list[SequenceEntry]) -> list[
     return capture_sets
 
 
+def build_capture_sets_from_raw_groups(
+    scan_root: Path,
+    raw_groups: list[RawPixelShiftGroup],
+) -> list[CaptureSet]:
+    raw_by_number = root_files(scan_root, ".ARW") | root_files(scan_root, ".arw")
+    jpg_by_number = root_files(scan_root, ".JPG") | root_files(scan_root, ".jpg")
+    raw_group_by_start = {
+        group.first_frame_number: group
+        for group in raw_groups
+        if group.first_frame_number is not None
+    }
+    sequence_numbers: set[int] = set()
+    for group in raw_groups:
+        if group.raw_files_expected <= 1:
+            continue
+        for raw_file in group.raw_files:
+            number = frame_number_from_name(Path(raw_file).name)
+            if number is not None:
+                sequence_numbers.add(number)
+
+    singles = sorted(number for number in raw_by_number if number not in sequence_numbers)
+    capture_sets: list[CaptureSet] = []
+    assigned_groups: set[str] = set()
+    for number in singles:
+        ps4 = raw_group_by_start.get(number + 1)
+        if ps4 and ps4.mode != "pixelshift4":
+            ps4 = None
+
+        ps16_start = None
+        if ps4 and ps4.last_frame_number is not None:
+            ps16_start = ps4.last_frame_number + 1
+        else:
+            ps16_start = number + 1
+        ps16 = raw_group_by_start.get(ps16_start)
+        if ps16 and ps16.mode != "pixelshift16":
+            ps16 = None
+
+        if ps4:
+            assigned_groups.add(ps4.group_id)
+        if ps16:
+            assigned_groups.add(ps16.group_id)
+        single_note = "inferred from raw PixelShiftInfo and filename order"
+        if number in raw_group_by_start and raw_group_by_start[number].mode == "pixelshift1":
+            single_note = "single frame is an ExifTool PixelShiftInfo 1/1 group"
+
+        capture_sets.append(
+            CaptureSet(
+                set_id=f"_DSC{number:04d}",
+                single_raw=relpath(raw_by_number[number], scan_root),
+                single_jpeg=relpath(jpg_by_number[number], scan_root) if number in jpg_by_number else None,
+                pixelshift4_dng=None,
+                pixelshift16_dng=None,
+                adc_levels_for_pixelshift16=[],
+                notes=single_note,
+                pixelshift4_raw_group=ps4.group_id if ps4 else None,
+                pixelshift16_raw_group=ps16.group_id if ps16 else None,
+            )
+        )
+
+    for group in raw_groups:
+        if group.raw_files_expected <= 1 or group.group_id in assigned_groups:
+            continue
+        capture_sets.append(
+            CaptureSet(
+                set_id=f"{group.first_raw or group.group_id}",
+                single_raw=None,
+                single_jpeg=None,
+                pixelshift4_dng=None,
+                pixelshift16_dng=None,
+                adc_levels_for_pixelshift16=[],
+                notes="raw PixelShift group without inferred single-shot partner",
+                pixelshift4_raw_group=group.group_id if group.mode == "pixelshift4" else None,
+                pixelshift16_raw_group=group.group_id if group.mode == "pixelshift16" else None,
+            )
+        )
+    return capture_sets
+
+
+def build_capture_sets(
+    scan_root: Path,
+    sequences: list[SequenceEntry],
+    raw_groups: list[RawPixelShiftGroup],
+) -> list[CaptureSet]:
+    if sequences:
+        return build_capture_sets_from_dng_sequences(scan_root, sequences)
+    return build_capture_sets_from_raw_groups(scan_root, raw_groups)
+
+
 def summarize_entries(entries: list[FileEntry]) -> dict[str, Any]:
     total_bytes = sum(entry.bytes for entry in entries)
     return {
@@ -328,8 +626,11 @@ def build_manifest(
     hash_files: bool = False,
     film_stock: str | None = None,
     film_type: str | None = None,
+    shot_year: str | None = None,
     include_absolute_paths: bool = False,
     exclude_paths: set[Path] | None = None,
+    exiftool: str | None = None,
+    use_exiftool: bool = True,
 ) -> dict[str, Any]:
     scan_root = scan_root.resolve()
     if not scan_root.is_dir():
@@ -348,7 +649,20 @@ def build_manifest(
             entry.sha256 = sha256_file(scan_root / entry.path)
 
     sequences = build_sequences(scan_root, entries_by_path)
-    capture_sets = build_capture_sets(scan_root, sequences)
+    if use_exiftool:
+        raw_pixelshift_groups, raw_pixelshift_detection = read_raw_pixelshift_groups(
+            scan_root,
+            exiftool=exiftool,
+        )
+    else:
+        raw_pixelshift_groups = []
+        raw_pixelshift_detection = {
+            "status": "disabled",
+            "tool": None,
+            "raw_files_checked": 0,
+            "notes": ["Raw PixelShift detection disabled."],
+        }
+    capture_sets = build_capture_sets(scan_root, sequences, raw_pixelshift_groups)
     manifest: dict[str, Any] = {
         "schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -356,11 +670,14 @@ def build_manifest(
         "scan_root": str(scan_root) if include_absolute_paths else None,
         "film_stock": film_stock,
         "film_type": film_type,
+        "shot_year": shot_year,
         "privacy_default": privacy,
         "hashes": "sha256" if hash_files else "not_computed",
         "totals": summarize_entries(entries),
         "capture_sets": [asdict(item) for item in capture_sets],
         "sequences": [asdict(item) for item in sequences],
+        "raw_pixelshift_detection": raw_pixelshift_detection,
+        "raw_pixelshift_groups": [asdict(item) for item in raw_pixelshift_groups],
         "files": [asdict(entry) for entry in entries],
         "recommendations": build_recommendations(entries),
     }
@@ -397,6 +714,8 @@ def markdown_for_manifest(manifest: dict[str, Any]) -> str:
         lines.append(f"- Film stock: `{manifest['film_stock']}`")
     if manifest.get("film_type"):
         lines.append(f"- Film type: `{manifest['film_type']}`")
+    if manifest.get("shot_year"):
+        lines.append(f"- Shot year: `{manifest['shot_year']}`")
 
     lines.extend(["", "## Storage By Action", ""])
     lines.append("| Action | Files | Size | Meaning |")
@@ -415,15 +734,36 @@ def markdown_for_manifest(manifest: dict[str, Any]) -> str:
         )
 
     lines.extend(["", "## Capture Sets", ""])
-    lines.append("| Set | Single | PS4 DNG | PS16 DNG | ADC levels | Notes |")
-    lines.append("| --- | --- | --- | --- | --- | --- |")
+    lines.append("| Set | Single | PS4 DNG | PS4 raw group | PS16 DNG | PS16 raw group | ADC levels | Notes |")
+    lines.append("| --- | --- | --- | --- | --- | --- | --- | --- |")
     for item in manifest["capture_sets"]:
         lines.append(
             f"| `{item['set_id']}` | "
             f"{md_path(item['single_raw'])} | "
             f"{md_path(item['pixelshift4_dng'])} | "
+            f"{md_path(item.get('pixelshift4_raw_group'))} | "
             f"{md_path(item['pixelshift16_dng'])} | "
+            f"{md_path(item.get('pixelshift16_raw_group'))} | "
             f"`{', '.join(item['adc_levels_for_pixelshift16']) or '-'}` | "
+            f"{item['notes']} |"
+        )
+
+    detection = manifest.get("raw_pixelshift_detection", {})
+    lines.extend(["", "## Raw PixelShift Groups", ""])
+    lines.append(f"Detection status: `{detection.get('status', 'unknown')}`.")
+    if detection.get("tool"):
+        lines.append(f"ExifTool: `{detection['tool']}`.")
+    if detection.get("notes"):
+        for note in detection["notes"]:
+            lines.append(f"- {note}")
+    lines.extend(["", "| Group | Mode | Raw files | Missing shots | First | Last | Notes |"])
+    lines.append("| --- | --- | ---: | --- | --- | --- | --- |")
+    for item in manifest.get("raw_pixelshift_groups", []):
+        missing = ", ".join(str(shot) for shot in item["missing_shots"]) if item["missing_shots"] else "-"
+        lines.append(
+            f"| `{item['group_id']}` | `{item['mode']}` | "
+            f"{item['raw_files_present']}/{item['raw_files_expected']} | "
+            f"{missing} | {md_path(item['first_raw'])} | {md_path(item['last_raw'])} | "
             f"{item['notes']} |"
         )
 
@@ -489,6 +829,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--privacy", default="private")
     parser.add_argument("--film-stock")
     parser.add_argument("--film-type")
+    parser.add_argument("--shot-year")
+    parser.add_argument("--exiftool", help="ExifTool executable path; default: auto-detect")
+    parser.add_argument("--no-exiftool", action="store_true", help="skip ARW PixelShiftInfo detection")
     parser.add_argument("--hash", action="store_true", help="compute SHA-256 for every file")
     parser.add_argument("--force", action="store_true", help="overwrite existing manifest files")
     parser.add_argument("--include-absolute-paths", action="store_true")
@@ -507,8 +850,11 @@ def main(argv: list[str] | None = None) -> int:
         hash_files=args.hash,
         film_stock=args.film_stock,
         film_type=args.film_type,
+        shot_year=args.shot_year,
         include_absolute_paths=args.include_absolute_paths,
         exclude_paths={out_json, out_md},
+        exiftool=args.exiftool,
+        use_exiftool=not args.no_exiftool,
     )
     if args.dry_run:
         print(markdown_for_manifest(manifest))

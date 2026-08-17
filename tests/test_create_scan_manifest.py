@@ -37,7 +37,7 @@ class CreateScanManifestTests(unittest.TestCase):
     def test_manifest_groups_single_ps4_ps16_and_adc_outputs(self) -> None:
         root = self.make_scan_root()
 
-        manifest = create_scan_manifest.build_manifest(root)
+        manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)
 
         self.assertEqual(manifest["totals"]["files"], 26)
         self.assertEqual(len(manifest["capture_sets"]), 1)
@@ -55,7 +55,7 @@ class CreateScanManifestTests(unittest.TestCase):
     def test_adc_outputs_are_marked_regeneratable(self) -> None:
         root = self.make_scan_root()
 
-        manifest = create_scan_manifest.build_manifest(root)
+        manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)
 
         adc_entries = [
             entry for entry in manifest["files"]
@@ -73,14 +73,14 @@ class CreateScanManifestTests(unittest.TestCase):
     def test_hash_option_adds_sha256(self) -> None:
         root = self.make_scan_root()
 
-        manifest = create_scan_manifest.build_manifest(root, hash_files=True)
+        manifest = create_scan_manifest.build_manifest(root, hash_files=True, use_exiftool=False)
 
         arw = next(entry for entry in manifest["files"] if entry["path"] == "_DSC1000.ARW")
         self.assertEqual(arw["sha256"], "ae4b3280e56e2faf83f414a6e3dabe9d5fbe18976544c05fed121accb85b53fc")
 
     def test_write_outputs_refuses_to_overwrite_without_force(self) -> None:
         root = self.make_scan_root()
-        manifest = create_scan_manifest.build_manifest(root)
+        manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)
         out_json = root / "scan_manifest.json"
         out_md = root / "scan_manifest.md"
         create_scan_manifest.write_outputs(manifest, out_json, out_md, force=False)
@@ -101,11 +101,68 @@ class CreateScanManifestTests(unittest.TestCase):
         manifest = create_scan_manifest.build_manifest(
             root,
             exclude_paths={out_json, out_md},
+            use_exiftool=False,
         )
 
         paths = {entry["path"] for entry in manifest["files"]}
         self.assertNotIn("scan_manifest.json", paths)
         self.assertNotIn("scan_manifest.md", paths)
+
+    def test_pixelshift_info_parser_accepts_sony_exiftool_value(self) -> None:
+        parsed = create_scan_manifest.parse_pixelshift_info("Group 17163427, Shot 3/4 (0x3)")
+
+        self.assertEqual(parsed, ("17163427", 3, 4))
+
+    def test_raw_pixelshift_groups_can_drive_raw_only_capture_sets(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "_DSC2000.ARW")
+        write_file(root / "_DSC2000.JPG")
+        for number in range(2001, 2005):
+            write_file(root / f"_DSC{number}.ARW")
+        for number in range(2005, 2021):
+            write_file(root / f"_DSC{number}.ARW")
+        for number in range(2021, 2037):
+            write_file(root / f"_DSC{number}.ARW")
+
+        rows = []
+        for shot, number in enumerate(range(2001, 2005), start=1):
+            rows.append(
+                {
+                    "SourceFile": str(root / f"_DSC{number}.ARW"),
+                    "FileName": f"_DSC{number}.ARW",
+                    "PixelShiftInfo": f"Group 11, Shot {shot}/4 (0x{shot:x})",
+                }
+            )
+        for shot, number in enumerate(range(2005, 2021), start=1):
+            rows.append(
+                {
+                    "SourceFile": str(root / f"_DSC{number}.ARW"),
+                    "FileName": f"_DSC{number}.ARW",
+                    "PixelShiftInfo": f"Group 12, Shot {shot}/16 (0x{shot:x})",
+                }
+            )
+        for shot, number in enumerate(range(2021, 2037), start=1):
+            rows.append(
+                {
+                    "SourceFile": str(root / f"_DSC{number}.ARW"),
+                    "FileName": f"_DSC{number}.ARW",
+                    "PixelShiftInfo": f"Group 13, Shot {shot}/16 (0x{shot:x})",
+                }
+            )
+
+        groups = create_scan_manifest.raw_pixelshift_groups_from_rows(rows, root)
+        capture_sets = create_scan_manifest.build_capture_sets(root, [], groups)
+
+        self.assertEqual([group.mode for group in groups], ["pixelshift4", "pixelshift16", "pixelshift16"])
+        self.assertEqual(groups[0].raw_files_present, 4)
+        self.assertEqual(groups[1].missing_shots, [])
+        self.assertEqual(capture_sets[0].single_raw, "_DSC2000.ARW")
+        self.assertEqual(capture_sets[0].pixelshift4_raw_group, "11")
+        self.assertEqual(capture_sets[0].pixelshift16_raw_group, "12")
+        self.assertIsNone(capture_sets[1].single_raw)
+        self.assertEqual(capture_sets[1].pixelshift16_raw_group, "13")
 
 
 if __name__ == "__main__":
