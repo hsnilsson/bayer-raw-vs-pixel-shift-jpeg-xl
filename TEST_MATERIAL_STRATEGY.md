@@ -353,6 +353,17 @@ stable enough to compute SHA-256 hashes for every file. The generated
 recommendations are triage metadata only; they should not be treated as
 permission to delete originals.
 
+After PixelShift2DNG masters exist in the scan folder root, generate Adobe DNG
+Converter DNG/JPEG XL candidates with:
+
+```powershell
+python scripts\run_adobe_dng_jxl_batch.py "input\Kodak Gold 200-5 1997"
+```
+
+This writes the project-standard levels under `adc_jxl_dng/lossless`,
+`adc_jxl_dng/d003`, `adc_jxl_dng/d005`, and `adc_jxl_dng/d010`. Regenerate the
+scan manifest afterwards so the sidecar records which candidate levels exist.
+
 ## Acceptance Criteria For The Corpus
 
 Before calling the study "well represented", the corpus should satisfy:

@@ -1,0 +1,63 @@
+from __future__ import annotations
+
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import run_adobe_dng_jxl_batch as adc_batch  # noqa: E402
+
+
+def write_file(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"dng")
+
+
+class RunAdobeDngJxlBatchTests(unittest.TestCase):
+    def test_source_dngs_only_reads_scan_root(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "_DSC1000-_DSC1015.dng")
+        write_file(root / "_review" / "duplicate_dng_candidates" / "_DSC1000-_DSC1015-(1).dng")
+        write_file(root / "adc_jxl_dng" / "lossless" / "_DSC1000-_DSC1015.dng")
+
+        sources = adc_batch.source_dngs(root)
+
+        self.assertEqual([source.name for source in sources], ["_DSC1000-_DSC1015.dng"])
+
+    def test_lossless_command_uses_lossless_jxl_flag(self) -> None:
+        command = adc_batch.command_for_conversion(
+            Path("Adobe DNG Converter.exe"),
+            "lossless",
+            Path("source.dng"),
+            Path("out"),
+            effort=7,
+        )
+
+        self.assertIn("-losslessJXL", command)
+        self.assertNotIn("-lossy", command)
+        self.assertEqual(command[-2:], ["out", "source.dng"])
+
+    def test_lossy_command_uses_distance_and_effort(self) -> None:
+        command = adc_batch.command_for_conversion(
+            Path("Adobe DNG Converter.exe"),
+            "d005",
+            Path("source.dng"),
+            Path("out"),
+            effort=8,
+        )
+
+        self.assertIn("-lossy", command)
+        self.assertIn("-jxl_effort", command)
+        self.assertIn("8", command)
+        self.assertIn("-jxl_distance", command)
+        self.assertIn("0.05", command)
+
+
+if __name__ == "__main__":
+    unittest.main()
