@@ -19,7 +19,8 @@ The current practical answer is:
   files.
 - Conservative lossy JPEG XL remains promising as a compact secondary master or
   working archive format.
-- JPEG XL distance `0.05` is the most interesting lossy candidate tested so far.
+- JPEG XL distance `0.03` is the cleaner conservative lossy candidate tested so
+  far; distance `0.05` is the more interesting storage compromise.
 - JPEG XL distance `0.10` looks too aggressive for an archival claim without
   much stronger evidence.
 
@@ -56,6 +57,10 @@ The private exploratory tests support these points:
 - Lossless JPEG XL did not save enough space to solve the storage problem by
   itself.
 - Negative inversion and strong tonal edits can amplify small JPEG XL errors.
+- A private Kodak Gold 200-5 batch repeated the same basic ordering on real
+  color-negative camera scans: lossless ADC JXL DNG was exact in tested crops,
+  `d=0.03` was cleaner, and `d=0.05` saved more space while showing larger
+  errors after negative-like transforms.
 - A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
@@ -92,8 +97,8 @@ For irreplaceable work:
 - Keep original raw/DNG files when possible.
 - Use JPEG XL lossless when exact preservation of a chosen rendered state is
   needed and modest savings are still useful.
-- Treat JPEG XL `d=0.05` as a compact experimental master or working master, not
-  as the only archive copy.
+- Treat JPEG XL `d=0.03`/`d=0.05` as compact experimental masters or working
+  masters, not as the only archive copy.
 - Be very cautious with `d=0.10` for archival use.
 - Test after the edits that matter: inversion, color balancing, curves, shadow
   lifting, highlight recovery, and wide-gamut export.
@@ -138,4 +143,3 @@ matters in the film frame than a smaller raw capture that never sampled that
 detail in the first place.
 
 That is still a hypothesis, but it is now specific enough to test.
-
