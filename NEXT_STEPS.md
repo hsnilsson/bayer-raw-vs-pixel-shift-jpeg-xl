@@ -54,6 +54,8 @@ as safe as the sole retained master.
   too noisy, redundant, or visually confusing.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
+- For the private Kodak Gold 200-5 batch, review the generated `d003`/`d005`
+  panels and decide which frames, if any, can be replaced by anonymous crops.
 
 ## When New Images Are Added
 
@@ -97,6 +99,11 @@ as safe as the sole retained master.
 - 2026-08-15: reviewed and finalized `RELATED_WORK.md` and `RESEARCH_PLAN.md`,
   including source-status caveats, a concrete storage-budget definition, and
   separate codec, edit-robustness, sampling, and operational gates.
+- 2026-08-18: processed the private Kodak Gold 200-5 batch through Adobe DNG
+  Converter lossless, `d=0.03`, `d=0.05`, and `d=0.10` DNG/JXL variants; ran the
+  low-level DNG/JXL verification; generated private `d003`/`d005` panels; and
+  removed verified duplicate PixelShift2DNG candidates after decoded main-image
+  comparison.
 
 ## Human Decisions Still Needed
 
@@ -111,6 +118,8 @@ as safe as the sole retained master.
 
 - Does `d=0.05` remain visually acceptable after realistic film inversion and
   grading on real negatives?
+- Is `d=0.03` the better practical archival candidate even when its storage
+  savings are less dramatic than `d=0.05`?
 - Does PixelShift 16 preserve visibly more useful film structure than 61 MP raw
   at the same storage budget?
 - Are JPEG XL errors more objectionable in particular film stocks, exposure

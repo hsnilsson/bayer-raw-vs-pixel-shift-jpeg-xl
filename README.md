@@ -73,6 +73,8 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_adobe_dng_jxl_batch.py](scripts/run_adobe_dng_jxl_batch.py):
   batch-run Adobe DNG Converter DNG/JPEG XL variants into
   `adc_jxl_dng/<level>/`
+- [scripts/compare_dng_duplicate_candidates.py](scripts/compare_dng_duplicate_candidates.py):
+  compare `-(1)` PixelShift2DNG duplicate candidates by decoded main-image data
 - [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
   local pre-publication safety audit
 - [scripts/run_public_latitude_stress.py](scripts/run_public_latitude_stress.py):

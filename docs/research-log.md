@@ -26,8 +26,9 @@ The deeper question became:
   negative-inversion-like edits.
 - FilmLab direct JXL import showed color-management problems in one test, so
   controlled tests should decode JXL externally with `djxl`.
-- Conservative lossy JPEG XL, especially around distance `0.05`, remains a
-  plausible secondary/compact master candidate.
+- Conservative lossy JPEG XL remains plausible as a secondary/compact master
+  candidate; current local results frame `d=0.03` as cleaner and `d=0.05` as the
+  stronger storage compromise.
 
 ## Working Hypothesis
 
@@ -99,3 +100,32 @@ The v2 run confirmed the practical ordering:
 
 Selected v2 figures are published in
 [docs/public-latitude-v2.md](public-latitude-v2.md).
+
+## Private Kodak Gold 200-5 Batch
+
+On 2026-08-18, a private Kodak Gold 200-5 color-negative batch shot in 1997 was
+processed through the ADC DNG/JXL path:
+
+```text
+PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
+```
+
+Nine PixelShift2DNG masters were converted to lossless, `d=0.03`, `d=0.05`, and
+`d=0.10` DNG/JXL candidates. Lossless ADC JXL DNG remained exact across 45
+low-level crop windows and the scripted transform set. Total batch size changed
+from 3.65 GiB for the PixelShift2DNG sources to 3.35 GiB lossless, 2.42 GiB at
+`d=0.03`, 1.98 GiB at `d=0.05`, and 1.35 GiB at `d=0.10`.
+
+The lossy results followed the expected ordering. In identity comparison, mean
+MAE was 8.59 for `d=0.03`, 14.70 for `d=0.05`, and 28.24 for `d=0.10`.
+Hard negative-print transforms amplified the errors substantially, reaching
+mean MAE 133.60, 230.43, and 468.69 respectively.
+
+Private visual panels were generated for selected high-error crops at `d=0.03`
+and `d=0.05`. They supported the same interpretation: visual differences can be
+subtle in direct comparison, while amplified diff views and aggressive negative
+transforms expose structured residual errors in grain/density regions.
+
+This strengthens the internal test case but does not change the publication
+boundary: anonymous or public real negative material is still needed before this
+can become a shareable community result.

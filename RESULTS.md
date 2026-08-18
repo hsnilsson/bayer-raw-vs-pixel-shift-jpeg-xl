@@ -40,6 +40,48 @@ multi-file or exhaustive tile result.
 
 See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md).
 
+### Kodak Gold 200-5 ADC DNG/JXL Batch
+
+A private Kodak Gold 200-5 color-negative batch, shot in 1997, was scanned into
+nine root-level PixelShift2DNG masters and converted with Adobe DNG Converter
+to DNG 1.7 JPEG XL at the project-standard levels.
+
+This is still private local evidence. Do not publish the image panels without
+replacing or anonymizing the source material.
+
+| Level | Total Size | Size vs PixelShift2DNG | Low-Level Result |
+|---|---:|---:|---|
+| PixelShift2DNG source | 3.65 GiB | 100.0% | reference |
+| ADC lossless JXL DNG | 3.35 GiB | 91.9% | exact in tested crops |
+| ADC JXL DNG `d=0.03` | 2.42 GiB | 66.4% | lowest tested lossy error |
+| ADC JXL DNG `d=0.05` | 1.98 GiB | 54.3% | stronger storage candidate |
+| ADC JXL DNG `d=0.10` | 1.35 GiB | 37.1% | visibly riskier stress level |
+
+Across 45 crop windows and the scripted low-level transform set, lossless ADC
+JXL DNG was exact: `MAE 0.00`, max error `0`, and infinite PSNR for every
+transform. The lossy levels behaved monotonically:
+
+| Level | Identity Mean MAE | Hard Negative-Print Mean MAE | Hard Negative-Print Worst MAE |
+|---|---:|---:|---:|
+| `d=0.03` | 8.59 | 133.60 | 217.07 |
+| `d=0.05` | 14.70 | 230.43 | 380.10 |
+| `d=0.10` | 28.24 | 468.69 | 760.71 |
+
+The panel spot-checks matched the metric story: `d=0.05` can look very close in
+identity comparisons, while aggressive negative-print transforms reveal
+structured residual error in grain/density areas. `d=0.03` is cleaner but gives
+up a substantial part of the storage win.
+
+Three accidental `-(1)` PixelShift2DNG candidates in this batch had different
+file bytes from their canonical root DNGs, but the decoded main image data and
+key image metadata were identical. They were removed from the local input
+folder after writing a private duplicate-comparison report.
+
+Important caveat: this is a low-level DNG raster test that applies the known DNG
+opcode handling. It is not a substitute for rendering through a practical film
+workflow, visual review after real inversion/grading, or a public/anonymized
+replication set.
+
 ### Lossless JPEG XL
 
 Lossless JPEG XL round-tripped extracted 16-bit linear PixelShift2DNG image data
@@ -85,6 +127,7 @@ Working model:
 
 - DNG/lossless master: safest per-pixel archive.
 - JPEG XL lossless: exact but modest savings.
+- JPEG XL `d=0.03`: cleaner conservative lossy candidate.
 - JPEG XL `d=0.05`: promising compact secondary/working master candidate.
 - JPEG XL `d=0.10`: more aggressive, needs stronger visual and numerical support
   before being considered archival.
