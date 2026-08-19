@@ -52,12 +52,13 @@ python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>"
 
 To avoid creating candidates for every root-level DNG, pass only the intended
 source stems. This is useful when the folder contains both PixelShift 4 and
-PixelShift 16 DNG masters but the current test only needs PixelShift 16:
+PixelShift 16 DNG masters but the current test only needs PixelShift 16. The
+example stems below are anonymized:
 
 ```powershell
 python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>" `
-  --source "_DSC0001-_DSC0016" `
-  --source "_DSC0020-_DSC0035"
+  --source "DSC0001-DSC0016" `
+  --source "DSC0020-DSC0035"
 ```
 
 The output goes to:
