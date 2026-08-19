@@ -65,6 +65,8 @@ These results are not yet a universal archival recommendation.
 - [docs/research-log.md](docs/research-log.md): project history and decisions
 - [docs/publication-checklist.md](docs/publication-checklist.md): privacy and
   release checklist
+- [docs/local-scan-workflow.md](docs/local-scan-workflow.md): private local
+  workflow for adding scan folders under ignored `input/`
 - [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
   targets and images
 - [scripts/create_scan_manifest.py](scripts/create_scan_manifest.py): create
@@ -73,6 +75,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_adobe_dng_jxl_batch.py](scripts/run_adobe_dng_jxl_batch.py):
   batch-run Adobe DNG Converter DNG/JPEG XL variants into
   `adc_jxl_dng/<level>/`
+- [scripts/run_local_scan_study.py](scripts/run_local_scan_study.py):
+  discover ignored local scan folders, run DNG/JXL verification where ADC
+  candidates are complete, and write a local cross-scan index
 - [scripts/compare_dng_duplicate_candidates.py](scripts/compare_dng_duplicate_candidates.py):
   compare `-(1)` PixelShift2DNG duplicate candidates by decoded main-image data
 - [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
@@ -124,6 +129,16 @@ Run the current public latitude-stress v2 pipeline:
 ```powershell
 python scripts\run_public_latitude_v2.py --publish-figures
 ```
+
+Run the private local scan-study queue for ignored folders under `input/`:
+
+```powershell
+python scripts\run_local_scan_study.py --dry-run
+python scripts\run_local_scan_study.py
+```
+
+See [docs/local-scan-workflow.md](docs/local-scan-workflow.md) before adding new
+private negatives.
 
 For a fuller clean-clone path, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 

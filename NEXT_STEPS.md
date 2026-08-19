@@ -58,6 +58,9 @@ as safe as the sole retained master.
   panels and decide which frames, if any, can be replaced by anonymous crops.
 - Review the new private Kodak Gold patch-color summaries and use them to pick
   a few representative worst-case crops for future anonymized figures.
+- Use `scripts/run_local_scan_study.py --dry-run` after adding each new ignored
+  `input/` scan folder, then run it without `--dry-run` once ADC candidates are
+  complete.
 
 ## When New Images Are Added
 
@@ -112,6 +115,10 @@ as safe as the sole retained master.
 - 2026-08-19: added patch-based CIEDE2000/mean-color-bias diagnostics to the
   DNG/JXL verifier, ran the Kodak Gold batch through the new metric, and ran a
   smaller 64 px patch probe on two difficult frame groups.
+- 2026-08-19: added a local scan-study runner, reran the existing local film
+  material through the same DNG/JXL patch-color verification queue where ADC
+  candidates were complete, and added filtered `--source` support to the Adobe
+  DNG Converter batch helper.
 
 ## Human Decisions Still Needed
 
