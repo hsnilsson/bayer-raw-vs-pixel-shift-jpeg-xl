@@ -230,6 +230,62 @@ class DngJxlVerificationTests(unittest.TestCase):
         self.assertTrue(np.allclose(result[:, :, 1], 0.375))
         self.assertTrue(np.allclose(result[:, :, 0], 0.0))
 
+    def test_metadata_diff_marks_preservation_relevant_changes(self) -> None:
+        source = {
+            "bytes": 100,
+            "compression_name": "NONE",
+            "white_level": [14848.0, 14848.0, 14848.0],
+            "color_matrix1": [1.0, 0.0, 0.0],
+        }
+        candidate = {
+            "bytes": 50,
+            "compression_name": "JPEG XL",
+            "white_level": [65535.0, 65535.0, 65535.0],
+            "color_matrix1": [1.0, 0.0, 0.0],
+        }
+
+        rows = run_dng_jxl_verification.metadata_diff_rows_for_pair(
+            stem="frame",
+            label="Frame",
+            level="d005",
+            source_meta=source,
+            candidate_meta=candidate,
+        )
+
+        by_field = {row["field"]: row for row in rows}
+        self.assertEqual(by_field["bytes"]["interpretation"], "expected_encoder_change")
+        self.assertEqual(by_field["compression_name"]["interpretation"], "expected_encoder_change")
+        self.assertEqual(by_field["white_level"]["interpretation"], "review_preservation_change")
+        self.assertNotIn("color_matrix1", by_field)
+
+    def test_metadata_diff_summary_groups_by_level_and_interpretation(self) -> None:
+        rows = [
+            {
+                "level": "d005",
+                "interpretation": "expected_encoder_change",
+                "field": "bytes",
+            },
+            {
+                "level": "d005",
+                "interpretation": "review_preservation_change",
+                "field": "white_level",
+            },
+            {
+                "level": "d005",
+                "interpretation": "review_preservation_change",
+                "field": "active_crop_size",
+            },
+        ]
+
+        summary = run_dng_jxl_verification.summarize_metadata_diff_rows(rows)
+
+        review = next(
+            row for row in summary
+            if row["interpretation"] == "review_preservation_change"
+        )
+        self.assertEqual(review["changes"], 2)
+        self.assertEqual(review["fields"], "active_crop_size, white_level")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -104,6 +104,15 @@ Per scan set:
 results/dng_jxl_verification/<scan-set-slug>_colorpatch/
 ```
 
+The DNG/JXL verifier writes pixel metrics, patch-color metrics, and
+metadata/ICC diff outputs for each source/candidate pair:
+
+```text
+metadata_diff.csv
+metadata_diff.json
+metadata_diff_summary.csv
+```
+
 Local cross-scan index:
 
 ```text
