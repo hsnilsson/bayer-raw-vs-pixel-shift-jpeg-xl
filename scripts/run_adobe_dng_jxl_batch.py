@@ -220,8 +220,11 @@ def main(argv: list[str] | None = None) -> int:
         effort=args.effort,
         records=records,
     )
-    manifest_path = write_manifest(scan_root, manifest)
-    print(f"Wrote {manifest_path}")
+    if args.dry_run:
+        print("Dry run: not writing run_manifest.json")
+    else:
+        manifest_path = write_manifest(scan_root, manifest)
+        print(f"Wrote {manifest_path}")
 
     failed = [record for record in records if record.status in {"failed", "missing_output"}]
     return 1 if failed else 0

@@ -77,6 +77,19 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
         self.assertIn("-jxl_distance", command)
         self.assertIn("0.05", command)
 
+    def test_dry_run_does_not_write_manifest(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        adc = root / "Adobe DNG Converter.exe"
+        write_file(adc)
+        write_file(root / "source.dng")
+
+        result = adc_batch.main([str(root), "--adc", str(adc), "--dry-run"])
+
+        self.assertEqual(result, 0)
+        self.assertFalse((root / "adc_jxl_dng" / "run_manifest.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
