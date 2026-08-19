@@ -7,6 +7,7 @@ import os
 import subprocess
 import sys
 import time
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -112,6 +113,8 @@ def result_complete(result_dir: Path) -> bool:
     required = [
         result_dir / "SUMMARY.md",
         result_dir / "metadata.csv",
+        result_dir / "metadata_diff.csv",
+        result_dir / "metadata_diff_summary.csv",
         result_dir / "summary.csv",
         result_dir / "patch_summary.csv",
     ]
@@ -230,6 +233,7 @@ def read_csv_rows(path: Path) -> list[dict[str, str]]:
 def verification_highlights(result_dir: Path) -> list[dict[str, Any]]:
     metadata_rows = read_csv_rows(result_dir / "metadata.csv")
     patch_rows = read_csv_rows(result_dir / "patch_summary.csv")
+    metadata_diff_rows = read_csv_rows(result_dir / "metadata_diff_summary.csv")
     if not metadata_rows or not patch_rows:
         return []
 
@@ -248,11 +252,36 @@ def verification_highlights(result_dir: Path) -> list[dict[str, Any]]:
         (row.get("level", ""), row.get("transform", "")): row
         for row in patch_rows
     }
+    metadata_diff_by_level: dict[str, dict[str, Any]] = defaultdict(
+        lambda: {
+            "expected_encoder_change": 0,
+            "review_preservation_change": 0,
+            "review_preservation_fields": set(),
+        }
+    )
+    for row in metadata_diff_rows:
+        level = row.get("level", "")
+        interpretation = row.get("interpretation", "")
+        try:
+            changes = int(float(row.get("changes", "0") or 0))
+        except ValueError:
+            changes = 0
+        if interpretation == "expected_encoder_change":
+            metadata_diff_by_level[level]["expected_encoder_change"] += changes
+        elif interpretation == "review_preservation_change":
+            metadata_diff_by_level[level]["review_preservation_change"] += changes
+            fields = {
+                field.strip()
+                for field in row.get("fields", "").split(",")
+                if field.strip()
+            }
+            metadata_diff_by_level[level]["review_preservation_fields"].update(fields)
 
     highlights: list[dict[str, Any]] = []
     for level in sorted(candidate_by_level):
         identity = patch_by_key.get((level, "identity"), {})
         hard = patch_by_key.get((level, "negative_density_hard_print"), {})
+        diff_summary = metadata_diff_by_level[level]
         highlights.append(
             {
                 "level": level,
@@ -266,6 +295,12 @@ def verification_highlights(result_dir: Path) -> list[dict[str, Any]]:
                 "hard_p95_delta_e00": float(hard.get("p95_delta_e00", "nan")),
                 "hard_max_delta_e00": float(hard.get("max_delta_e00", "nan")),
                 "hard_mean_rgb_rmse_16bit": float(hard.get("mean_error_rgb_rmse_16bit", "nan")),
+                "metadata_expected_changes": diff_summary["expected_encoder_change"],
+                "metadata_review_changes": diff_summary["review_preservation_change"],
+                "metadata_review_fields": ", ".join(
+                    sorted(diff_summary["review_preservation_fields"])
+                )
+                or "-",
             }
         )
     return highlights
@@ -322,9 +357,9 @@ def write_index(index_dir: Path, plans: list[ScanPlan], records: list[RunRecord]
 
     lines.extend(["", "## Result Highlights", ""])
     lines.append(
-        "| Scan set | Level | Sources | Source GiB | Candidate % | Identity med DeltaE00 | Hard med DeltaE00 | Hard p95 DeltaE00 | Hard max DeltaE00 | Hard RGB RMSE |"
+        "| Scan set | Level | Sources | Source GiB | Candidate % | Identity med DeltaE00 | Hard med DeltaE00 | Hard p95 DeltaE00 | Hard max DeltaE00 | Hard RGB RMSE | Metadata review changes | Metadata review fields |"
     )
-    lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |")
     for plan in plans:
         for row in verification_highlights(plan.result_dir):
             lines.append(
@@ -332,7 +367,8 @@ def write_index(index_dir: Path, plans: list[ScanPlan], records: list[RunRecord]
                 f"{row['source_gib']:.2f} | {row['candidate_percent']:.1f}% | "
                 f"{row['identity_median_delta_e00']:.4f} | {row['hard_median_delta_e00']:.4f} | "
                 f"{row['hard_p95_delta_e00']:.4f} | {row['hard_max_delta_e00']:.4f} | "
-                f"{row['hard_mean_rgb_rmse_16bit']:.2f} |"
+                f"{row['hard_mean_rgb_rmse_16bit']:.2f} | "
+                f"{row['metadata_review_changes']} | `{row['metadata_review_fields']}` |"
             )
 
     lines.extend(["", "## Follow-Up Notes", ""])
