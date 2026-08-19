@@ -79,6 +79,9 @@ The private exploratory tests support these points:
 The public tests support these points:
 
 - The repository now has a reproducible public test pipeline.
+- FADGI/OpenDICE target files are part of that public pipeline. They are used
+  to make the codec and negative-like stress tests reproducible, not as
+  substitutes for private PixelShift film scans.
 - Public latitude-stress v2 tests show that `d=0.10` is consistently worse than
   `d=0.05`.
 - Density-based negative-print transforms expose larger high-percentile errors

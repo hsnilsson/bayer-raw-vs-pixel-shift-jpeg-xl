@@ -20,6 +20,8 @@ film frame versus preserving every numeric value from a smaller capture.
 - A public, reproducible JPEG XL latitude-stress pipeline.
 - Public FADGI/OpenDICE and Library of Congress TIFF test images tracked through
   Git LFS.
+- A clear separation between public reproducible evidence and private local
+  PixelShift scan evidence.
 - Source sidecars and manifests for downloaded public test data.
 - Selected public visual panels comparing JPEG XL `d=0.05` and `d=0.10`.
 - A publication-safety audit and a combined readiness check.
@@ -44,6 +46,11 @@ The current practical result is:
 The best-supported public result is the v2 latitude-stress test:
 
 - [docs/public-latitude-v2.md](public-latitude-v2.md)
+
+For the fastest overview of how public FADGI/OpenDICE tests, private scan tests,
+and pending storage-budget claims relate to each other, see:
+
+- [FINDINGS.md](../FINDINGS.md)
 
 ## What This Does Not Prove
 

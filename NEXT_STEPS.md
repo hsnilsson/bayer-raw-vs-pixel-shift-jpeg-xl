@@ -2,8 +2,9 @@
 
 This file is the short execution queue. The rationale is in
 [RESEARCH_PLAN.md](RESEARCH_PLAN.md), input-material requirements are in
-[TEST_MATERIAL_STRATEGY.md](TEST_MATERIAL_STRATEGY.md), and the prior-art
-framing is in [RELATED_WORK.md](RELATED_WORK.md).
+[TEST_MATERIAL_STRATEGY.md](TEST_MATERIAL_STRATEGY.md), the evidence map is in
+[FINDINGS.md](FINDINGS.md), and the prior-art framing is in
+[RELATED_WORK.md](RELATED_WORK.md).
 
 ## Current Priority
 
@@ -119,6 +120,9 @@ as safe as the sole retained master.
   material through the same DNG/JXL patch-color verification queue where ADC
   candidates were complete, and added filtered `--source` support to the Adobe
   DNG Converter batch helper.
+- 2026-08-19: added `FINDINGS.md` and clarified that FADGI/OpenDICE data belongs
+  to the public reproducibility track, while ignored `input/` scans belong to
+  the private/local workflow track.
 
 ## Human Decisions Still Needed
 
