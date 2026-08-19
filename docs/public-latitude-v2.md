@@ -74,6 +74,23 @@ Each panel shows:
 4. amplified signed difference
 
 The difference panels are diagnostic views, not normal viewing conditions.
+They are amplified `64x` to show where compression error accumulates; they
+should not be read as what the image normally looks like.
+
+The selected public figures are meant to cover three roles:
+
+- **FADGI Negative 35mm 2** is the standardized target-like example. It is the
+  most controlled of the selected figures, but not the most visually intuitive.
+- **LOC Golden Gate** is the best first figure for readers. It shows a real
+  high-contrast subject where the normal view still looks close while the
+  diagnostic difference views reveal structured error along edges and texture.
+- **LOC Wildflowers** is the fine-texture stress case. It is darker and less
+  immediately readable, but useful because the error concentrates in dense,
+  low-contrast detail rather than only on hard target edges.
+
+For public sharing, lead with the Golden Gate pair, then use the FADGI target
+as the reproducibility anchor and the Wildflowers pair as the texture stress
+case.
 
 ### FADGI Negative 35mm 2
 

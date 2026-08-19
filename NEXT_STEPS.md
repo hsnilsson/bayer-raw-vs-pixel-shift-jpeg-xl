@@ -51,10 +51,10 @@ as safe as the sole retained master.
 
 - Run `python scripts\check_publication_ready.py` before sharing.
 - Run a clean-clone reproduction test on another machine or in another folder.
-- Review selected v2 public figures in `docs/figures/` and remove any that feel
-  too noisy, redundant, or visually confusing.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
+- Keep the current selected v2 public figures unless they are replaced by
+  stronger anonymized real-negative examples.
 - For the private Kodak Gold 200-5 batch, review the generated `d003`/`d005`
   panels and decide which frames, if any, can be replaced by anonymous crops.
 - Review the new private Kodak Gold patch-color summaries and use them to pick
@@ -123,6 +123,10 @@ as safe as the sole retained master.
 - 2026-08-19: added `FINDINGS.md` and clarified that FADGI/OpenDICE data belongs
   to the public reproducibility track, while ignored `input/` scans belong to
   the private/local workflow track.
+- 2026-08-19: reviewed the selected public latitude v2 figures and documented
+  their presentation roles: LOC Golden Gate as the first reader-facing example,
+  FADGI/OpenDICE as the reproducibility anchor, and LOC Wildflowers as the
+  fine-texture stress case.
 
 ## Human Decisions Still Needed
 
