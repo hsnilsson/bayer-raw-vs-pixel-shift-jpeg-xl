@@ -55,7 +55,7 @@ class LocalScanStudyTests(unittest.TestCase):
         self.assertEqual(plan.root_dng_without_selected_candidates, ["c"])
         self.assertEqual(plan.missing_for_candidate_union["d010"], ["b"])
 
-    def test_result_complete_requires_patch_summary(self) -> None:
+    def test_result_complete_requires_patch_and_metadata_diff_summary(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             result_dir = Path(temp_dir)
             for name in ["SUMMARY.md", "metadata.csv", "summary.csv"]:
@@ -64,6 +64,11 @@ class LocalScanStudyTests(unittest.TestCase):
             self.assertFalse(local_study.result_complete(result_dir))
 
             write_file(result_dir / "patch_summary.csv", "x")
+
+            self.assertFalse(local_study.result_complete(result_dir))
+
+            write_file(result_dir / "metadata_diff.csv", "x")
+            write_file(result_dir / "metadata_diff_summary.csv", "x")
 
             self.assertTrue(local_study.result_complete(result_dir))
 
@@ -96,6 +101,18 @@ class LocalScanStudyTests(unittest.TestCase):
                 )
                 + "\n",
             )
+            write_file(
+                result_dir / "metadata_diff_summary.csv",
+                "\n".join(
+                    [
+                        "level,interpretation,changes,fields",
+                        "d003,expected_encoder_change,4,\"bytes, compression_name\"",
+                        "d003,review_preservation_change,2,\"active_crop_size, white_level\"",
+                        "d005,review_preservation_change,1,white_level",
+                    ]
+                )
+                + "\n",
+            )
 
             highlights = local_study.verification_highlights(result_dir)
 
@@ -103,6 +120,9 @@ class LocalScanStudyTests(unittest.TestCase):
         self.assertAlmostEqual(highlights[0]["source_gib"], 300 / 1024)
         self.assertAlmostEqual(highlights[0]["candidate_percent"], 130 / 300 * 100)
         self.assertEqual(highlights[1]["hard_max_delta_e00"], 0.40)
+        self.assertEqual(highlights[0]["metadata_expected_changes"], 4)
+        self.assertEqual(highlights[0]["metadata_review_changes"], 2)
+        self.assertEqual(highlights[0]["metadata_review_fields"], "active_crop_size, white_level")
 
 
 if __name__ == "__main__":
