@@ -10,6 +10,7 @@ outputs/
 input/
 profiles/
 jxl_test_out/
+/trash/
 *.egg-info/
 *.download
 
