@@ -126,6 +126,24 @@ and `d=0.05`. They supported the same interpretation: visual differences can be
 subtle in direct comparison, while amplified diff views and aggressive negative
 transforms expose structured residual errors in grain/density regions.
 
+On 2026-08-19, the DNG/JXL verifier was extended with patch-based color
+diagnostics. Each patch is averaged in a declared linear RGB comparison space
+before conversion to Lab and CIEDE2000 (`DeltaE00`). This separates local
+mean-color bias from pixel-level noise/texture changes.
+
+The full Kodak Gold batch was rerun with 256 px patches. Lossless remained zero
+for patch `DeltaE00` and pixel error. For the hard negative-print transform,
+median/max patch `DeltaE00` were 0.019/0.067 at `d=0.03`, 0.025/0.087 at
+`d=0.05`, and 0.053/0.199 at `d=0.10`. A smaller 64 px patch probe on two
+difficult frame groups raised the hard-print median/max values to 0.032/0.115,
+0.044/0.135, and 0.090/0.333 respectively, but did not change the ordering.
+
+Interpretation: the latest private raster/stress test suggests `d=0.03` and
+`d=0.05` introduce little broad local mean-color bias in this pipeline, even
+though pixel/RMSE error after negative-like transforms is much larger. This
+strengthens the color-stability case for conservative JXL, but it does not make
+lossy JXL safe as the sole master.
+
 This strengthens the internal test case but does not change the publication
 boundary: anonymous or public real negative material is still needed before this
 can become a shareable community result.

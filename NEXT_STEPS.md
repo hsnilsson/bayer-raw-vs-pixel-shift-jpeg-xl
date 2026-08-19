@@ -56,6 +56,8 @@ as safe as the sole retained master.
   public result.
 - For the private Kodak Gold 200-5 batch, review the generated `d003`/`d005`
   panels and decide which frames, if any, can be replaced by anonymous crops.
+- Review the new private Kodak Gold patch-color summaries and use them to pick
+  a few representative worst-case crops for future anonymized figures.
 
 ## When New Images Are Added
 
@@ -81,18 +83,21 @@ as safe as the sole retained master.
 2. Baseline render: create the trusted 16-bit reference state.
 3. Lossless JXL round trip: require exact pixel match for the chosen state.
 4. Conservative lossy matrix: test `d=0.03`, `d=0.05`, and `d=0.10`.
-5. Latitude stress: compare after negative-like transforms, curves, channel
+5. Patch-color check: compare registered patches by averaging in linear RGB
+   before Lab/`DeltaE00`, and record mean-color bias separately from pixel
+   RMSE/noise.
+6. Latitude stress: compare after negative-like transforms, curves, channel
    balancing, shadow lifting, and highlight compression.
-6. Metadata/ICC diff: check what survives, what is lost, and what needs sidecars.
-7. ADC JXL DNG sole-master gate: complete every check in the blocker above;
+7. Metadata/ICC diff: check what survives, what is lost, and what needs sidecars.
+8. ADC JXL DNG sole-master gate: complete every check in the blocker above;
    opening successfully or preserving selected tags is not sufficient.
-8. Standalone-versus-DNG JXL decision: compare both candidates from the same
+9. Standalone-versus-DNG JXL decision: compare both candidates from the same
    reference state and record which, if either, qualifies for sole-master use.
-9. Sampling comparison: compare 61 MP raw with 240 MP PixelShift 16 JXL at a
+10. Sampling comparison: compare 61 MP raw with 240 MP PixelShift 16 JXL at a
    similar storage budget.
-10. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
+11. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
    measurements if a suitable target capture exists.
-11. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
+12. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
 
 ## Completed
 
@@ -104,6 +109,9 @@ as safe as the sole retained master.
   low-level DNG/JXL verification; generated private `d003`/`d005` panels; and
   removed verified duplicate PixelShift2DNG candidates after decoded main-image
   comparison.
+- 2026-08-19: added patch-based CIEDE2000/mean-color-bias diagnostics to the
+  DNG/JXL verifier, ran the Kodak Gold batch through the new metric, and ran a
+  smaller 64 px patch probe on two difficult frame groups.
 
 ## Human Decisions Still Needed
 
@@ -118,6 +126,9 @@ as safe as the sole retained master.
 
 - Does `d=0.05` remain visually acceptable after realistic film inversion and
   grading on real negatives?
+- Do low patch-color differences remain low when the comparison is made from a
+  fully color-managed renderer/export, not only the low-level DNG raster stress
+  pipeline?
 - Is `d=0.03` the better practical archival candidate even when its storage
   savings are less dramatic than `d=0.05`?
 - Does PixelShift 16 preserve visibly more useful film structure than 61 MP raw

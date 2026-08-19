@@ -72,6 +72,29 @@ identity comparisons, while aggressive negative-print transforms reveal
 structured residual error in grain/density areas. `d=0.03` is cleaner but gives
 up a substantial part of the storage win.
 
+A follow-up patch-color pass added fixed 256 px patch measurements. Each patch
+was averaged in the declared linear RGB comparison space before conversion to
+Lab and CIEDE2000 (`DeltaE00`). This separates local mean-color shifts from
+pixel-level texture/noise changes.
+
+| Level | Identity Median DeltaE00 | Hard Negative-Print Median DeltaE00 | Hard Negative-Print P95 DeltaE00 | Hard Negative-Print Max DeltaE00 | Hard Negative-Print Mean RGB RMSE |
+|---|---:|---:|---:|---:|---:|
+| `d=0.03` | 0.0032 | 0.0187 | 0.0463 | 0.0674 | 260.12 |
+| `d=0.05` | 0.0032 | 0.0254 | 0.0602 | 0.0871 | 448.43 |
+| `d=0.10` | 0.0032 | 0.0534 | 0.1316 | 0.1987 | 879.70 |
+
+A smaller 64 px patch probe on two difficult frame groups raised the hard-print
+patch values but did not change the ordering: median/max `DeltaE00` were
+0.032/0.115 for `d=0.03`, 0.044/0.135 for `d=0.05`, and 0.090/0.333 for
+`d=0.10`.
+
+Interpretation: in this controlled raster/stress test, `d=0.03` and `d=0.05`
+did not show large systematic local mean-color bias, even after the hard
+negative-print transform. The main measured penalty remains pixel-level
+error/texture change that becomes much larger after aggressive negative-like
+processing. That is encouraging for color stability, but it is not the same as
+proving lossy JXL safe as the only archive master.
+
 Three accidental `-(1)` PixelShift2DNG candidates in this batch had different
 file bytes from their canonical root DNGs, but the decoded main image data and
 key image metadata were identical. They were removed from the local input

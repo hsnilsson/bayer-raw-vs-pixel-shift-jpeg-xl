@@ -143,6 +143,36 @@ runs the same identity and negative-density stress metrics used elsewhere in
 the project. A raw decoder comparison that skips these opcodes is a useful
 diagnostic, but it is not a fair quality metric for ADC lossy DNG/JXL.
 
+By default the verifier also writes patch-based color diagnostics:
+
+- `patch_metrics.csv`
+- `patch_summary.csv`
+- `patch_luminance_summary.csv`
+- `patch_chroma_summary.csv`
+
+For each crop and transform, the script divides the image into fixed patches,
+averages each patch in a declared linear RGB comparison space, converts the
+patch mean to XYZ and Lab, and then computes CIEDE2000 (`DeltaE00`) between the
+reference and candidate patch means. This is intentionally different from
+averaging Lab values per pixel.
+
+These patch metrics answer a narrower question than the pixel metrics: did the
+candidate keep the same local mean color, or did it introduce a systematic
+color bias? The script still records pixel RMSE/PSNR and patch variation because
+JPEG XL may change grain/noise while preserving the mean patch color. The
+`error_to_ref_luma_std` diagnostic compares compression error with the
+reference patch's own luminance variation; it is useful for ranking cases, but
+it is not a perceptual standard.
+
+The default comparison RGB space is `srgb`. This is a declared analysis space
+for comparing the reference and candidate inside the same controlled pipeline,
+not a claim that the DNG raster is an absolute sRGB rendering of the film.
+Future renderer-based tests should use the actual exported ICC/profile space
+when interpreting `DeltaE00`.
+
+Full patch JSON can be written with `--patch-json`, but CSV is the default to
+avoid duplicating large patch tables.
+
 Two diagnostic controls would isolate this mechanism more directly:
 
 1. Compare XYB with original-profile/no-color-transform encoding at a matched
@@ -201,6 +231,9 @@ At minimum:
 - MAE
 - RMSE
 - PSNR
+- patch mean `DeltaE00`
+- patch mean channel bias
+- patch noise/error diagnostics
 - per-channel MAE and bias
 - p95/p99/p99.9 pixel maximum error
 
