@@ -60,29 +60,30 @@ See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jx
 ### Kodak Gold 200-5 ADC DNG/JXL Batch
 
 A private Kodak Gold 200-5 color-negative batch, shot in 1997, was scanned into
-nine root-level PixelShift2DNG masters and converted with Adobe DNG Converter
-to DNG 1.7 JPEG XL at the project-standard levels.
+paired PixelShift 4 and PixelShift 16 PixelShift2DNG masters. The current local
+study focuses on the five PixelShift 16 masters, because that is the path most
+relevant to the storage-budget question.
 
 This is still private local evidence. Do not publish the image panels without
 replacing or anonymizing the source material.
 
 | Level | Total Size | Size vs PixelShift2DNG | Low-Level Result |
 |---|---:|---:|---|
-| PixelShift2DNG source | 3.65 GiB | 100.0% | reference |
-| ADC lossless JXL DNG | 3.35 GiB | 91.9% | exact in tested crops |
-| ADC JXL DNG `d=0.03` | 2.42 GiB | 66.4% | lowest tested lossy error |
-| ADC JXL DNG `d=0.05` | 1.98 GiB | 54.3% | stronger storage candidate |
-| ADC JXL DNG `d=0.10` | 1.35 GiB | 37.1% | visibly riskier stress level |
+| PixelShift2DNG source | 2.99 GiB | 100.0% | reference |
+| ADC lossless JXL DNG | 2.78 GiB | 92.9% | exact in tested crops |
+| ADC JXL DNG `d=0.03` | 2.00 GiB | 67.0% | lowest tested lossy error |
+| ADC JXL DNG `d=0.05` | 1.63 GiB | 54.6% | stronger storage candidate |
+| ADC JXL DNG `d=0.10` | 1.11 GiB | 37.0% | visibly riskier stress level |
 
-Across 45 crop windows and the scripted low-level transform set, lossless ADC
+Across 25 crop windows and the scripted low-level transform set, lossless ADC
 JXL DNG was exact: `MAE 0.00`, max error `0`, and infinite PSNR for every
 transform. The lossy levels behaved monotonically:
 
 | Level | Identity Mean MAE | Hard Negative-Print Mean MAE | Hard Negative-Print Worst MAE |
 |---|---:|---:|---:|
-| `d=0.03` | 8.59 | 133.60 | 217.07 |
-| `d=0.05` | 14.70 | 230.43 | 380.10 |
-| `d=0.10` | 28.24 | 468.69 | 760.71 |
+| `d=0.03` | 9.15 | 132.49 | 217.07 |
+| `d=0.05` | 15.68 | 230.20 | 380.10 |
+| `d=0.10` | 29.40 | 463.06 | 747.32 |
 
 The panel spot-checks matched the metric story: `d=0.05` can look very close in
 identity comparisons, while aggressive negative-print transforms reveal
@@ -96,9 +97,9 @@ pixel-level texture/noise changes.
 
 | Level | Identity Median DeltaE00 | Hard Negative-Print Median DeltaE00 | Hard Negative-Print P95 DeltaE00 | Hard Negative-Print Max DeltaE00 | Hard Negative-Print Mean RGB RMSE |
 |---|---:|---:|---:|---:|---:|
-| `d=0.03` | 0.0032 | 0.0187 | 0.0463 | 0.0674 | 260.12 |
-| `d=0.05` | 0.0032 | 0.0254 | 0.0602 | 0.0871 | 448.43 |
-| `d=0.10` | 0.0032 | 0.0534 | 0.1316 | 0.1987 | 879.70 |
+| `d=0.03` | 0.0035 | 0.0186 | 0.0459 | 0.0674 | 258.01 |
+| `d=0.05` | 0.0034 | 0.0245 | 0.0568 | 0.0785 | 446.97 |
+| `d=0.10` | 0.0033 | 0.0488 | 0.1161 | 0.1510 | 861.98 |
 
 A smaller 64 px patch probe on two difficult frame groups raised the hard-print
 patch values but did not change the ordering: median/max `DeltaE00` were
@@ -111,6 +112,16 @@ negative-print transform. The main measured penalty remains pixel-level
 error/texture change that becomes much larger after aggressive negative-like
 processing. That is encouraging for color stability, but it is not the same as
 proving lossy JXL safe as the only archive master.
+
+The new metadata/ICC diff pass adds an operational caveat. After rational DNG
+tag normalization, ADC lossless JXL DNG had no preservation-review metadata
+changes in this active PixelShift 16 run. The ADC lossy JXL DNG candidates all
+changed the stored raster shape, changed the active crop origin from `[8, 8]`
+to `[0, 0]`, changed `WhiteLevel` from `14848` to `65535`, and added an
+`OpcodeList2` `MapPolynomial`. The checked ICC/profile fields did not appear in
+the diff. These changes may be valid Adobe DNG rewrite mechanics, but they must
+be explained and render-tested before treating ADC lossy JXL DNG as a sole
+master.
 
 Three accidental `-(1)` PixelShift2DNG candidates in this batch had different
 file bytes from their canonical root DNGs, but the decoded main image data and
@@ -141,6 +152,11 @@ exact, `d=0.03` is cleaner, `d=0.05` is the stronger storage compromise, and
 `d=0.10` has a much worse tail after hard negative-print stress. Kodak5035 also
 shows why tail metrics matter: median patch `DeltaE00` stays low even at
 `d=0.05`, but p95/max values rise more than in the Kodak Gold set.
+
+Its metadata/ICC diff repeated the Kodak Gold pattern: ADC lossless JXL DNG had
+no preservation-review metadata changes after rational DNG tag normalization,
+while lossy ADC JXL DNG changed stored raster shape, active crop origin,
+`WhiteLevel`, and `OpcodeList2`.
 
 Only the PixelShift 16 DNG masters in this folder had complete ADC JXL levels.
 The PixelShift 4 root DNGs remain present locally but were not part of this
