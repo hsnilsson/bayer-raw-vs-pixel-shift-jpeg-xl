@@ -175,10 +175,18 @@ def add_local_optional_deps() -> None:
         candidates.append(Path(env_path))
     candidates.append(ROOT / ".deps" / "jxl_pydeps")
     for path in reversed(candidates):
-        if path.is_dir():
+        if optional_deps_usable(path):
             text = str(path)
             if text not in sys.path:
                 sys.path.insert(0, text)
+
+
+def optional_deps_usable(path: Path) -> bool:
+    return (
+        path.is_dir()
+        and (path / "tifffile" / "__init__.py").is_file()
+        and (path / "imagecodecs" / "__init__.py").is_file()
+    )
 
 
 def import_tifffile():
@@ -192,6 +200,12 @@ def import_tifffile():
             "containing tifffile, imagecodecs, and numpy. A repository-local "
             ".deps/jxl_pydeps directory is also detected automatically."
         ) from exc
+    if not hasattr(tifffile, "TiffFile"):
+        raise SystemExit(
+            "Imported tifffile, but it does not expose TiffFile. Set JXL_PYDEPS "
+            "to a complete optional dependency directory containing tifffile and "
+            "imagecodecs."
+        )
     return tifffile
 
 

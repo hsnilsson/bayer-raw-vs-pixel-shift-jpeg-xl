@@ -189,9 +189,17 @@ def verification_command(plan: ScanPlan, args: argparse.Namespace, levels: list[
 def verification_env() -> dict[str, str]:
     env = os.environ.copy()
     local_deps = ROOT / ".deps/jxl_pydeps"
-    if "JXL_PYDEPS" not in env and local_deps.is_dir():
+    if "JXL_PYDEPS" not in env and optional_deps_usable(local_deps):
         env["JXL_PYDEPS"] = str(local_deps)
     return env
+
+
+def optional_deps_usable(path: Path) -> bool:
+    return (
+        path.is_dir()
+        and (path / "tifffile" / "__init__.py").is_file()
+        and (path / "imagecodecs" / "__init__.py").is_file()
+    )
 
 
 def run_verification(plan: ScanPlan, args: argparse.Namespace, levels: list[str]) -> RunRecord:
