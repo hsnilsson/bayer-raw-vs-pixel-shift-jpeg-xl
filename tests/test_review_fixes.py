@@ -286,6 +286,19 @@ class DngJxlVerificationTests(unittest.TestCase):
         self.assertEqual(review["changes"], 2)
         self.assertEqual(review["fields"], "active_crop_size, white_level")
 
+    def test_optional_deps_requires_complete_packages(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "tifffile").mkdir()
+            (root / "imagecodecs").mkdir()
+
+            self.assertFalse(run_dng_jxl_verification.optional_deps_usable(root))
+
+            (root / "tifffile" / "__init__.py").write_text("", encoding="utf-8")
+            (root / "imagecodecs" / "__init__.py").write_text("", encoding="utf-8")
+
+            self.assertTrue(run_dng_jxl_verification.optional_deps_usable(root))
+
 
 if __name__ == "__main__":
     unittest.main()
