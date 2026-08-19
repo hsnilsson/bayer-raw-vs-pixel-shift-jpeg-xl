@@ -7,6 +7,23 @@ replace real anonymous color-negative camera-scan tests.
 
 For the shortest interpretation of these results, see
 [CONCLUSIONS.md](CONCLUSIONS.md).
+For a clearer map of public, private, and still-pending claims, see
+[FINDINGS.md](FINDINGS.md).
+
+## Evidence Tracks At A Glance
+
+| Track | Data | Current Role | Status |
+|---|---|---|---|
+| Public latitude stress | FADGI/OpenDICE and Library of Congress TIFFs | Reproducible codec/stress evidence and public figures | active public track |
+| Private local scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | Real workflow evidence for ADC DNG/JXL behavior on color-negative scans | private, not publishable as-is |
+| Patch-color diagnostics | Matched DNG/JXL crop patches | Separates local mean-color bias from pixel texture/noise changes | implemented for local DNG/JXL verification |
+| Storage-budget comparison | 61 MP raw versus 240 MP PixelShift 16 JXL | Direct test of the main hypothesis | pending |
+
+The FADGI/OpenDICE files are therefore not forgotten. They belong to the public
+reproducibility track: they help show how the JPEG XL settings behave under a
+standardized, shareable stress test. They do not replace the private/local film
+scan track because they do not test PixelShift capture, PixelShift2DNG behavior,
+or real film-frame sampling at 61 MP versus 240 MP.
 
 ## Private Exploratory Findings
 

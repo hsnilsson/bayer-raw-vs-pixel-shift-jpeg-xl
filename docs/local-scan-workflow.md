@@ -3,6 +3,13 @@
 This is the private/local workflow for adding real camera-scanned film material
 without committing private scans or generated results to Git.
 
+It does not run the public FADGI/OpenDICE test data under `testdata/`. Those
+files belong to the reproducible public latitude-stress track:
+
+```powershell
+python scripts\run_public_latitude_v2.py --publish-figures
+```
+
 ## Folder Layout
 
 Put each scan set under:

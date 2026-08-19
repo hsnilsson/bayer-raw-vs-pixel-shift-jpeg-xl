@@ -23,12 +23,19 @@ Current working hypothesis:
 
 ## Current Evidence
 
-Private exploratory tests found that:
+For a quick map of what each result can and cannot prove, start with
+[FINDINGS.md](FINDINGS.md).
+
+Public reproducible tests use FADGI/OpenDICE and Library of Congress TIFFs.
+Private exploratory tests use local PixelShift camera scans. Together they show
+the current pattern:
 
 - JPEG XL lossless round-tripped the extracted 16-bit linear image data exactly.
 - Lossless JPEG XL saved only modest space for the tested PixelShift2DNG files.
 - Lossy JPEG XL errors were amplified by negative inversion and strong tonal
   edits.
+- Public FADGI/OpenDICE and LOC tests make the stress pipeline reproducible,
+  but they do not answer the PixelShift sampling question by themselves.
 - In one FilmLab-based ProPhoto test, JPEG XL distance `0.05` reduced one DNG to
   about half its size while producing a much smaller post-inversion error than
   more aggressive settings.
@@ -42,6 +49,8 @@ These results are not yet a universal archival recommendation.
 
 - [CONCLUSIONS.md](CONCLUSIONS.md): short executive summary and current
   practical recommendation
+- [FINDINGS.md](FINDINGS.md): evidence map separating public FADGI/OpenDICE
+  findings, private local scan findings, and still-pending claims
 - [LICENSE](LICENSE): license for original project code and documentation
 - [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md): rights notes for public test data
 - [REPRODUCIBILITY.md](REPRODUCIBILITY.md): clean reproduction path for the
