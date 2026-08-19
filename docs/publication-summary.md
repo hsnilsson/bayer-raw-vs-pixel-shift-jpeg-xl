@@ -47,6 +47,13 @@ The best-supported public result is the v2 latitude-stress test:
 
 - [docs/public-latitude-v2.md](public-latitude-v2.md)
 
+The easiest public reading order is:
+
+- start with the LOC Golden Gate figures, because they make the diagnostic
+  difference panels easiest to understand
+- use the FADGI/OpenDICE negative target as the reproducibility anchor
+- use the LOC Wildflowers figures as the fine-texture stress case
+
 For the fastest overview of how public FADGI/OpenDICE tests, private scan tests,
 and pending storage-budget claims relate to each other, see:
 
