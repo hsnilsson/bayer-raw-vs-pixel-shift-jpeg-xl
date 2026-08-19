@@ -22,16 +22,16 @@ class CreateScanManifestTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
-        write_file(root / "_DSC1000.ARW")
-        write_file(root / "_DSC1000.JPG")
+        write_file(root / "DSC1000.ARW")
+        write_file(root / "DSC1000.JPG")
         for number in range(1001, 1005):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
         for number in range(1005, 1021):
-            write_file(root / f"_DSC{number}.ARW")
-        write_file(root / "_DSC1001-_DSC1004.dng")
-        write_file(root / "_DSC1005-_DSC1020.dng")
-        write_file(root / "adc_jxl_dng" / "lossless" / "_DSC1005-_DSC1020.dng")
-        write_file(root / "adc_jxl_dng" / "d005" / "_DSC1005-_DSC1020.dng")
+            write_file(root / f"DSC{number}.ARW")
+        write_file(root / "DSC1001-DSC1004.dng")
+        write_file(root / "DSC1005-DSC1020.dng")
+        write_file(root / "adc_jxl_dng" / "lossless" / "DSC1005-DSC1020.dng")
+        write_file(root / "adc_jxl_dng" / "d005" / "DSC1005-DSC1020.dng")
         return root
 
     def test_manifest_groups_single_ps4_ps16_and_adc_outputs(self) -> None:
@@ -42,9 +42,9 @@ class CreateScanManifestTests(unittest.TestCase):
         self.assertEqual(manifest["totals"]["files"], 26)
         self.assertEqual(len(manifest["capture_sets"]), 1)
         capture = manifest["capture_sets"][0]
-        self.assertEqual(capture["single_raw"], "_DSC1000.ARW")
-        self.assertEqual(capture["pixelshift4_dng"], "_DSC1001-_DSC1004.dng")
-        self.assertEqual(capture["pixelshift16_dng"], "_DSC1005-_DSC1020.dng")
+        self.assertEqual(capture["single_raw"], "DSC1000.ARW")
+        self.assertEqual(capture["pixelshift4_dng"], "DSC1001-DSC1004.dng")
+        self.assertEqual(capture["pixelshift16_dng"], "DSC1005-DSC1020.dng")
         self.assertEqual(capture["adc_levels_for_pixelshift16"], ["d005", "lossless"])
         self.assertEqual(capture["storage_budget_role"], "primary_candidate")
 
@@ -76,7 +76,7 @@ class CreateScanManifestTests(unittest.TestCase):
 
         manifest = create_scan_manifest.build_manifest(root, hash_files=True, use_exiftool=False)
 
-        arw = next(entry for entry in manifest["files"] if entry["path"] == "_DSC1000.ARW")
+        arw = next(entry for entry in manifest["files"] if entry["path"] == "DSC1000.ARW")
         self.assertEqual(arw["sha256"], "ae4b3280e56e2faf83f414a6e3dabe9d5fbe18976544c05fed121accb85b53fc")
 
     def test_write_outputs_refuses_to_overwrite_without_force(self) -> None:
@@ -118,37 +118,37 @@ class CreateScanManifestTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
-        write_file(root / "_DSC2000.ARW")
-        write_file(root / "_DSC2000.JPG")
+        write_file(root / "DSC2000.ARW")
+        write_file(root / "DSC2000.JPG")
         for number in range(2001, 2005):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
         for number in range(2005, 2021):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
         for number in range(2021, 2037):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
 
         rows = []
         for shot, number in enumerate(range(2001, 2005), start=1):
             rows.append(
                 {
-                    "SourceFile": str(root / f"_DSC{number}.ARW"),
-                    "FileName": f"_DSC{number}.ARW",
+                    "SourceFile": str(root / f"DSC{number}.ARW"),
+                    "FileName": f"DSC{number}.ARW",
                     "PixelShiftInfo": f"Group 11, Shot {shot}/4 (0x{shot:x})",
                 }
             )
         for shot, number in enumerate(range(2005, 2021), start=1):
             rows.append(
                 {
-                    "SourceFile": str(root / f"_DSC{number}.ARW"),
-                    "FileName": f"_DSC{number}.ARW",
+                    "SourceFile": str(root / f"DSC{number}.ARW"),
+                    "FileName": f"DSC{number}.ARW",
                     "PixelShiftInfo": f"Group 12, Shot {shot}/16 (0x{shot:x})",
                 }
             )
         for shot, number in enumerate(range(2021, 2037), start=1):
             rows.append(
                 {
-                    "SourceFile": str(root / f"_DSC{number}.ARW"),
-                    "FileName": f"_DSC{number}.ARW",
+                    "SourceFile": str(root / f"DSC{number}.ARW"),
+                    "FileName": f"DSC{number}.ARW",
                     "PixelShiftInfo": f"Group 13, Shot {shot}/16 (0x{shot:x})",
                 }
             )
@@ -159,7 +159,7 @@ class CreateScanManifestTests(unittest.TestCase):
         self.assertEqual([group.mode for group in groups], ["pixelshift4", "pixelshift16", "pixelshift16"])
         self.assertEqual(groups[0].raw_files_present, 4)
         self.assertEqual(groups[1].missing_shots, [])
-        self.assertEqual(capture_sets[0].single_raw, "_DSC2000.ARW")
+        self.assertEqual(capture_sets[0].single_raw, "DSC2000.ARW")
         self.assertEqual(capture_sets[0].pixelshift4_raw_group, "11")
         self.assertEqual(capture_sets[0].pixelshift16_raw_group, "12")
         self.assertEqual(capture_sets[0].single_raw_kind, "normal_single_raw")
@@ -172,32 +172,32 @@ class CreateScanManifestTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
-        write_file(root / "_DSC3000.ARW")
+        write_file(root / "DSC3000.ARW")
         for number in range(3001, 3005):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
         for number in range(3005, 3021):
-            write_file(root / f"_DSC{number}.ARW")
+            write_file(root / f"DSC{number}.ARW")
 
         rows = [
             {
-                "SourceFile": str(root / "_DSC3000.ARW"),
-                "FileName": "_DSC3000.ARW",
+                "SourceFile": str(root / "DSC3000.ARW"),
+                "FileName": "DSC3000.ARW",
                 "PixelShiftInfo": "Group 20, Shot 1/1 (0x1)",
             }
         ]
         for shot, number in enumerate(range(3001, 3005), start=1):
             rows.append(
                 {
-                    "SourceFile": str(root / f"_DSC{number}.ARW"),
-                    "FileName": f"_DSC{number}.ARW",
+                    "SourceFile": str(root / f"DSC{number}.ARW"),
+                    "FileName": f"DSC{number}.ARW",
                     "PixelShiftInfo": f"Group 21, Shot {shot}/4 (0x{shot:x})",
                 }
             )
         for shot, number in enumerate(range(3005, 3021), start=1):
             rows.append(
                 {
-                    "SourceFile": str(root / f"_DSC{number}.ARW"),
-                    "FileName": f"_DSC{number}.ARW",
+                    "SourceFile": str(root / f"DSC{number}.ARW"),
+                    "FileName": f"DSC{number}.ARW",
                     "PixelShiftInfo": f"Group 22, Shot {shot}/16 (0x{shot:x})",
                 }
             )
@@ -206,7 +206,7 @@ class CreateScanManifestTests(unittest.TestCase):
         capture_sets = create_scan_manifest.build_capture_sets(root, [], groups)
 
         self.assertEqual(len(capture_sets), 1)
-        self.assertEqual(capture_sets[0].single_raw, "_DSC3000.ARW")
+        self.assertEqual(capture_sets[0].single_raw, "DSC3000.ARW")
         self.assertEqual(capture_sets[0].single_raw_kind, "pixelshift1_single_raw")
         self.assertEqual(capture_sets[0].storage_budget_role, "secondary_only")
         self.assertIn("exclude from primary", capture_sets[0].notes)

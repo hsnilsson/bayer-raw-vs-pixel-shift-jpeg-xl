@@ -89,7 +89,7 @@ def add_local_optional_deps() -> None:
     env_path = os.environ.get("JXL_PYDEPS")
     if env_path:
         candidates.append(Path(env_path))
-    candidates.append(Path(r"C:\tmp\jxl_pydeps"))
+    candidates.append(ROOT / ".deps" / "jxl_pydeps")
     for path in reversed(candidates):
         if path.is_dir():
             text = str(path)
@@ -105,7 +105,8 @@ def import_tifffile():
         raise SystemExit(
             "This script needs tifffile and imagecodecs with DNG/JPEG XL support. "
             "Install the optional dependencies or set JXL_PYDEPS to a directory "
-            "containing tifffile, imagecodecs, and numpy."
+            "containing tifffile, imagecodecs, and numpy. A repository-local "
+            ".deps/jxl_pydeps directory is also detected automatically."
         ) from exc
     return tifffile
 

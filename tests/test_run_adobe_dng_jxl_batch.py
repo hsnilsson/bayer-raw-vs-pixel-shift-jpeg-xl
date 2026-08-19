@@ -22,24 +22,24 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
-        write_file(root / "_DSC1000-_DSC1015.dng")
-        write_file(root / "_review" / "duplicate_dng_candidates" / "_DSC1000-_DSC1015-(1).dng")
-        write_file(root / "adc_jxl_dng" / "lossless" / "_DSC1000-_DSC1015.dng")
+        write_file(root / "DSC1000-DSC1015.dng")
+        write_file(root / "_review" / "duplicate_dng_candidates" / "DSC1000-DSC1015-(1).dng")
+        write_file(root / "adc_jxl_dng" / "lossless" / "DSC1000-DSC1015.dng")
 
         sources = adc_batch.source_dngs(root)
 
-        self.assertEqual([source.name for source in sources], ["_DSC1000-_DSC1015.dng"])
+        self.assertEqual([source.name for source in sources], ["DSC1000-DSC1015.dng"])
 
     def test_source_dngs_can_filter_requested_stems(self) -> None:
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
-        write_file(root / "_DSC1000-_DSC1015.dng")
-        write_file(root / "_DSC2000-_DSC2015.dng")
+        write_file(root / "DSC1000-DSC1015.dng")
+        write_file(root / "DSC2000-DSC2015.dng")
 
-        sources = adc_batch.source_dngs(root, ["_DSC2000-_DSC2015"])
+        sources = adc_batch.source_dngs(root, ["DSC2000-DSC2015"])
 
-        self.assertEqual([source.name for source in sources], ["_DSC2000-_DSC2015.dng"])
+        self.assertEqual([source.name for source in sources], ["DSC2000-DSC2015.dng"])
 
     def test_source_dngs_rejects_missing_requested_source(self) -> None:
         temp = tempfile.TemporaryDirectory()
