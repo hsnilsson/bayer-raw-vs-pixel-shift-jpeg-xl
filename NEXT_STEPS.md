@@ -127,6 +127,9 @@ as safe as the sole retained master.
   their presentation roles: LOC Golden Gate as the first reader-facing example,
   FADGI/OpenDICE as the reproducibility anchor, and LOC Wildflowers as the
   fine-texture stress case.
+- 2026-08-19: added metadata/ICC diff output to the DNG/JXL verifier, including
+  per-frame `metadata_diff.csv`/`.json` rows and a preservation-focused summary
+  in generated local `SUMMARY.md` files.
 
 ## Human Decisions Still Needed
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -49,6 +50,89 @@ PANEL_TRANSFORMS = {
 }
 
 PANEL_CROPS = {"center", "upper-left", "lower-right"}
+
+METADATA_DIFF_FIELDS = [
+    ("container", "bytes"),
+    ("container", "dng_version"),
+    ("container", "dng_backward_version"),
+    ("container", "software"),
+    ("image_geometry", "shape"),
+    ("image_geometry", "active_crop_origin"),
+    ("image_geometry", "active_crop_size"),
+    ("image_encoding", "compression"),
+    ("image_encoding", "compression_name"),
+    ("image_encoding", "photometric"),
+    ("image_encoding", "photometric_name"),
+    ("image_encoding", "bits_per_sample"),
+    ("image_encoding", "white_level"),
+    ("image_encoding", "is_tiled"),
+    ("image_encoding", "tile_width"),
+    ("image_encoding", "tile_length"),
+    ("image_encoding", "segments"),
+    ("jxl", "jxl_distance"),
+    ("jxl", "jxl_effort"),
+    ("jxl", "jxl_decode_speed"),
+    ("color", "make"),
+    ("color", "model"),
+    ("color", "unique_camera_model"),
+    ("color", "calibration_illuminant1"),
+    ("color", "calibration_illuminant2"),
+    ("color", "as_shot_neutral"),
+    ("color", "color_matrix1"),
+    ("color", "color_matrix2"),
+    ("color", "camera_calibration1"),
+    ("color", "camera_calibration2"),
+    ("color", "reduction_matrix1"),
+    ("color", "reduction_matrix2"),
+    ("color", "forward_matrix1"),
+    ("color", "forward_matrix2"),
+    ("color", "profile_name"),
+    ("color", "icc_profile"),
+    ("processing", "opcode_list2"),
+]
+
+EXPECTED_ENCODER_CHANGE_FIELDS = {
+    "bytes",
+    "compression",
+    "compression_name",
+    "is_tiled",
+    "tile_width",
+    "tile_length",
+    "segments",
+    "jxl_distance",
+    "jxl_effort",
+    "jxl_decode_speed",
+    "software",
+    "dng_version",
+    "dng_backward_version",
+}
+
+PRESERVATION_REVIEW_FIELDS = {
+    "shape",
+    "active_crop_origin",
+    "active_crop_size",
+    "photometric",
+    "photometric_name",
+    "bits_per_sample",
+    "white_level",
+    "make",
+    "model",
+    "unique_camera_model",
+    "calibration_illuminant1",
+    "calibration_illuminant2",
+    "as_shot_neutral",
+    "color_matrix1",
+    "color_matrix2",
+    "camera_calibration1",
+    "camera_calibration2",
+    "reduction_matrix1",
+    "reduction_matrix2",
+    "forward_matrix1",
+    "forward_matrix2",
+    "profile_name",
+    "icc_profile",
+    "opcode_list2",
+}
 
 
 @dataclass(frozen=True)
@@ -169,6 +253,30 @@ def tag_value(page: Any, name: str, default: Any = None) -> Any:
     if tag is None:
         return default
     return tag.value
+
+
+def tag_value_from_pages(pages: list[Any], name: str, default: Any = None) -> Any:
+    for page in pages:
+        value = tag_value(page, name)
+        if value is not None:
+            return value
+    return default
+
+
+def tag_payload_summary(value: Any) -> dict[str, Any]:
+    if value is None:
+        return {"present": False, "bytes": 0, "sha256": None}
+    if isinstance(value, bytes):
+        data = value
+    elif isinstance(value, (tuple, list)) and all(isinstance(item, int) for item in value):
+        data = bytes(value)
+    else:
+        data = json.dumps(json_safe(value), sort_keys=True).encode("utf-8")
+    return {
+        "present": True,
+        "bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+    }
 
 
 def tag_tuple(page: Any, name: str, default: tuple[float, ...]) -> tuple[float, ...]:
@@ -365,11 +473,13 @@ def dng_metadata(path: Path) -> dict[str, Any]:
         main = find_main_image(tif)
         page = main.page
         first = tif.pages[0]
+        color_pages = [first, page]
         return {
             "path": str(path),
             "bytes": path.stat().st_size,
             "dng_version": tag_value(first, "DNGVersion"),
             "dng_backward_version": tag_value(first, "DNGBackwardVersion"),
+            "software": tag_value_from_pages(color_pages, "Software"),
             "shape": list(main.shape),
             "active_crop_origin": list(main.crop_origin),
             "active_crop_size": list(main.crop_size),
@@ -388,6 +498,22 @@ def dng_metadata(path: Path) -> dict[str, Any]:
             "jxl_distance": tag_value(page, "JXLDistance"),
             "jxl_effort": tag_value(page, "JXLEffort"),
             "jxl_decode_speed": tag_value(page, "JXLDecodeSpeed"),
+            "make": tag_value_from_pages(color_pages, "Make"),
+            "model": tag_value_from_pages(color_pages, "Model"),
+            "unique_camera_model": tag_value_from_pages(color_pages, "UniqueCameraModel"),
+            "calibration_illuminant1": tag_value_from_pages(color_pages, "CalibrationIlluminant1"),
+            "calibration_illuminant2": tag_value_from_pages(color_pages, "CalibrationIlluminant2"),
+            "as_shot_neutral": tag_value_from_pages(color_pages, "AsShotNeutral"),
+            "color_matrix1": tag_value_from_pages(color_pages, "ColorMatrix1"),
+            "color_matrix2": tag_value_from_pages(color_pages, "ColorMatrix2"),
+            "camera_calibration1": tag_value_from_pages(color_pages, "CameraCalibration1"),
+            "camera_calibration2": tag_value_from_pages(color_pages, "CameraCalibration2"),
+            "reduction_matrix1": tag_value_from_pages(color_pages, "ReductionMatrix1"),
+            "reduction_matrix2": tag_value_from_pages(color_pages, "ReductionMatrix2"),
+            "forward_matrix1": tag_value_from_pages(color_pages, "ForwardMatrix1"),
+            "forward_matrix2": tag_value_from_pages(color_pages, "ForwardMatrix2"),
+            "profile_name": tag_value_from_pages(color_pages, "ProfileName"),
+            "icc_profile": tag_payload_summary(tag_value_from_pages(color_pages, "ICCProfile")),
             "opcode_list2": parse_opcode_list2(tag_value(page, "OpcodeList2")),
         }
 
@@ -650,6 +776,71 @@ def json_safe(value: Any) -> Any:
     return value
 
 
+def metadata_value_for_diff(value: Any) -> str:
+    return json.dumps(
+        json_safe(value),
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    )
+
+
+def metadata_change_interpretation(field: str) -> str:
+    if field in PRESERVATION_REVIEW_FIELDS:
+        return "review_preservation_change"
+    if field in EXPECTED_ENCODER_CHANGE_FIELDS:
+        return "expected_encoder_change"
+    return "review"
+
+
+def metadata_diff_rows_for_pair(
+    *,
+    stem: str,
+    label: str,
+    level: str,
+    source_meta: dict[str, Any],
+    candidate_meta: dict[str, Any],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for group, field in METADATA_DIFF_FIELDS:
+        source_value = source_meta.get(field)
+        candidate_value = candidate_meta.get(field)
+        if metadata_value_for_diff(source_value) == metadata_value_for_diff(candidate_value):
+            continue
+        rows.append(
+            {
+                "stem": stem,
+                "label": label,
+                "level": level,
+                "group": group,
+                "field": field,
+                "interpretation": metadata_change_interpretation(field),
+                "source_value": metadata_value_for_diff(source_value),
+                "candidate_value": metadata_value_for_diff(candidate_value),
+            }
+        )
+    return rows
+
+
+def summarize_metadata_diff_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for row in rows:
+        key = (str(row["level"]), str(row["interpretation"]))
+        groups.setdefault(key, []).append(row)
+    summary: list[dict[str, Any]] = []
+    for (level, interpretation), group in sorted(groups.items()):
+        fields = sorted({str(row["field"]) for row in group})
+        summary.append(
+            {
+                "level": level,
+                "interpretation": interpretation,
+                "changes": len(group),
+                "fields": ", ".join(fields),
+            }
+        )
+    return summary
+
+
 def summarize(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for row in rows:
@@ -696,6 +887,7 @@ def write_markdown_summary(
     metadata_rows: list[dict[str, Any]],
     summary_rows: list[dict[str, Any]],
     patch_summary_rows: list[dict[str, Any]],
+    metadata_diff_summary_rows: list[dict[str, Any]],
     panel_paths: list[Path],
 ) -> None:
     lines = [
@@ -730,6 +922,30 @@ def write_markdown_summary(
             f"{float(row['mean_mae_16bit']):.2f} | {float(row['worst_mae_16bit']):.2f} | "
             f"{int(row['worst_max_error_16bit'])} | {float(row['worst_p99_pixel_max_error_16bit']):.1f} | "
             f"{psnr} |"
+        )
+    if metadata_diff_summary_rows:
+        lines.extend(["", "## Metadata Diff Summary", ""])
+        lines.append(
+            "This table lists changed DNG/container/color fields between each source "
+            "PixelShift2DNG file and each Adobe DNG Converter candidate. "
+            "`expected_encoder_change` rows are normal container or JPEG XL rewrite "
+            "changes. `review_preservation_change` rows may affect archive "
+            "interpretation and should be checked before treating a candidate as a "
+            "sole master."
+        )
+        lines.extend(["", "| Level | Interpretation | Changes | Fields |"])
+        lines.append("| --- | --- | ---: | --- |")
+        for row in metadata_diff_summary_rows:
+            lines.append(
+                f"| `{row['level']}` | `{row['interpretation']}` | "
+                f"{row['changes']} | {row['fields']} |"
+            )
+        lines.extend(
+            [
+                "",
+                "Full per-frame rows are written to `metadata_diff.csv` and "
+                "`metadata_diff.json`.",
+            ]
         )
     if patch_summary_rows:
         lines.extend(["", "## Color Patch Summary", ""])
@@ -780,6 +996,7 @@ def analyze(args: argparse.Namespace) -> int:
     all_rows: list[dict[str, Any]] = []
     patch_rows: list[dict[str, Any]] = []
     metadata_rows: list[dict[str, Any]] = []
+    metadata_diff_rows: list[dict[str, Any]] = []
     panel_paths: list[Path] = []
 
     for frame in frames:
@@ -814,6 +1031,15 @@ def analyze(args: argparse.Namespace) -> int:
             print(f"  Level {level}", flush=True)
             cand_meta = dng_metadata(cand)
             metadata_by_path[cand] = cand_meta
+            metadata_diff_rows.extend(
+                metadata_diff_rows_for_pair(
+                    stem=frame.stem,
+                    label=frame.label,
+                    level=level,
+                    source_meta=source_meta,
+                    candidate_meta=cand_meta,
+                )
+            )
             cand_crops, cand_extract_meta = extract_windows(cand, windows, args.maxworkers)
             cand_white = tuple(float(v) for v in cand_extract_meta["white_level"])
             cand_origin = tuple(int(v) for v in cand_extract_meta["active_crop_origin"])
@@ -937,6 +1163,7 @@ def analyze(args: argparse.Namespace) -> int:
         del source_unit
 
     summary_rows = summarize(all_rows)
+    metadata_diff_summary_rows = summarize_metadata_diff_rows(metadata_diff_rows)
     patch_summary_rows = summarize_patch_metric_rows(patch_rows) if patch_rows else []
     patch_luminance_rows = (
         summarize_patch_metric_rows(patch_rows, ("level", "transform", "luminance_bin"))
@@ -951,11 +1178,17 @@ def analyze(args: argparse.Namespace) -> int:
     write_csv(out_dir / "metrics.csv", all_rows)
     write_csv(out_dir / "patch_metrics.csv", patch_rows)
     write_csv(out_dir / "metadata.csv", metadata_rows)
+    write_csv(out_dir / "metadata_diff.csv", metadata_diff_rows)
+    write_csv(out_dir / "metadata_diff_summary.csv", metadata_diff_summary_rows)
     write_csv(out_dir / "summary.csv", summary_rows)
     write_csv(out_dir / "patch_summary.csv", patch_summary_rows)
     write_csv(out_dir / "patch_luminance_summary.csv", patch_luminance_rows)
     write_csv(out_dir / "patch_chroma_summary.csv", patch_chroma_rows)
     (out_dir / "metrics.json").write_text(json.dumps(json_safe(all_rows), indent=2), encoding="utf-8")
+    (out_dir / "metadata_diff.json").write_text(
+        json.dumps(json_safe(metadata_diff_rows), indent=2),
+        encoding="utf-8",
+    )
     if args.patch_json:
         (out_dir / "patch_metrics.json").write_text(
             json.dumps(json_safe(patch_rows), indent=2),
@@ -968,6 +1201,7 @@ def analyze(args: argparse.Namespace) -> int:
                     "scan_root": str(scan_root),
                     "frames": [frame.__dict__ | {"source": str(frame.source)} for frame in frames],
                     "files": {str(path): meta for path, meta in metadata_by_path.items()},
+                    "metadata_diff_summary": metadata_diff_summary_rows,
                     "tool_versions": tool_versions(),
                     "parameters": {
                         "levels": levels,
@@ -997,6 +1231,7 @@ def analyze(args: argparse.Namespace) -> int:
         metadata_rows,
         summary_rows,
         patch_summary_rows,
+        metadata_diff_summary_rows,
         panel_paths,
     )
     print(f"Wrote {out_dir / 'SUMMARY.md'}", flush=True)
