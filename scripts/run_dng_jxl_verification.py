@@ -20,8 +20,15 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = Path(__file__).resolve().parent
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(SCRIPTS))
 
+from color_patch_metrics import (  # noqa: E402
+    color_space_names,
+    patch_metric_rows,
+    summarize_patch_metric_rows,
+)
 from run_public_latitude_stress import build_transforms, metrics  # noqa: E402
 
 
@@ -687,6 +694,7 @@ def write_markdown_summary(
     levels: list[str],
     metadata_rows: list[dict[str, Any]],
     summary_rows: list[dict[str, Any]],
+    patch_summary_rows: list[dict[str, Any]],
     panel_paths: list[Path],
 ) -> None:
     lines = [
@@ -722,6 +730,29 @@ def write_markdown_summary(
             f"{int(row['worst_max_error_16bit'])} | {float(row['worst_p99_pixel_max_error_16bit']):.1f} | "
             f"{psnr} |"
         )
+    if patch_summary_rows:
+        lines.extend(["", "## Color Patch Summary", ""])
+        lines.append(
+            "DeltaE00 is computed after averaging each patch in the declared linear RGB comparison "
+            "space, then converting the patch mean to Lab. These values compare candidate and "
+            "reference behavior in a controlled pipeline; they are not an absolute colorimetric "
+            "truth claim about the original film scene."
+        )
+        lines.extend(["", "| Level | Transform | Patches | Median DeltaE00 | Mean DeltaE00 | P95 DeltaE00 | Max DeltaE00 | Mean abs bias | Mean RGB RMSE | Median err/ref std |"])
+        lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+        for row in patch_summary_rows:
+            err_ref_std = (
+                "inf"
+                if math.isinf(float(row["median_error_to_ref_luma_std"]))
+                else f"{float(row['median_error_to_ref_luma_std']):.3f}"
+            )
+            lines.append(
+                f"| `{row['level']}` | `{row['transform']}` | {row['patches']} | "
+                f"{float(row['median_delta_e00']):.4f} | {float(row['mean_delta_e00']):.4f} | "
+                f"{float(row['p95_delta_e00']):.4f} | {float(row['max_delta_e00']):.4f} | "
+                f"{float(row['mean_abs_bias_16bit']):.2f} | {float(row['mean_error_rgb_rmse_16bit']):.2f} | "
+                f"{err_ref_std} |"
+            )
     if panel_paths:
         lines.extend(["", "## Panels", ""])
         for path in panel_paths:
@@ -746,6 +777,7 @@ def analyze(args: argparse.Namespace) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     metadata_by_path: dict[Path, dict[str, Any]] = {}
     all_rows: list[dict[str, Any]] = []
+    patch_rows: list[dict[str, Any]] = []
     metadata_rows: list[dict[str, Any]] = []
     panel_paths: list[Path] = []
 
@@ -847,6 +879,28 @@ def analyze(args: argparse.Namespace) -> int:
                     row.update(metrics(ref_t, cand_t))
                     all_rows.append(row)
 
+                    if args.patch_metrics:
+                        patch_context = {
+                            "stem": frame.stem,
+                            "label": frame.label,
+                            "level": level,
+                            "crop": window.name,
+                            "crop_width": window.width,
+                            "crop_height": window.height,
+                            "size_percent": cand_mib / source_mib * 100.0,
+                            "transform": transform.name,
+                            "patch_size": args.patch_size,
+                        }
+                        for patch_row in patch_metric_rows(
+                            ref_t,
+                            cand_t,
+                            patch_size=args.patch_size,
+                            rgb_space=args.patch_color_space,
+                        ):
+                            combined = patch_context.copy()
+                            combined.update(patch_row)
+                            patch_rows.append(combined)
+
                     panel_levels = set(args.panel_level or levels)
                     panel_crops = set(args.panel_crop or PANEL_CROPS)
                     panel_transforms = set(args.panel_transform or PANEL_TRANSFORMS)
@@ -882,10 +936,30 @@ def analyze(args: argparse.Namespace) -> int:
         del source_unit
 
     summary_rows = summarize(all_rows)
+    patch_summary_rows = summarize_patch_metric_rows(patch_rows) if patch_rows else []
+    patch_luminance_rows = (
+        summarize_patch_metric_rows(patch_rows, ("level", "transform", "luminance_bin"))
+        if patch_rows
+        else []
+    )
+    patch_chroma_rows = (
+        summarize_patch_metric_rows(patch_rows, ("level", "transform", "chroma_bin"))
+        if patch_rows
+        else []
+    )
     write_csv(out_dir / "metrics.csv", all_rows)
+    write_csv(out_dir / "patch_metrics.csv", patch_rows)
     write_csv(out_dir / "metadata.csv", metadata_rows)
     write_csv(out_dir / "summary.csv", summary_rows)
+    write_csv(out_dir / "patch_summary.csv", patch_summary_rows)
+    write_csv(out_dir / "patch_luminance_summary.csv", patch_luminance_rows)
+    write_csv(out_dir / "patch_chroma_summary.csv", patch_chroma_rows)
     (out_dir / "metrics.json").write_text(json.dumps(json_safe(all_rows), indent=2), encoding="utf-8")
+    if args.patch_json:
+        (out_dir / "patch_metrics.json").write_text(
+            json.dumps(json_safe(patch_rows), indent=2),
+            encoding="utf-8",
+        )
     (out_dir / "metadata.json").write_text(
         json.dumps(
             json_safe(
@@ -904,6 +978,10 @@ def analyze(args: argparse.Namespace) -> int:
                         "panel_transforms": args.panel_transform,
                         "panel_size": args.panel_size,
                         "diff_gain": args.diff_gain,
+                        "patch_metrics": args.patch_metrics,
+                        "patch_size": args.patch_size,
+                        "patch_color_space": args.patch_color_space,
+                        "patch_json": args.patch_json,
                     },
                 }
             ),
@@ -911,7 +989,15 @@ def analyze(args: argparse.Namespace) -> int:
         ),
         encoding="utf-8",
     )
-    write_markdown_summary(out_dir, frames, levels, metadata_rows, summary_rows, panel_paths)
+    write_markdown_summary(
+        out_dir,
+        frames,
+        levels,
+        metadata_rows,
+        summary_rows,
+        patch_summary_rows,
+        panel_paths,
+    )
     print(f"Wrote {out_dir / 'SUMMARY.md'}", flush=True)
     return 0
 
@@ -946,6 +1032,28 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--crop-size", type=int, default=1536)
     parser.add_argument("--maxworkers", type=int, default=4)
+    parser.add_argument(
+        "--no-patch-metrics",
+        dest="patch_metrics",
+        action="store_false",
+        help="Disable patch-based mean-color DeltaE00 and patch noise diagnostics.",
+    )
+    parser.set_defaults(patch_metrics=True)
+    parser.add_argument("--patch-size", type=int, default=256)
+    parser.add_argument(
+        "--patch-color-space",
+        choices=color_space_names(),
+        default="srgb",
+        help=(
+            "Declared linear RGB comparison space used for patch mean RGB -> XYZ -> Lab. "
+            "Defaults to srgb."
+        ),
+    )
+    parser.add_argument(
+        "--patch-json",
+        action="store_true",
+        help="Also write full patch_metrics.json. CSV is written by default and is much smaller.",
+    )
     parser.add_argument("--panels", action="store_true")
     parser.add_argument(
         "--panel-level",
@@ -975,6 +1083,8 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit("--crop-size must be positive")
     if args.maxworkers <= 0:
         raise SystemExit("--maxworkers must be positive")
+    if args.patch_size <= 0:
+        raise SystemExit("--patch-size must be positive")
     return analyze(args)
 
 

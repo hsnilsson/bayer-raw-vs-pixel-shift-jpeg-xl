@@ -23,6 +23,9 @@ The current practical answer is:
   far; distance `0.05` is the more interesting storage compromise.
 - JPEG XL distance `0.10` looks too aggressive for an archival claim without
   much stronger evidence.
+- The newest patch-color tests make `d=0.03` and `d=0.05` look better for local
+  mean-color stability than the raw pixel-error numbers alone suggested, but
+  they do not remove the sole-master risk.
 
 The deeper hypothesis remains alive: a very high-resolution PixelShift scan
 stored as conservative JPEG XL may be a better practical representation of a
@@ -61,6 +64,10 @@ The private exploratory tests support these points:
   color-negative camera scans: lossless ADC JXL DNG was exact in tested crops,
   `d=0.03` was cleaner, and `d=0.05` saved more space while showing larger
   errors after negative-like transforms.
+- Patch-based CIEDE2000 tests on that batch found very low local mean-color
+  differences for `d=0.03` and `d=0.05`, even after hard negative-print stress.
+  This suggests much of the measured lossy penalty is texture/pixel variation
+  rather than broad patch-level color bias.
 - A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
@@ -102,6 +109,10 @@ For irreplaceable work:
 - Be very cautious with `d=0.10` for archival use.
 - Test after the edits that matter: inversion, color balancing, curves, shadow
   lifting, highlight recovery, and wide-gamut export.
+- Read patch-color metrics and pixel metrics together: low patch `DeltaE00` is
+  reassuring about mean color, but high pixel/RMSE after stress can still matter
+  if the preserved subject is grain, dye clouds, scratches, or fine density
+  structure.
 
 For a storage-constrained camera-scanning workflow, the interesting candidate is
 not "replace everything with lossy JPEG XL." It is:
