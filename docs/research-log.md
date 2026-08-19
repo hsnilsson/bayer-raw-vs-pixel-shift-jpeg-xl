@@ -147,3 +147,30 @@ lossy JXL safe as the sole master.
 This strengthens the internal test case but does not change the publication
 boundary: anonymous or public real negative material is still needed before this
 can become a shareable community result.
+
+## Local Scan Study Runner
+
+Also on 2026-08-19, a local scan-study runner was added so the project can be
+driven forward with the existing private films and then reused when new
+negatives are scanned:
+
+```powershell
+python scripts\run_local_scan_study.py --dry-run
+python scripts\run_local_scan_study.py
+```
+
+The runner discovers ignored folders under `input/`, checks which root DNGs have
+complete ADC JXL levels, skips already complete verification result folders,
+runs the DNG/JXL patch-color verifier where possible, and writes a private local
+index under `results/local_scan_study/`.
+
+The existing local material now has two comparable private color-negative
+results:
+
+- Kodak Gold 200-5, shot in 1997: nine verified root DNGs.
+- Kodak Safety Film 5035, shot in 1983: six verified PixelShift 16 DNGs.
+
+The Kodak5035 run repeated the same ordering as Kodak Gold but with a larger
+hard-print error tail: `d=0.03` remained cleaner than `d=0.05`, while `d=0.10`
+looked clearly too risky for archival claims. This makes the case for measuring
+median, p95, and max patch behavior rather than relying on a single average.

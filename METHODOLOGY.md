@@ -173,6 +173,17 @@ when interpreting `DeltaE00`.
 Full patch JSON can be written with `--patch-json`, but CSV is the default to
 avoid duplicating large patch tables.
 
+For private multi-scan work, use the local queue wrapper:
+
+```powershell
+python scripts\run_local_scan_study.py --dry-run
+python scripts\run_local_scan_study.py
+```
+
+It discovers ignored scan folders under `input/`, verifies only root DNGs that
+have complete selected ADC JXL levels, skips complete result folders, and writes
+a local cross-scan index under `results/local_scan_study/`.
+
 Two diagnostic controls would isolate this mechanism more directly:
 
 1. Compare XYB with original-profile/no-color-transform encoding at a matched

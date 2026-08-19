@@ -30,6 +30,25 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
 
         self.assertEqual([source.name for source in sources], ["_DSC1000-_DSC1015.dng"])
 
+    def test_source_dngs_can_filter_requested_stems(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "_DSC1000-_DSC1015.dng")
+        write_file(root / "_DSC2000-_DSC2015.dng")
+
+        sources = adc_batch.source_dngs(root, ["_DSC2000-_DSC2015"])
+
+        self.assertEqual([source.name for source in sources], ["_DSC2000-_DSC2015.dng"])
+
+    def test_source_dngs_rejects_missing_requested_source(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+
+        with self.assertRaisesRegex(FileNotFoundError, "requested source DNG"):
+            adc_batch.source_dngs(root, ["missing"])
+
     def test_lossless_command_uses_lossless_jxl_flag(self) -> None:
         command = adc_batch.command_for_conversion(
             Path("Adobe DNG Converter.exe"),

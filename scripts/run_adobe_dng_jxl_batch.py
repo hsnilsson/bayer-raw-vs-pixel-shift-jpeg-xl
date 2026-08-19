@@ -39,7 +39,23 @@ def relpath(path: Path, root: Path) -> str:
         return path.as_posix()
 
 
-def source_dngs(scan_root: Path) -> list[Path]:
+def source_from_spec(scan_root: Path, spec: str) -> Path:
+    candidate = Path(spec)
+    if candidate.suffix.lower() == ".dng":
+        path = candidate if candidate.is_absolute() else scan_root / candidate
+    else:
+        path = scan_root / f"{spec}.dng"
+    return path
+
+
+def source_dngs(scan_root: Path, requested: list[str] | None = None) -> list[Path]:
+    if requested:
+        sources = [source_from_spec(scan_root, spec) for spec in requested]
+        missing = [source for source in sources if not source.is_file()]
+        if missing:
+            joined = ", ".join(str(source) for source in missing)
+            raise FileNotFoundError(f"requested source DNG(s) not found: {joined}")
+        return sources
     return sorted(path for path in scan_root.glob("*.dng") if path.is_file())
 
 
@@ -152,6 +168,14 @@ def build_parser() -> argparse.ArgumentParser:
         description="Run Adobe DNG Converter DNG/JPEG XL batches for a scan folder."
     )
     parser.add_argument("scan_root", type=Path)
+    parser.add_argument(
+        "--source",
+        action="append",
+        help=(
+            "Source stem, DNG filename, or DNG path to convert. Repeatable. "
+            "Defaults to all root-level DNG files."
+        ),
+    )
     parser.add_argument("--adc", type=Path, default=DEFAULT_ADC)
     parser.add_argument("--levels", nargs="+", default=DEFAULT_LEVELS, choices=DEFAULT_LEVELS)
     parser.add_argument("--effort", type=int, default=7)
@@ -167,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.adc.is_file():
         raise FileNotFoundError(f"Adobe DNG Converter not found: {args.adc}")
 
-    sources = source_dngs(scan_root)
+    sources = source_dngs(scan_root, args.source)
     if not sources:
         raise FileNotFoundError(f"no root-level DNG files found in {scan_root}")
 

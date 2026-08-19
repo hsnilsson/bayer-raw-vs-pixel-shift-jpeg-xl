@@ -105,6 +105,30 @@ opcode handling. It is not a substitute for rendering through a practical film
 workflow, visual review after real inversion/grading, or a public/anonymized
 replication set.
 
+### Kodak Safety Film 5035 ADC DNG/JXL Batch
+
+A second private color-negative set, Kodak Safety Film 5035 shot in 1983, was
+run through the same local DNG/JXL verification path for six PixelShift 16 DNG
+masters. The local study runner now writes a cross-scan index under
+`results/local_scan_study/`.
+
+| Level | Total Size vs PixelShift2DNG | Identity Median DeltaE00 | Hard Negative-Print Median DeltaE00 | Hard Negative-Print P95 DeltaE00 | Hard Negative-Print Max DeltaE00 | Hard Negative-Print Mean RGB RMSE |
+|---|---:|---:|---:|---:|---:|---:|
+| ADC lossless JXL DNG | 92.9% | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.00 |
+| ADC JXL DNG `d=0.03` | 66.9% | 0.0021 | 0.0111 | 0.0748 | 0.2106 | 221.57 |
+| ADC JXL DNG `d=0.05` | 55.4% | 0.0021 | 0.0129 | 0.1185 | 0.2975 | 377.44 |
+| ADC JXL DNG `d=0.10` | 39.3% | 0.0023 | 0.0216 | 0.3843 | 0.5788 | 734.39 |
+
+This second set repeats the same broad ordering as Kodak Gold: lossless is
+exact, `d=0.03` is cleaner, `d=0.05` is the stronger storage compromise, and
+`d=0.10` has a much worse tail after hard negative-print stress. Kodak5035 also
+shows why tail metrics matter: median patch `DeltaE00` stays low even at
+`d=0.05`, but p95/max values rise more than in the Kodak Gold set.
+
+Only the PixelShift 16 DNG masters in this folder had complete ADC JXL levels.
+The PixelShift 4 root DNGs remain present locally but were not part of this
+verification pass.
+
 ### Lossless JPEG XL
 
 Lossless JPEG XL round-tripped extracted 16-bit linear PixelShift2DNG image data

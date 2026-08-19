@@ -68,6 +68,10 @@ The private exploratory tests support these points:
   differences for `d=0.03` and `d=0.05`, even after hard negative-print stress.
   This suggests much of the measured lossy penalty is texture/pixel variation
   rather than broad patch-level color bias.
+- A second private Kodak Safety Film 5035 set repeated the same ordering:
+  lossless exact, `d=0.03` cleaner, `d=0.05` smaller with higher error, and
+  `d=0.10` clearly riskier. Its hard-print patch-error tail was higher than the
+  Kodak Gold set, so p95/max patch metrics remain important.
 - A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
