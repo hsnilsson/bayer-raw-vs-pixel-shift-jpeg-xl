@@ -130,6 +130,9 @@ as safe as the sole retained master.
 - 2026-08-19: added metadata/ICC diff output to the DNG/JXL verifier, including
   per-frame `metadata_diff.csv`/`.json` rows and a preservation-focused summary
   in generated local `SUMMARY.md` files.
+- 2026-08-19: regenerated ADC DNG/JXL candidates for the active PixelShift 16
+  local scan sets, reran the local study with metadata diff output, and updated
+  the tracked findings to reflect the new preservation-review metadata pattern.
 
 ## Human Decisions Still Needed
 

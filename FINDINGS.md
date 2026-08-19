@@ -50,6 +50,10 @@ Across the current public and private evidence, the ordering is stable:
 - `d=0.03` is the cleaner conservative lossy candidate
 - `d=0.05` is the stronger storage compromise
 - `d=0.10` is consistently riskier, especially after hard negative-like stress
+- Adobe DNG Converter lossless JXL DNG had no preservation-review metadata
+  changes in the active PixelShift 16 local runs after rational DNG tag
+  normalization; lossy ADC JXL DNG still changed stored shape, active crop
+  origin, `WhiteLevel`, and `OpcodeList2`
 
 The new patch-color tests add an important nuance: `d=0.03` and `d=0.05` can
 show very low local mean-color `DeltaE00` while still showing larger pixel-level

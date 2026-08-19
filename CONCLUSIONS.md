@@ -72,6 +72,11 @@ The private exploratory tests support these points:
   lossless exact, `d=0.03` cleaner, `d=0.05` smaller with higher error, and
   `d=0.10` clearly riskier. Its hard-print patch-error tail was higher than the
   Kodak Gold set, so p95/max patch metrics remain important.
+- The new metadata/ICC diff pass strengthens the sole-master caution for Adobe
+  DNG Converter lossy JXL DNG: lossless had no preservation-review metadata
+  changes in the active PixelShift 16 local runs after rational DNG tag
+  normalization, while lossy candidates rewrote stored raster shape, active crop
+  origin, `WhiteLevel`, and `OpcodeList2`.
 - A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
