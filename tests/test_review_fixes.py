@@ -258,6 +258,32 @@ class DngJxlVerificationTests(unittest.TestCase):
         self.assertEqual(by_field["white_level"]["interpretation"], "review_preservation_change")
         self.assertNotIn("color_matrix1", by_field)
 
+    def test_metadata_diff_normalizes_dng_rational_tags(self) -> None:
+        source = {
+            "camera_calibration1": [
+                9018, 10000, 0, 10000, 0, 10000,
+                0, 10000, 10000, 10000, 0, 10000,
+                0, 10000, 0, 10000, 10448, 10000,
+            ],
+        }
+        candidate = {
+            "camera_calibration1": [
+                9018, 10000, 0, 1, 0, 1,
+                0, 1, 10000, 10000, 0, 1,
+                0, 1, 0, 1, 10448, 10000,
+            ],
+        }
+
+        rows = run_dng_jxl_verification.metadata_diff_rows_for_pair(
+            stem="frame",
+            label="Frame",
+            level="lossless",
+            source_meta=source,
+            candidate_meta=candidate,
+        )
+
+        self.assertEqual(rows, [])
+
     def test_metadata_diff_summary_groups_by_level_and_interpretation(self) -> None:
         rows = [
             {

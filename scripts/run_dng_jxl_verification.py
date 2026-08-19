@@ -134,6 +134,20 @@ PRESERVATION_REVIEW_FIELDS = {
     "opcode_list2",
 }
 
+RATIONAL_METADATA_FIELDS = {
+    "calibration_illuminant1",
+    "calibration_illuminant2",
+    "as_shot_neutral",
+    "color_matrix1",
+    "color_matrix2",
+    "camera_calibration1",
+    "camera_calibration2",
+    "reduction_matrix1",
+    "reduction_matrix2",
+    "forward_matrix1",
+    "forward_matrix2",
+}
+
 
 @dataclass(frozen=True)
 class Frame:
@@ -790,7 +804,26 @@ def json_safe(value: Any) -> Any:
     return value
 
 
-def metadata_value_for_diff(value: Any) -> str:
+def normalize_rational_sequence(value: Any) -> Any:
+    if not isinstance(value, (list, tuple)):
+        return value
+    if len(value) % 2 != 0:
+        return value
+    if not all(isinstance(item, (int, float, np.integer, np.floating)) for item in value):
+        return value
+    normalized = []
+    for index in range(0, len(value), 2):
+        numerator = float(value[index])
+        denominator = float(value[index + 1])
+        if denominator == 0:
+            return value
+        normalized.append(round(numerator / denominator, 12))
+    return normalized
+
+
+def metadata_value_for_diff(field: str, value: Any) -> str:
+    if field in RATIONAL_METADATA_FIELDS:
+        value = normalize_rational_sequence(value)
     return json.dumps(
         json_safe(value),
         sort_keys=True,
@@ -819,7 +852,9 @@ def metadata_diff_rows_for_pair(
     for group, field in METADATA_DIFF_FIELDS:
         source_value = source_meta.get(field)
         candidate_value = candidate_meta.get(field)
-        if metadata_value_for_diff(source_value) == metadata_value_for_diff(candidate_value):
+        source_text = metadata_value_for_diff(field, source_value)
+        candidate_text = metadata_value_for_diff(field, candidate_value)
+        if source_text == candidate_text:
             continue
         rows.append(
             {
@@ -829,8 +864,8 @@ def metadata_diff_rows_for_pair(
                 "group": group,
                 "field": field,
                 "interpretation": metadata_change_interpretation(field),
-                "source_value": metadata_value_for_diff(source_value),
-                "candidate_value": metadata_value_for_diff(candidate_value),
+                "source_value": source_text,
+                "candidate_value": candidate_text,
             }
         )
     return rows
