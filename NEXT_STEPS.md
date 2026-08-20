@@ -3,8 +3,9 @@
 This file is the short execution queue. The rationale is in
 [RESEARCH_PLAN.md](RESEARCH_PLAN.md), input-material requirements are in
 [TEST_MATERIAL_STRATEGY.md](TEST_MATERIAL_STRATEGY.md), the evidence map is in
-[FINDINGS.md](FINDINGS.md), and the prior-art framing is in
-[RELATED_WORK.md](RELATED_WORK.md).
+[FINDINGS.md](FINDINGS.md), the break-even metric rules are in
+[ARCHIVAL_VALUE_METRICS.md](ARCHIVAL_VALUE_METRICS.md), and the prior-art
+framing is in [RELATED_WORK.md](RELATED_WORK.md).
 
 ## Current Priority
 
