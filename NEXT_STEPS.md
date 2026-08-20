@@ -50,7 +50,10 @@ as safe as the sole retained master.
 ## Ready Without New Images
 
 - Run `python scripts\check_publication_ready.py` before sharing.
-- Run a clean-clone reproduction test on another machine or in another folder.
+- Re-run a clean-clone reproduction test after substantial workflow changes.
+- Run `python scripts\run_storage_budget_index.py` after ADC candidates are
+  generated to check whether PixelShift 16 JXL candidates are actually near the
+  single-shot raw storage budget.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
 - Keep the current selected v2 public figures unless they are replaced by
@@ -98,7 +101,9 @@ as safe as the sole retained master.
 9. Standalone-versus-DNG JXL decision: compare both candidates from the same
    reference state and record which, if either, qualifies for sole-master use.
 10. Sampling comparison: compare 61 MP raw with 240 MP PixelShift 16 JXL at a
-   similar storage budget.
+   similar storage budget. If current conservative ADC DNG/JXL candidates do
+   not reach the raw budget, report the nearest bracket instead of implying a
+   same-size result.
 11. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
    measurements if a suitable target capture exists.
 12. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
@@ -133,6 +138,19 @@ as safe as the sole retained master.
 - 2026-08-19: regenerated ADC DNG/JXL candidates for the active PixelShift 16
   local scan sets, reran the local study with metadata diff output, and updated
   the tracked findings to reflect the new preservation-review metadata pattern.
+- 2026-08-20: merged the local study pipeline into `main`, pushed it, and ran a
+  clean-clone readiness check with Git LFS test data.
+- 2026-08-20: added a storage-budget index helper and ran it on the current
+  private Kodak Gold 200-5 and Kodak Safety Film 5035 scan sets; current ADC
+  DNG/JXL candidates remain larger than the paired single-shot ARW baseline even
+  at `d=0.10`, so the true same-budget sampling comparison still needs a
+  bracketed or different-candidate follow-up.
+- 2026-08-20: ran a representative ADC DNG/JXL header inspection on one Kodak
+  Gold and one Kodak5035 file; lossless main-image segments used the
+  original-profile/non-XYB path, while `d=0.05` main-image segments used lossy
+  XYB.
+- 2026-08-20: added target-based capture measurement guidance and a concise
+  public sharing plan.
 
 ## Human Decisions Still Needed
 

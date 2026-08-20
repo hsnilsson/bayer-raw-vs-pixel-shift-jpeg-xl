@@ -63,6 +63,8 @@ These results are not yet a universal archival recommendation.
 - [NEXT_STEPS.md](NEXT_STEPS.md): remaining research and publication decisions
 - [docs/publication-summary.md](docs/publication-summary.md): short shareable
   summary for public review
+- [docs/sharing-plan.md](docs/sharing-plan.md): recommended public framing,
+  current claims, and what must wait
 - [METHODOLOGY.md](METHODOLOGY.md): planned and current test methodology
 - [RESULTS.md](RESULTS.md): current result summary and interpretation
 - [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public
@@ -87,6 +89,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_local_scan_study.py](scripts/run_local_scan_study.py):
   discover ignored local scan folders, run DNG/JXL verification where ADC
   candidates are complete, and write a local cross-scan index
+- [scripts/run_storage_budget_index.py](scripts/run_storage_budget_index.py):
+  summarize whether local single-shot raw and PixelShift 16 JXL candidates are
+  actually size-comparable under the declared storage-budget definition
 - [scripts/compare_dng_duplicate_candidates.py](scripts/compare_dng_duplicate_candidates.py):
   compare `-(1)` PixelShift2DNG duplicate candidates by decoded main-image data
 - [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
@@ -144,6 +149,7 @@ Run the private local scan-study queue for ignored folders under `input/`:
 ```powershell
 python scripts\run_local_scan_study.py --dry-run
 python scripts\run_local_scan_study.py
+python scripts\run_storage_budget_index.py
 ```
 
 See [docs/local-scan-workflow.md](docs/local-scan-workflow.md) before adding new

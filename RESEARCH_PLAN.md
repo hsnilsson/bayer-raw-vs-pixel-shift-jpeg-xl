@@ -344,3 +344,25 @@ For each image set, add a small sidecar note with:
 The first new set should prioritize the direct storage-budget comparison. That
 is the test most likely to make the project genuinely useful to other camera
 scanners.
+
+## Current Storage-Budget Reality Check
+
+The local helper `scripts/run_storage_budget_index.py` now checks whether the
+ignored local scan folders contain paired single-shot raw and PixelShift 16 ADC
+JXL DNG candidates that are size-comparable.
+
+On the current private Kodak Gold 200-5 and Kodak Safety Film 5035 scan sets,
+the ADC DNG/JXL candidates at `lossless`, `d=0.03`, `d=0.05`, and `d=0.10`
+remain larger than the paired single-shot ARW files. That does not invalidate
+the sampling hypothesis, but it means the current ADC JXL DNG settings do not
+yet produce a true same-storage comparison against 61 MP ARW on these files.
+
+The next storage-budget step is therefore either:
+
+- bracket the 61 MP raw budget with a more aggressive candidate and report that
+  it is outside the current conservative range, or
+- compare against a different retained-master baseline, such as PixelShift 4
+  DNG or a rendered 16-bit master, and label that policy explicitly.
+
+Any such comparison must still pass the sampling, color, inversion-stress, and
+operational gates before it can support an archive recommendation.
