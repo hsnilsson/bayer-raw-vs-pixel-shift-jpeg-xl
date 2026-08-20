@@ -17,6 +17,11 @@ Review status: reviewed on 2026-08-15 against the sources summarized in
 and private exploratory results. The plan deliberately separates verified
 measurements, proposed tests, and decisions that still require evidence.
 
+The metric and decision rules for the core break-even question are defined in
+[ARCHIVAL_VALUE_METRICS.md](ARCHIVAL_VALUE_METRICS.md). That document should be
+treated as the guardrail for future implementation work: new scripts should
+output evidence groups and conservative verdicts, not a single aggregate score.
+
 ## Scope And Operational Definitions
 
 ### Storage Budget

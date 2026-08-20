@@ -58,6 +58,8 @@ These results are not yet a universal archival recommendation.
 - [RELATED_WORK.md](RELATED_WORK.md): prior-art and related-work framing
 - [RESEARCH_PLAN.md](RESEARCH_PLAN.md): source-driven plan for the next test
   tracks
+- [ARCHIVAL_VALUE_METRICS.md](ARCHIVAL_VALUE_METRICS.md): metric specification
+  for the 61 MP raw versus 240 MP PixelShift JPEG XL break-even question
 - [TEST_MATERIAL_STRATEGY.md](TEST_MATERIAL_STRATEGY.md): what input material is
   needed for credible negative/positive tests
 - [NEXT_STEPS.md](NEXT_STEPS.md): remaining research and publication decisions
