@@ -162,6 +162,13 @@ Only the PixelShift 16 DNG masters in this folder had complete ADC JXL levels.
 The PixelShift 4 root DNGs remain present locally but were not part of this
 verification pass.
 
+A follow-up header inspection on one Kodak Gold file and one Kodak5035 file
+confirmed the expected ADC color-path split for representative main-image
+segments: lossless ADC JXL DNG used the original-profile/non-XYB path for the
+16-bit main image, while `d=0.05` used lossy XYB for the 16-bit main image.
+Preview IFDs were lossy XYB even inside the lossless DNGs, which matters for
+preview fidelity but not for the main-image preservation result.
+
 ### Lossless JPEG XL
 
 Lossless JPEG XL round-tripped extracted 16-bit linear PixelShift2DNG image data

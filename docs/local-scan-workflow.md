@@ -120,6 +120,25 @@ results/local_scan_study/LOCAL_SCAN_STUDY_INDEX.md
 results/local_scan_study/local_scan_study_index.json
 ```
 
+Storage-budget size index:
+
+```powershell
+python scripts\run_storage_budget_index.py
+```
+
+The output goes to:
+
+```text
+results/storage_budget_index/STORAGE_BUDGET_INDEX.md
+results/storage_budget_index/storage_budget_index.csv
+results/storage_budget_index/storage_budget_index.json
+```
+
+This index is deliberately narrow. It only compares retained-master file sizes
+for paired single-shot raw, PixelShift 4 DNG, PixelShift 16 DNG, and ADC JXL DNG
+candidates. It does not measure image quality, registration, resolved detail, or
+color accuracy.
+
 These outputs are ignored by Git because they may reference private scan
 folders and are reproducible from local inputs.
 

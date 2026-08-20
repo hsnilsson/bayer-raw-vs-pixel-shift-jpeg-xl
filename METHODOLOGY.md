@@ -232,6 +232,39 @@ Recommended tools:
 - AutoSFR or equivalent spatial-frequency testing
 - visual crops of grain, dye clouds, edges, and fine texture
 
+### 6. Target-Based Capture Measurement
+
+Purpose: decide whether PixelShift 16 actually captures more useful film
+structure than a 61 MP single-shot baseline before JPEG XL enters the argument.
+
+This track should be run on a physical target capture when one is available. It
+is separate from the public FADGI/OpenDICE TIFF stress files already in
+`testdata/`: those public files exercise the JPEG XL stress pipeline, while a
+new local target capture exercises this specific camera, lens, holder, light
+source, magnification, focus, aperture, and PixelShift workflow.
+
+Minimum record for each target run:
+
+- target name, version, and reference data if available
+- camera, lens, aperture, ISO, shutter, magnification, holder, and light source
+- capture mode: single-shot, PixelShift 4, PixelShift 16
+- raw/DNG conversion path and software versions
+- whether flat-field correction was used
+- retained-master file size for each candidate
+- output scale used for visual/SFR comparison
+
+Preferred measurements:
+
+- OpenDICE or equivalent conformance checks when the target supports it
+- AutoSFR or equivalent spatial-frequency measurements on slanted edges
+- uniformity/vignetting measurement from a blank frame or target flat field
+- visual crops from target detail areas, registered to a declared common scale
+
+Target results should be interpreted as capture-quality evidence, not as a
+JPEG XL quality score. If PixelShift 16 does not show a measurable or visible
+advantage before compression, the storage-budget hypothesis becomes much weaker
+for that capture setup.
+
 ## Metrics
 
 At minimum:

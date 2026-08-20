@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from collections.abc import Iterator
 from pathlib import Path
@@ -13,14 +15,44 @@ DEFAULT_JXLINFO = ROOT / "work/jxl-tools/bin/jxlinfo.exe"
 JPEG_XL_COMPRESSION = 52546
 
 
+def add_local_optional_deps() -> None:
+    candidates = []
+    env_path = os.environ.get("JXL_PYDEPS")
+    if env_path:
+        candidates.append(Path(env_path))
+    candidates.append(ROOT / ".deps" / "jxl_pydeps")
+    for path in reversed(candidates):
+        if optional_deps_usable(path):
+            text = str(path)
+            if text not in sys.path:
+                sys.path.insert(0, text)
+
+
+def optional_deps_usable(path: Path) -> bool:
+    return (
+        path.is_dir()
+        and (path / "tifffile" / "__init__.py").is_file()
+        and (path / "imagecodecs" / "__init__.py").is_file()
+    )
+
+
 def import_tifffile():
+    add_local_optional_deps()
     try:
         import tifffile  # type: ignore
     except ImportError as exc:
         raise SystemExit(
-            "This script needs tifffile. Install it with:\n"
-            '  python -m pip install -e ".[public-tests]"'
+            "This script needs tifffile and imagecodecs with DNG/JPEG XL support. "
+            "Install the optional dependencies or set JXL_PYDEPS to a directory "
+            "containing tifffile and imagecodecs. A repository-local "
+            ".deps/jxl_pydeps directory is also detected automatically."
         ) from exc
+    if not hasattr(tifffile, "TiffFile"):
+        raise SystemExit(
+            "Imported tifffile, but it does not expose TiffFile. Set JXL_PYDEPS "
+            "to a complete optional dependency directory containing tifffile and "
+            "imagecodecs."
+        )
     return tifffile
 
 
