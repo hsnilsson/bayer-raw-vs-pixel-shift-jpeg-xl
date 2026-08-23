@@ -30,17 +30,11 @@ from color_patch_metrics import (  # noqa: E402
     patch_metric_rows,
     summarize_patch_metric_rows,
 )
+from jxl_levels import DEFAULT_LEVELS, require_level  # noqa: E402
 from run_public_latitude_stress import build_transforms, metrics  # noqa: E402
 
 
 DEFAULT_OUT_DIR = ROOT / "results/dng_jxl_verification"
-
-ADC_LEVELS = {
-    "lossless": "lossless",
-    "d003": "d003",
-    "d005": "d005",
-    "d010": "d010",
-}
 
 PANEL_TRANSFORMS = {
     "identity",
@@ -570,7 +564,7 @@ def discover_frames(scan_root: Path, requested: list[str] | None, levels: list[s
         discovered = [frame_from_source_spec(scan_root, spec) for spec in requested]
     else:
         discover_level = levels[0]
-        candidate_dir = scan_root / "adc_jxl_dng" / ADC_LEVELS[discover_level]
+        candidate_dir = scan_root / "adc_jxl_dng" / discover_level
         if not candidate_dir.is_dir():
             raise SystemExit(
                 "No --source values were provided and the candidate discovery "
@@ -1028,16 +1022,17 @@ def write_markdown_summary(
 
 
 def candidate_path(scan_root: Path, level: str, stem: str) -> Path:
-    return scan_root / "adc_jxl_dng" / ADC_LEVELS[level] / f"{stem}.dng"
+    return scan_root / "adc_jxl_dng" / level / f"{stem}.dng"
 
 
 def analyze(args: argparse.Namespace) -> int:
     scan_root = Path(args.scan_root)
     out_dir = Path(args.out_dir)
-    levels = args.level or list(ADC_LEVELS)
-    invalid = sorted(set(levels) - set(ADC_LEVELS))
-    if invalid:
-        raise SystemExit(f"unknown ADC level(s): {', '.join(invalid)}")
+    try:
+        levels = [require_level(level) for level in (args.level or DEFAULT_LEVELS)]
+        args.panel_level = [require_level(level) for level in (args.panel_level or [])]
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     frames = discover_frames(scan_root, args.source, levels)
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -1312,8 +1307,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--level",
         action="append",
-        choices=sorted(ADC_LEVELS),
-        help="ADC level to analyze; repeatable. Defaults to all levels.",
+        help="ADC level to analyze; repeatable. Defaults to project default levels.",
     )
     parser.add_argument("--crop-size", type=int, default=1536)
     parser.add_argument("--maxworkers", type=int, default=4)
@@ -1343,7 +1337,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--panel-level",
         action="append",
-        choices=sorted(ADC_LEVELS),
         help="ADC level to render panels for; repeatable. Defaults to all analyzed levels.",
     )
     parser.add_argument(

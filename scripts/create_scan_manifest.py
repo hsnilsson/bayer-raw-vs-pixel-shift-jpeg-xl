@@ -25,9 +25,6 @@ PIXELSHIFT_INFO_RE = re.compile(
     re.IGNORECASE,
 )
 
-ADC_LEVELS = {"lossless", "d003", "d005", "d010"}
-
-
 @dataclass(frozen=True)
 class ParsedStem:
     kind: str

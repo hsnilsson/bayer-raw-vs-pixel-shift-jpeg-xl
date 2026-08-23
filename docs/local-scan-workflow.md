@@ -50,6 +50,15 @@ If ADC DNG/JXL candidates are missing, generate them:
 python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>"
 ```
 
+For break-even work, include levels that bracket the 61 MP raw file size. The
+runner accepts any level named `dNNN`, where `d020` means Adobe DNG Converter
+`-jxl_distance 0.20`:
+
+```powershell
+python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>" `
+  --levels lossless d003 d005 d010 d015 d020 d030 d050
+```
+
 To avoid creating candidates for every root-level DNG, pass only the intended
 source stems. This is useful when the folder contains both PixelShift 4 and
 PixelShift 16 DNG masters but the current test only needs PixelShift 16. The
@@ -57,6 +66,7 @@ example stems below are anonymized:
 
 ```powershell
 python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>" `
+  --levels lossless d003 d005 d010 d015 d020 d030 d050 `
   --source "DSC0001-DSC0016" `
   --source "DSC0020-DSC0035"
 ```
@@ -94,6 +104,15 @@ Run one scan set only:
 
 ```powershell
 python scripts\run_local_scan_study.py --scan-root "input\<scan-set-name>"
+```
+
+Analyze the same expanded break-even levels:
+
+```powershell
+python scripts\run_local_scan_study.py `
+  --scan-root "input\<scan-set-name>" `
+  --level lossless --level d003 --level d005 --level d010 `
+  --level d015 --level d020 --level d030 --level d050
 ```
 
 ## Outputs
@@ -139,6 +158,39 @@ for paired single-shot raw, PixelShift 4 DNG, PixelShift 16 DNG, and ADC JXL DNG
 candidates. It does not measure image quality, registration, resolved detail, or
 color accuracy.
 
+Archival break-even matrix:
+
+```powershell
+python scripts\run_archival_break_even.py --write-templates
+```
+
+This writes:
+
+```text
+results/archival_break_even/ARCHIVAL_BREAK_EVEN_MATRIX.md
+results/archival_break_even/archival_break_even_matrix.csv
+results/archival_break_even/archival_break_even_matrix.json
+results/archival_break_even/raw61_loss_template.csv
+results/archival_break_even/structure_metrics_template.csv
+```
+
+The break-even matrix joins the local manifest, storage budget, DNG/JXL
+verification summaries, metadata diff summaries, and optional external
+RAW61/structure metrics. If those external metrics are missing, verdicts stay
+blocked. This is intentional: JPEG XL-vs-PS16 metrics alone cannot answer
+whether PS16 JXL beats 61 MP raw as an archive master.
+
+When renderer/registration or target/SFR measurements are available, pass them
+back in:
+
+```powershell
+python scripts\run_archival_break_even.py `
+  --level lossless --level d003 --level d005 --level d010 `
+  --level d015 --level d020 --level d030 --level d050 `
+  --raw-loss-csv results\archival_break_even\raw61_loss.csv `
+  --structure-csv results\archival_break_even\structure_metrics.csv
+```
+
 These outputs are ignored by Git because they may reference private scan
 folders and are reproducible from local inputs.
 
@@ -153,5 +205,6 @@ For each future film stock or representative frame, try to include:
 - ADC DNG/JXL candidates at `lossless`, `d003`, `d005`, and `d010`
 
 The current runner can already process the JXL/DNG verification layer. The next
-major method layer is a fully color-managed renderer/export comparison using
-the same patch-color metrics.
+major method layer is a fully color-managed renderer/export comparison that
+produces the RAW61-vs-PS16 and structure/target CSVs consumed by
+`scripts/run_archival_break_even.py`.

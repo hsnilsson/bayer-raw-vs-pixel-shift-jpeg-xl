@@ -65,7 +65,7 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
     def test_lossy_command_uses_distance_and_effort(self) -> None:
         command = adc_batch.command_for_conversion(
             Path("Adobe DNG Converter.exe"),
-            "d005",
+            "d020",
             Path("source.dng"),
             Path("out"),
             effort=8,
@@ -75,7 +75,7 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
         self.assertIn("-jxl_effort", command)
         self.assertIn("8", command)
         self.assertIn("-jxl_distance", command)
-        self.assertIn("0.05", command)
+        self.assertIn("0.20", command)
 
     def test_dry_run_does_not_write_manifest(self) -> None:
         temp = tempfile.TemporaryDirectory()
