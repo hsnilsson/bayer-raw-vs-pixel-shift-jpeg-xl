@@ -8,11 +8,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from jxl_levels import DEFAULT_LEVELS, require_level
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT_ROOT = ROOT / "input"
 DEFAULT_OUTPUT_DIR = ROOT / "results/storage_budget_index"
-DEFAULT_LEVELS = ["lossless", "d003", "d005", "d010"]
 
 
 @dataclass
@@ -211,10 +212,13 @@ def main() -> int:
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--scan-root", type=Path, action="append", default=None)
-    parser.add_argument("--level", action="append", choices=DEFAULT_LEVELS, default=None)
+    parser.add_argument("--level", action="append", default=None)
     args = parser.parse_args()
 
-    levels = args.level or DEFAULT_LEVELS
+    try:
+        levels = [require_level(level) for level in (args.level or DEFAULT_LEVELS)]
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     rows: list[BudgetRow] = []
     for scan_root in discover_scan_roots(args.input_root, args.scan_root):
         rows.extend(collect_rows(scan_root, levels))

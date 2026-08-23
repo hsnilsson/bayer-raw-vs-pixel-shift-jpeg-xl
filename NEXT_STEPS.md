@@ -55,6 +55,12 @@ as safe as the sole retained master.
 - Run `python scripts\run_storage_budget_index.py` after ADC candidates are
   generated to check whether PixelShift 16 JXL candidates are actually near the
   single-shot raw storage budget.
+- Run `python scripts\run_archival_break_even.py --write-templates` after local
+  verification to generate the conservative break-even matrix and the CSV
+  templates for RAW61/structure evidence.
+- For actual break-even batches, include additional ADC levels such as `d015`,
+  `d020`, `d030`, and `d050`, then report nearest-above/nearest-below storage
+  brackets if no candidate lands within the 5% raw-budget tolerance.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
 - Keep the current selected v2 public figures unless they are replaced by
@@ -105,9 +111,12 @@ as safe as the sole retained master.
    similar storage budget. If current conservative ADC DNG/JXL candidates do
    not reach the raw budget, report the nearest bracket instead of implying a
    same-size result.
-11. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
+11. Fill the break-even matrix with RAW61-vs-R16 color/tone metrics and
+   structure/visual/target metrics; leave verdicts blocked until those evidence
+   files exist.
+12. Capture-quality measurement: add OpenDICE, AutoSFR, or equivalent target
    measurements if a suitable target capture exists.
-12. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
+13. Update `RESULTS.md`, `CONCLUSIONS.md`, figures, and publication summary.
 
 ## Completed
 

@@ -94,6 +94,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_storage_budget_index.py](scripts/run_storage_budget_index.py):
   summarize whether local single-shot raw and PixelShift 16 JXL candidates are
   actually size-comparable under the declared storage-budget definition
+- [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
+  join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
+  metrics into a conservative break-even matrix
 - [scripts/compare_dng_duplicate_candidates.py](scripts/compare_dng_duplicate_candidates.py):
   compare `-(1)` PixelShift2DNG duplicate candidates by decoded main-image data
 - [scripts/audit_publication_safety.py](scripts/audit_publication_safety.py):
@@ -152,7 +155,12 @@ Run the private local scan-study queue for ignored folders under `input/`:
 python scripts\run_local_scan_study.py --dry-run
 python scripts\run_local_scan_study.py
 python scripts\run_storage_budget_index.py
+python scripts\run_archival_break_even.py --write-templates
 ```
+
+For the actual break-even search, generate and analyze additional JPEG XL
+distances such as `d015`, `d020`, `d030`, and `d050`; `d020` maps to Adobe DNG
+Converter distance `0.20`.
 
 See [docs/local-scan-workflow.md](docs/local-scan-workflow.md) before adding new
 private negatives.

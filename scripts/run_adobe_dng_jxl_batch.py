@@ -9,14 +9,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from jxl_levels import DEFAULT_LEVELS, distance_for_level, require_level
+
 
 DEFAULT_ADC = Path(r"C:\Program Files\Adobe\Adobe DNG Converter\Adobe DNG Converter.exe")
-LEVEL_DISTANCES = {
-    "d003": "0.03",
-    "d005": "0.05",
-    "d010": "0.10",
-}
-DEFAULT_LEVELS = ["lossless", "d003", "d005", "d010"]
 
 
 @dataclass
@@ -75,7 +71,15 @@ def command_for_conversion(
     if level == "lossless":
         command.append("-losslessJXL")
     else:
-        command.extend(["-lossy", "-jxl_effort", str(effort), "-jxl_distance", LEVEL_DISTANCES[level]])
+        command.extend(
+            [
+                "-lossy",
+                "-jxl_effort",
+                str(effort),
+                "-jxl_distance",
+                distance_for_level(level) or "",
+            ]
+        )
     command.extend(["-d", str(destination), str(source)])
     return command
 
@@ -177,7 +181,12 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument("--adc", type=Path, default=DEFAULT_ADC)
-    parser.add_argument("--levels", nargs="+", default=DEFAULT_LEVELS, choices=DEFAULT_LEVELS)
+    parser.add_argument(
+        "--levels",
+        nargs="+",
+        default=DEFAULT_LEVELS,
+        help="JXL levels to generate. Use 'lossless' or distance names like d003, d005, d010, d020.",
+    )
     parser.add_argument("--effort", type=int, default=7)
     parser.add_argument("--dry-run", action="store_true")
     return parser
@@ -190,6 +199,7 @@ def main(argv: list[str] | None = None) -> int:
         raise FileNotFoundError(f"scan root does not exist: {scan_root}")
     if not args.adc.is_file():
         raise FileNotFoundError(f"Adobe DNG Converter not found: {args.adc}")
+    args.levels = [require_level(level) for level in args.levels]
 
     sources = source_dngs(scan_root, args.source)
     if not sources:

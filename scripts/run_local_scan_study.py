@@ -13,12 +13,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from jxl_levels import DEFAULT_LEVELS, require_level
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT_ROOT = ROOT / "input"
 DEFAULT_VERIFICATION_ROOT = ROOT / "results/dng_jxl_verification"
 DEFAULT_INDEX_DIR = ROOT / "results/local_scan_study"
-DEFAULT_LEVELS = ["lossless", "d003", "d005", "d010"]
 
 
 @dataclass
@@ -417,9 +418,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--level",
         action="append",
-        choices=DEFAULT_LEVELS,
         dest="levels",
-        help="ADC level to require and verify. Repeatable. Defaults to all project levels.",
+        help="ADC level to require and verify. Repeatable. Defaults to project default levels.",
     )
     parser.add_argument("--crop-size", type=int, default=1536)
     parser.add_argument("--patch-size", type=int, default=256)
@@ -437,7 +437,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    levels = args.levels or DEFAULT_LEVELS
+    try:
+        levels = [require_level(level) for level in (args.levels or DEFAULT_LEVELS)]
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     if args.crop_size <= 0:
         raise SystemExit("--crop-size must be positive")
     if args.patch_size <= 0:
