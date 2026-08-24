@@ -8,7 +8,11 @@ results/
 work/
 outputs/
 input/
-profiles/
+profiles/*
+!profiles/rawtherapee/
+profiles/rawtherapee/*
+!profiles/rawtherapee/README.md
+!profiles/rawtherapee/neutral-render.pp3
 jxl_test_out/
 /trash/
 *.egg-info/

@@ -232,6 +232,21 @@ Recommended tools:
 - AutoSFR or equivalent spatial-frequency testing
 - visual crops of grain, dye clouds, edges, and fine texture
 
+The current local break-even pipeline renders RAW61, PS16, and PS16 DNG/JXL
+candidates through one fixed RawTherapee processing profile, registers the
+RAW61 render to the PS16 pixel grid, and then measures two losses against the
+same PS16 reference:
+
+- `RAW61 loss`: the loss from using the 61 MP single-shot raw render instead of
+  the PS16 render
+- `JXL loss`: the loss from using a PS16 JPEG XL candidate instead of the PS16
+  render
+
+The break-even point is where the JXL loss becomes as large as, or larger than,
+the RAW61 loss for the storage budget being tested. This is why RAW61 is not
+compared directly as raw sensor code values; it must go through the same
+declared render path before comparison.
+
 ### 6. Target-Based Capture Measurement
 
 Purpose: decide whether PixelShift 16 actually captures more useful film

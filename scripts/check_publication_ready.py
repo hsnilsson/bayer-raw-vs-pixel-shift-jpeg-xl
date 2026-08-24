@@ -43,7 +43,13 @@ REQUIRED_FILES = [
     "scripts/run_dng_jxl_verification.py",
     "scripts/run_local_scan_study.py",
     "scripts/run_storage_budget_index.py",
+    "scripts/render_with_rawtherapee.py",
+    "scripts/register_raw61_to_ps16.py",
+    "scripts/run_raw61_loss_metrics.py",
+    "scripts/run_structure_metrics.py",
     "scripts/run_archival_break_even.py",
+    "src/break_even_image_tools.py",
+    "profiles/rawtherapee/README.md",
     "tests/test_review_fixes.py",
 ]
 PYTHON_FILES = [
@@ -59,9 +65,15 @@ PYTHON_FILES = [
     "scripts/run_dng_jxl_verification.py",
     "scripts/run_local_scan_study.py",
     "scripts/run_storage_budget_index.py",
+    "scripts/render_with_rawtherapee.py",
+    "scripts/register_raw61_to_ps16.py",
+    "scripts/run_raw61_loss_metrics.py",
+    "scripts/run_structure_metrics.py",
     "scripts/run_archival_break_even.py",
     "scripts/check_publication_ready.py",
+    "src/break_even_image_tools.py",
     "src/jxl_archive_test.py",
+    "tests/test_break_even_pipeline.py",
     "tests/test_review_fixes.py",
 ]
 
