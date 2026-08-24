@@ -58,6 +58,12 @@ as safe as the sole retained master.
 - Run `python scripts\run_archival_break_even.py --write-templates` after local
   verification to generate the conservative break-even matrix and the CSV
   templates for RAW61/structure evidence.
+- Create `profiles/rawtherapee/neutral-render.pp3` from the chosen RawTherapee
+  render state, then run `scripts/render_with_rawtherapee.py` on each complete
+  scan set.
+- Run `scripts/register_raw61_to_ps16.py`, review the registration JSON/index,
+  then run `scripts/run_raw61_loss_metrics.py` and
+  `scripts/run_structure_metrics.py` to fill the break-even matrix inputs.
 - For actual break-even batches, include additional ADC levels such as `d015`,
   `d020`, `d030`, and `d050`, then report nearest-above/nearest-below storage
   brackets if no candidate lands within the 5% raw-budget tolerance.
@@ -138,6 +144,10 @@ as safe as the sole retained master.
 - 2026-08-19: added `FINDINGS.md` and clarified that FADGI/OpenDICE data belongs
   to the public reproducibility track, while ignored `input/` scans belong to
   the private/local workflow track.
+- 2026-08-24: added the RawTherapee render wrapper, RAW61-to-PS16 registration,
+  RAW61 baseline color/tone metrics, and automatic high-pass structure metrics
+  needed to populate the archival break-even matrix once matching film material
+  is ready.
 - 2026-08-19: reviewed the selected public latitude v2 figures and documented
   their presentation roles: LOC Golden Gate as the first reader-facing example,
   FADGI/OpenDICE as the reproducibility anchor, and LOC Wildflowers as the

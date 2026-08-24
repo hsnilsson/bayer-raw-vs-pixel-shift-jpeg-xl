@@ -158,6 +158,63 @@ for paired single-shot raw, PixelShift 4 DNG, PixelShift 16 DNG, and ADC JXL DNG
 candidates. It does not measure image quality, registration, resolved detail, or
 color accuracy.
 
+Render RAW61, PS16, and ADC DNG/JXL candidates through one fixed RawTherapee
+profile:
+
+```powershell
+python scripts\render_with_rawtherapee.py `
+  --scan-root "input\<scan-set-name>" `
+  --profile profiles\rawtherapee\neutral-render.pp3 `
+  --level lossless --level d003 --level d005 --level d010 `
+  --level d015 --level d020 --level d030 --level d050
+```
+
+The script deliberately refuses to invent a neutral `.pp3`. Create
+`profiles/rawtherapee/neutral-render.pp3` from RawTherapee after deciding the
+fixed render state for the study. That profile becomes part of the method
+because it controls demosaicing, white balance, camera profile, tone response,
+and sharpening.
+
+Register the rendered 61 MP raw baseline to the rendered PS16 reference:
+
+```powershell
+python scripts\register_raw61_to_ps16.py --scan-root "input\<scan-set-name>"
+```
+
+This scales the RAW61 render to the PS16 pixel grid, estimates a global
+translation with phase correlation, writes a registered TIFF under
+`outputs/registered_raw61_to_ps16/`, and writes a registration JSON/index for
+review. This is a first-order registration model intended for capture sequences
+where the camera and film holder barely moved between single-shot, PS4, and
+PS16 captures.
+
+Measure the RAW61-vs-PS16 color/tone baseline:
+
+```powershell
+python scripts\run_raw61_loss_metrics.py --scan-root "input\<scan-set-name>"
+```
+
+This writes `results/archival_break_even/raw61_loss.csv`, plus per-frame patch
+and pixel details. It uses the same identity and hard negative-density print
+transforms as the DNG/JXL verifier, so the break-even comparison asks whether
+the JXL compression error is smaller or larger than the RAW61 sampling/render
+baseline.
+
+Measure automatic structure retention:
+
+```powershell
+python scripts\run_structure_metrics.py `
+  --scan-root "input\<scan-set-name>" `
+  --level lossless --level d003 --level d005 --level d010 `
+  --level d015 --level d020 --level d030 --level d050
+```
+
+This writes `results/archival_break_even/structure_metrics.csv`. The current
+structure metric is a diagnostic high-pass comparison, not a final human visual
+verdict. It is meant to rank whether a PS16 JXL candidate preserves more useful
+fine structure than the registered RAW61 baseline, and to flag suspicious JXL
+detail-energy/correlation behavior for crop review.
+
 Archival break-even matrix:
 
 ```powershell

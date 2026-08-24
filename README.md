@@ -94,6 +94,16 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_storage_budget_index.py](scripts/run_storage_budget_index.py):
   summarize whether local single-shot raw and PixelShift 16 JXL candidates are
   actually size-comparable under the declared storage-budget definition
+- [scripts/render_with_rawtherapee.py](scripts/render_with_rawtherapee.py):
+  render RAW61, PS16, and ADC DNG/JXL candidates through one fixed RawTherapee
+  profile as 16-bit TIFFs
+- [scripts/register_raw61_to_ps16.py](scripts/register_raw61_to_ps16.py):
+  scale and globally register a RAW61 render to its PS16 reference
+- [scripts/run_raw61_loss_metrics.py](scripts/run_raw61_loss_metrics.py):
+  measure the RAW61-vs-PS16 color/tone baseline consumed by the break-even
+  matrix
+- [scripts/run_structure_metrics.py](scripts/run_structure_metrics.py):
+  measure high-pass structure retention for RAW61 and PS16 JXL candidates
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix
