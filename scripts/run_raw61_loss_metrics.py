@@ -17,7 +17,7 @@ SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(SCRIPTS))
 
-from break_even_image_tools import clipping_fraction, crop, read_rgb_image  # noqa: E402
+from break_even_image_tools import clipping_fraction, crop, read_rgb_image, resize_to_max_dim  # noqa: E402
 from color_patch_metrics import patch_metric_rows, summarize_patch_metric_rows  # noqa: E402
 from run_public_latitude_stress import build_transforms, metrics  # noqa: E402
 import run_local_scan_study as local_study  # noqa: E402
@@ -138,6 +138,7 @@ def analyze_pair(
     patch_size: int,
     rgb_space: str,
     crop_spec: str | None,
+    max_analysis_dim: int,
 ) -> RawLossOutputRow:
     if not reference_path.is_file():
         return RawLossOutputRow(scan_set, set_id, None, None, None, None, None, f"missing PS16 render: {relpath(reference_path)}")
@@ -148,6 +149,8 @@ def analyze_pair(
     candidate = crop(read_rgb_image(candidate_path), crop_spec)
     if reference.shape != candidate.shape:
         raise ValueError(f"{scan_set}/{set_id}: image shapes differ after crop: {reference.shape} != {candidate.shape}")
+    reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
+    candidate, _ = resize_to_max_dim(candidate, max_analysis_dim)
 
     pair_dir = output_dir / "raw61_loss_details" / local_study.slugify(scan_set) / set_id
     pair_dir.mkdir(parents=True, exist_ok=True)
@@ -190,7 +193,10 @@ def analyze_pair(
         raw61_channel_bias_max_stress=channel_bias_max(stress),
         raw61_clipping_delta_stress=clipping_by_transform.get(HARD_TRANSFORM),
         raw61_structure_loss=None,
-        notes=f"crop={crop_spec or 'full'}; details={relpath(pair_dir)}",
+        notes=(
+            f"crop={crop_spec or 'full'}; analysis_scale={analysis_scale:.6g}; "
+            f"details={relpath(pair_dir)}"
+        ),
     )
 
 
@@ -240,6 +246,12 @@ def main() -> int:
         choices=["srgb", "display-p3", "adobe-rgb", "prophoto-rgb"],
     )
     parser.add_argument("--crop", help="Optional x,y,width,height crop in registered PS16 coordinates.")
+    parser.add_argument(
+        "--max-analysis-dim",
+        type=int,
+        default=2048,
+        help="Downscale the longest side before analysis. Use 0 for full resolution or with native-detail crops.",
+    )
     args = parser.parse_args()
 
     if args.patch_size <= 0:
@@ -263,6 +275,7 @@ def main() -> int:
             patch_size=args.patch_size,
             rgb_space=args.patch_color_space,
             crop_spec=args.crop,
+            max_analysis_dim=args.max_analysis_dim,
         )
         for scan_set, set_id, reference, candidate in pairs
     ]

@@ -298,6 +298,18 @@ def crop(arr: np.ndarray, spec: str | None) -> np.ndarray:
     return np.ascontiguousarray(arr[y : y + height, x : x + width])
 
 
+def resize_to_max_dim(arr: np.ndarray, max_dim: int | None) -> tuple[np.ndarray, float]:
+    if max_dim is None or max_dim <= 0:
+        return arr, 1.0
+    height, width = arr.shape[:2]
+    longest = max(height, width)
+    if longest <= max_dim:
+        return arr, 1.0
+    scale = float(max_dim) / float(longest)
+    size = (max(1, round(width * scale)), max(1, round(height * scale)))
+    return resize_rgb(arr, size, resample=Image.Resampling.BOX), scale
+
+
 def clipping_fraction(unit_rgb: np.ndarray, eps: float = 1e-6) -> float:
     values = np.asarray(unit_rgb, dtype=np.float64)
     return float(np.mean((values <= eps) | (values >= 1.0 - eps)))

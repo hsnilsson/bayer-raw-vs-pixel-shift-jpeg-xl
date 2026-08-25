@@ -198,7 +198,9 @@ This writes `results/archival_break_even/raw61_loss.csv`, plus per-frame patch
 and pixel details. It uses the same identity and hard negative-density print
 transforms as the DNG/JXL verifier, so the break-even comparison asks whether
 the JXL compression error is smaller or larger than the RAW61 sampling/render
-baseline.
+baseline. By default this batch overview downsamples the longest side to 2048 px
+before analysis. Use `--crop x,y,w,h --max-analysis-dim 0` for selected
+native-detail areas.
 
 Measure automatic structure retention:
 
@@ -213,7 +215,9 @@ This writes `results/archival_break_even/structure_metrics.csv`. The current
 structure metric is a diagnostic high-pass comparison, not a final human visual
 verdict. It is meant to rank whether a PS16 JXL candidate preserves more useful
 fine structure than the registered RAW61 baseline, and to flag suspicious JXL
-detail-energy/correlation behavior for crop review.
+detail-energy/correlation behavior for crop review. Like the RAW61 color/tone
+step, the batch overview defaults to a 2048 px longest side; native-detail
+structure claims should be rerun on selected crops with `--max-analysis-dim 0`.
 
 Archival break-even matrix:
 

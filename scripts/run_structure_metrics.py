@@ -17,7 +17,13 @@ SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(SCRIPTS))
 
-from break_even_image_tools import crop, finite_float, read_rgb_image, structure_metrics  # noqa: E402
+from break_even_image_tools import (
+    crop,
+    finite_float,
+    read_rgb_image,
+    resize_to_max_dim,
+    structure_metrics,
+)  # noqa: E402
 from jxl_levels import DEFAULT_LEVELS, require_level  # noqa: E402
 import run_local_scan_study as local_study  # noqa: E402
 
@@ -190,6 +196,7 @@ def analyze_case(
     jxl_path: Path,
     crop_spec: str | None,
     highpass_radius: int,
+    max_analysis_dim: int,
 ) -> tuple[StructureOutputRow, list[StructureDetailRow]]:
     missing = [
         name
@@ -224,6 +231,9 @@ def analyze_case(
             f"{scan_set}/{set_id}/{level}: structure input shapes differ after crop: "
             f"{reference.shape}, {raw61.shape}, {jxl.shape}"
         )
+    reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
+    raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
+    jxl, _ = resize_to_max_dim(jxl, max_analysis_dim)
     scope = crop_spec or "full"
     raw_detail = detail_row(scan_set, set_id, level, scope, "raw61_registered", reference, raw61, highpass_radius)
     jxl_detail = detail_row(scan_set, set_id, level, scope, "ps16_jxl_candidate", reference, jxl, highpass_radius)
@@ -239,7 +249,7 @@ def analyze_case(
             jxl_structure_loss=jxl_detail.structure_loss,
             artifact_risk=risk,
             structure_verdict=verdict,
-            notes=f"highpass_radius={highpass_radius}; crop={scope}",
+            notes=f"highpass_radius={highpass_radius}; crop={scope}; analysis_scale={analysis_scale:.6g}",
         ),
         [raw_detail, jxl_detail],
     )
@@ -290,6 +300,12 @@ def main() -> int:
     parser.add_argument("--manual-level", default="d005")
     parser.add_argument("--crop", help="Optional x,y,width,height crop in registered PS16 coordinates.")
     parser.add_argument("--highpass-radius", type=int, default=2)
+    parser.add_argument(
+        "--max-analysis-dim",
+        type=int,
+        default=2048,
+        help="Downscale the longest side before analysis. Use 0 for full resolution or with native-detail crops.",
+    )
     args = parser.parse_args()
 
     if args.highpass_radius <= 0:
@@ -315,7 +331,12 @@ def main() -> int:
     rows: list[StructureOutputRow] = []
     details: list[StructureDetailRow] = []
     for case in cases:
-        row, detail_rows = analyze_case(*case, crop_spec=args.crop, highpass_radius=args.highpass_radius)
+        row, detail_rows = analyze_case(
+            *case,
+            crop_spec=args.crop,
+            highpass_radius=args.highpass_radius,
+            max_analysis_dim=args.max_analysis_dim,
+        )
         rows.append(row)
         details.extend(detail_rows)
 
