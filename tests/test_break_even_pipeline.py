@@ -92,6 +92,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 patch_size=32,
                 rgb_space="srgb",
                 crop_spec=None,
+                max_analysis_dim=0,
             )
 
             self.assertEqual(row.scan_set, "Synthetic Scan")
@@ -125,6 +126,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 jxl_path,
                 crop_spec=None,
                 highpass_radius=2,
+                max_analysis_dim=0,
             )
 
             self.assertEqual(row.structure_verdict, "ps16_jxl_likely_wins")
