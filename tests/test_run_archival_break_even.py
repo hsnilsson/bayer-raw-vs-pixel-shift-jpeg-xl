@@ -247,6 +247,77 @@ class ArchivalBreakEvenTests(unittest.TestCase):
         self.assertEqual(rows[0].evidence_status, "blocked_operational_review")
         self.assertEqual(rows[0].verdict, "blocked_operational_review")
 
+    def test_blocked_structure_row_keeps_verdict_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            result_dir = root / "verification" / "test_scan_colorpatch"
+            write_csv(
+                result_dir / "patch_summary.csv",
+                [
+                    {
+                        "level": "lossless",
+                        "transform": "negative_density_hard_print",
+                        "p95_delta_e00": "0.0",
+                    }
+                ],
+            )
+            write_csv(
+                result_dir / "metadata_diff_summary.csv",
+                [
+                    {
+                        "level": "lossless",
+                        "interpretation": "expected_encoder_change",
+                        "changes": "1",
+                        "fields": "compression",
+                    }
+                ],
+            )
+            budget_rows = [
+                budget_index.BudgetRow(
+                    scan_set="Test Scan",
+                    film_stock="Test Film",
+                    film_type="color negative",
+                    shot_year="1997",
+                    set_id="frame001",
+                    single_raw="single.ARW",
+                    pixelshift4_dng="",
+                    pixelshift16_dng="ps16.dng",
+                    level="lossless",
+                    single_raw_mib=100.0,
+                    pixelshift4_mib=None,
+                    pixelshift16_mib=400.0,
+                    candidate_mib=98.0,
+                    candidate_vs_single_raw_pct=98.0,
+                    candidate_vs_pixelshift16_pct=24.5,
+                    storage_budget_role="primary_candidate",
+                    status="within_5pct_budget",
+                    notes="",
+                )
+            ]
+            raw = {
+                ("Test Scan", "frame001"): break_even.RawLossRow(
+                    "Test Scan", "frame001", 0.2, 0.1, 5, 0, 0.5, ""
+                )
+            }
+            structure = {
+                ("Test Scan", "frame001", "lossless"): break_even.StructureRow(
+                    "Test Scan",
+                    "frame001",
+                    "lossless",
+                    "full",
+                    None,
+                    None,
+                    "unknown",
+                    "blocked_missing_structure_inputs",
+                    "missing JXL candidate render",
+                )
+            }
+
+            rows = break_even.build_rows(budget_rows, root / "verification", raw, structure)
+
+        self.assertEqual(rows[0].evidence_status, "blocked_missing_structure_metrics")
+        self.assertEqual(rows[0].verdict, "blocked_missing_structure_metrics")
+
 
 if __name__ == "__main__":
     unittest.main()

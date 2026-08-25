@@ -293,6 +293,8 @@ def evidence_status(
         missing.append("raw61_loss_metrics")
     if structure is None:
         missing.append("structure_metrics")
+    elif structure.structure_verdict.startswith("blocked"):
+        missing.append("structure_metrics")
     if color_result.startswith("blocked_missing"):
         missing.append("color_metrics")
     if metadata_result.startswith("blocked"):
