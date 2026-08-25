@@ -217,8 +217,21 @@ def main() -> int:
                 job.status = "dry_run"
                 job.notes = " ".join(cmd)
             else:
-                subprocess.run(cmd, cwd=ROOT, check=True)
-                job.status = "rendered"
+                result = subprocess.run(
+                    cmd,
+                    cwd=ROOT,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    check=False,
+                )
+                if result.returncode:
+                    job.status = "render_failed"
+                    output.unlink(missing_ok=True)
+                    message = (result.stdout + result.stderr).strip().splitlines()
+                    job.notes = message[-1] if message else f"exit code {result.returncode}"
+                else:
+                    job.status = "rendered"
             rows.append(job)
 
     write_index(rows, args.output_root)
