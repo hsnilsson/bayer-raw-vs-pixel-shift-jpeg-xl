@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import json
 import math
+import os
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 @dataclass(frozen=True)
@@ -43,9 +48,14 @@ def import_tifffile():
 
 
 def optional_tifffile():
+    for path in [os.environ.get("JXL_PYDEPS"), str(ROOT / ".deps/jxl_pydeps")]:
+        if path and Path(path).is_dir() and path not in sys.path:
+            sys.path.insert(0, path)
     try:
         import tifffile  # type: ignore
     except ModuleNotFoundError:
+        return None
+    if not hasattr(tifffile, "imread") or not hasattr(tifffile, "imwrite"):
         return None
     return tifffile
 
