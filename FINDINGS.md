@@ -21,7 +21,7 @@ every numeric value from a smaller capture.
 | Private DNG/JXL scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | How Adobe DNG Converter DNG/JXL behaves on real local color-negative camera scans | Public reproducibility, because the source scans are private |
 | Patch-color diagnostics | Local DNG/JXL verification crops | Whether lossy JXL changes local mean color or mostly changes pixel texture/noise | Absolute scene color accuracy or a full color-managed film-rendering result |
 | Local scan-study runner | Ignored `input/` scan folders | Repeatable intake and verification for future private/anonymized scans | New scientific evidence by itself |
-| Storage-budget comparison | Still pending | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Not answered yet |
+| Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary until the RAW61-vs-PS16 baseline is visually reviewed and any render/profile mismatch is resolved |
 
 ## What Happened To FADGI/OpenDICE
 
@@ -62,6 +62,15 @@ often be texture/noise/detail change rather than broad local color bias.
 
 That is encouraging, but it is not enough to recommend lossy JXL as the only
 master.
+
+The standalone rendered-PS16 JXL path now produces candidates that cross below
+the paired 61 MP raw storage budget on the current private material. In the
+automatic overview metrics, `d=0.30` and stronger compression are generally
+under budget while still ranking as PS16 JXL likely wins for the complete
+non-flagged pairs. This is a useful local result, not a final publication
+claim: the RAW61-vs-PS16 rendered color/tone baseline is currently much larger
+than expected and may include pipeline mismatch rather than only true sampling
+loss.
 
 ## Best Current Recommendation
 

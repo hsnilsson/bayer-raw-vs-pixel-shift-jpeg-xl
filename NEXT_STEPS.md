@@ -19,11 +19,16 @@ versus
 within the predeclared storage tolerance in `RESEARCH_PLAN.md`
 ```
 
-The newest practical path to test is Adobe DNG Converter output:
+The current practical break-even path is standalone JPEG XL made from the fixed
+RawTherapee-rendered PS16 TIFF master:
 
 ```text
-PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 JPEG XL
+PixelShift2DNG DNG -> RawTherapee neutral 16-bit TIFF -> standalone JPEG XL
 ```
+
+This separates codec/storage loss from the still-open application-support
+problem where RawTherapee cannot currently use the ADC DNG/JXL candidates in
+the same rendering pipeline.
 
 ## Sole-Master Blocker For Lossy ADC JXL DNG
 
@@ -52,9 +57,8 @@ as safe as the sole retained master.
 
 - Run `python scripts\check_publication_ready.py` before sharing.
 - Re-run a clean-clone reproduction test after substantial workflow changes.
-- Run `python scripts\run_storage_budget_index.py` after ADC candidates are
-  generated to check whether PixelShift 16 JXL candidates are actually near the
-  single-shot raw storage budget.
+- Run `scripts/run_rendered_ps16_jxl_matrix.py` after RawTherapee renders exist
+  to generate standalone PS16 JPEG XL candidates across the storage bracket.
 - Run `python scripts\run_archival_break_even.py --write-templates` after local
   verification to generate the conservative break-even matrix and the CSV
   templates for RAW61/structure evidence.
@@ -64,9 +68,9 @@ as safe as the sole retained master.
 - Run `scripts/register_raw61_to_ps16.py`, review the registration JSON/index,
   then run `scripts/run_raw61_loss_metrics.py` and
   `scripts/run_structure_metrics.py` to fill the break-even matrix inputs.
-- For actual break-even batches, include additional ADC levels such as `d015`,
-  `d020`, `d030`, and `d050`, then report nearest-above/nearest-below storage
-  brackets if no candidate lands within the 5% raw-budget tolerance.
+- For actual break-even batches, include standalone JXL levels that cross the
+  61 MP raw storage budget, currently `d003`, `d005`, `d010`, `d020`, `d030`,
+  `d050`, `d075`, `d100`, `d150`, and `d200`.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
 - Keep the current selected v2 public figures unless they are replaced by
@@ -171,6 +175,11 @@ as safe as the sole retained master.
   XYB.
 - 2026-08-20: added target-based capture measurement guidance and a concise
   public sharing plan.
+- 2026-08-26: added and ran the standalone rendered-PS16 JPEG XL matrix across
+  `d003` through `d200`, connected those results to structure metrics and the
+  archival break-even matrix, and kept the conclusion preliminary because the
+  RAW61-vs-PS16 rendered color baseline is suspiciously large and needs visual
+  review/normalization before publication claims.
 
 ## Human Decisions Still Needed
 
@@ -183,11 +192,11 @@ as safe as the sole retained master.
 
 ## Research Questions Still Open
 
-- Does `d=0.05` remain visually acceptable after realistic film inversion and
-  grading on real negatives?
-- Do low patch-color differences remain low when the comparison is made from a
-  fully color-managed renderer/export, not only the low-level DNG raster stress
-  pipeline?
+- Why is the current rendered RAW61-vs-PS16 color/tone baseline so large on
+  some local pairs: true sampling difference, render/profile mismatch,
+  PixelShift2DNG difference, exposure/WB mismatch, or registration/crop issue?
+- At which standalone JXL distance do native-detail crops stop preserving more
+  useful film structure than the registered 61 MP raw baseline?
 - Is `d=0.03` the better practical archival candidate even when its storage
   savings are less dramatic than `d=0.05`?
 - Does PixelShift 16 preserve visibly more useful film structure than 61 MP raw
