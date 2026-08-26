@@ -318,6 +318,73 @@ class ArchivalBreakEvenTests(unittest.TestCase):
         self.assertEqual(rows[0].evidence_status, "blocked_missing_structure_metrics")
         self.assertEqual(rows[0].verdict, "blocked_missing_structure_metrics")
 
+    def test_rendered_jxl_rows_override_adc_size_and_color(self) -> None:
+        budget_rows = [
+            budget_index.BudgetRow(
+                scan_set="Test Scan",
+                film_stock="Test Film",
+                film_type="color negative",
+                shot_year="1997",
+                set_id="frame001",
+                single_raw="single.ARW",
+                pixelshift4_dng="",
+                pixelshift16_dng="ps16.dng",
+                level="d005",
+                single_raw_mib=100.0,
+                pixelshift4_mib=None,
+                pixelshift16_mib=400.0,
+                candidate_mib=600.0,
+                candidate_vs_single_raw_pct=600.0,
+                candidate_vs_pixelshift16_pct=150.0,
+                storage_budget_role="primary_candidate",
+                status="over_budget",
+                notes="ADC candidate is larger than single-shot raw budget",
+            )
+        ]
+        raw = {
+            ("Test Scan", "frame001"): break_even.RawLossRow(
+                "Test Scan", "frame001", 0.2, 1.0, 5, 0, 0.5, ""
+            )
+        }
+        structure = {
+            ("Test Scan", "frame001", "d005"): break_even.StructureRow(
+                "Test Scan",
+                "frame001",
+                "d005",
+                "full",
+                0.5,
+                0.2,
+                "low",
+                "ps16_jxl_likely_wins",
+                "",
+            )
+        }
+        rendered_sizes = {("Test Scan", "frame001", "d005"): 98.0}
+        rendered_patch = {
+            ("Test Scan", "frame001", "d005"): {
+                "negative_density_hard_print": {
+                    "p95_delta_e00": "0.1",
+                    "mean_bias_r_16bit": "1",
+                    "mean_bias_g_16bit": "2",
+                    "mean_bias_b_16bit": "3",
+                }
+            }
+        }
+
+        rows = break_even.build_rows(
+            budget_rows,
+            Path("unused"),
+            raw,
+            structure,
+            rendered_jxl_sizes=rendered_sizes,
+            rendered_patch_rows=rendered_patch,
+        )
+
+        self.assertEqual(rows[0].retained_size_mib, 98.0)
+        self.assertEqual(rows[0].size_status, "within_5pct_budget")
+        self.assertEqual(rows[0].metadata_risk, "pass")
+        self.assertEqual(rows[0].verdict, "ps16_jxl_likely_wins")
+
 
 if __name__ == "__main__":
     unittest.main()

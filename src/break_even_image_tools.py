@@ -12,6 +12,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
+Image.MAX_IMAGE_PIXELS = None
 
 
 @dataclass(frozen=True)
@@ -62,7 +63,7 @@ def optional_tifffile():
 
 def read_rgb_image(path: Path) -> np.ndarray:
     tifffile = optional_tifffile()
-    if tifffile is not None:
+    if tifffile is not None and path.suffix.lower() in {".tif", ".tiff", ".dng"}:
         arr = tifffile.imread(path)
     else:
         arr = np.asarray(Image.open(path))

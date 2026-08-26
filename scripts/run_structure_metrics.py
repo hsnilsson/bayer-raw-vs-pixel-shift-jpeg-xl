@@ -31,6 +31,7 @@ import run_local_scan_study as local_study  # noqa: E402
 DEFAULT_INPUT_ROOT = ROOT / "input"
 DEFAULT_RENDERS_ROOT = ROOT / "outputs/rawtherapee_renders"
 DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
+DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT_DIR = ROOT / "results/archival_break_even"
 
 
@@ -95,8 +96,23 @@ def raw61_registered_path(registered_root: Path, scan_set: str, set_id: str) -> 
     return registered_root / local_study.slugify(scan_set) / set_id / "raw61_registered_to_ps16.tif"
 
 
-def jxl_render_path(renders_root: Path, scan_set: str, set_id: str, level: str) -> Path:
-    return renders_root / local_study.slugify(scan_set) / set_id / "adc_jxl_dng" / level / "ps16_candidate.tif"
+def jxl_render_path(
+    renders_root: Path,
+    rendered_jxl_root: Path,
+    scan_set: str,
+    set_id: str,
+    level: str,
+    candidate_kind: str,
+) -> Path:
+    scan_slug = local_study.slugify(scan_set)
+    if candidate_kind == "rendered_ps16_jxl":
+        png = rendered_jxl_root / scan_slug / set_id / level / "ps16_candidate.png"
+        if png.is_file():
+            return png
+        return rendered_jxl_root / scan_slug / set_id / level / "ps16_candidate.tif"
+    if candidate_kind == "adc_dng_jxl":
+        return renders_root / scan_slug / set_id / "adc_jxl_dng" / level / "ps16_candidate.tif"
+    raise ValueError(f"unknown candidate kind: {candidate_kind}")
 
 
 def collect_cases(
@@ -105,6 +121,8 @@ def collect_cases(
     renders_root: Path,
     registered_root: Path,
     levels: list[str],
+    rendered_jxl_root: Path,
+    candidate_kind: str,
 ) -> list[tuple[str, str, str, Path, Path, Path]]:
     cases: list[tuple[str, str, str, Path, Path, Path]] = []
     for scan_root in discover_scan_roots(input_root, scan_roots):
@@ -119,7 +137,23 @@ def collect_cases(
             reference = ps16_render_path(renders_root, scan_set, set_id)
             raw61 = raw61_registered_path(registered_root, scan_set, set_id)
             for level in levels:
-                cases.append((scan_set, set_id, level, reference, raw61, jxl_render_path(renders_root, scan_set, set_id, level)))
+                cases.append(
+                    (
+                        scan_set,
+                        set_id,
+                        level,
+                        reference,
+                        raw61,
+                        jxl_render_path(
+                            renders_root,
+                            rendered_jxl_root,
+                            scan_set,
+                            set_id,
+                            level,
+                            candidate_kind,
+                        ),
+                    )
+                )
     return cases
 
 
@@ -290,7 +324,13 @@ def main() -> int:
     parser.add_argument("--scan-root", type=Path, action="append", default=None)
     parser.add_argument("--renders-root", type=Path, default=DEFAULT_RENDERS_ROOT)
     parser.add_argument("--registered-root", type=Path, default=DEFAULT_REGISTERED_ROOT)
+    parser.add_argument("--rendered-jxl-root", type=Path, default=DEFAULT_RENDERED_JXL_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--candidate-kind",
+        choices=["rendered_ps16_jxl", "adc_dng_jxl"],
+        default="rendered_ps16_jxl",
+    )
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--reference", type=Path)
     parser.add_argument("--raw61", type=Path)
@@ -326,7 +366,15 @@ def main() -> int:
         ]
     else:
         levels = [require_level(level) for level in (args.level or DEFAULT_LEVELS)]
-        cases = collect_cases(args.input_root, args.scan_root, args.renders_root, args.registered_root, levels)
+        cases = collect_cases(
+            args.input_root,
+            args.scan_root,
+            args.renders_root,
+            args.registered_root,
+            levels,
+            args.rendered_jxl_root,
+            args.candidate_kind,
+        )
 
     rows: list[StructureOutputRow] = []
     details: list[StructureDetailRow] = []

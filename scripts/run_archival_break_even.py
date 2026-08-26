@@ -163,6 +163,28 @@ def load_structure(path: Path | None) -> dict[tuple[str, str, str], StructureRow
     return rows
 
 
+def load_rendered_jxl_sizes(path: Path | None) -> dict[tuple[str, str, str], float]:
+    rows: dict[tuple[str, str, str], float] = {}
+    for row in read_csv_rows(path):
+        key = (row.get("scan_set", ""), row.get("set_id", ""), row.get("level", ""))
+        size = parse_float(row.get("encoded_mib"))
+        if all(key) and size is not None and row.get("status") == "encoded_decoded":
+            rows[key] = size
+    return rows
+
+
+def load_rendered_patch_summary(
+    path: Path | None,
+) -> dict[tuple[str, str, str], dict[str, dict[str, str]]]:
+    rows: dict[tuple[str, str, str], dict[str, dict[str, str]]] = {}
+    for row in read_csv_rows(path):
+        key = (row.get("scan_set", ""), row.get("set_id", ""), row.get("level", ""))
+        transform = row.get("transform", "")
+        if all(key) and transform:
+            rows.setdefault(key, {})[transform] = row
+    return rows
+
+
 def scan_slug(scan_set: str) -> str:
     return local_study.slugify(scan_set)
 
@@ -331,12 +353,20 @@ def build_rows(
     verification_root: Path,
     raw_loss_rows: dict[tuple[str, str], RawLossRow],
     structure_rows: dict[tuple[str, str, str], StructureRow],
+    rendered_jxl_sizes: dict[tuple[str, str, str], float] | None = None,
+    rendered_patch_rows: dict[tuple[str, str, str], dict[str, dict[str, str]]] | None = None,
 ) -> list[BreakEvenRow]:
+    rendered_jxl_sizes = rendered_jxl_sizes or {}
+    rendered_patch_rows = rendered_patch_rows or {}
     brackets = size_brackets(budget_rows)
     patch_cache: dict[str, dict[str, dict[str, dict[str, str]]]] = {}
     metadata_cache: dict[str, dict[str, dict[str, Any]]] = {}
     rows: list[BreakEvenRow] = []
     for budget in budget_rows:
+        rendered_key = (budget.scan_set, budget.set_id, budget.level)
+        using_rendered_jxl = (
+            rendered_key in rendered_jxl_sizes or rendered_key in rendered_patch_rows
+        )
         result_dir = verification_root / f"{scan_slug(budget.scan_set)}_colorpatch"
         cache_key = str(result_dir)
         if cache_key not in patch_cache:
@@ -344,20 +374,41 @@ def build_rows(
             metadata_cache[cache_key] = metadata_diff_by_level(result_dir)
         patch_by_level = patch_cache[cache_key]
         metadata_by_level = metadata_cache[cache_key]
-        identity = patch_by_level.get(budget.level, {}).get("identity", {})
-        stress = patch_by_level.get(budget.level, {}).get(HARD_TRANSFORM, {})
+        if using_rendered_jxl:
+            rendered_by_transform = rendered_patch_rows.get(rendered_key, {})
+            identity = rendered_by_transform.get("identity", {})
+            stress = rendered_by_transform.get(HARD_TRANSFORM, {})
+        else:
+            identity = patch_by_level.get(budget.level, {}).get("identity", {})
+            stress = patch_by_level.get(budget.level, {}).get(HARD_TRANSFORM, {})
         diff = metadata_by_level.get(budget.level, {})
-        review_changes = diff.get("review_preservation_change")
-        fields = ", ".join(sorted(diff.get("review_preservation_fields", set()))) or "-"
-        meta_risk = metadata_risk(review_changes)
+        if using_rendered_jxl:
+            review_changes = 0
+            fields = "-"
+            meta_risk = "pass"
+        else:
+            review_changes = diff.get("review_preservation_change")
+            fields = ", ".join(sorted(diff.get("review_preservation_fields", set()))) or "-"
+            meta_risk = metadata_risk(review_changes)
         raw_loss = raw_loss_rows.get((budget.scan_set, budget.set_id))
         structure = structure_rows.get((budget.scan_set, budget.set_id, budget.level))
         jxl_stress = parse_float(stress.get("p95_delta_e00"))
         raw_stress = raw_loss.raw61_color_delta_e00_p95_stress if raw_loss else None
         c_verdict = color_verdict(jxl_stress, raw_stress, meta_risk)
         s_verdict = structure.structure_verdict if structure else "blocked_missing_structure_metrics"
-        status = evidence_status(raw_loss, structure, c_verdict, meta_risk, budget.status)
-        verdict = final_verdict(status, c_verdict, s_verdict, meta_risk, budget.status)
+        retained_size = rendered_jxl_sizes.get(rendered_key, budget.candidate_mib)
+        size_vs_raw61 = budget_index.pct(retained_size, budget.single_raw_mib)
+        if using_rendered_jxl:
+            size_status, size_note = budget_index.row_status(
+                budget.single_raw_mib,
+                budget.pixelshift16_mib,
+                retained_size,
+                budget.level,
+            )
+        else:
+            size_status, size_note = budget.status, budget.notes
+        status = evidence_status(raw_loss, structure, c_verdict, meta_risk, size_status)
+        verdict = final_verdict(status, c_verdict, s_verdict, meta_risk, size_status)
         bracket = brackets.get((budget.scan_set, budget.set_id), {})
         bracket_text = (
             f"below={bracket.get('nearest_below') or '-'}; "
@@ -366,7 +417,8 @@ def build_rows(
         notes = "; ".join(
             item
             for item in [
-                budget.notes,
+                size_note,
+                "standalone rendered JXL candidate" if using_rendered_jxl else "",
                 raw_loss.notes if raw_loss else "missing RAW61-vs-R16 metrics",
                 structure.notes if structure else "missing structure/visual/target metrics",
             ]
@@ -380,10 +432,10 @@ def build_rows(
                 shot_year=budget.shot_year,
                 set_id=budget.set_id,
                 level=budget.level,
-                retained_size_mib=budget.candidate_mib,
+                retained_size_mib=retained_size,
                 raw61_size_mib=budget.single_raw_mib,
-                size_vs_raw61_pct=budget.candidate_vs_single_raw_pct,
-                size_status=budget.status,
+                size_vs_raw61_pct=size_vs_raw61,
+                size_status=size_status,
                 size_bracket=bracket_text,
                 color_delta_e00_p95_identity=parse_float(identity.get("p95_delta_e00")),
                 color_delta_e00_p95_stress=jxl_stress,
@@ -517,6 +569,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--raw-loss-csv", type=Path)
     parser.add_argument("--structure-csv", type=Path)
+    parser.add_argument(
+        "--rendered-jxl-matrix-csv",
+        type=Path,
+        help="Standalone rendered-PS16 JXL matrix CSV; overrides ADC candidate sizes when present.",
+    )
+    parser.add_argument(
+        "--rendered-jxl-patch-summary-csv",
+        type=Path,
+        help="Standalone rendered-PS16 JXL patch summary grouped by scan_set,set_id,level,transform.",
+    )
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument(
         "--write-templates",
@@ -543,6 +605,8 @@ def main(argv: list[str] | None = None) -> int:
         verification_root=args.verification_root,
         raw_loss_rows=load_raw_loss(args.raw_loss_csv),
         structure_rows=load_structure(args.structure_csv),
+        rendered_jxl_sizes=load_rendered_jxl_sizes(args.rendered_jxl_matrix_csv),
+        rendered_patch_rows=load_rendered_patch_summary(args.rendered_jxl_patch_summary_csv),
     )
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_csv(rows, args.output_dir / "archival_break_even_matrix.csv")
