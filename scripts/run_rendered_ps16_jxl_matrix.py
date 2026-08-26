@@ -60,6 +60,10 @@ def mib(path: Path | None) -> float | None:
     return path.stat().st_size / 1024 / 1024
 
 
+def usable_file(path: Path) -> bool:
+    return path.is_file() and path.stat().st_size > 0
+
+
 def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
     candidates = [str(explicit)] if explicit else []
     candidates.extend([name, str(fallback)])
@@ -261,18 +265,21 @@ def main() -> int:
                 status="pending",
                 notes="",
             )
-            if args.force or not ppm.is_file():
+            if args.force or not usable_file(ppm):
                 write_ppm(ppm, read_rgb_image(source))
-            if args.force or not encoded.is_file():
+            if args.force or not usable_file(encoded):
                 ok, note = run_checked(encode_command(cjxl, ppm, encoded, level, args.effort))
                 if not ok:
+                    encoded.unlink(missing_ok=True)
                     row.status = "encode_failed"
                     row.notes = note
                     rows.append(row)
                     continue
-            if args.force or not decoded.is_file():
+            if args.force or not usable_file(decoded):
+                decoded.unlink(missing_ok=True)
                 ok, note = run_checked(decode_command(djxl, encoded, decoded))
                 if not ok:
+                    decoded.unlink(missing_ok=True)
                     row.status = "decode_failed"
                     row.notes = note
                     rows.append(row)
@@ -281,20 +288,26 @@ def main() -> int:
             row.decoded_mib = mib(decoded)
             row.status = "encoded_decoded"
             if not args.no_metrics:
-                p_rows, patch = analyze_candidate(
-                    scan_set,
-                    set_id,
-                    level,
-                    source,
-                    decoded,
-                    args.results_dir,
-                    patch_size=args.patch_size,
-                    patch_color_space=args.patch_color_space,
-                    crop_spec=args.crop,
-                    max_analysis_dim=args.max_analysis_dim,
-                )
-                pixel_rows.extend(p_rows)
-                patch_rows.extend(patch)
+                try:
+                    p_rows, patch = analyze_candidate(
+                        scan_set,
+                        set_id,
+                        level,
+                        source,
+                        decoded,
+                        args.results_dir,
+                        patch_size=args.patch_size,
+                        patch_color_space=args.patch_color_space,
+                        crop_spec=args.crop,
+                        max_analysis_dim=args.max_analysis_dim,
+                    )
+                except Exception as exc:
+                    decoded.unlink(missing_ok=True)
+                    row.status = "metrics_failed"
+                    row.notes = str(exc)
+                else:
+                    pixel_rows.extend(p_rows)
+                    patch_rows.extend(patch)
             rows.append(row)
 
     args.results_dir.mkdir(parents=True, exist_ok=True)

@@ -202,13 +202,29 @@ baseline. By default this batch overview downsamples the longest side to 2048 px
 before analysis. Use `--crop x,y,w,h --max-analysis-dim 0` for selected
 native-detail areas.
 
+Encode rendered PS16 TIFF masters as standalone JPEG XL:
+
+```powershell
+python scripts\run_rendered_ps16_jxl_matrix.py `
+  --level d003 --level d005 --level d010 --level d020 --level d030 `
+  --level d050 --level d075 --level d100 --level d150 --level d200
+```
+
+This writes standalone candidates under
+`outputs/rendered_ps16_jxl_matrix/` and summaries under
+`results/rendered_ps16_jxl_matrix/`. This path tests JPEG XL codec loss on the
+fixed RawTherapee-rendered PS16 master, without depending on whether downstream
+raw applications can read ADC DNG/JXL. It is the current practical path for the
+RAW61-vs-PS16 break-even question.
+
 Measure automatic structure retention:
 
 ```powershell
 python scripts\run_structure_metrics.py `
   --scan-root "input\<scan-set-name>" `
-  --level lossless --level d003 --level d005 --level d010 `
-  --level d015 --level d020 --level d030 --level d050
+  --candidate-kind rendered_ps16_jxl `
+  --level d003 --level d005 --level d010 --level d020 --level d030 `
+  --level d050 --level d075 --level d100 --level d150 --level d200
 ```
 
 This writes `results/archival_break_even/structure_metrics.csv`. The current
@@ -246,10 +262,12 @@ back in:
 
 ```powershell
 python scripts\run_archival_break_even.py `
-  --level lossless --level d003 --level d005 --level d010 `
-  --level d015 --level d020 --level d030 --level d050 `
+  --level d003 --level d005 --level d010 --level d020 --level d030 `
+  --level d050 --level d075 --level d100 --level d150 --level d200 `
   --raw-loss-csv results\archival_break_even\raw61_loss.csv `
-  --structure-csv results\archival_break_even\structure_metrics.csv
+  --structure-csv results\archival_break_even\structure_metrics.csv `
+  --rendered-jxl-matrix-csv results\rendered_ps16_jxl_matrix\rendered_ps16_jxl_matrix.csv `
+  --rendered-jxl-patch-summary-csv results\rendered_ps16_jxl_matrix\break_even_patch_summary.csv
 ```
 
 These outputs are ignored by Git because they may reference private scan

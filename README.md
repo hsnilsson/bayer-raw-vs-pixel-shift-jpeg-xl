@@ -104,6 +104,9 @@ These results are not yet a universal archival recommendation.
   matrix
 - [scripts/run_structure_metrics.py](scripts/run_structure_metrics.py):
   measure high-pass structure retention for RAW61 and PS16 JXL candidates
+- [scripts/run_rendered_ps16_jxl_matrix.py](scripts/run_rendered_ps16_jxl_matrix.py):
+  encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and
+  measure codec loss without relying on DNG/JXL application support
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix
