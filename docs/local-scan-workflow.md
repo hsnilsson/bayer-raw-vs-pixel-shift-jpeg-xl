@@ -223,6 +223,7 @@ Measure automatic structure retention:
 python scripts\run_structure_metrics.py `
   --scan-root "input\<scan-set-name>" `
   --candidate-kind rendered_ps16_jxl `
+  --reuse-jxl-details-csv results\archival_break_even\structure_metrics_details.csv `
   --level d003 --level d005 --level d010 --level d020 --level d030 `
   --level d050 --level d075 --level d100 --level d150 --level d200
 ```
@@ -234,6 +235,8 @@ fine structure than the registered RAW61 baseline, and to flag suspicious JXL
 detail-energy/correlation behavior for crop review. Like the RAW61 color/tone
 step, the batch overview defaults to a 2048 px longest side; native-detail
 structure claims should be rerun on selected crops with `--max-analysis-dim 0`.
+If only the RAW61 registration has changed, `--reuse-jxl-details-csv` avoids
+re-decoding every standalone JXL candidate and recomputes only the RAW61 side.
 
 Archival break-even matrix:
 
@@ -272,6 +275,17 @@ python scripts\run_archival_break_even.py `
 
 These outputs are ignored by Git because they may reference private scan
 folders and are reproducible from local inputs.
+
+Generate small local review panels for the current break-even evidence:
+
+```powershell
+python scripts\make_break_even_review_panels.py
+```
+
+The panels are written to `results/break_even_review_panels/`. They are meant
+for local review before any claim is published: compare whether the registered
+RAW61 baseline is plausibly worse than PS16, and whether JXL artifacts remain
+small in the same crops after the hard negative-density transform.
 
 ## What To Add Next
 

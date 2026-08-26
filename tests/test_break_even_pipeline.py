@@ -139,6 +139,49 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertEqual(metrics.structure_loss, 0.0)
         self.assertAlmostEqual(metrics.detail_correlation, 1.0)
 
+    def test_structure_metrics_can_reuse_cached_jxl_detail(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            reference = textured_rgb()
+            raw61 = np.asarray(
+                Image.fromarray(reference).resize((32, 24), Image.Resampling.BICUBIC).resize(
+                    (128, 96), Image.Resampling.BICUBIC
+                )
+            )
+            ref_path = root / "ps16.png"
+            raw_path = root / "raw61.png"
+            write_png(ref_path, reference)
+            write_png(raw_path, raw61)
+            cached = structure_runner.StructureDetailRow(
+                scan_set="Synthetic Scan",
+                set_id="frame001",
+                level="d030",
+                scope="full",
+                candidate_role="ps16_jxl_candidate",
+                highpass_rmse=0.001,
+                highpass_reference_rms=0.1,
+                structure_loss=0.01,
+                detail_correlation=0.99,
+                detail_energy_ratio=1.0,
+            )
+
+            row, details = structure_runner.analyze_case(
+                "Synthetic Scan",
+                "frame001",
+                "d030",
+                ref_path,
+                raw_path,
+                root / "missing.jxl",
+                crop_spec=None,
+                highpass_radius=2,
+                max_analysis_dim=0,
+                cached_jxl_detail=cached,
+            )
+
+            self.assertEqual(row.structure_verdict, "ps16_jxl_likely_wins")
+            self.assertIn("reused_jxl_detail=true", row.notes)
+            self.assertEqual(details[1], cached)
+
     def test_uint8_tiff_fallback_can_write_without_tifffile(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             path = Path(temp_dir) / "tiny.tif"

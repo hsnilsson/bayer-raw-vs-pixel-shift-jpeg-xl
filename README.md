@@ -107,6 +107,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/run_rendered_ps16_jxl_matrix.py](scripts/run_rendered_ps16_jxl_matrix.py):
   encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and
   measure codec loss without relying on DNG/JXL application support
+- [scripts/make_break_even_review_panels.py](scripts/make_break_even_review_panels.py):
+  create local/private visual panels for reviewing RAW61-vs-PS16 baseline and
+  standalone JXL candidates
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix

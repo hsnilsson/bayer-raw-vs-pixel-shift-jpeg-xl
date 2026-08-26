@@ -4,8 +4,11 @@ import argparse
 import csv
 import json
 import math
+import shutil
+import subprocess
 import sys
-from dataclasses import asdict, dataclass
+import tempfile
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -33,6 +36,7 @@ DEFAULT_RENDERS_ROOT = ROOT / "outputs/rawtherapee_renders"
 DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
 DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT_DIR = ROOT / "results/archival_break_even"
+DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
 
 
 @dataclass
@@ -96,6 +100,19 @@ def raw61_registered_path(registered_root: Path, scan_set: str, set_id: str) -> 
     return registered_root / local_study.slugify(scan_set) / set_id / "raw61_registered_to_ps16.tif"
 
 
+def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
+    candidates = [str(explicit)] if explicit else []
+    candidates.extend([name, str(fallback)])
+    for candidate in candidates:
+        found = shutil.which(candidate) if "\\" not in candidate and "/" not in candidate else None
+        if found:
+            return found
+        path = Path(candidate)
+        if path.is_file():
+            return str(path)
+    raise SystemExit(f"Could not find {name}; pass --{name} or place it at {fallback}")
+
+
 def jxl_render_path(
     renders_root: Path,
     rendered_jxl_root: Path,
@@ -109,6 +126,9 @@ def jxl_render_path(
         png = rendered_jxl_root / scan_slug / set_id / level / "ps16_candidate.png"
         if png.is_file():
             return png
+        jxl = rendered_jxl_root / scan_slug / set_id / level / "ps16.jxl"
+        if jxl.is_file():
+            return jxl
         return rendered_jxl_root / scan_slug / set_id / level / "ps16_candidate.tif"
     if candidate_kind == "adc_dng_jxl":
         return renders_root / scan_slug / set_id / "adc_jxl_dng" / level / "ps16_candidate.tif"
@@ -221,6 +241,22 @@ def detail_row(
     )
 
 
+def read_jxl_candidate(path: Path, djxl: str) -> np.ndarray:
+    if path.suffix.lower() != ".jxl":
+        return read_rgb_image(path)
+    with tempfile.TemporaryDirectory(prefix="structure-jxl-") as temp_dir:
+        decoded = Path(temp_dir) / "candidate.ppm"
+        subprocess.run(
+            [djxl, str(path), str(decoded)],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        return read_rgb_image(decoded)
+
+
 def analyze_case(
     scan_set: str,
     set_id: str,
@@ -231,16 +267,40 @@ def analyze_case(
     crop_spec: str | None,
     highpass_radius: int,
     max_analysis_dim: int,
+    djxl: str | None = None,
+    cached_jxl_detail: StructureDetailRow | None = None,
+    cached_raw_detail: StructureDetailRow | None = None,
 ) -> tuple[StructureOutputRow, list[StructureDetailRow]]:
+    scope = crop_spec or "full"
+    if cached_raw_detail is not None and cached_jxl_detail is not None:
+        raw_detail = replace(cached_raw_detail, level=level)
+        risk = artifact_risk(cached_jxl_detail)
+        verdict = structure_verdict(raw_detail.structure_loss, cached_jxl_detail.structure_loss, risk)
+        return (
+            StructureOutputRow(
+                scan_set=scan_set,
+                set_id=set_id,
+                level=level,
+                scope=scope,
+                raw61_structure_loss=raw_detail.structure_loss,
+                jxl_structure_loss=cached_jxl_detail.structure_loss,
+                artifact_risk=risk,
+                structure_verdict=verdict,
+                notes=f"highpass_radius={highpass_radius}; crop={scope}; reused_raw61_detail=true; reused_jxl_detail=true",
+            ),
+            [raw_detail, cached_jxl_detail],
+        )
+
     missing = [
         name
         for name, path in (
             ("PS16 render", reference_path),
             ("registered RAW61 render", raw61_path),
-            ("JXL candidate render", jxl_path),
         )
         if not path.is_file()
     ]
+    if cached_jxl_detail is None and not jxl_path.is_file():
+        missing.append("JXL candidate render")
     if missing:
         return (
             StructureOutputRow(
@@ -259,18 +319,32 @@ def analyze_case(
 
     reference = crop(read_rgb_image(reference_path), crop_spec)
     raw61 = crop(read_rgb_image(raw61_path), crop_spec)
-    jxl = crop(read_rgb_image(jxl_path), crop_spec)
-    if reference.shape != raw61.shape or reference.shape != jxl.shape:
+    jxl = None
+    if cached_jxl_detail is None:
+        if jxl_path.suffix.lower() == ".jxl" and not djxl:
+            raise ValueError("djxl is required when the JXL candidate path is a standalone .jxl file")
+        jxl = crop(read_jxl_candidate(jxl_path, djxl or ""), crop_spec)
+    if reference.shape != raw61.shape or (jxl is not None and reference.shape != jxl.shape):
         raise ValueError(
             f"{scan_set}/{set_id}/{level}: structure input shapes differ after crop: "
-            f"{reference.shape}, {raw61.shape}, {jxl.shape}"
+            f"{reference.shape}, {raw61.shape}, {jxl.shape if jxl is not None else 'cached'}"
         )
     reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
     raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
-    jxl, _ = resize_to_max_dim(jxl, max_analysis_dim)
-    scope = crop_spec or "full"
-    raw_detail = detail_row(scan_set, set_id, level, scope, "raw61_registered", reference, raw61, highpass_radius)
-    jxl_detail = detail_row(scan_set, set_id, level, scope, "ps16_jxl_candidate", reference, jxl, highpass_radius)
+    if cached_raw_detail is not None:
+        raw_detail = replace(cached_raw_detail, level=level)
+        raw_cache_note = "; reused_raw61_detail=true"
+    else:
+        raw_detail = detail_row(scan_set, set_id, level, scope, "raw61_registered", reference, raw61, highpass_radius)
+        raw_cache_note = ""
+    if cached_jxl_detail is not None:
+        jxl_detail = cached_jxl_detail
+        cache_note = "; reused_jxl_detail=true"
+    else:
+        assert jxl is not None
+        jxl, _ = resize_to_max_dim(jxl, max_analysis_dim)
+        jxl_detail = detail_row(scan_set, set_id, level, scope, "ps16_jxl_candidate", reference, jxl, highpass_radius)
+        cache_note = ""
     risk = artifact_risk(jxl_detail)
     verdict = structure_verdict(raw_detail.structure_loss, jxl_detail.structure_loss, risk)
     return (
@@ -283,7 +357,7 @@ def analyze_case(
             jxl_structure_loss=jxl_detail.structure_loss,
             artifact_risk=risk,
             structure_verdict=verdict,
-            notes=f"highpass_radius={highpass_radius}; crop={scope}; analysis_scale={analysis_scale:.6g}",
+            notes=f"highpass_radius={highpass_radius}; crop={scope}; analysis_scale={analysis_scale:.6g}{raw_cache_note}{cache_note}",
         ),
         [raw_detail, jxl_detail],
     )
@@ -316,6 +390,32 @@ def write_json_output(path: Path, rows: list[StructureOutputRow], details: list[
     )
 
 
+def load_reusable_jxl_details(path: Path | None) -> dict[tuple[str, str, str, str], StructureDetailRow]:
+    reusable: dict[tuple[str, str, str, str], StructureDetailRow] = {}
+    if path is None or not path.is_file():
+        return reusable
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("candidate_role") != "ps16_jxl_candidate":
+                continue
+            item = StructureDetailRow(
+                scan_set=row.get("scan_set", ""),
+                set_id=row.get("set_id", ""),
+                level=row.get("level", ""),
+                scope=row.get("scope", ""),
+                candidate_role=row.get("candidate_role", ""),
+                highpass_rmse=row.get("highpass_rmse", ""),
+                highpass_reference_rms=row.get("highpass_reference_rms", ""),
+                structure_loss=row.get("structure_loss", ""),
+                detail_correlation=row.get("detail_correlation", ""),
+                detail_energy_ratio=row.get("detail_energy_ratio", ""),
+            )
+            key = (item.scan_set, item.set_id, item.level, item.scope)
+            if all(key):
+                reusable[key] = item
+    return reusable
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Measure high-pass structure retention for RAW61 and PS16 JXL candidates."
@@ -326,6 +426,7 @@ def main() -> int:
     parser.add_argument("--registered-root", type=Path, default=DEFAULT_REGISTERED_ROOT)
     parser.add_argument("--rendered-jxl-root", type=Path, default=DEFAULT_RENDERED_JXL_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument("--djxl", type=Path)
     parser.add_argument(
         "--candidate-kind",
         choices=["rendered_ps16_jxl", "adc_dng_jxl"],
@@ -335,6 +436,11 @@ def main() -> int:
     parser.add_argument("--reference", type=Path)
     parser.add_argument("--raw61", type=Path)
     parser.add_argument("--jxl", type=Path)
+    parser.add_argument(
+        "--reuse-jxl-details-csv",
+        type=Path,
+        help="Reuse existing ps16_jxl_candidate detail rows and recompute only RAW61 structure.",
+    )
     parser.add_argument("--scan-set", default="manual")
     parser.add_argument("--set-id", default="manual")
     parser.add_argument("--manual-level", default="d005")
@@ -350,6 +456,7 @@ def main() -> int:
 
     if args.highpass_radius <= 0:
         raise SystemExit("--highpass-radius must be positive")
+    djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
 
     if args.reference or args.raw61 or args.jxl:
         if not (args.reference and args.raw61 and args.jxl):
@@ -378,15 +485,27 @@ def main() -> int:
 
     rows: list[StructureOutputRow] = []
     details: list[StructureDetailRow] = []
+    reusable_jxl = load_reusable_jxl_details(args.reuse_jxl_details_csv)
+    raw_detail_cache: dict[tuple[str, str, str], StructureDetailRow] = {}
     for case in cases:
+        scan_set, set_id, level = case[:3]
+        scope = args.crop or "full"
+        cached_jxl = reusable_jxl.get((scan_set, set_id, level, scope))
+        cached_raw = raw_detail_cache.get((scan_set, set_id, scope))
         row, detail_rows = analyze_case(
             *case,
             crop_spec=args.crop,
             highpass_radius=args.highpass_radius,
             max_analysis_dim=args.max_analysis_dim,
+            djxl=djxl,
+            cached_jxl_detail=cached_jxl,
+            cached_raw_detail=cached_raw,
         )
         rows.append(row)
         details.extend(detail_rows)
+        for detail in detail_rows:
+            if detail.candidate_role == "raw61_registered":
+                raw_detail_cache[(detail.scan_set, detail.set_id, detail.scope)] = detail
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_csv(args.output_dir / "structure_metrics.csv", rows)
