@@ -84,6 +84,13 @@ def read_render_index(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
 def discover_ps16_renders(renders_root: Path) -> list[tuple[str, str, Path]]:
     rows = read_render_index(renders_root / "rawtherapee_render_index.csv")
     discovered: list[tuple[str, str, Path]] = []
@@ -156,6 +163,26 @@ def write_csv(path: Path, rows: list[dict[str, Any]] | list[Any]) -> None:
             writer.writerow(row)
 
 
+def normalize_rows(rows: list[dict[str, Any]] | list[Any]) -> list[dict[str, Any]]:
+    return [asdict(row) if hasattr(row, "__dataclass_fields__") else row for row in rows]
+
+
+def merge_rows(
+    existing_path: Path,
+    new_rows: list[dict[str, Any]] | list[Any],
+    key_fields: tuple[str, ...],
+) -> list[dict[str, Any]]:
+    normalized_new = normalize_rows(new_rows)
+    new_keys = {tuple(str(row.get(field, "")) for field in key_fields) for row in normalized_new}
+    merged = [
+        row
+        for row in read_csv_rows(existing_path)
+        if tuple(str(row.get(field, "")) for field in key_fields) not in new_keys
+    ]
+    merged.extend(normalized_new)
+    return merged
+
+
 def analyze_candidate(
     scan_set: str,
     set_id: str,
@@ -222,6 +249,16 @@ def main() -> int:
     parser.add_argument("--effort", type=int, default=7)
     parser.add_argument("--limit", type=int, default=0, help="Limit number of PS16 renders for smoke tests.")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help="Merge this run into existing result CSVs instead of replacing them.",
+    )
+    parser.add_argument(
+        "--discard-intermediates",
+        action="store_true",
+        help="Delete decoded PNG and reference PPM intermediates after metrics are written.",
+    )
     parser.add_argument("--no-metrics", action="store_true")
     parser.add_argument("--patch-size", type=int, default=256)
     parser.add_argument(
@@ -249,8 +286,10 @@ def main() -> int:
     pixel_rows: list[dict[str, Any]] = []
     patch_rows: list[dict[str, Any]] = []
     for scan_set, set_id, source in renders:
+        source_ppm: Path | None = None
         for level in levels:
             ppm, encoded, decoded = output_paths(args.output_root, source, level)
+            source_ppm = ppm
             encoded.parent.mkdir(parents=True, exist_ok=True)
             row = MatrixRow(
                 scan_set=scan_set,
@@ -308,29 +347,53 @@ def main() -> int:
                 else:
                     pixel_rows.extend(p_rows)
                     patch_rows.extend(patch)
+            if args.discard_intermediates:
+                decoded.unlink(missing_ok=True)
             rows.append(row)
+        if args.discard_intermediates and source_ppm is not None:
+            source_ppm.unlink(missing_ok=True)
 
     args.results_dir.mkdir(parents=True, exist_ok=True)
-    write_csv(args.results_dir / "rendered_ps16_jxl_matrix.csv", rows)
-    write_csv(args.results_dir / "pixel_metrics.csv", pixel_rows)
-    write_csv(args.results_dir / "patch_metrics.csv", patch_rows)
-    write_csv(args.results_dir / "patch_summary.csv", summarize_patch_metric_rows(patch_rows) if patch_rows else [])
+    if args.merge_existing:
+        matrix_rows = merge_rows(
+            args.results_dir / "rendered_ps16_jxl_matrix.csv",
+            rows,
+            ("scan_set", "set_id", "level"),
+        )
+        pixel_output_rows = merge_rows(
+            args.results_dir / "pixel_metrics.csv",
+            pixel_rows,
+            ("scan_set", "set_id", "level", "transform"),
+        )
+        patch_output_rows = merge_rows(
+            args.results_dir / "patch_metrics.csv",
+            patch_rows,
+            ("scan_set", "set_id", "level", "transform", "patch_id"),
+        )
+    else:
+        matrix_rows = normalize_rows(rows)
+        pixel_output_rows = pixel_rows
+        patch_output_rows = patch_rows
+    write_csv(args.results_dir / "rendered_ps16_jxl_matrix.csv", matrix_rows)
+    write_csv(args.results_dir / "pixel_metrics.csv", pixel_output_rows)
+    write_csv(args.results_dir / "patch_metrics.csv", patch_output_rows)
+    write_csv(args.results_dir / "patch_summary.csv", summarize_patch_metric_rows(patch_output_rows) if patch_output_rows else [])
     write_csv(
         args.results_dir / "break_even_patch_summary.csv",
-        summarize_patch_metric_rows(patch_rows, ("scan_set", "set_id", "level", "transform"))
-        if patch_rows
+        summarize_patch_metric_rows(patch_output_rows, ("scan_set", "set_id", "level", "transform"))
+        if patch_output_rows
         else [],
     )
     write_csv(
         args.results_dir / "patch_luminance_summary.csv",
-        summarize_patch_metric_rows(patch_rows, ("level", "transform", "luminance_bin"))
-        if patch_rows
+        summarize_patch_metric_rows(patch_output_rows, ("level", "transform", "luminance_bin"))
+        if patch_output_rows
         else [],
     )
     write_csv(
         args.results_dir / "patch_chroma_summary.csv",
-        summarize_patch_metric_rows(patch_rows, ("level", "transform", "chroma_bin"))
-        if patch_rows
+        summarize_patch_metric_rows(patch_output_rows, ("level", "transform", "chroma_bin"))
+        if patch_output_rows
         else [],
     )
     (args.results_dir / "rendered_ps16_jxl_matrix.json").write_text(
@@ -338,13 +401,13 @@ def main() -> int:
             {
                 "schema_version": 1,
                 "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-                "rows": [asdict(row) for row in rows],
+                "rows": matrix_rows,
             },
             indent=2,
         ),
         encoding="utf-8",
     )
-    print(f"Wrote {len(rows)} rendered PS16 JXL row(s) to {relpath(args.results_dir)}")
+    print(f"Wrote {len(matrix_rows)} rendered PS16 JXL row(s) to {relpath(args.results_dir)}")
     return 0
 
 
