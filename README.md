@@ -80,6 +80,8 @@ These results are not yet a universal archival recommendation.
   release checklist
 - [docs/local-scan-workflow.md](docs/local-scan-workflow.md): private local
   workflow for adding scan folders under ignored `input/`
+- [docs/break-even-review-panels.md](docs/break-even-review-panels.md): how to
+  read local RAW61-vs-PS16/JXL visual review panels
 - [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
   targets and images
 - [scripts/create_scan_manifest.py](scripts/create_scan_manifest.py): create
