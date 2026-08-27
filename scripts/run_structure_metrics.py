@@ -375,14 +375,37 @@ def write_csv(path: Path, rows: list[Any]) -> None:
             writer.writerow(row)
 
 
-def write_json_output(path: Path, rows: list[StructureOutputRow], details: list[StructureDetailRow]) -> None:
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def normalize_rows(rows: list[Any]) -> list[dict[str, Any]]:
+    return [asdict(row) if hasattr(row, "__dataclass_fields__") else row for row in rows]
+
+
+def merge_rows(path: Path, rows: list[Any], key_fields: tuple[str, ...]) -> list[dict[str, Any]]:
+    normalized_new = normalize_rows(rows)
+    new_keys = {tuple(str(row.get(field, "")) for field in key_fields) for row in normalized_new}
+    merged = [
+        row
+        for row in read_csv_rows(path)
+        if tuple(str(row.get(field, "")) for field in key_fields) not in new_keys
+    ]
+    merged.extend(normalized_new)
+    return merged
+
+
+def write_json_output(path: Path, rows: list[Any], details: list[Any]) -> None:
     path.write_text(
         json.dumps(
             {
                 "schema_version": 1,
                 "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-                "rows": [asdict(row) for row in rows],
-                "details": [asdict(row) for row in details],
+                "rows": normalize_rows(rows),
+                "details": normalize_rows(details),
             },
             indent=2,
         ),
@@ -440,6 +463,11 @@ def main() -> int:
         "--reuse-jxl-details-csv",
         type=Path,
         help="Reuse existing ps16_jxl_candidate detail rows and recompute only RAW61 structure.",
+    )
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help="Merge this run into existing output CSVs instead of replacing them.",
     )
     parser.add_argument("--scan-set", default="manual")
     parser.add_argument("--set-id", default="manual")
@@ -508,10 +536,22 @@ def main() -> int:
                 raw_detail_cache[(detail.scan_set, detail.set_id, detail.scope)] = detail
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    write_csv(args.output_dir / "structure_metrics.csv", rows)
-    write_csv(args.output_dir / "structure_metrics_details.csv", details)
-    write_json_output(args.output_dir / "structure_metrics.json", rows, details)
-    print(f"Wrote {len(rows)} structure row(s) to {relpath(args.output_dir / 'structure_metrics.csv')}")
+    rows_path = args.output_dir / "structure_metrics.csv"
+    details_path = args.output_dir / "structure_metrics_details.csv"
+    if args.merge_existing:
+        output_rows = merge_rows(rows_path, rows, ("scan_set", "set_id", "level", "scope"))
+        output_details = merge_rows(
+            details_path,
+            details,
+            ("scan_set", "set_id", "level", "scope", "candidate_role"),
+        )
+    else:
+        output_rows = normalize_rows(rows)
+        output_details = normalize_rows(details)
+    write_csv(rows_path, output_rows)
+    write_csv(details_path, output_details)
+    write_json_output(args.output_dir / "structure_metrics.json", output_rows, output_details)
+    print(f"Wrote {len(output_rows)} structure row(s) to {relpath(rows_path)}")
     return 0
 
 
