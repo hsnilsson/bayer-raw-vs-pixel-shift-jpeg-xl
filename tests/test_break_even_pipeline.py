@@ -23,6 +23,7 @@ from break_even_image_tools import (  # noqa: E402
 import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
 import make_break_even_review_panels as review_panels  # noqa: E402
+import generate_break_even_report_site as report_site  # noqa: E402
 
 
 def write_png(path: Path, arr: np.ndarray) -> None:
@@ -193,6 +194,32 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertAlmostEqual(result.shift_x_px, 3.0)
         self.assertAlmostEqual(result.shift_y_px, -2.0)
         self.assertLess(np.mean(np.abs(aligned.astype(np.int16) - reference.astype(np.int16))), 6.0)
+
+    def test_report_site_classifies_size_and_delta_e(self) -> None:
+        self.assertEqual(report_site.classify_size(95.0), "good")
+        self.assertEqual(report_site.classify_size(108.0), "warn")
+        self.assertEqual(report_site.classify_size(130.0), "bad")
+        self.assertEqual(report_site.classify_delta_e(0.8), "good")
+        self.assertEqual(report_site.classify_delta_e(1.7), "warn")
+        self.assertEqual(report_site.classify_delta_e(2.7), "risk")
+        self.assertEqual(report_site.classify_delta_e(3.5), "bad")
+
+    def test_report_site_marks_under_budget_warn_color_as_promising(self) -> None:
+        summary = report_site.LevelSummary(
+            level="d030",
+            rows=3,
+            median_size_pct=80.0,
+            min_size_pct=70.0,
+            max_size_pct=90.0,
+            max_jxl_delta_e=1.7,
+            median_raw_delta_e=5.0,
+            max_jxl_structure_loss=0.2,
+            median_raw_structure_loss=1.0,
+            verdicts={"ps16_jxl_likely_wins": 3},
+            status="",
+        )
+
+        self.assertEqual(report_site.status_for(summary), "Promising")
 
     def test_uint8_tiff_fallback_can_write_without_tifffile(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
