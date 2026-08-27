@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -236,6 +237,83 @@ def analyze_candidate(
     return pixel_rows, patch_rows
 
 
+def process_render_level(
+    scan_set: str,
+    set_id: str,
+    source: Path,
+    level: str,
+    output_root: Path,
+    results_dir: Path,
+    cjxl: str,
+    djxl: str,
+    effort: int,
+    force: bool,
+    discard_intermediates: bool,
+    no_metrics: bool,
+    patch_size: int,
+    patch_color_space: str,
+    crop_spec: str | None,
+    max_analysis_dim: int,
+) -> tuple[MatrixRow, list[dict[str, Any]], list[dict[str, Any]]]:
+    ppm, encoded, decoded = output_paths(output_root, source, level)
+    encoded.parent.mkdir(parents=True, exist_ok=True)
+    row = MatrixRow(
+        scan_set=scan_set,
+        set_id=set_id,
+        level=level,
+        source_tif=relpath(source),
+        encoded_jxl=relpath(encoded),
+        decoded_tif=relpath(decoded),
+        source_mib=mib(source) or 0.0,
+        encoded_mib=mib(encoded),
+        decoded_mib=mib(decoded),
+        status="pending",
+        notes="",
+    )
+    if force or not usable_file(encoded):
+        ok, note = run_checked(encode_command(cjxl, ppm, encoded, level, effort))
+        if not ok:
+            encoded.unlink(missing_ok=True)
+            row.status = "encode_failed"
+            row.notes = note
+            return row, [], []
+    if force or not usable_file(decoded):
+        decoded.unlink(missing_ok=True)
+        ok, note = run_checked(decode_command(djxl, encoded, decoded))
+        if not ok:
+            decoded.unlink(missing_ok=True)
+            row.status = "decode_failed"
+            row.notes = note
+            return row, [], []
+    row.encoded_mib = mib(encoded)
+    row.decoded_mib = mib(decoded)
+    row.status = "encoded_decoded"
+    pixel_rows: list[dict[str, Any]] = []
+    patch_rows: list[dict[str, Any]] = []
+    if not no_metrics:
+        try:
+            pixel_rows, patch_rows = analyze_candidate(
+                scan_set,
+                set_id,
+                level,
+                source,
+                decoded,
+                results_dir,
+                patch_size=patch_size,
+                patch_color_space=patch_color_space,
+                crop_spec=crop_spec,
+                max_analysis_dim=max_analysis_dim,
+            )
+        except Exception as exc:
+            decoded.unlink(missing_ok=True)
+            row.status = "metrics_failed"
+            row.notes = str(exc)
+            return row, [], []
+    if discard_intermediates:
+        decoded.unlink(missing_ok=True)
+    return row, pixel_rows, patch_rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and measure codec loss."
@@ -249,6 +327,12 @@ def main() -> int:
     parser.add_argument("--effort", type=int, default=7)
     parser.add_argument("--limit", type=int, default=0, help="Limit number of PS16 renders for smoke tests.")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=1,
+        help="Parallel image jobs. Keep low for full-resolution runs; 2-3 is usually safer than maxing the CPU.",
+    )
     parser.add_argument(
         "--merge-existing",
         action="store_true",
@@ -274,6 +358,8 @@ def main() -> int:
         raise SystemExit("--patch-size must be positive")
     if args.effort < 1 or args.effort > 9:
         raise SystemExit("--effort must be between 1 and 9")
+    if args.jobs <= 0:
+        raise SystemExit("--jobs must be positive")
 
     levels = [require_level(level) for level in (args.level or DEFAULT_LEVELS)]
     cjxl = find_tool("cjxl", DEFAULT_CJXL, args.cjxl)
@@ -282,76 +368,65 @@ def main() -> int:
     if args.limit:
         renders = renders[: args.limit]
 
+    source_ppms: set[Path] = set()
+    for scan_set, set_id, source in renders:
+        ppm, _encoded, _decoded = output_paths(args.output_root, source, levels[0])
+        source_ppms.add(ppm)
+        needs_ppm = args.force or not usable_file(ppm)
+        if not needs_ppm:
+            for level in levels:
+                _ppm, encoded, _decoded = output_paths(args.output_root, source, level)
+                if not usable_file(encoded):
+                    needs_ppm = True
+                    break
+        if needs_ppm:
+            ppm.parent.mkdir(parents=True, exist_ok=True)
+            write_ppm(ppm, read_rgb_image(source))
+
+    jobs = [
+        (
+            scan_set,
+            set_id,
+            source,
+            level,
+            args.output_root,
+            args.results_dir,
+            cjxl,
+            djxl,
+            args.effort,
+            args.force,
+            args.discard_intermediates,
+            args.no_metrics,
+            args.patch_size,
+            args.patch_color_space,
+            args.crop,
+            args.max_analysis_dim,
+        )
+        for scan_set, set_id, source in renders
+        for level in levels
+    ]
+
     rows: list[MatrixRow] = []
     pixel_rows: list[dict[str, Any]] = []
     patch_rows: list[dict[str, Any]] = []
-    for scan_set, set_id, source in renders:
-        source_ppm: Path | None = None
-        for level in levels:
-            ppm, encoded, decoded = output_paths(args.output_root, source, level)
-            source_ppm = ppm
-            encoded.parent.mkdir(parents=True, exist_ok=True)
-            row = MatrixRow(
-                scan_set=scan_set,
-                set_id=set_id,
-                level=level,
-                source_tif=relpath(source),
-                encoded_jxl=relpath(encoded),
-                decoded_tif=relpath(decoded),
-                source_mib=mib(source) or 0.0,
-                encoded_mib=mib(encoded),
-                decoded_mib=mib(decoded),
-                status="pending",
-                notes="",
-            )
-            if args.force or not usable_file(ppm):
-                write_ppm(ppm, read_rgb_image(source))
-            if args.force or not usable_file(encoded):
-                ok, note = run_checked(encode_command(cjxl, ppm, encoded, level, args.effort))
-                if not ok:
-                    encoded.unlink(missing_ok=True)
-                    row.status = "encode_failed"
-                    row.notes = note
-                    rows.append(row)
-                    continue
-            if args.force or not usable_file(decoded):
-                decoded.unlink(missing_ok=True)
-                ok, note = run_checked(decode_command(djxl, encoded, decoded))
-                if not ok:
-                    decoded.unlink(missing_ok=True)
-                    row.status = "decode_failed"
-                    row.notes = note
-                    rows.append(row)
-                    continue
-            row.encoded_mib = mib(encoded)
-            row.decoded_mib = mib(decoded)
-            row.status = "encoded_decoded"
-            if not args.no_metrics:
-                try:
-                    p_rows, patch = analyze_candidate(
-                        scan_set,
-                        set_id,
-                        level,
-                        source,
-                        decoded,
-                        args.results_dir,
-                        patch_size=args.patch_size,
-                        patch_color_space=args.patch_color_space,
-                        crop_spec=args.crop,
-                        max_analysis_dim=args.max_analysis_dim,
-                    )
-                except Exception as exc:
-                    decoded.unlink(missing_ok=True)
-                    row.status = "metrics_failed"
-                    row.notes = str(exc)
-                else:
-                    pixel_rows.extend(p_rows)
-                    patch_rows.extend(patch)
-            if args.discard_intermediates:
-                decoded.unlink(missing_ok=True)
+    if args.jobs == 1:
+        for job in jobs:
+            row, p_rows, patch = process_render_level(*job)
             rows.append(row)
-        if args.discard_intermediates and source_ppm is not None:
-            source_ppm.unlink(missing_ok=True)
+            pixel_rows.extend(p_rows)
+            patch_rows.extend(patch)
+    else:
+        with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            futures = [executor.submit(process_render_level, *job) for job in jobs]
+            for future in as_completed(futures):
+                row, p_rows, patch = future.result()
+                rows.append(row)
+                pixel_rows.extend(p_rows)
+                patch_rows.extend(patch)
+
+    if args.discard_intermediates:
+        for ppm in source_ppms:
+            ppm.unlink(missing_ok=True)
 
     args.results_dir.mkdir(parents=True, exist_ok=True)
     if args.merge_existing:
