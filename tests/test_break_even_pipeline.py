@@ -22,6 +22,7 @@ from break_even_image_tools import (  # noqa: E402
 )
 import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
+import make_break_even_review_panels as review_panels  # noqa: E402
 
 
 def write_png(path: Path, arr: np.ndarray) -> None:
@@ -181,6 +182,17 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertEqual(row.structure_verdict, "ps16_jxl_likely_wins")
             self.assertIn("reused_jxl_detail=true", row.notes)
             self.assertEqual(details[1], cached)
+
+    def test_review_panel_local_alignment_corrects_crop_shift(self) -> None:
+        reference = textured_rgb()
+        shifted = np.roll(np.roll(reference, 2, axis=0), -3, axis=1)
+
+        aligned, result = review_panels.local_align_raw61(reference, shifted, max_shift=8)
+
+        self.assertTrue(result.applied)
+        self.assertAlmostEqual(result.shift_x_px, 3.0)
+        self.assertAlmostEqual(result.shift_y_px, -2.0)
+        self.assertLess(np.mean(np.abs(aligned.astype(np.int16) - reference.astype(np.int16))), 6.0)
 
     def test_uint8_tiff_fallback_can_write_without_tifffile(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

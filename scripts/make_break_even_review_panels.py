@@ -20,7 +20,15 @@ SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(SCRIPTS))
 
-from break_even_image_tools import crop, read_rgb_image, resize_rgb, resize_to_max_dim, unit_luma  # noqa: E402
+from break_even_image_tools import (  # noqa: E402
+    crop,
+    phase_correlation_shift,
+    read_rgb_image,
+    resize_rgb,
+    resize_to_max_dim,
+    shift_rgb,
+    unit_luma,
+)
 import run_local_scan_study as local_study  # noqa: E402
 from run_public_latitude_stress import build_transforms  # noqa: E402
 
@@ -40,6 +48,14 @@ class ReviewCase:
     scan_set: str
     set_id: str
     reason: str
+
+
+@dataclass(frozen=True)
+class LocalAlignment:
+    shift_x_px: float
+    shift_y_px: float
+    confidence: float
+    applied: bool
 
 
 def relpath(path: Path, root: Path = ROOT) -> str:
@@ -202,13 +218,32 @@ def diff_display(reference: np.ndarray, candidate: np.ndarray, gain: float) -> I
     return Image.fromarray(np.round(diff * 255).astype(np.uint8), mode="RGB")
 
 
-def label(image: Image.Image, text: str) -> Image.Image:
-    pad = 28
+def checkerboard(reference: np.ndarray, candidate: np.ndarray, square: int = 48) -> Image.Image:
+    ref = np.asarray(to_display(reference))
+    cand = np.asarray(to_display(candidate))
+    yy, xx = np.mgrid[: ref.shape[0], : ref.shape[1]]
+    mask = ((xx // square + yy // square) % 2).astype(bool)
+    out = ref.copy()
+    out[mask] = cand[mask]
+    return Image.fromarray(out, mode="RGB")
+
+
+def label(image: Image.Image, title: str, help_text: str) -> Image.Image:
+    pad = 58
     out = Image.new("RGB", (image.width, image.height + pad), "white")
     out.paste(image, (0, pad))
     draw = ImageDraw.Draw(out)
-    draw.text((6, 7), text, fill="black")
+    draw.text((6, 6), title, fill="black")
+    draw.multiline_text((6, 23), help_text, fill=(70, 70, 70), spacing=2)
     return out
+
+
+def local_align_raw61(reference: np.ndarray, raw61: np.ndarray, max_shift: float) -> tuple[np.ndarray, LocalAlignment]:
+    shift_x, shift_y, _peak, confidence = phase_correlation_shift(unit_luma(reference), unit_luma(raw61))
+    applied = confidence > 20.0 and abs(shift_x) <= max_shift and abs(shift_y) <= max_shift
+    if not applied:
+        return raw61, LocalAlignment(shift_x, shift_y, confidence, False)
+    return shift_rgb(raw61, shift_x, shift_y), LocalAlignment(shift_x, shift_y, confidence, True)
 
 
 def compose_panel(
@@ -220,26 +255,59 @@ def compose_panel(
     output: Path,
     panel_size: int,
     diff_gain: float,
+    local_alignment: LocalAlignment,
 ) -> None:
     transforms = {transform.name: transform for transform in build_transforms(reference)}
     transform = transforms[transform_name]
     ref_t = transform.apply(reference)
     raw_t = transform.apply(raw61)
     jxl_t = transform.apply(jxl)
+    alignment_text = (
+        f"local RAW61 shift x={local_alignment.shift_x_px:.2f}, "
+        f"y={local_alignment.shift_y_px:.2f}, "
+        f"confidence={local_alignment.confidence:.1f}, "
+        f"applied={str(local_alignment.applied).lower()}"
+    )
     pieces = [
-        label(to_display(ref_t).resize((panel_size, panel_size), Image.Resampling.BOX), "PS16 reference"),
-        label(to_display(raw_t).resize((panel_size, panel_size), Image.Resampling.BOX), "RAW61 registered"),
-        label(to_display(jxl_t).resize((panel_size, panel_size), Image.Resampling.BOX), "PS16 JXL"),
-        label(diff_display(ref_t, raw_t, diff_gain).resize((panel_size, panel_size), Image.Resampling.BOX), f"RAW61 diff x{diff_gain:g}"),
-        label(diff_display(ref_t, jxl_t, diff_gain).resize((panel_size, panel_size), Image.Resampling.BOX), f"JXL diff x{diff_gain:g}"),
+        label(
+            to_display(ref_t).resize((panel_size, panel_size), Image.Resampling.BOX),
+            "PS16 reference",
+            "The comparison target\nrendered from PixelShift 16",
+        ),
+        label(
+            to_display(raw_t).resize((panel_size, panel_size), Image.Resampling.BOX),
+            "RAW61 local aligned",
+            "Single-shot RAW after\ncrop-local alignment",
+        ),
+        label(
+            to_display(jxl_t).resize((panel_size, panel_size), Image.Resampling.BOX),
+            "PS16 JXL",
+            "Decoded JPEG XL made\nfrom the PS16 render",
+        ),
+        label(
+            diff_display(ref_t, raw_t, diff_gain).resize((panel_size, panel_size), Image.Resampling.BOX),
+            f"RAW61 diff x{diff_gain:g}",
+            "Difference from PS16;\nbright means different",
+        ),
+        label(
+            diff_display(ref_t, jxl_t, diff_gain).resize((panel_size, panel_size), Image.Resampling.BOX),
+            f"JXL diff x{diff_gain:g}",
+            "Codec error versus PS16;\nnear-black is good",
+        ),
+        label(
+            checkerboard(ref_t, raw_t).resize((panel_size, panel_size), Image.Resampling.BOX),
+            "PS16/RAW61 checker",
+            "Alternates both images;\ncheck remaining alignment",
+        ),
     ]
     gap = 8
-    header = 34
+    header = 52
     width = sum(piece.width for piece in pieces) + gap * (len(pieces) - 1)
     height = header + max(piece.height for piece in pieces)
     panel = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(panel)
     draw.text((6, 9), title, fill="black")
+    draw.text((6, 28), alignment_text, fill=(70, 70, 70))
     x = 0
     for piece in pieces:
         panel.paste(piece, (x, header))
@@ -275,6 +343,8 @@ def main() -> int:
     parser.add_argument("--crop-size", type=int, default=768)
     parser.add_argument("--panel-size", type=int, default=360)
     parser.add_argument("--diff-gain", type=float, default=16.0)
+    parser.add_argument("--disable-local-raw61-align", action="store_true")
+    parser.add_argument("--max-local-shift", type=float, default=32.0)
     args = parser.parse_args()
 
     if args.crop_size <= 0 or args.panel_size <= 0:
@@ -289,6 +359,17 @@ def main() -> int:
         "# Break-even Review Panels",
         "",
         "Local/private panels for reviewing whether RAW61-vs-PS16 baseline differences are real or pipeline artifacts.",
+        "",
+        "Read each panel left to right:",
+        "",
+        "- `PS16 reference`: the rendered PixelShift 16 target for this test.",
+        "- `RAW61 local aligned`: the single-shot RAW render after crop-local x/y alignment.",
+        "- `PS16 JXL`: the decoded JPEG XL candidate made from the PS16 render.",
+        "- `RAW61 diff x16`: absolute difference between RAW61 and PS16, amplified 16x.",
+        "- `JXL diff x16`: absolute difference between JXL and PS16, amplified 16x.",
+        "- `PS16/RAW61 checker`: alternating squares from PS16 and RAW61; visible jumps indicate remaining alignment or rendering mismatch.",
+        "",
+        "Diff panels are diagnostic. Bright pixels mean different from PS16; they do not by themselves prove which image is better.",
         "",
     ]
     written = 0
@@ -322,18 +403,24 @@ def main() -> int:
                     ref_crop = crop(reference_full, crop_spec)
                     raw_crop = crop(raw_full, crop_spec)
                     jxl_crop = crop(jxl_full, crop_spec)
+                    if args.disable_local_raw61_align:
+                        aligned_raw_crop = raw_crop
+                        alignment = LocalAlignment(0.0, 0.0, 0.0, False)
+                    else:
+                        aligned_raw_crop, alignment = local_align_raw61(ref_crop, raw_crop, args.max_local_shift)
                     for transform_name in transforms:
                         output = case_dir / f"{level}_{crop_name}_{transform_name}.png"
                         title = f"{case.scan_set} / {case.set_id} / {level} / {crop_name} / {transform_name}"
                         compose_panel(
                             ref_crop,
-                            raw_crop,
+                            aligned_raw_crop,
                             jxl_crop,
                             title,
                             transform_name,
                             output,
                             panel_size=args.panel_size,
                             diff_gain=args.diff_gain,
+                            local_alignment=alignment,
                         )
                         index_lines.append(f"- [{output.name}]({relpath(output, args.output_dir)})")
                         written += 1

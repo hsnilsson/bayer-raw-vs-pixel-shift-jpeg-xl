@@ -286,6 +286,8 @@ The panels are written to `results/break_even_review_panels/`. They are meant
 for local review before any claim is published: compare whether the registered
 RAW61 baseline is plausibly worse than PS16, and whether JXL artifacts remain
 small in the same crops after the hard negative-density transform.
+See [break-even-review-panels.md](break-even-review-panels.md) for a plain
+explanation of each panel tile and how to score it.
 
 ## What To Add Next
 
