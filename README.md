@@ -112,6 +112,9 @@ These results are not yet a universal archival recommendation.
 - [scripts/make_break_even_review_panels.py](scripts/make_break_even_review_panels.py):
   create local/private visual panels for reviewing RAW61-vs-PS16 baseline and
   standalone JXL candidates
+- [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
+  generate a local HTML report with color-coded break-even tables and review
+  panel navigation
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix

@@ -289,6 +289,16 @@ small in the same crops after the hard negative-density transform.
 See [break-even-review-panels.md](break-even-review-panels.md) for a plain
 explanation of each panel tile and how to score it.
 
+Build the local HTML navigation/report page:
+
+```powershell
+python scripts\generate_break_even_report_site.py
+```
+
+Open `results/break_even_report/index.html` locally. The page joins the current
+break-even CSV, simple color-coded diagnostic labels, FADGI-inspired context,
+and the generated review panels.
+
 ## What To Add Next
 
 For each future film stock or representative frame, try to include:
