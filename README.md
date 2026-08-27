@@ -18,8 +18,8 @@ Current working hypothesis:
   last bit of scanner/camera precision.
 - A 240 MP PixelShift capture stored as carefully tested JPEG XL may preserve
   more useful film structure than a 61 MP Bayer raw file at similar storage cost.
-- This remains a hypothesis until repeated across public, non-private test
-  material.
+- This remains a hypothesis until repeated across more film stocks, crops, and
+  independently reviewable test material.
 
 ## Current Evidence
 
@@ -27,8 +27,8 @@ For a quick map of what each result can and cannot prove, start with
 [FINDINGS.md](FINDINGS.md).
 
 Public reproducible tests use FADGI/OpenDICE and Library of Congress TIFFs.
-Private exploratory tests use local PixelShift camera scans. Together they show
-the current pattern:
+Local PixelShift camera scans test the real workflow. Together they show the
+current pattern:
 
 - JPEG XL lossless round-tripped the extracted 16-bit linear image data exactly.
 - Lossless JPEG XL saved only modest space for the tested PixelShift2DNG files.
@@ -36,6 +36,9 @@ the current pattern:
   edits.
 - Public FADGI/OpenDICE and LOC tests make the stress pipeline reproducible,
   but they do not answer the PixelShift sampling question by themselves.
+- The standalone rendered-PS16 JPEG XL matrix now crosses the 61 MP RAW storage
+  budget in the current local real-negative material; the first tested
+  under-budget area is around `d022`.
 - In one FilmLab-based ProPhoto test, JPEG XL distance `0.05` reduced one DNG to
   about half its size while producing a much smaller post-inversion error than
   more aggressive settings.
@@ -50,7 +53,7 @@ These results are not yet a universal archival recommendation.
 - [CONCLUSIONS.md](CONCLUSIONS.md): short executive summary and current
   practical recommendation
 - [FINDINGS.md](FINDINGS.md): evidence map separating public FADGI/OpenDICE
-  findings, private local scan findings, and still-pending claims
+  findings, local scan findings, and still-pending claims
 - [LICENSE](LICENSE): license for original project code and documentation
 - [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md): rights notes for public test data
 - [REPRODUCIBILITY.md](REPRODUCIBILITY.md): clean reproduction path for the
@@ -78,14 +81,14 @@ These results are not yet a universal archival recommendation.
 - [docs/research-log.md](docs/research-log.md): project history and decisions
 - [docs/publication-checklist.md](docs/publication-checklist.md): privacy and
   release checklist
-- [docs/local-scan-workflow.md](docs/local-scan-workflow.md): private local
-  workflow for adding scan folders under ignored `input/`
+- [docs/local-scan-workflow.md](docs/local-scan-workflow.md): local workflow for
+  adding scan folders under ignored `input/`
 - [docs/break-even-review-panels.md](docs/break-even-review-panels.md): how to
   read local RAW61-vs-PS16/JXL visual review panels
 - [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
   targets and images
 - [scripts/create_scan_manifest.py](scripts/create_scan_manifest.py): create
-  private JSON/Markdown sidecars for local camera-scan folders, including
+  local JSON/Markdown sidecars for camera-scan folders, including
   ExifTool-based PixelShift grouping for raw-only imports
 - [scripts/run_adobe_dng_jxl_batch.py](scripts/run_adobe_dng_jxl_batch.py):
   batch-run Adobe DNG Converter DNG/JPEG XL variants into
@@ -110,7 +113,7 @@ These results are not yet a universal archival recommendation.
   encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and
   measure codec loss without relying on DNG/JXL application support
 - [scripts/make_break_even_review_panels.py](scripts/make_break_even_review_panels.py):
-  create local/private visual panels for reviewing RAW61-vs-PS16 baseline and
+  create local visual panels for reviewing RAW61-vs-PS16 baseline and
   standalone JXL candidates
 - [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
   generate a local HTML report with color-coded break-even tables and review
@@ -170,7 +173,7 @@ Run the current public latitude-stress v2 pipeline:
 python scripts\run_public_latitude_v2.py --publish-figures
 ```
 
-Run the private local scan-study queue for ignored folders under `input/`:
+Run the local scan-study queue for ignored folders under `input/`:
 
 ```powershell
 python scripts\run_local_scan_study.py --dry-run
@@ -179,12 +182,12 @@ python scripts\run_storage_budget_index.py
 python scripts\run_archival_break_even.py --write-templates
 ```
 
-For the actual break-even search, generate and analyze additional JPEG XL
-distances such as `d015`, `d020`, `d030`, and `d050`; `d020` maps to Adobe DNG
-Converter distance `0.20`.
+For the actual break-even search, generate and analyze JPEG XL distances that
+bracket the RAW61 storage budget, currently including `d020`, `d022`, `d025`,
+`d028`, and `d030`; `d020` maps to JPEG XL distance `0.20`.
 
 See [docs/local-scan-workflow.md](docs/local-scan-workflow.md) before adding new
-private negatives.
+local scan material.
 
 For a fuller clean-clone path, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 
@@ -220,9 +223,10 @@ question.
 ## Status
 
 This repo is close to a public-review state, but it is still a research project,
-not an archival recommendation. Private scans and generated local outputs are
-intentionally ignored by Git. Public samples should be downloaded or stored under
-`testdata/` with source sidecars and SHA-256 hashes.
+not an archival recommendation. Full-size local scans and generated outputs are
+intentionally ignored by Git unless deliberately promoted. Public samples should
+be downloaded or stored under `testdata/` with source sidecars and SHA-256
+hashes.
 
 For the shortest current interpretation, start with
 [CONCLUSIONS.md](CONCLUSIONS.md).

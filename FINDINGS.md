@@ -18,7 +18,7 @@ every numeric value from a smaller capture.
 | Track | Data | What It Helps Answer | What It Does Not Answer |
 | --- | --- | --- | --- |
 | Public latitude stress | FADGI/OpenDICE TIFFs and Library of Congress TIFFs | Whether JPEG XL distance settings behave predictably under reproducible tone/negative-like stress | Whether PixelShift 16 beats 61 MP raw on real camera-scanned film |
-| Private DNG/JXL scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | How Adobe DNG Converter DNG/JXL behaves on real local color-negative camera scans | Public reproducibility, because the source scans are private |
+| Local DNG/JXL scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | How Adobe DNG Converter DNG/JXL behaves on real color-negative camera scans | Full public reproducibility unless selected source data or review panels are published |
 | Patch-color diagnostics | Local DNG/JXL verification crops | Whether lossy JXL changes local mean color or mostly changes pixel texture/noise | Absolute scene color accuracy or a full color-managed film-rendering result |
 | Local scan-study runner | Ignored `input/` scan folders | Repeatable intake and verification for future private/anonymized scans | New scientific evidence by itself |
 | Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary until the RAW61-vs-PS16 baseline is visually reviewed and any render/profile mismatch is resolved |
@@ -40,11 +40,11 @@ the same data and inspect the same figures.
 
 They should not be treated as replacements for real camera-scanned negatives.
 Their job is to make the codec/stress methodology public and reproducible while
-the private film scans develop the real workflow.
+the local film scans develop the real workflow.
 
 ## Current Pattern
 
-Across the current public and private evidence, the ordering is stable:
+Across the current public and local evidence, the ordering is stable:
 
 - lossless JPEG XL can preserve the chosen image state exactly
 - `d=0.03` is the cleaner conservative lossy candidate
@@ -64,13 +64,13 @@ That is encouraging, but it is not enough to recommend lossy JXL as the only
 master.
 
 The standalone rendered-PS16 JXL path now produces candidates that cross below
-the paired 61 MP raw storage budget on the current private material. In the
-automatic overview metrics, `d=0.30` and stronger compression are generally
-under budget while still ranking as PS16 JXL likely wins for the complete
-non-flagged pairs. This is a useful local result, not a final publication
-claim: the RAW61-vs-PS16 rendered color/tone baseline is currently much larger
-than expected and may include pipeline mismatch rather than only true sampling
-loss.
+the paired 61 MP raw storage budget on the current local material. The current
+median size break-even is between `d020` and `d022`; `d025` and stronger
+compression are under budget in the automatic overview while still ranking as
+PS16 JXL likely wins for the complete non-flagged pairs. This is useful local
+evidence, not a final archival recommendation: the RAW61-vs-PS16 rendered
+color/tone baseline is currently much larger than expected and may include
+pipeline mismatch rather than only true sampling loss.
 
 ## Best Current Recommendation
 
@@ -85,7 +85,7 @@ color-managed render tracks are complete.
 The project becomes much more useful when these pieces are all represented:
 
 - public/reproducible FADGI/OpenDICE stress results
-- anonymized real negative examples
+- owner-approved or anonymized real negative examples
 - fully color-managed render/export comparison
 - metadata and ICC preservation checks
 - direct 61 MP raw versus 240 MP PixelShift 16 JXL storage-budget comparison

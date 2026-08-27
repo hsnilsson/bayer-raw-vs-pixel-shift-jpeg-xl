@@ -20,8 +20,8 @@ film frame versus preserving every numeric value from a smaller capture.
 - A public, reproducible JPEG XL latitude-stress pipeline.
 - Public FADGI/OpenDICE and Library of Congress TIFF test images tracked through
   Git LFS.
-- A clear separation between public reproducible evidence and private local
-  PixelShift scan evidence.
+- A clear separation between public reproducible evidence, local PixelShift scan
+  evidence, and selected owner-approved derived panels.
 - Source sidecars and manifests for downloaded public test data.
 - Selected public visual panels comparing JPEG XL `d=0.05` and `d=0.10`.
 - A publication-safety audit and a combined readiness check.
@@ -39,7 +39,11 @@ The current practical result is:
 - Keep DNG/RAW/lossless originals when possible.
 - JPEG XL lossless can preserve a chosen 16-bit rendered/extracted state
   exactly, but the tested storage savings were modest.
-- JPEG XL `d=0.05` remains the most interesting conservative lossy candidate.
+- The current local storage-budget matrix crosses the paired 61 MP RAW budget
+  around `d022`; this is promising but still preliminary.
+- JPEG XL `d=0.05` remains an interesting conservative lossy candidate in the
+  older ADC/stress tracks, while the newer standalone-JXL break-even sweep uses
+  finer `d020` through `d030` levels.
 - JPEG XL `d=0.10` looks too aggressive for an archival claim without stronger
   evidence.
 
@@ -65,8 +69,9 @@ This does not prove that lossy JPEG XL should replace raw/DNG masters.
 
 It does not prove that `d=0.05` survives all real film-negative workflows.
 
-It does not yet answer the core sampling question directly, because that needs
-anonymous real negatives or a controlled 61 MP raw versus 240 MP PixelShift test.
+It does not yet turn the core sampling result into an archival recommendation,
+because the RAW61-vs-PS16 render/profile baseline still needs cleanup and the
+visual review set is small.
 
 ## How To Check The Repo
 
@@ -86,8 +91,8 @@ A cautious public framing:
 
 > This is a reproducible investigation into whether conservative JPEG XL can
 > make high-resolution PixelShift camera scanning practical under real storage
-> constraints. The early evidence suggests `d=0.05` is worth further testing,
-> while `d=0.10` looks too aggressive. This is not a recommendation to delete
+> constraints. Current local real-negative tests cross the 61 MP RAW storage
+> budget around JPEG XL `d022`, but this is still not a recommendation to delete
 > raw/DNG originals.
 
 ## Feedback Wanted

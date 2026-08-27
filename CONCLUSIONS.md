@@ -26,6 +26,11 @@ The current practical answer is:
 - The newest patch-color tests make `d=0.03` and `d=0.05` look better for local
   mean-color stability than the raw pixel-error numbers alone suggested, but
   they do not remove the sole-master risk.
+- The newest standalone rendered-PS16 JXL matrix crosses the paired 61 MP RAW
+  storage budget around `d022` on the current local material. `d025` and
+  stronger compression are under budget in the current metrics, but require
+  more visual review and render-profile cleanup before becoming a practical
+  recommendation.
 
 The deeper hypothesis remains alive: a very high-resolution PixelShift scan
 stored as conservative JPEG XL may be a better practical representation of a
@@ -52,7 +57,7 @@ That tradeoff is the heart of this project.
 
 ## What The Tests Support
 
-The private exploratory tests support these points:
+The local exploratory tests support these points:
 
 - PixelShift2DNG output tested here behaves like demosaiced/merged RGB image
   data, not like the original sequence of sensor raw files.
@@ -60,7 +65,7 @@ The private exploratory tests support these points:
 - Lossless JPEG XL did not save enough space to solve the storage problem by
   itself.
 - Negative inversion and strong tonal edits can amplify small JPEG XL errors.
-- A private Kodak Gold 200-5 batch repeated the same basic ordering on real
+- A local Kodak Gold 200-5 batch repeated the same basic ordering on real
   color-negative camera scans: lossless ADC JXL DNG was exact in tested crops,
   `d=0.03` was cleaner, and `d=0.05` saved more space while showing larger
   errors after negative-like transforms.
@@ -68,7 +73,7 @@ The private exploratory tests support these points:
   differences for `d=0.03` and `d=0.05`, even after hard negative-print stress.
   This suggests much of the measured lossy penalty is texture/pixel variation
   rather than broad patch-level color bias.
-- A second private Kodak Safety Film 5035 set repeated the same ordering:
+- A second local Kodak Safety Film 5035 set repeated the same ordering:
   lossless exact, `d=0.03` cleaner, `d=0.05` smaller with higher error, and
   `d=0.10` clearly riskier. Its hard-print patch-error tail was higher than the
   Kodak Gold set, so p95/max patch metrics remain important.
@@ -77,7 +82,7 @@ The private exploratory tests support these points:
   changes in the active PixelShift 16 local runs after rational DNG tag
   normalization, while lossy candidates rewrote stored raster shape, active crop
   origin, `WhiteLevel`, and `OpcodeList2`.
-- A private FilmLab ProPhoto test found `d=0.05` much less damaging than more
+- A local FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
 
@@ -86,7 +91,7 @@ The public tests support these points:
 - The repository now has a reproducible public test pipeline.
 - FADGI/OpenDICE target files are part of that public pipeline. They are used
   to make the codec and negative-like stress tests reproducible, not as
-  substitutes for private PixelShift film scans.
+  substitutes for real PixelShift film scans.
 - Public latitude-stress v2 tests show that `d=0.10` is consistently worse than
   `d=0.05`.
 - Density-based negative-print transforms expose larger high-percentile errors

@@ -5,8 +5,9 @@ does not yet prove a universal archival rule.
 
 ## Current Limitations
 
-- Private exploratory images must not be published; stronger public claims need
-  public or anonymized real negative scans.
+- Local exploratory images require an explicit publication decision. Selected
+  derived panels may be published when owner-approved; full-size source scans
+  require a separate data-publication decision.
 - Most numerical results currently come from a small number of images.
 - FilmLab is not a fully controlled scientific transform.
 - FilmLab 3.5.0 appeared to mishandle direct lossy JXL color-profile import in
@@ -17,8 +18,8 @@ does not yet prove a universal archival rule.
   property of the original sensor captures.
 - JPEG XL visual distance is optimized for perception, not for future arbitrary
   negative-inversion edits.
-- The current ADC color-path check inspected only the first two embedded JXL
-  tiles in one private lossless/lossy file pair; it must be repeated before
+- The current ADC color-path check inspected only representative embedded JXL
+  tiles from a small local lossless/lossy file set; it must be broadened before
   claiming that all ADC-generated lossy `LinearRaw` DNGs use the same XYB path.
 - Standard image metrics do not directly measure archival value.
 - A public target test can measure capture quality but cannot fully represent

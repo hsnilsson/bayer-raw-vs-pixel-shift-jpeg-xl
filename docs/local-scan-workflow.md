@@ -56,7 +56,7 @@ runner accepts any level named `dNNN`, where `d020` means Adobe DNG Converter
 
 ```powershell
 python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>" `
-  --levels lossless d003 d005 d010 d015 d020 d030 d050
+  --levels lossless d003 d005 d010 d020 d022 d025 d028 d030 d050
 ```
 
 To avoid creating candidates for every root-level DNG, pass only the intended
@@ -66,7 +66,7 @@ example stems below are anonymized:
 
 ```powershell
 python scripts\run_adobe_dng_jxl_batch.py "input\<scan-set-name>" `
-  --levels lossless d003 d005 d010 d015 d020 d030 d050 `
+  --levels lossless d003 d005 d010 d020 d022 d025 d028 d030 d050 `
   --source "DSC0001-DSC0016" `
   --source "DSC0020-DSC0035"
 ```
@@ -112,7 +112,7 @@ Analyze the same expanded break-even levels:
 python scripts\run_local_scan_study.py `
   --scan-root "input\<scan-set-name>" `
   --level lossless --level d003 --level d005 --level d010 `
-  --level d015 --level d020 --level d030 --level d050
+  --level d020 --level d022 --level d025 --level d028 --level d030 --level d050
 ```
 
 ## Outputs
@@ -166,7 +166,7 @@ python scripts\render_with_rawtherapee.py `
   --scan-root "input\<scan-set-name>" `
   --profile profiles\rawtherapee\neutral-render.pp3 `
   --level lossless --level d003 --level d005 --level d010 `
-  --level d015 --level d020 --level d030 --level d050
+  --level d020 --level d022 --level d025 --level d028 --level d030 --level d050
 ```
 
 The script deliberately refuses to invent a neutral `.pp3`. Create
@@ -206,8 +206,9 @@ Encode rendered PS16 TIFF masters as standalone JPEG XL:
 
 ```powershell
 python scripts\run_rendered_ps16_jxl_matrix.py `
-  --level d003 --level d005 --level d010 --level d020 --level d030 `
-  --level d050 --level d075 --level d100 --level d150 --level d200
+  --level d003 --level d005 --level d010 --level d020 --level d022 `
+  --level d025 --level d028 --level d030 --level d050 --level d075 `
+  --level d100 --level d150 --level d200
 ```
 
 This writes standalone candidates under
@@ -224,8 +225,9 @@ python scripts\run_structure_metrics.py `
   --scan-root "input\<scan-set-name>" `
   --candidate-kind rendered_ps16_jxl `
   --reuse-jxl-details-csv results\archival_break_even\structure_metrics_details.csv `
-  --level d003 --level d005 --level d010 --level d020 --level d030 `
-  --level d050 --level d075 --level d100 --level d150 --level d200
+  --level d003 --level d005 --level d010 --level d020 --level d022 `
+  --level d025 --level d028 --level d030 --level d050 --level d075 `
+  --level d100 --level d150 --level d200
 ```
 
 This writes `results/archival_break_even/structure_metrics.csv`. The current
@@ -265,8 +267,9 @@ back in:
 
 ```powershell
 python scripts\run_archival_break_even.py `
-  --level d003 --level d005 --level d010 --level d020 --level d030 `
-  --level d050 --level d075 --level d100 --level d150 --level d200 `
+  --level d003 --level d005 --level d010 --level d020 --level d022 `
+  --level d025 --level d028 --level d030 --level d050 --level d075 `
+  --level d100 --level d150 --level d200 `
   --raw-loss-csv results\archival_break_even\raw61_loss.csv `
   --structure-csv results\archival_break_even\structure_metrics.csv `
   --rendered-jxl-matrix-csv results\rendered_ps16_jxl_matrix\rendered_ps16_jxl_matrix.csv `
