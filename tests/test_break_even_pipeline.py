@@ -248,6 +248,29 @@ class BreakEvenPipelineTests(unittest.TestCase):
             ],
         )
 
+    def test_structure_metrics_merge_replaces_matching_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "rows.csv"
+            with path.open("w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=["scan_set", "set_id", "level", "scope", "value"])
+                writer.writeheader()
+                writer.writerow({"scan_set": "a", "set_id": "one", "level": "d020", "scope": "full", "value": "old"})
+                writer.writerow({"scan_set": "a", "set_id": "one", "level": "d030", "scope": "full", "value": "kept"})
+
+            merged = structure_runner.merge_rows(
+                path,
+                [{"scan_set": "a", "set_id": "one", "level": "d020", "scope": "full", "value": "new"}],
+                ("scan_set", "set_id", "level", "scope"),
+            )
+
+        self.assertEqual(
+            merged,
+            [
+                {"scan_set": "a", "set_id": "one", "level": "d030", "scope": "full", "value": "kept"},
+                {"scan_set": "a", "set_id": "one", "level": "d020", "scope": "full", "value": "new"},
+            ],
+        )
+
     def test_uint8_tiff_fallback_can_write_without_tifffile(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             path = Path(temp_dir) / "tiny.tif"
