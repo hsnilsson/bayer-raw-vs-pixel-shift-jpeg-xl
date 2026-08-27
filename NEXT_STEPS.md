@@ -69,16 +69,16 @@ as safe as the sole retained master.
   then run `scripts/run_raw61_loss_metrics.py` and
   `scripts/run_structure_metrics.py` to fill the break-even matrix inputs.
 - For actual break-even batches, include standalone JXL levels that cross the
-  61 MP raw storage budget, currently `d003`, `d005`, `d010`, `d020`, `d030`,
-  `d050`, `d075`, `d100`, `d150`, and `d200`.
+  61 MP raw storage budget, currently `d003`, `d005`, `d010`, `d020`, `d022`,
+  `d025`, `d028`, `d030`, `d050`, `d075`, `d100`, `d150`, and `d200`.
 - Keep the archived smoke-test page under `docs/archive/`; v2 remains the main
   public result.
 - Keep the current selected v2 public figures unless they are replaced by
   stronger anonymized real-negative examples.
-- For the private Kodak Gold 200-5 batch, review the generated `d003`/`d005`
-  panels and decide which frames, if any, can be replaced by anonymous crops.
-- Review the new private Kodak Gold patch-color summaries and use them to pick
-  a few representative worst-case crops for future anonymized figures.
+- Review the generated Kodak Gold 200-5 `d020` through `d030` break-even panels
+  and decide whether to publish them as the first real-negative report example.
+- Review the Kodak Gold and Kodak Safety Film 5035 patch-color summaries and
+  pick representative worst-case crops for future public figures.
 - Use `scripts/run_local_scan_study.py --dry-run` after adding each new ignored
   `input/` scan folder, then run it without `--dry-run` once ADC candidates are
   complete.
@@ -93,7 +93,7 @@ as safe as the sole retained master.
   - PixelShift 4
   - PixelShift 16
   - PixelShift2DNG outputs for the practical workflow being tested
-- Add anonymous real color-negative frames that stress:
+- Add owner-approved or anonymized real color-negative frames that stress:
   - dense or underexposed negatives
   - thin or overexposed negatives
   - smooth color transitions or skin-like tones
@@ -180,10 +180,15 @@ as safe as the sole retained master.
   archival break-even matrix, and kept the conclusion preliminary because the
   RAW61-vs-PS16 rendered color baseline is suspiciously large and needs visual
   review/normalization before publication claims.
+- 2026-08-27: added finer break-even levels `d022`, `d025`, and `d028`, reran
+  stale levels through one consistent standalone-JXL pipeline, generated local
+  report panels for `d020` through `d030`, and added a GitHub Pages publication
+  target under `site/`.
 
 ## Human Decisions Still Needed
 
-- Which new negatives are safe enough to publish or crop.
+- Which full-size source scans, if any, should be published through Git LFS
+  rather than only publishing derived panels.
 - Whether source raw/DNG files may be committed through Git LFS or only measured
   locally.
 - Whether a target capture can be added for OpenDICE/AutoSFR-style measurement.
@@ -196,7 +201,9 @@ as safe as the sole retained master.
   some local pairs: true sampling difference, render/profile mismatch,
   PixelShift2DNG difference, exposure/WB mismatch, or registration/crop issue?
 - At which standalone JXL distance do native-detail crops stop preserving more
-  useful film structure than the registered 61 MP raw baseline?
+  useful film structure than the registered 61 MP raw baseline? The current
+  size break-even is around `d022`, but the structure/color failure boundary has
+  not been found yet.
 - Is `d=0.03` the better practical archival candidate even when its storage
   savings are less dramatic than `d=0.05`?
 - Does PixelShift 16 preserve visibly more useful film structure than 61 MP raw

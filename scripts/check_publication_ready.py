@@ -19,6 +19,7 @@ REQUIRED_FILES = [
     ".gitignore",
     "LICENSE",
     "THIRD_PARTY_DATA.md",
+    "PUBLICATION_AUDIT.md",
     "REPRODUCIBILITY.md",
     "RELATED_WORK.md",
     "RESEARCH_PLAN.md",
@@ -53,6 +54,9 @@ REQUIRED_FILES = [
     "scripts/run_archival_break_even.py",
     "src/break_even_image_tools.py",
     "profiles/rawtherapee/README.md",
+    "site/index.html",
+    "site/README.md",
+    ".github/workflows/report-site.yml",
     "tests/test_review_fixes.py",
 ]
 PYTHON_FILES = [

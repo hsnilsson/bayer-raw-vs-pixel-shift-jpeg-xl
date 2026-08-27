@@ -1,13 +1,13 @@
 # Results
 
 This page summarizes the current state of evidence. The project is still work in
-progress. Early exploratory results came from private source images; the current
-public latitude tests are reproducible from public data, but they do not yet
-replace real anonymous color-negative camera-scan tests.
+progress. Early exploratory results came from local source images; the current
+public latitude tests are reproducible from public data, but they do not by
+themselves replace real color-negative camera-scan tests.
 
 For the shortest interpretation of these results, see
 [CONCLUSIONS.md](CONCLUSIONS.md).
-For a clearer map of public, private, and still-pending claims, see
+For a clearer map of public, local, and still-pending claims, see
 [FINDINGS.md](FINDINGS.md).
 
 ## Evidence Tracks At A Glance
@@ -15,17 +15,17 @@ For a clearer map of public, private, and still-pending claims, see
 | Track | Data | Current Role | Status |
 |---|---|---|---|
 | Public latitude stress | FADGI/OpenDICE and Library of Congress TIFFs | Reproducible codec/stress evidence and public figures | active public track |
-| Private local scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | Real workflow evidence for ADC DNG/JXL behavior on color-negative scans | private, not publishable as-is |
+| Local scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | Real workflow evidence for ADC DNG/JXL behavior on color-negative scans | selected derived panels are publishable with owner approval |
 | Patch-color diagnostics | Matched DNG/JXL crop patches | Separates local mean-color bias from pixel texture/noise changes | implemented for local DNG/JXL verification |
-| Storage-budget comparison | 61 MP raw versus 240 MP PixelShift 16 JXL | Direct test of the main hypothesis | pending |
+| Storage-budget comparison | 61 MP raw versus 240 MP PixelShift 16 JXL | Direct test of the main hypothesis | active preliminary local result |
 
 The FADGI/OpenDICE files are therefore not forgotten. They belong to the public
 reproducibility track: they help show how the JPEG XL settings behave under a
-standardized, shareable stress test. They do not replace the private/local film
+standardized, shareable stress test. They do not replace the local film
 scan track because they do not test PixelShift capture, PixelShift2DNG behavior,
 or real film-frame sampling at 61 MP versus 240 MP.
 
-## Private Exploratory Findings
+## Local Exploratory Findings
 
 ### Adobe DNG Converter JPEG XL DNG Smoke Test
 
@@ -59,13 +59,14 @@ See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jx
 
 ### Kodak Gold 200-5 ADC DNG/JXL Batch
 
-A private Kodak Gold 200-5 color-negative batch, shot in 1997, was scanned into
+A local Kodak Gold 200-5 color-negative batch, shot in 1997, was scanned into
 paired PixelShift 4 and PixelShift 16 PixelShift2DNG masters. The current local
 study focuses on the five PixelShift 16 masters, because that is the path most
 relevant to the storage-budget question.
 
-This is still private local evidence. Do not publish the image panels without
-replacing or anonymizing the source material.
+Selected derived review panels from this material are approved for publication.
+Full-size source scans and generated outputs remain out of Git unless explicitly
+promoted with a source/data publication decision.
 
 | Level | Total Size | Size vs PixelShift2DNG | Low-Level Result |
 |---|---:|---:|---|
@@ -135,7 +136,7 @@ replication set.
 
 ### Kodak Safety Film 5035 ADC DNG/JXL Batch
 
-A second private color-negative set, Kodak Safety Film 5035 shot in 1983, was
+A second local color-negative set, Kodak Safety Film 5035 shot in 1983, was
 run through the same local DNG/JXL verification path for six PixelShift 16 DNG
 masters. The local study runner now writes a cross-scan index under
 `results/local_scan_study/`.
@@ -168,6 +169,35 @@ segments: lossless ADC JXL DNG used the original-profile/non-XYB path for the
 16-bit main image, while `d=0.05` used lossy XYB for the 16-bit main image.
 Preview IFDs were lossy XYB even inside the lossless DNGs, which matters for
 preview fidelity but not for the main-image preservation result.
+
+### Standalone PS16 JPEG XL Storage-Budget Matrix
+
+Because current raw editors cannot reliably treat ADC DNG/JXL candidates as the
+same practical render input as the source PixelShift2DNG files, the direct
+break-even path uses standalone JPEG XL made from a fixed 16-bit PS16 render:
+
+```text
+PixelShift2DNG PS16 -> RawTherapee neutral 16-bit TIFF -> cjxl -> djxl -> metrics
+```
+
+On the current local color-negative material, the median retained-size
+break-even versus the paired 61 MP RAW baseline is between `d020` and `d022`.
+
+| JXL level | Median size vs RAW61 | Current interpretation |
+|---|---:|---|
+| `d020` | 114.1% | still larger than RAW61 on median |
+| `d022` | 98.6% | first tested median level within RAW61 budget |
+| `d025` | 79.6% | under budget with current color/structure metrics still favoring PS16 JXL |
+| `d028` | 66.4% | under budget, needs visual review |
+| `d030` | 60.1% | under budget, needs visual review |
+
+The current numeric summary is encouraging for the main hypothesis: the PS16 JXL
+candidate remains much closer to the PS16 reference than the registered RAW61
+render does in the current patch-color and high-pass structure metrics. The
+important caveat is that the RAW61-vs-PS16 baseline may still include
+render-profile, demosaic/acutance, and registration effects. Therefore these
+numbers are a local break-even result, not a final recommendation to discard
+RAW/DNG masters.
 
 ### Lossless JPEG XL
 
@@ -221,8 +251,9 @@ Working model:
 
 The more interesting hypothesis is that a better-sampled PixelShift image stored
 as conservative JPEG XL can preserve more relevant film information than a
-lower-resolution raw capture at the same storage cost. That must be tested with
-public, non-private images and physical targets.
+lower-resolution raw capture at the same storage cost. The current local
+standalone-PS16 JXL matrix has started that test, but target measurements and
+more visual review are still needed before making an archival recommendation.
 
 ## Public Latitude Stress v2
 

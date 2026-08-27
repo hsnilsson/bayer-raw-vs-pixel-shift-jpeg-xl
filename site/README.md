@@ -11,6 +11,6 @@ python scripts\generate_break_even_report_site.py `
   --copy-panels-to site\assets\review-panels
 ```
 
-Do not commit locally generated private scan panels. Replace private negatives
-with publishable material before building a public release.
-
+Do not commit locally generated scan panels automatically. Copy only selected
+owner-approved or public-data panels into `site/assets/` before building a
+public release.
