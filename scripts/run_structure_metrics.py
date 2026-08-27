@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -363,6 +364,39 @@ def analyze_case(
     )
 
 
+def analyze_case_group(
+    cases: list[tuple[str, str, str, Path, Path, Path]],
+    crop_spec: str | None,
+    highpass_radius: int,
+    max_analysis_dim: int,
+    djxl: str,
+    reusable_jxl: dict[tuple[str, str, str, str], StructureDetailRow],
+) -> tuple[list[StructureOutputRow], list[StructureDetailRow]]:
+    rows: list[StructureOutputRow] = []
+    details: list[StructureDetailRow] = []
+    raw_detail_cache: dict[tuple[str, str, str], StructureDetailRow] = {}
+    for case in cases:
+        scan_set, set_id, level = case[:3]
+        scope = crop_spec or "full"
+        cached_jxl = reusable_jxl.get((scan_set, set_id, level, scope))
+        cached_raw = raw_detail_cache.get((scan_set, set_id, scope))
+        row, detail_rows = analyze_case(
+            *case,
+            crop_spec=crop_spec,
+            highpass_radius=highpass_radius,
+            max_analysis_dim=max_analysis_dim,
+            djxl=djxl,
+            cached_jxl_detail=cached_jxl,
+            cached_raw_detail=cached_raw,
+        )
+        rows.append(row)
+        details.extend(detail_rows)
+        for detail in detail_rows:
+            if detail.candidate_role == "raw61_registered":
+                raw_detail_cache[(detail.scan_set, detail.set_id, detail.scope)] = detail
+    return rows, details
+
+
 def write_csv(path: Path, rows: list[Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     normalized = [asdict(row) if hasattr(row, "__dataclass_fields__") else row for row in rows]
@@ -456,6 +490,12 @@ def main() -> int:
         default="rendered_ps16_jxl",
     )
     parser.add_argument("--level", action="append", default=None)
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=1,
+        help="Parallel case groups. Keep low for full-resolution JXL decoding; 2-3 is usually safe.",
+    )
     parser.add_argument("--reference", type=Path)
     parser.add_argument("--raw61", type=Path)
     parser.add_argument("--jxl", type=Path)
@@ -484,6 +524,8 @@ def main() -> int:
 
     if args.highpass_radius <= 0:
         raise SystemExit("--highpass-radius must be positive")
+    if args.jobs <= 0:
+        raise SystemExit("--jobs must be positive")
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
 
     if args.reference or args.raw61 or args.jxl:
@@ -514,26 +556,36 @@ def main() -> int:
     rows: list[StructureOutputRow] = []
     details: list[StructureDetailRow] = []
     reusable_jxl = load_reusable_jxl_details(args.reuse_jxl_details_csv)
-    raw_detail_cache: dict[tuple[str, str, str], StructureDetailRow] = {}
-    for case in cases:
-        scan_set, set_id, level = case[:3]
-        scope = args.crop or "full"
-        cached_jxl = reusable_jxl.get((scan_set, set_id, level, scope))
-        cached_raw = raw_detail_cache.get((scan_set, set_id, scope))
-        row, detail_rows = analyze_case(
-            *case,
+    if args.jobs == 1:
+        rows, details = analyze_case_group(
+            cases,
             crop_spec=args.crop,
             highpass_radius=args.highpass_radius,
             max_analysis_dim=args.max_analysis_dim,
             djxl=djxl,
-            cached_jxl_detail=cached_jxl,
-            cached_raw_detail=cached_raw,
+            reusable_jxl=reusable_jxl,
         )
-        rows.append(row)
-        details.extend(detail_rows)
-        for detail in detail_rows:
-            if detail.candidate_role == "raw61_registered":
-                raw_detail_cache[(detail.scan_set, detail.set_id, detail.scope)] = detail
+    else:
+        grouped: dict[tuple[str, str], list[tuple[str, str, str, Path, Path, Path]]] = {}
+        for case in cases:
+            grouped.setdefault((case[0], case[1]), []).append(case)
+        with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            futures = [
+                executor.submit(
+                    analyze_case_group,
+                    group,
+                    args.crop,
+                    args.highpass_radius,
+                    args.max_analysis_dim,
+                    djxl,
+                    reusable_jxl,
+                )
+                for group in grouped.values()
+            ]
+            for future in as_completed(futures):
+                group_rows, group_details = future.result()
+                rows.extend(group_rows)
+                details.extend(group_details)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     rows_path = args.output_dir / "structure_metrics.csv"
