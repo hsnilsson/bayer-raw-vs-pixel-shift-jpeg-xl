@@ -24,6 +24,7 @@ import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
 import make_break_even_review_panels as review_panels  # noqa: E402
 import generate_break_even_report_site as report_site  # noqa: E402
+import run_rendered_ps16_jxl_matrix as rendered_matrix  # noqa: E402
 
 
 def write_png(path: Path, arr: np.ndarray) -> None:
@@ -211,15 +212,41 @@ class BreakEvenPipelineTests(unittest.TestCase):
             median_size_pct=80.0,
             min_size_pct=70.0,
             max_size_pct=90.0,
-            max_jxl_delta_e=1.7,
+            median_jxl_delta_e=1.2,
+            p95_jxl_delta_e=1.7,
             median_raw_delta_e=5.0,
-            max_jxl_structure_loss=0.2,
+            median_color_ratio=0.34,
+            median_jxl_structure_loss=0.2,
             median_raw_structure_loss=1.0,
+            median_structure_ratio=0.2,
             verdicts={"ps16_jxl_likely_wins": 3},
             status="",
         )
 
         self.assertEqual(report_site.status_for(summary), "Promising")
+
+    def test_rendered_matrix_merge_replaces_matching_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "rows.csv"
+            with path.open("w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=["scan_set", "set_id", "level", "value"])
+                writer.writeheader()
+                writer.writerow({"scan_set": "a", "set_id": "one", "level": "d020", "value": "old"})
+                writer.writerow({"scan_set": "a", "set_id": "one", "level": "d030", "value": "kept"})
+
+            merged = rendered_matrix.merge_rows(
+                path,
+                [{"scan_set": "a", "set_id": "one", "level": "d020", "value": "new"}],
+                ("scan_set", "set_id", "level"),
+            )
+
+        self.assertEqual(
+            merged,
+            [
+                {"scan_set": "a", "set_id": "one", "level": "d030", "value": "kept"},
+                {"scan_set": "a", "set_id": "one", "level": "d020", "value": "new"},
+            ],
+        )
 
     def test_uint8_tiff_fallback_can_write_without_tifffile(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
