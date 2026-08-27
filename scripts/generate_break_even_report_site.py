@@ -4,6 +4,7 @@ import argparse
 import csv
 import html
 import os
+import shutil
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -23,6 +24,10 @@ DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_in
 class LevelSummary:
     level: str
     rows: int
+    median_retained_mib: float | None
+    min_retained_mib: float | None
+    max_retained_mib: float | None
+    median_raw61_mib: float | None
     median_size_pct: float | None
     min_size_pct: float | None
     max_size_pct: float | None
@@ -144,12 +149,14 @@ def status_for(summary: LevelSummary) -> str:
     color_ratio = classify_ratio(summary.median_color_ratio)
     structure_ratio = classify_ratio(summary.median_structure_ratio)
     verdict = classify_verdict(summary.verdicts)
-    if "bad" in {size, verdict} or color == "bad":
-        return "Needs review"
+    if size == "bad":
+        return "Over RAW61 budget"
+    if verdict == "bad" or color == "bad":
+        return "Image risk"
     if size == "good" and verdict == "good" and color in {"good", "warn"} and "bad" not in {color_ratio, structure_ratio}:
-        return "Promising"
+        return "Under budget"
     if "risk" in {color, color_ratio, structure_ratio} or "warn" in {size, color, color_ratio, structure_ratio, verdict}:
-        return "Border zone"
+        return "Budget edge"
     return "Incomplete"
 
 
@@ -174,6 +181,10 @@ def summarize_levels(rows: list[dict[str, str]]) -> list[LevelSummary]:
         summary = LevelSummary(
             level=level,
             rows=len(items),
+            median_retained_mib=median(parse_float(row.get("retained_size_mib")) for row in items),
+            min_retained_mib=min_value(parse_float(row.get("retained_size_mib")) for row in items),
+            max_retained_mib=max_value(parse_float(row.get("retained_size_mib")) for row in items),
+            median_raw61_mib=median(parse_float(row.get("raw61_size_mib")) for row in items),
             median_size_pct=median(parse_float(row.get("size_vs_raw61_pct")) for row in items),
             min_size_pct=min_value(parse_float(row.get("size_vs_raw61_pct")) for row in items),
             max_size_pct=max_value(parse_float(row.get("size_vs_raw61_pct")) for row in items),
@@ -299,6 +310,71 @@ def bar(value: float | None, max_pct: float = 500.0) -> str:
     return f'<span class="bar"><span style="width:{width:.1f}%"></span></span>'
 
 
+def level_status_class(status: str) -> str:
+    return {
+        "Under budget": "good",
+        "Budget edge": "warn",
+        "Over RAW61 budget": "bad",
+        "Image risk": "bad",
+    }.get(status, "unknown")
+
+
+def size_reading(value: float | None) -> str:
+    if value is None:
+        return "missing"
+    if value <= 100:
+        return "within RAW61 budget"
+    if value <= 115:
+        return "near RAW61 budget"
+    return "larger than RAW61"
+
+
+def delta_e_reading(value: float | None) -> str:
+    if value is None:
+        return "missing"
+    if value <= 0.25:
+        return "very small codec color shift"
+    if value <= 1.0:
+        return "small codec color shift"
+    if value <= 2.0:
+        return "visible if inspected"
+    if value <= 3.0:
+        return "review carefully"
+    return "large for this use"
+
+
+def ratio_reading(value: float | None) -> str:
+    if value is None:
+        return "missing"
+    if value <= 0.5:
+        return "well below RAW61 baseline"
+    if value <= 0.8:
+        return "below RAW61 baseline"
+    if value <= 1.1:
+        return "near RAW61 baseline"
+    return "worse than RAW61 baseline"
+
+
+def conclusion_text(summaries: list[LevelSummary]) -> str:
+    first_under = next((item for item in summaries if item.median_size_pct is not None and item.median_size_pct <= 100), None)
+    last_over = None
+    if first_under is not None:
+        for item in summaries:
+            if item is first_under:
+                break
+            if item.median_size_pct is not None and item.median_size_pct > 100:
+                last_over = item
+    if first_under and last_over:
+        return (
+            f"The current local data puts the storage break-even between {esc(last_over.level)} "
+            f"({fmt(last_over.median_size_pct, 1, '%')}) and {esc(first_under.level)} "
+            f"({fmt(first_under.median_size_pct, 1, '%')})."
+        )
+    if first_under:
+        return f"The first tested level within the RAW61 size budget is {esc(first_under.level)}."
+    return "No tested level is within the RAW61 size budget yet."
+
+
 def panel_paths(panel_root: Path, output: Path) -> list[Path]:
     if not panel_root.is_dir():
         return []
@@ -309,6 +385,30 @@ def panel_paths(panel_root: Path, output: Path) -> list[Path]:
     ]
     panels.sort(key=lambda path: (path.parent.as_posix(), level_sort(path.name), path.name))
     return panels
+
+
+def panel_groups(panels: list[Path]) -> dict[str, list[Path]]:
+    groups: dict[str, list[Path]] = defaultdict(list)
+    for path in panels:
+        parent = path.parent
+        label = "/".join(parent.parts[-2:]) if len(parent.parts) >= 2 else parent.name
+        groups[label].append(path)
+    return dict(sorted(groups.items()))
+
+
+def copy_panel_assets(panels: list[Path], panel_root: Path, target_root: Path) -> list[Path]:
+    copied: list[Path] = []
+    for path in panels:
+        try:
+            relative = path.resolve().relative_to(panel_root.resolve())
+        except ValueError:
+            relative = Path(path.name)
+        target = target_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if path.resolve() != target.resolve():
+            shutil.copy2(path, target)
+        copied.append(target)
+    return copied
 
 
 def relpath(path: Path, output_file: Path) -> str:
@@ -327,8 +427,9 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     baselines = summarize_baselines(rows)
     profile = read_profile_flags(DEFAULT_PROFILE)
     raw61_renders, ps16_renders = render_pair_count(DEFAULT_RENDER_INDEX)
-    best_zone = [item.level for item in summaries if item.status == "Promising"]
-    zone_text = ", ".join(best_zone) if best_zone else "none yet"
+    best_zone = [item.level for item in summaries if item.status == "Under budget"]
+    zone_text = ", ".join(best_zone[:5]) + ("..." if len(best_zone) > 5 else "") if best_zone else "none yet"
+    current_conclusion = conclusion_text(summaries)
 
     level_rows = []
     for item in summaries:
@@ -337,22 +438,19 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
         color_ratio_class = classify_ratio(item.median_color_ratio)
         structure_ratio_class = classify_ratio(item.median_structure_ratio)
         verdict_class = classify_verdict(item.verdicts)
-        status_class = {
-            "Promising": "good",
-            "Border zone": "warn",
-            "Needs review": "bad",
-        }.get(item.status, "unknown")
+        status_class = level_status_class(item.status)
         level_rows.append(
             f"""
             <tr>
               <td><strong>{esc(item.level)}</strong></td>
               <td class="{status_class}">{esc(item.status)}</td>
               <td class="{size_class}">{fmt(item.median_size_pct, 1, "%")}{bar(item.median_size_pct)}</td>
-              <td>{fmt(item.min_size_pct, 1, "%")} - {fmt(item.max_size_pct, 1, "%")}</td>
-              <td class="{color_class}">{fmt(item.p95_jxl_delta_e, 2)}</td>
-              <td class="{color_ratio_class}">{fmt(item.median_color_ratio, 2)}x</td>
+              <td>{fmt(item.median_retained_mib, 1)} MiB<br><span class="subtle">RAW61 median {fmt(item.median_raw61_mib, 1)} MiB</span></td>
+              <td>{fmt(item.min_size_pct, 1, "%")} - {fmt(item.max_size_pct, 1, "%")}<br><span class="subtle">{fmt(item.min_retained_mib, 1)} - {fmt(item.max_retained_mib, 1)} MiB</span></td>
+              <td class="{color_class}">{fmt(item.p95_jxl_delta_e, 2)}<br><span class="subtle">{esc(delta_e_reading(item.p95_jxl_delta_e))}</span></td>
+              <td class="{color_ratio_class}">{fmt(item.median_color_ratio, 2)}x<br><span class="subtle">{esc(ratio_reading(item.median_color_ratio))}</span></td>
               <td>{fmt(item.median_jxl_structure_loss, 3)}</td>
-              <td class="{structure_ratio_class}">{fmt(item.median_structure_ratio, 2)}x</td>
+              <td class="{structure_ratio_class}">{fmt(item.median_structure_ratio, 2)}x<br><span class="subtle">{esc(ratio_reading(item.median_structure_ratio))}</span></td>
               <td class="{verdict_class}">{verdict_text(item.verdicts)}</td>
             </tr>
             """
@@ -375,20 +473,30 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
             """
         )
 
-    image_cards = []
-    for path in panels:
-        name = path.name
-        src = relpath(path, output)
-        image_cards.append(
+    panel_group_cards = []
+    for group_name, group_paths in panel_groups(panels).items():
+        image_cards = []
+        for path in group_paths:
+            name = path.name
+            src = relpath(path, output)
+            image_cards.append(
+                f"""
+                <a class="panel-card" href="{esc(src)}">
+                  <img src="{esc(src)}" alt="{esc(name)}">
+                  <span>{esc(name)}</span>
+                </a>
+                """
+            )
+        panel_group_cards.append(
             f"""
-            <a class="panel-card" href="{esc(src)}">
-              <img src="{esc(src)}" alt="{esc(name)}">
-              <span>{esc(name)}</span>
-            </a>
+            <details class="panel-group" {'open' if not panel_group_cards else ''}>
+              <summary>{esc(group_name)} <span>{len(group_paths)} panel(s)</span></summary>
+              <div class="panel-grid">{''.join(image_cards)}</div>
+            </details>
             """
         )
-    if not image_cards:
-        image_cards.append('<p class="muted">No manual review panels found yet.</p>')
+    if not panel_group_cards:
+        panel_group_cards.append('<p class="muted">No manual review panels found yet.</p>')
 
     return f"""<!doctype html>
 <html lang="en">
@@ -430,6 +538,8 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     h3 {{ font-size: 16px; margin: 0 0 8px; }}
     p {{ margin: 0 0 12px; }}
     .muted {{ color: var(--muted); }}
+    .lead {{ max-width: 980px; font-size: 16px; }}
+    .subtle {{ display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }}
     .grid {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }}
     .card {{
       background: var(--panel);
@@ -458,6 +568,10 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     .bar {{ display: block; height: 6px; margin-top: 5px; background: #e3e7eb; border-radius: 999px; overflow: hidden; }}
     .bar span {{ display: block; height: 100%; background: currentColor; opacity: 0.55; }}
     .panel-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }}
+    .panel-group {{ margin-bottom: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }}
+    .panel-group summary {{ cursor: pointer; font-weight: 700; }}
+    .panel-group summary span {{ color: var(--muted); font-weight: 400; margin-left: 8px; }}
+    .panel-group .panel-grid {{ margin-top: 10px; }}
     .panel-card {{ display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
     .panel-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
     .panel-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
@@ -475,15 +589,22 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
 <body>
   <header>
     <h1>JPEG XL vs RAW61 Break-even Report</h1>
-    <p class="muted">Local/private navigation page generated from current CSV results and review panels.</p>
+    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost.</p>
+    <p class="muted">Current local/private build. The page is generated from CSV results and review panels; private scan material must be replaced before public release.</p>
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Rows</h3><div class="metric">{len(rows)}</div><p class="muted">break-even rows</p></div>
-      <div class="card"><h3>Complete</h3><div class="metric">{len(complete)}</div><p class="muted">rows with required metrics</p></div>
-      <div class="card"><h3>Promising Rows</h3><div class="metric">{promising}</div><p class="muted">PS16 JXL likely wins</p></div>
-      <div class="card"><h3>Promising Levels</h3><div class="metric">{esc(zone_text)}</div><p class="muted">automatic overview only</p></div>
+      <div class="card"><h3>Candidate Rows</h3><div class="metric">{len(rows)}</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
+      <div class="card"><h3>Complete Rows</h3><div class="metric">{len(complete)}</div><p class="muted">rows with size, color and structure data</p></div>
+      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">{promising}</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
+      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">{esc(zone_text)}</div><p class="muted">levels whose median size is at or below RAW61</p></div>
     </section>
+
+    <h2>Current Reading</h2>
+    <div class="note">
+      <p><strong>{current_conclusion}</strong></p>
+      <p>The current numeric result should be read as provisional: the RAW61 baseline still includes render-profile, demosaic/acutance and registration effects, while PS16 JXL is measured against the PS16 render. That is intentional for the archive-value question, but it must be documented and visually reviewed.</p>
+    </div>
 
     <h2>What Are We Asking?</h2>
     <section class="questions">
@@ -524,13 +645,20 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
       <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines are moved to the next table because they do not change when the JXL distance changes.</p>
       <p><strong>Important:</strong> the colors below are diagnostic labels, not FADGI conformance claims. FADGI-style target measurements are interpretation anchors because this project compares rendered film scans and compression candidates, not calibrated capture-target conformance.</p>
     </div>
+    <section class="questions">
+      <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Around 0.16 is very small codec color movement in this diagnostic setup.</p></div>
+      <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
+      <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
+    </section>
     <table>
       <thead>
         <tr>
           <th>{abbr("JXL level", "JPEG XL distance label. d030 means distance 0.30.")}</th>
-          <th>{abbr("Status", "Report-level diagnostic status: size, color and verdict combined.")}</th>
+          <th>{abbr("Status", "Plain-language status. Over RAW61 budget means the image metrics may be good, but the file is still larger than the paired RAW61 target.")}</th>
           <th>{abbr("Median size vs RAW61", "Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.")}</th>
-          <th>{abbr("Size range", "Smallest to largest size-vs-RAW61 across complete frame pairs.")}</th>
+          <th>{abbr("Median retained size", "Median encoded JXL file size, with paired RAW61 median shown for context.")}</th>
+          <th>{abbr("Size range", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
           <th>{abbr("JXL color p95", "95th percentile across frame-level JXL patch p95 DeltaE00 after hard negative-density stress. Measures codec color/tone movement.")}</th>
           <th>{abbr("Color loss ratio", "Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.")}</th>
           <th>{abbr("JXL structure", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.")}</th>
@@ -573,17 +701,15 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     </section>
 
     <h2>Visual Review Panels</h2>
-    <p class="muted">Click a panel to inspect it at full size. These are local/private outputs.</p>
-    <section class="panel-grid">
-      {''.join(image_cards)}
-    </section>
+    <p class="muted">The current local panel set is concentrated on one private frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
+    {''.join(panel_group_cards)}
 
-    <h2>How To Interpret The Colors</h2>
+    <h2>Color Legend</h2>
     <section class="questions">
-      <div class="card"><h3>Size</h3><p><span class="pill good">good</span> median candidate size at or below RAW61. <span class="pill warn">border</span> up to 115%. <span class="pill bad">bad</span> clearly over budget.</p></div>
-      <div class="card"><h3>&Delta;E00</h3><p><span class="pill good">&le;1</span> very small. <span class="pill warn">&le;2</span> visible to trained review. <span class="pill risk">&le;3</span> needs caution. <span class="pill bad">&gt;3</span> large for this codec-diff use.</p></div>
-      <div class="card"><h3>Ratios</h3><p><span class="pill good">&le;0.5x</span> JXL loss far below RAW61 baseline. <span class="pill warn">&le;0.8x</span> still lower. <span class="pill risk">&le;1.1x</span> near break-even. <span class="pill bad">&gt;1.1x</span> RAW61 likely wins that metric.</p></div>
-      <div class="card"><h3>Diff Panels</h3><p>Bright diff pixels mean different from PS16. RAW61 diff includes sampling, scaling, alignment, acutance, and render differences. JXL diff is mostly codec error.</p></div>
+      <div class="card"><h3>Size cells</h3><p><span class="pill good">green</span> at or below RAW61. <span class="pill warn">yellow</span> within 15% above RAW61. <span class="pill bad">red</span> clearly over budget.</p></div>
+      <div class="card"><h3>&Delta;E00 cells</h3><p><span class="pill good">green</span> below 1. <span class="pill warn">yellow</span> 1-2. <span class="pill risk">orange</span> 2-3. <span class="pill bad">red</span> above 3. These are diagnostic, not formal FADGI ratings.</p></div>
+      <div class="card"><h3>Ratio cells</h3><p><span class="pill good">green</span> below 0.5x RAW61 baseline. <span class="pill warn">yellow</span> below 0.8x. <span class="pill risk">orange</span> near parity. <span class="pill bad">red</span> worse than RAW61 baseline.</p></div>
+      <div class="card"><h3>Diff panels</h3><p>Bright diff pixels mean different from PS16. RAW61 diff includes sampling, scaling, alignment, acutance and render differences. JXL diff is mostly codec error.</p></div>
     </section>
 
     <h2>FADGI Context</h2>
@@ -607,11 +733,18 @@ def main() -> int:
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--panels", type=Path, default=DEFAULT_PANELS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--copy-panels-to",
+        type=Path,
+        help="Copy selected review panels into this asset directory before linking them. Useful for publishing site/.",
+    )
     args = parser.parse_args()
 
     rows = read_rows(args.matrix)
     summaries = summarize_levels(rows)
     panels = panel_paths(args.panels, args.output)
+    if args.copy_panels_to:
+        panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(render_html(rows, summaries, panels, args.output), encoding="utf-8")
     print(f"Wrote {args.output}")

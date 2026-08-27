@@ -205,10 +205,14 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertEqual(report_site.classify_delta_e(2.7), "risk")
         self.assertEqual(report_site.classify_delta_e(3.5), "bad")
 
-    def test_report_site_marks_under_budget_warn_color_as_promising(self) -> None:
+    def test_report_site_marks_under_budget_warn_color_as_under_budget(self) -> None:
         summary = report_site.LevelSummary(
             level="d030",
             rows=3,
+            median_retained_mib=54.0,
+            min_retained_mib=50.0,
+            max_retained_mib=60.0,
+            median_raw61_mib=68.0,
             median_size_pct=80.0,
             min_size_pct=70.0,
             max_size_pct=90.0,
@@ -223,7 +227,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             status="",
         )
 
-        self.assertEqual(report_site.status_for(summary), "Promising")
+        self.assertEqual(report_site.status_for(summary), "Under budget")
 
     def test_rendered_matrix_merge_replaces_matching_rows(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
