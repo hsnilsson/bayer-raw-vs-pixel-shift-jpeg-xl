@@ -15,6 +15,7 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MATRIX = ROOT / "results/archival_break_even/archival_break_even_matrix.csv"
 DEFAULT_PANELS = ROOT / "results/break_even_review_panels"
+DEFAULT_CONTEXTS = ROOT / "results/break_even_review_contexts"
 DEFAULT_OUTPUT = ROOT / "results/break_even_report/index.html"
 DEFAULT_PROFILE = ROOT / "profiles/rawtherapee/neutral-render.pp3"
 DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_index.csv"
@@ -396,11 +397,43 @@ def panel_groups(panels: list[Path]) -> dict[str, list[Path]]:
     return dict(sorted(groups.items()))
 
 
+def context_paths(context_root: Path) -> list[Path]:
+    if not context_root.is_dir():
+        return []
+    contexts = [path for path in context_root.rglob("*.png")]
+    contexts.sort(key=lambda path: (path.parent.as_posix(), path.name))
+    return contexts
+
+
+def context_groups(contexts: list[Path]) -> dict[str, list[Path]]:
+    groups: dict[str, list[Path]] = defaultdict(list)
+    for path in contexts:
+        parent = path.parent
+        label = "/".join(parent.parts[-2:]) if len(parent.parts) >= 2 else parent.name
+        groups[label].append(path)
+    return dict(sorted(groups.items()))
+
+
 def copy_panel_assets(panels: list[Path], panel_root: Path, target_root: Path) -> list[Path]:
     copied: list[Path] = []
     for path in panels:
         try:
             relative = path.resolve().relative_to(panel_root.resolve())
+        except ValueError:
+            relative = Path(path.name)
+        target = target_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if path.resolve() != target.resolve():
+            shutil.copy2(path, target)
+        copied.append(target)
+    return copied
+
+
+def copy_context_assets(contexts: list[Path], context_root: Path, target_root: Path) -> list[Path]:
+    copied: list[Path] = []
+    for path in contexts:
+        try:
+            relative = path.resolve().relative_to(context_root.resolve())
         except ValueError:
             relative = Path(path.name)
         target = target_root / relative
@@ -419,7 +452,13 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
-def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panels: list[Path], output: Path) -> str:
+def render_html(
+    rows: list[dict[str, str]],
+    summaries: list[LevelSummary],
+    panels: list[Path],
+    contexts: list[Path],
+    output: Path,
+) -> str:
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
     promising = sum(1 for row in complete if row.get("verdict") == "ps16_jxl_likely_wins")
     blocked = len(rows) - len(complete)
@@ -498,6 +537,31 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     if not panel_group_cards:
         panel_group_cards.append('<p class="muted">No manual review panels found yet.</p>')
 
+    context_group_cards = []
+    for group_name, group_paths in context_groups(contexts).items():
+        image_cards = []
+        for path in group_paths:
+            name = path.name
+            src = relpath(path, output)
+            image_cards.append(
+                f"""
+                <a class="context-card" href="{esc(src)}">
+                  <img src="{esc(src)}" alt="{esc(name)}">
+                  <span>{esc(name)}</span>
+                </a>
+                """
+            )
+        context_group_cards.append(
+            f"""
+            <details class="panel-group" {'open' if not context_group_cards else ''}>
+              <summary>{esc(group_name)} <span>{len(group_paths)} context image(s)</span></summary>
+              <div class="context-grid">{''.join(image_cards)}</div>
+            </details>
+            """
+        )
+    if not context_group_cards:
+        context_group_cards.append('<p class="muted">No full-frame context thumbnails found yet.</p>')
+
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -575,11 +639,15 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     .panel-card {{ display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
     .panel-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
     .panel-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
+    .context-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }}
+    .context-card {{ display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
+    .context-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
+    .context-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
     .note {{ border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }}
     .small-table th, .small-table td {{ font-size: 13px; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 900px) {{
-      .grid, .questions, .panel-grid, .flow {{ grid-template-columns: 1fr; }}
+      .grid, .questions, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
@@ -590,7 +658,7 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
   <header>
     <h1>JPEG XL vs RAW61 Break-even Report</h1>
     <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost.</p>
-    <p class="muted">Current local/private build. The page is generated from CSV results and review panels; private scan material must be replaced before public release.</p>
+    <p class="muted">Current build from local test material. The page publishes selected small review artifacts only; full-resolution source files stay outside the site artifact.</p>
   </header>
   <main>
     <section class="grid">
@@ -678,7 +746,7 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
     <table class="small-table">
       <thead>
         <tr>
-          <th>{abbr("Scan set", "Local private scan folder / material label.")}</th>
+          <th>{abbr("Scan set", "Local scan folder / material label.")}</th>
           <th>{abbr("Frame", "Capture set id.")}</th>
           <th>{abbr("RAW61 color", "RAW61 vs PS16 patch p95 DeltaE00 before stress.")}</th>
           <th>{abbr("RAW61 stress color", "RAW61 vs PS16 patch p95 DeltaE00 after hard negative-density transform.")}</th>
@@ -700,8 +768,15 @@ def render_html(rows: list[dict[str, str]], summaries: list[LevelSummary], panel
       <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>{esc(profile["raw_bayer_method"])}</code><br>Sharpening enabled: <code>{esc(profile["sharpening_enabled"])}</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
     </section>
 
+    <h2>Full-frame Context</h2>
+    <div class="note">
+      <p><strong>What this section is for:</strong> show where the published crop panels come from inside the larger rendered frame without publishing the full-resolution source images.</p>
+      <p>The yellow box marks the crop region used for visual review. These thumbnails are for orientation only; metric calculations use the underlying 16-bit rendered files and the listed crop coordinates.</p>
+    </div>
+    {''.join(context_group_cards)}
+
     <h2>Visual Review Panels</h2>
-    <p class="muted">The current local panel set is concentrated on one private frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
+    <p class="muted">The current local panel set is concentrated on one approved frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
     {''.join(panel_group_cards)}
 
     <h2>Color Legend</h2>
@@ -732,21 +807,30 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Generate a local HTML report for the break-even study.")
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--panels", type=Path, default=DEFAULT_PANELS)
+    parser.add_argument("--contexts", type=Path, default=DEFAULT_CONTEXTS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument(
         "--copy-panels-to",
         type=Path,
         help="Copy selected review panels into this asset directory before linking them. Useful for publishing site/.",
     )
+    parser.add_argument(
+        "--copy-contexts-to",
+        type=Path,
+        help="Copy small full-frame context thumbnails into this asset directory before linking them.",
+    )
     args = parser.parse_args()
 
     rows = read_rows(args.matrix)
     summaries = summarize_levels(rows)
     panels = panel_paths(args.panels, args.output)
+    contexts = context_paths(args.contexts)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
+    if args.copy_contexts_to:
+        contexts = copy_context_assets(contexts, args.contexts, args.copy_contexts_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(render_html(rows, summaries, panels, args.output), encoding="utf-8")
+    args.output.write_text(render_html(rows, summaries, panels, contexts, args.output), encoding="utf-8")
     print(f"Wrote {args.output}")
     return 0
 

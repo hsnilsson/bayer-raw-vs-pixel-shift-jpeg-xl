@@ -35,22 +35,26 @@ history; large historical objects can be handled separately if needed.
 These directories are ignored and do not affect the public repository, but they
 consume local disk:
 
-- `trash/`: old local scan/output material. It is currently the clearest local
-  cleanup candidate.
-- stale review panels in the current Kodak Gold review-panel output folder:
-  `d030_auto-detail_identity.png` and `d030_center_identity.png`.
 - old generated `outputs/` candidates and decoded intermediates after the
   current result CSVs and selected panels have been preserved.
 
 Do not remove `input/` or source scan folders unless the source files are backed
 up elsewhere.
 
+Already cleaned locally:
+
+- `trash/` has been emptied.
+- stale Kodak Gold `d030_auto-detail_identity.png` and `d030_center_identity.png`
+  review panels are excluded from the site build and can be regenerated if
+  needed.
+
 ## Needs Decision Before Public Release
 
-- Whether to publish only selected derived panels or also publish full-size
-  source scans through Git LFS.
-- Whether `site/` should contain the generated full report now, or remain a
-  placeholder until the first public writeup is frozen.
+- Whether any full-size source scans should ever be published through Git LFS.
+  The current default is selected small derived panels and context thumbnails
+  only.
+- Whether `site/` should be treated as live now, or as a draft until the first
+  public writeup is frozen.
 - Whether old narrative pages should remain as documentation, or whether the
   public site should expose only `README`, `FINDINGS`, `RESULTS`,
   `METHODOLOGY`, `LIMITATIONS`, and `RELATED_WORK`.
@@ -75,6 +79,6 @@ Open the repository publicly with:
 
 - tracked code, docs, source sidecars, and public LFS test data;
 - the GitHub Pages workflow already present;
-- selected derived Kodak review panels only after copying them into `site/` or
-  another documented public asset folder;
+- selected derived Kodak review panels and full-frame context thumbnails under
+  `site/assets/`;
 - no full-size local `input/`, `outputs/`, `results/`, or `trash/` directories.

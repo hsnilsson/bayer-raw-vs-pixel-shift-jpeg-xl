@@ -292,15 +292,28 @@ small in the same crops after the hard negative-density transform.
 See [break-even-review-panels.md](break-even-review-panels.md) for a plain
 explanation of each panel tile and how to score it.
 
+For public/site presentation, generate small full-frame context thumbnails for
+approved crops. The yellow box marks the crop used by the review panels:
+
+```powershell
+python scripts\make_break_even_context_images.py `
+  --case "<scan-set>|<frame-id>" `
+  --crop <x,y,width,height> `
+  --crop-name <crop-name>
+```
+
 Build the local HTML navigation/report page:
 
 ```powershell
-python scripts\generate_break_even_report_site.py
+python scripts\generate_break_even_report_site.py `
+  --output site\index.html `
+  --copy-panels-to site\assets\review-panels `
+  --copy-contexts-to site\assets\review-contexts
 ```
 
-Open `results/break_even_report/index.html` locally. The page joins the current
-break-even CSV, simple color-coded diagnostic labels, FADGI-inspired context,
-and the generated review panels.
+Open `site/index.html` locally. The page joins the current break-even CSV,
+simple color-coded diagnostic labels, FADGI-inspired context, selected context
+thumbnails, and selected review panels.
 
 ## What To Add Next
 

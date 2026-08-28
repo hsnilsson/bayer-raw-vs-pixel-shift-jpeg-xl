@@ -3,39 +3,565 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JPEG XL vs PixelShift DNG</title>
+  <title>JPEG XL vs RAW61 Break-even Report</title>
   <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d2329;
+      --muted: #5f6b76;
+      --line: #d8dee4;
+      --bg: #f6f7f8;
+      --panel: #ffffff;
+      --good-bg: #dff5e5;
+      --good-ink: #14532d;
+      --warn-bg: #fff3c4;
+      --warn-ink: #7a4b00;
+      --risk-bg: #ffe0c2;
+      --risk-ink: #8a3a00;
+      --bad-bg: #ffd9d9;
+      --bad-ink: #8a1f1f;
+      --unknown-bg: #eceff3;
+      --unknown-ink: #47515c;
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      color: #1d2329;
-      background: #f6f7f8;
-      line-height: 1.5;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.45;
     }
-    main {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 48px 24px;
+    header, main { max-width: 1280px; margin: 0 auto; padding: 24px; }
+    header { padding-top: 34px; }
+    h1 { font-size: 30px; margin: 0 0 8px; }
+    h2 { font-size: 20px; margin: 28px 0 12px; }
+    h3 { font-size: 16px; margin: 0 0 8px; }
+    p { margin: 0 0 12px; }
+    .muted { color: var(--muted); }
+    .lead { max-width: 980px; font-size: 16px; }
+    .subtle { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
     }
-    h1 {
-      margin: 0 0 12px;
-      font-size: 32px;
-    }
-    p {
-      margin: 0 0 14px;
-    }
-    code {
-      background: #e9edf1;
-      padding: 2px 5px;
-      border-radius: 4px;
+    .metric { font-size: 28px; font-weight: 700; margin-top: 4px; }
+    .questions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .flow { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); gap: 10px; align-items: stretch; }
+    .flow-col { display: grid; gap: 8px; }
+    .flow-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-height: 82px; }
+    .flow-box strong { display: block; margin-bottom: 4px; }
+    .flow-box p { font-size: 13px; color: var(--muted); margin: 0; }
+    .arrow { display: flex; align-items: center; justify-content: center; color: var(--muted); font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 12px; color: var(--muted); background: #f0f2f4; position: sticky; top: 0; }
+    abbr { text-decoration: underline dotted; cursor: help; }
+    td.good, .pill.good { background: var(--good-bg); color: var(--good-ink); }
+    td.warn, .pill.warn { background: var(--warn-bg); color: var(--warn-ink); }
+    td.risk, .pill.risk { background: var(--risk-bg); color: var(--risk-ink); }
+    td.bad, .pill.bad { background: var(--bad-bg); color: var(--bad-ink); }
+    td.unknown, .pill.unknown { background: var(--unknown-bg); color: var(--unknown-ink); }
+    .pill { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+    .bar { display: block; height: 6px; margin-top: 5px; background: #e3e7eb; border-radius: 999px; overflow: hidden; }
+    .bar span { display: block; height: 100%; background: currentColor; opacity: 0.55; }
+    .panel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .panel-group { margin-bottom: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+    .panel-group summary { cursor: pointer; font-weight: 700; }
+    .panel-group summary span { color: var(--muted); font-weight: 400; margin-left: 8px; }
+    .panel-group .panel-grid { margin-top: 10px; }
+    .panel-card { display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .panel-card img { display: block; width: 100%; height: auto; background: #fff; }
+    .panel-card span { display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }
+    .context-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
+    .context-card { display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .context-card img { display: block; width: 100%; height: auto; background: #fff; }
+    .context-card span { display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }
+    .note { border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }
+    .small-table th, .small-table td { font-size: 13px; }
+    ul { margin-top: 8px; }
+    @media (max-width: 900px) {
+      .grid, .questions, .panel-grid, .context-grid, .flow { grid-template-columns: 1fr; }
+      .arrow { display: none; }
+      header, main { padding: 16px; }
+      table { font-size: 13px; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>JPEG XL vs RAW61 Break-even Report</h1>
+    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost.</p>
+    <p class="muted">Current build from local test material. The page publishes selected small review artifacts only; full-resolution source files stay outside the site artifact.</p>
+  </header>
   <main>
-    <h1>JPEG XL vs PixelShift DNG</h1>
-    <p>This is the publication target for the static break-even report.</p>
-    <p>The full report is generated from measured CSV files and review panels. The current detailed report is built locally under <code>results/</code>; selected owner-approved panels can be copied into this folder for public release.</p>
+    <section class="grid">
+      <div class="card"><h3>Candidate Rows</h3><div class="metric">156</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
+      <div class="card"><h3>Complete Rows</h3><div class="metric">117</div><p class="muted">rows with size, color and structure data</p></div>
+      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">81</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
+      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030, d050, d075...</div><p class="muted">levels whose median size is at or below RAW61</p></div>
+    </section>
+
+    <h2>Current Reading</h2>
+    <div class="note">
+      <p><strong>The current local data puts the storage break-even between d020 (114.1%) and d022 (98.6%).</strong></p>
+      <p>The current numeric result should be read as provisional: the RAW61 baseline still includes render-profile, demosaic/acutance and registration effects, while PS16 JXL is measured against the PS16 render. That is intentional for the archive-value question, but it must be documented and visually reviewed.</p>
+    </div>
+
+    <h2>What Are We Asking?</h2>
+    <section class="questions">
+      <div class="card"><h3>1. Codec question</h3><p><strong>PS16 reference vs PS16 JXL.</strong> This is apples-to-apples and measures JPEG XL damage to a fixed rendered image state.</p></div>
+      <div class="card"><h3>2. Archive-value question</h3><p><strong>PS16 JXL vs RAW61.</strong> This is intentionally a workflow tradeoff: more sampling plus lossy coding versus less sampling plus raw preservation.</p></div>
+      <div class="card"><h3>3. Break-even question</h3><p>At what JXL distance does PS16 JXL stop carrying more useful film information than RAW61 at the same storage budget?</p></div>
+      <div class="card"><h3>4. Operational question</h3><p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p></div>
+    </section>
+
+    <h2>Workflow Being Tested</h2>
+    <section class="flow">
+      <div class="flow-col">
+        <div class="flow-box"><strong>Film frame</strong><p>Negative or positive original. The physical object is the real source, not any file.</p></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="flow-col">
+        <div class="flow-box"><strong>61 MP RAW</strong><p>Single-shot Bayer capture. Strong raw edit latitude, less spatial sampling.</p></div>
+        <div class="flow-box"><strong>240 MP PS16 DNG</strong><p>PixelShift2DNG output. More spatial sampling, very large retained files.</p></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="flow-col">
+        <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
+        <div class="flow-box"><strong>ADC DNG/JXL</strong><p>Experimental branch. Useful but blocked for now by app support and DNG metadata/geometry concerns.</p></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="flow-col">
+        <div class="flow-box"><strong>Standalone PS16 JXL</strong><p>Main tested candidate now. Codec damage is measured against the PS16 render.</p></div>
+        <div class="flow-box"><strong>Keep original RAW/DNG</strong><p>Safest archive branch. Expensive in storage; remains the conservative recommendation.</p></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="flow-col">
+        <div class="flow-box"><strong>Break-even verdict</strong><p>Size, color/tone, structure, visual review and operational risk are combined.</p></div>
+      </div>
+    </section>
+
+    <h2>Level Summary</h2>
+    <div class="note">
+      <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines are moved to the next table because they do not change when the JXL distance changes.</p>
+      <p><strong>Important:</strong> the colors below are diagnostic labels, not FADGI conformance claims. FADGI-style target measurements are interpretation anchors because this project compares rendered film scans and compression candidates, not calibrated capture-target conformance.</p>
+    </div>
+    <section class="questions">
+      <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Around 0.16 is very small codec color movement in this diagnostic setup.</p></div>
+      <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
+      <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
+    </section>
+    <table>
+      <thead>
+        <tr>
+          <th><abbr title="JPEG XL distance label. d030 means distance 0.30.">JXL level</abbr></th>
+          <th><abbr title="Plain-language status. Over RAW61 budget means the image metrics may be good, but the file is still larger than the paired RAW61 target.">Status</abbr></th>
+          <th><abbr title="Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.">Median size vs RAW61</abbr></th>
+          <th><abbr title="Median encoded JXL file size, with paired RAW61 median shown for context.">Median retained size</abbr></th>
+          <th><abbr title="Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.">Size range</abbr></th>
+          <th><abbr title="95th percentile across frame-level JXL patch p95 DeltaE00 after hard negative-density stress. Measures codec color/tone movement.">JXL color p95</abbr></th>
+          <th><abbr title="Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.">Color loss ratio</abbr></th>
+          <th><abbr title="Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.">JXL structure</abbr></th>
+          <th><abbr title="Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.">Structure ratio</abbr></th>
+          <th><abbr title="Counts of conservative matrix verdicts for this level.">Verdicts</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr>
+              <td><strong>d003</strong></td>
+              <td class="bad">Over RAW61 budget</td>
+              <td class="bad">474.6%<span class="bar"><span style="width:94.9%"></span></span></td>
+              <td>324.3 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>254.8% - 511.6%<br><span class="subtle">307.5 - 344.5 MiB</span></td>
+              <td class="good">0.06<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.00x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.153</td>
+              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d005</strong></td>
+              <td class="bad">Over RAW61 budget</td>
+              <td class="bad">361.0%<span class="bar"><span style="width:72.2%"></span></span></td>
+              <td>247.4 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>196.8% - 396.7%<br><span class="subtle">231.9 - 267.1 MiB</span></td>
+              <td class="good">0.09<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.00x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.156</td>
+              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d010</strong></td>
+              <td class="bad">Over RAW61 budget</td>
+              <td class="bad">224.3%<span class="bar"><span style="width:44.9%"></span></span></td>
+              <td>152.0 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>126.1% - 250.4%<br><span class="subtle">142.9 - 168.6 MiB</span></td>
+              <td class="good">0.11<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.159</td>
+              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d020</strong></td>
+              <td class="warn">Budget edge</td>
+              <td class="warn">114.1%<span class="bar"><span style="width:22.8%"></span></span></td>
+              <td>79.8 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>66.6% - 128.8%<br><span class="subtle">70.6 - 90.8 MiB</span></td>
+              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.163</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 7</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d022</strong></td>
+              <td class="warn">Budget edge</td>
+              <td class="good">98.6%<span class="bar"><span style="width:19.7%"></span></span></td>
+              <td>69.6 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>58.2% - 112.5%<br><span class="subtle">61.2 - 82.0 MiB</span></td>
+              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.162</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">ps16_jxl_likely_wins: 7, uncertain_over_budget: 2</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d025</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">79.6%<span class="bar"><span style="width:15.9%"></span></span></td>
+              <td>56.0 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>47.8% - 92.1%<br><span class="subtle">49.8 - 68.6 MiB</span></td>
+              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.163</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d028</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">66.4%<span class="bar"><span style="width:13.3%"></span></span></td>
+              <td>46.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>40.0% - 77.5%<br><span class="subtle">42.2 - 56.0 MiB</span></td>
+              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.164</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d030</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">60.1%<span class="bar"><span style="width:12.0%"></span></span></td>
+              <td>41.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>36.2% - 70.4%<br><span class="subtle">38.5 - 49.6 MiB</span></td>
+              <td class="good">0.17<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.164</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d050</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">35.5%<span class="bar"><span style="width:7.1%"></span></span></td>
+              <td>25.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>21.2% - 40.7%<br><span class="subtle">23.0 - 29.4 MiB</span></td>
+              <td class="good">0.21<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.168</td>
+              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d075</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">20.5%<span class="bar"><span style="width:4.1%"></span></span></td>
+              <td>15.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>12.3% - 23.7%<br><span class="subtle">13.3 - 18.0 MiB</span></td>
+              <td class="good">0.32<br><span class="subtle">small codec color shift</span></td>
+              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.172</td>
+              <td class="good">0.18x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d100</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">15.7%<span class="bar"><span style="width:3.1%"></span></span></td>
+              <td>11.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>9.5% - 18.3%<br><span class="subtle">10.1 - 14.6 MiB</span></td>
+              <td class="good">0.55<br><span class="subtle">small codec color shift</span></td>
+              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.177</td>
+              <td class="good">0.18x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d150</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">11.5%<span class="bar"><span style="width:2.3%"></span></span></td>
+              <td>8.4 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>6.8% - 13.4%<br><span class="subtle">7.3 - 10.7 MiB</span></td>
+              <td class="warn">1.08<br><span class="subtle">visible if inspected</span></td>
+              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.184</td>
+              <td class="good">0.19x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+            <tr>
+              <td><strong>d200</strong></td>
+              <td class="good">Under budget</td>
+              <td class="good">9.3%<span class="bar"><span style="width:2.0%"></span></span></td>
+              <td>6.8 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
+              <td>5.4% - 10.9%<br><span class="subtle">5.9 - 8.5 MiB</span></td>
+              <td class="warn">1.24<br><span class="subtle">visible if inspected</span></td>
+              <td class="good">0.04x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.191</td>
+              <td class="good">0.20x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 9</td>
+            </tr>
+            
+      </tbody>
+    </table>
+
+    <h2>RAW61 Baseline By Frame</h2>
+    <div class="note">
+      <p><strong>What this table is for:</strong> show the apples-to-oranges part explicitly. RAW61 values are frame baselines: they are expected to repeat across JXL levels and should be reviewed for alignment, acutance, color profile and tone differences.</p>
+    </div>
+    <table class="small-table">
+      <thead>
+        <tr>
+          <th><abbr title="Local scan folder / material label.">Scan set</abbr></th>
+          <th><abbr title="Capture set id.">Frame</abbr></th>
+          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 before stress.">RAW61 color</abbr></th>
+          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 after hard negative-density transform.">RAW61 stress color</abbr></th>
+          <th><abbr title="RAW61 high-pass structure loss against PS16 after registration.">RAW61 structure</abbr></th>
+          <th><abbr title="Worst JXL stress DeltaE00 across levels currently in the matrix.">Worst JXL color</abbr></th>
+          <th><abbr title="Worst JXL structure loss across levels currently in the matrix.">Worst JXL structure</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6735</strong></td>
+              <td>1.21</td>
+              <td class="bad">26.65</td>
+              <td>1.533</td>
+              <td>0.47</td>
+              <td>0.165</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6756</strong></td>
+              <td>0.80</td>
+              <td class="bad">4.26</td>
+              <td>1.025</td>
+              <td>0.19</td>
+              <td>0.190</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6793</strong></td>
+              <td>0.77</td>
+              <td class="bad">5.64</td>
+              <td>0.975</td>
+              <td>0.15</td>
+              <td>0.191</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6814</strong></td>
+              <td>0.93</td>
+              <td class="risk">2.57</td>
+              <td>0.993</td>
+              <td>0.09</td>
+              <td>0.133</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6577</strong></td>
+              <td>0.92</td>
+              <td class="bad">4.87</td>
+              <td>0.788</td>
+              <td>1.64</td>
+              <td>0.027</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6619</strong></td>
+              <td>0.80</td>
+              <td class="bad">7.19</td>
+              <td>1.041</td>
+              <td>0.46</td>
+              <td>0.208</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6640</strong></td>
+              <td>0.78</td>
+              <td class="bad">13.08</td>
+              <td>0.988</td>
+              <td>0.64</td>
+              <td>0.234</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6661</strong></td>
+              <td>0.73</td>
+              <td class="bad">4.95</td>
+              <td>1.103</td>
+              <td>0.14</td>
+              <td>0.277</td>
+            </tr>
+            
+            <tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6682</strong></td>
+              <td>0.91</td>
+              <td class="bad">3.83</td>
+              <td>1.113</td>
+              <td>0.24</td>
+              <td>0.223</td>
+            </tr>
+            
+      </tbody>
+    </table>
+
+    <h2>Render/Profile Audit</h2>
+    <section class="questions">
+      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 11 RAW61 rows and 11 PS16 rows.</p></div>
+      <div class="card"><h3>Color management</h3><p>Input profile: <code>(camera)</code><br>Working profile: <code>ProPhoto</code><br>Output profile: <code>RTv4_Large</code></p></div>
+      <div class="card"><h3>White balance warning</h3><p>WB enabled: <code>true</code><br>WB setting: <code>Camera</code></p><p class="muted">Camera WB can differ between ARW and PixelShift2DNG metadata, so RAW61 may render less orange even with the same profile file.</p></div>
+      <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>amaze</code><br>Sharpening enabled: <code>false</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
+    </section>
+
+    <h2>Full-frame Context</h2>
+    <div class="note">
+      <p><strong>What this section is for:</strong> show where the published crop panels come from inside the larger rendered frame without publishing the full-resolution source images.</p>
+      <p>The yellow box marks the crop region used for visual review. These thumbnails are for orientation only; metric calculations use the underlying 16-bit rendered files and the listed crop coordinates.</p>
+    </div>
+    
+            <details class="panel-group" open>
+              <summary>kodak_gold_200_5_1997/_DSC6735 <span>2 context image(s)</span></summary>
+              <div class="context-grid">
+                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png">
+                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
+                  <span>ps16_reference_manual-01.png</span>
+                </a>
+                
+                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png">
+                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
+                  <span>raw61_registered_manual-01.png</span>
+                </a>
+                </div>
+            </details>
+            
+
+    <h2>Visual Review Panels</h2>
+    <p class="muted">The current local panel set is concentrated on one approved frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
+    
+            <details class="panel-group" open>
+              <summary>kodak_gold_200_5_1997/_DSC6735 <span>10 panel(s)</span></summary>
+              <div class="panel-grid">
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_identity.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_identity.png" alt="d020_manual-01_identity.png">
+                  <span>d020_manual-01_identity.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_negative_density_hard_print.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_negative_density_hard_print.png" alt="d020_manual-01_negative_density_hard_print.png">
+                  <span>d020_manual-01_negative_density_hard_print.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_identity.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_identity.png" alt="d022_manual-01_identity.png">
+                  <span>d022_manual-01_identity.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_negative_density_hard_print.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_negative_density_hard_print.png" alt="d022_manual-01_negative_density_hard_print.png">
+                  <span>d022_manual-01_negative_density_hard_print.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_identity.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_identity.png" alt="d025_manual-01_identity.png">
+                  <span>d025_manual-01_identity.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_negative_density_hard_print.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_negative_density_hard_print.png" alt="d025_manual-01_negative_density_hard_print.png">
+                  <span>d025_manual-01_negative_density_hard_print.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_identity.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_identity.png" alt="d028_manual-01_identity.png">
+                  <span>d028_manual-01_identity.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_negative_density_hard_print.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_negative_density_hard_print.png" alt="d028_manual-01_negative_density_hard_print.png">
+                  <span>d028_manual-01_negative_density_hard_print.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_identity.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_identity.png" alt="d030_manual-01_identity.png">
+                  <span>d030_manual-01_identity.png</span>
+                </a>
+                
+                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_negative_density_hard_print.png">
+                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_negative_density_hard_print.png" alt="d030_manual-01_negative_density_hard_print.png">
+                  <span>d030_manual-01_negative_density_hard_print.png</span>
+                </a>
+                </div>
+            </details>
+            
+
+    <h2>Color Legend</h2>
+    <section class="questions">
+      <div class="card"><h3>Size cells</h3><p><span class="pill good">green</span> at or below RAW61. <span class="pill warn">yellow</span> within 15% above RAW61. <span class="pill bad">red</span> clearly over budget.</p></div>
+      <div class="card"><h3>&Delta;E00 cells</h3><p><span class="pill good">green</span> below 1. <span class="pill warn">yellow</span> 1-2. <span class="pill risk">orange</span> 2-3. <span class="pill bad">red</span> above 3. These are diagnostic, not formal FADGI ratings.</p></div>
+      <div class="card"><h3>Ratio cells</h3><p><span class="pill good">green</span> below 0.5x RAW61 baseline. <span class="pill warn">yellow</span> below 0.8x. <span class="pill risk">orange</span> near parity. <span class="pill bad">red</span> worse than RAW61 baseline.</p></div>
+      <div class="card"><h3>Diff panels</h3><p>Bright diff pixels mean different from PS16. RAW61 diff includes sampling, scaling, alignment, acutance and render differences. JXL diff is mostly codec error.</p></div>
+    </section>
+
+    <h2>FADGI Context</h2>
+    <div class="card">
+      <p>Useful established metrics include CIEDE2000 color accuracy, tone response, white balance error, color-channel misregistration, SFR/sampling efficiency, sharpening, and noise. The relevant lesson for this project is not that our film-crop rows can claim FADGI stars, but that a credible imaging study should separate color, tone, registration, detail, sharpening, and noise instead of relying on PSNR or a single diff image.</p>
+      <ul>
+        <li>Official FADGI 2023 guidelines describe the still-image conformance system and its target/software basis.</li>
+        <li>FADGI/related practice commonly uses &Delta;E00 for color accuracy; strict published discussions cite average &Delta;E00 around 2 for highest-level color profiling, while older/practical references often discuss average 3 and maximum 6 as useful limits.</li>
+        <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
+      </ul>
+      <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
+    </div>
   </main>
 </body>
 </html>

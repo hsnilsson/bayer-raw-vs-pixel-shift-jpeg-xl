@@ -29,7 +29,8 @@ result, not a general archival recommendation.
 - JPEG XL lossless/exactness results for chosen rendered states
 - evidence that `d=0.03` and `d=0.05` are more plausible than `d=0.10`
 - the local workflow code, without automatically publishing full-size scan files
-- selected owner-approved real-negative review panels
+- selected owner-approved real-negative review panels and small context
+  thumbnails with crop boxes
 - the metadata-diff and patch-color methodology
 - the limitation that ADC lossy DNG/JXL changes stored shape, crop origin,
   `WhiteLevel`, and `OpcodeList2` in current local tests
@@ -52,7 +53,8 @@ Use a short GitHub-first post:
    more useful film information under a fixed storage budget.
 3. Show the public latitude v2 figures, leading with the LOC Golden Gate panels.
 4. Explain the Kodak tests as owner-approved local workflow evidence, with only
-   selected derived panels published unless source-data publication is decided.
+   selected derived panels/context thumbnails published unless source-data
+   publication is decided.
 5. Ask for critique on methodology, metrics, color management, DNG/JXL handling,
    and better public negative test material.
 
