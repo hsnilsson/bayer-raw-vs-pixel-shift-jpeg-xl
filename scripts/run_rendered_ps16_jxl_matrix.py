@@ -321,6 +321,8 @@ def main() -> int:
     parser.add_argument("--renders-root", type=Path, default=DEFAULT_RENDERS_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
+    parser.add_argument("--scan-set", action="append", default=None, help="Only process these scan_set values.")
+    parser.add_argument("--set-id", action="append", default=None, help="Only process these set_id values.")
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--cjxl", type=Path)
     parser.add_argument("--djxl", type=Path)
@@ -365,6 +367,12 @@ def main() -> int:
     cjxl = find_tool("cjxl", DEFAULT_CJXL, args.cjxl)
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
     renders = discover_ps16_renders(args.renders_root)
+    if args.scan_set:
+        allowed_scan_sets = set(args.scan_set)
+        renders = [item for item in renders if item[0] in allowed_scan_sets]
+    if args.set_id:
+        allowed_set_ids = set(args.set_id)
+        renders = [item for item in renders if item[1] in allowed_set_ids]
     if args.limit:
         renders = renders[: args.limit]
 
