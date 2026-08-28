@@ -554,6 +554,17 @@ def frame_from_source_spec(scan_root: Path, spec: str) -> Frame:
     else:
         stem = source_text
         source = scan_root / f"{stem}.dng"
+        if not source.is_file():
+            matches = []
+            for found in scan_root.rglob(f"{stem}.dng"):
+                if not found.is_file():
+                    continue
+                relative_parts = found.resolve().relative_to(scan_root.resolve()).parts
+                if relative_parts and relative_parts[0].lower() == "adc_jxl_dng":
+                    continue
+                matches.append(found)
+            if len(matches) == 1:
+                source = matches[0]
     if not label:
         label = stem
     return Frame(stem=stem, label=label, source=source)

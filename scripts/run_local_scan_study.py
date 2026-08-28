@@ -83,18 +83,27 @@ def discover_scan_roots(input_root: Path, explicit_roots: list[Path] | None) -> 
         has_scan_data = (
             (path / "scan_manifest.json").is_file()
             or (path / "adc_jxl_dng").is_dir()
-            or any(path.glob("*.dng"))
-            or any(path.glob("*.DNG"))
+            or any(source_dng_paths(path))
         )
         if has_scan_data:
             roots.append(path.resolve())
     return roots
 
 
+def source_dng_paths(scan_root: Path) -> list[Path]:
+    paths = []
+    for path in scan_root.rglob("*.dng"):
+        if not path.is_file():
+            continue
+        relative_parts = path.resolve().relative_to(scan_root.resolve()).parts
+        if relative_parts and relative_parts[0].lower() == "adc_jxl_dng":
+            continue
+        paths.append(path)
+    return sorted(paths)
+
+
 def root_dng_stems(scan_root: Path) -> list[str]:
-    return sorted(
-        {path.stem for path in scan_root.iterdir() if path.is_file() and path.suffix.lower() == ".dng"}
-    )
+    return sorted({path.stem for path in source_dng_paths(scan_root)})
 
 
 def candidate_stems_by_level(scan_root: Path, levels: list[str]) -> dict[str, list[str]]:

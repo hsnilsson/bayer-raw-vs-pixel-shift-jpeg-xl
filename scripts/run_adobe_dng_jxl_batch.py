@@ -41,6 +41,15 @@ def source_from_spec(scan_root: Path, spec: str) -> Path:
         path = candidate if candidate.is_absolute() else scan_root / candidate
     else:
         path = scan_root / f"{spec}.dng"
+        if not path.is_file():
+            matches = [
+                found
+                for found in scan_root.rglob(f"{spec}.dng")
+                if found.is_file()
+                and found.resolve().relative_to(scan_root.resolve()).parts[0].lower() not in {"adc_jxl_dng", "_review"}
+            ]
+            if len(matches) == 1:
+                path = matches[0]
     return path
 
 
@@ -52,7 +61,12 @@ def source_dngs(scan_root: Path, requested: list[str] | None = None) -> list[Pat
             joined = ", ".join(str(source) for source in missing)
             raise FileNotFoundError(f"requested source DNG(s) not found: {joined}")
         return sources
-    return sorted(path for path in scan_root.glob("*.dng") if path.is_file())
+    return sorted(
+        path
+        for path in scan_root.rglob("*.dng")
+        if path.is_file()
+        and path.resolve().relative_to(scan_root.resolve()).parts[0].lower() not in {"adc_jxl_dng", "_review"}
+    )
 
 
 def output_path(scan_root: Path, level: str, source: Path) -> Path:
@@ -177,7 +191,7 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         help=(
             "Source stem, DNG filename, or DNG path to convert. Repeatable. "
-            "Defaults to all root-level DNG files."
+            "Defaults to all source DNG files outside adc_jxl_dng/."
         ),
     )
     parser.add_argument("--adc", type=Path, default=DEFAULT_ADC)
@@ -203,7 +217,7 @@ def main(argv: list[str] | None = None) -> int:
 
     sources = source_dngs(scan_root, args.source)
     if not sources:
-        raise FileNotFoundError(f"no root-level DNG files found in {scan_root}")
+        raise FileNotFoundError(f"no source DNG files found in {scan_root}")
 
     records: list[ConversionRecord] = []
     total = len(sources) * len(args.levels)

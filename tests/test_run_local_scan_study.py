@@ -55,6 +55,22 @@ class LocalScanStudyTests(unittest.TestCase):
         self.assertEqual(plan.root_dng_without_selected_candidates, ["c"])
         self.assertEqual(plan.missing_for_candidate_union["d010"], ["b"])
 
+    def test_plan_accepts_nested_source_dngs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            scan_root = Path(temp_dir) / "Film Set"
+            write_file(scan_root / "dng" / "a.dng")
+            for level in ["d020", "d030"]:
+                write_file(scan_root / "adc_jxl_dng" / level / "a.dng")
+
+            plan = local_study.build_scan_plan(
+                scan_root,
+                ["d020", "d030"],
+                Path(temp_dir) / "results",
+            )
+
+        self.assertEqual(plan.root_dngs, ["a"])
+        self.assertEqual(plan.verifiable_stems, ["a"])
+
     def test_result_complete_requires_patch_and_metadata_diff_summary(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             result_dir = Path(temp_dir)
