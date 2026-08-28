@@ -30,6 +30,17 @@ class RunAdobeDngJxlBatchTests(unittest.TestCase):
 
         self.assertEqual([source.name for source in sources], ["DSC1000-DSC1015.dng"])
 
+    def test_source_dngs_reads_nested_source_folder(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "dng" / "DSC1000-DSC1015.dng")
+        write_file(root / "adc_jxl_dng" / "d020" / "DSC1000-DSC1015.dng")
+
+        sources = adc_batch.source_dngs(root)
+
+        self.assertEqual([source.relative_to(root).as_posix() for source in sources], ["dng/DSC1000-DSC1015.dng"])
+
     def test_source_dngs_can_filter_requested_stems(self) -> None:
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)

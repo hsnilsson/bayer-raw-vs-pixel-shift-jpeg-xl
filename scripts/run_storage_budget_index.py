@@ -121,7 +121,7 @@ def collect_rows(scan_root: Path, levels: list[str]) -> list[BudgetRow]:
         ps4_size = mib(scan_root / ps4) if ps4 else None
         ps16_size = mib(scan_root / ps16) if ps16 else None
         for level in levels:
-            candidate = scan_root / "adc_jxl_dng" / level / ps16 if ps16 else None
+            candidate = scan_root / "adc_jxl_dng" / level / Path(ps16).name if ps16 else None
             candidate_size = mib(candidate)
             status, notes = row_status(single_size, ps16_size, candidate_size, level)
             rows.append(

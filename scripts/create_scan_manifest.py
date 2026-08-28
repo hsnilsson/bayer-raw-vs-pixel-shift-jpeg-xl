@@ -183,23 +183,23 @@ def classify_file(path: Path, scan_root: Path, privacy: str) -> FileEntry:
         preservation_class = "derived"
         archive_action = "regenerate"
         regeneration = "from_pixelshift_dng_and_adobe_dng_converter"
-    elif len(relative_parts) == 1 and suffix == ".arw":
+    elif suffix == ".arw":
         role = "camera_raw_original"
         preservation_class = "original"
         archive_action = "keep"
         regeneration = "not_regeneratable"
-    elif len(relative_parts) == 1 and suffix in {".jpg", ".jpeg"}:
+    elif suffix in {".jpg", ".jpeg"}:
         role = "camera_jpeg_preview"
         preservation_class = "preview"
         archive_action = "review"
         regeneration = "optional_preview"
-    elif len(relative_parts) == 1 and suffix == ".dng" and parsed.kind == "range":
+    elif suffix == ".dng" and parsed.kind == "range":
         mode = mode_for_sequence(parsed.count)
         role = f"pixelshift2dng_{mode}_master"
         preservation_class = "master"
         archive_action = "keep" if mode == "pixelshift16" else "review"
         regeneration = "from_raw_sequence_if_complete"
-    elif len(relative_parts) == 1 and suffix == ".dng":
+    elif suffix == ".dng":
         role = "dng_master_or_source"
         preservation_class = "master"
         archive_action = "review"
@@ -226,9 +226,21 @@ def classify_file(path: Path, scan_root: Path, privacy: str) -> FileEntry:
     )
 
 
+def scan_source_files(scan_root: Path, suffixes: set[str]) -> list[Path]:
+    files = []
+    for path in scan_root.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in suffixes:
+            continue
+        relative_parts = path.resolve().relative_to(scan_root.resolve()).parts
+        if relative_parts and relative_parts[0].lower() in {"adc_jxl_dng", "_review"}:
+            continue
+        files.append(path)
+    return sorted(files)
+
+
 def root_files(scan_root: Path, suffix: str) -> dict[int, Path]:
     files: dict[int, Path] = {}
-    for path in scan_root.glob(f"*{suffix}"):
+    for path in scan_source_files(scan_root, {suffix.lower()}):
         parsed = parse_stem(path.stem)
         if parsed.kind == "single" and parsed.start is not None:
             files[parsed.start] = path
@@ -350,7 +362,7 @@ def read_raw_pixelshift_groups(
     *,
     exiftool: str | None = None,
 ) -> tuple[list[RawPixelShiftGroup], dict[str, Any]]:
-    raw_paths = sorted({*scan_root.glob("*.ARW"), *scan_root.glob("*.arw")})
+    raw_paths = scan_source_files(scan_root, {".arw"})
     status: dict[str, Any] = {
         "status": "not_run",
         "tool": None,
@@ -401,7 +413,7 @@ def build_sequences(scan_root: Path, entries_by_path: dict[str, FileEntry]) -> l
     raw_by_number = root_files(scan_root, ".ARW") | root_files(scan_root, ".arw")
     adc_by_stem = adc_candidates(scan_root)
     sequences: list[SequenceEntry] = []
-    for dng in sorted(scan_root.glob("*.dng")):
+    for dng in scan_source_files(scan_root, {".dng"}):
         parsed = parse_stem(dng.stem)
         if parsed.kind != "range" or parsed.start is None or parsed.end is None:
             continue

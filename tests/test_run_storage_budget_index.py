@@ -64,6 +64,36 @@ class StorageBudgetIndexTests(unittest.TestCase):
         self.assertEqual(rows[1].status, "incomplete")
         self.assertIn("missing PixelShift 16 DNG", rows[1].notes)
 
+    def test_collect_rows_finds_adc_candidate_for_nested_ps16_dng(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            scan_root = Path(temp_dir) / "scan"
+            payload = {
+                "scan_root_name": "Test Scan",
+                "film_stock": "Test Film",
+                "film_type": "color negative",
+                "shot_year": "1997",
+                "capture_sets": [
+                    {
+                        "set_id": "a",
+                        "single_raw": "raw/a.ARW",
+                        "pixelshift4_dng": "dng/a_ps4.dng",
+                        "pixelshift16_dng": "dng/a_ps16.dng",
+                        "storage_budget_role": "primary_candidate",
+                    }
+                ],
+            }
+            (scan_root / "scan_manifest.json").parent.mkdir(parents=True, exist_ok=True)
+            (scan_root / "scan_manifest.json").write_text(json.dumps(payload), encoding="utf-8")
+            write_file(scan_root / "raw" / "a.ARW", 100)
+            write_file(scan_root / "dng" / "a_ps4.dng", 150)
+            write_file(scan_root / "dng" / "a_ps16.dng", 400)
+            write_file(scan_root / "adc_jxl_dng" / "d020" / "a_ps16.dng", 90)
+
+            rows = budget_index.collect_rows(scan_root, ["d020"])
+
+        self.assertEqual(rows[0].status, "under_budget")
+        self.assertAlmostEqual(rows[0].candidate_vs_single_raw_pct or 0, 90.0)
+
     def test_row_status_classifies_under_and_over_budget(self) -> None:
         self.assertEqual(
             budget_index.row_status(100, 400, 80, "d005")[0],

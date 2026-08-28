@@ -53,6 +53,28 @@ class CreateScanManifestTests(unittest.TestCase):
         self.assertEqual(ps16["raw_files_expected"], 16)
         self.assertEqual(ps16["missing_raw_files"], [])
 
+    def test_manifest_groups_nested_raw_and_dng_sources(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        write_file(root / "raw" / "DSC4000.ARW")
+        for number in range(4001, 4005):
+            write_file(root / "raw" / f"DSC{number}.ARW")
+        for number in range(4005, 4021):
+            write_file(root / "raw" / f"DSC{number}.ARW")
+        write_file(root / "dng" / "DSC4001-DSC4004.dng")
+        write_file(root / "dng" / "DSC4005-DSC4020.dng")
+        write_file(root / "adc_jxl_dng" / "d020" / "DSC4005-DSC4020.dng")
+
+        manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)
+
+        self.assertEqual(len(manifest["capture_sets"]), 1)
+        capture = manifest["capture_sets"][0]
+        self.assertEqual(capture["single_raw"], "raw/DSC4000.ARW")
+        self.assertEqual(capture["pixelshift4_dng"], "dng/DSC4001-DSC4004.dng")
+        self.assertEqual(capture["pixelshift16_dng"], "dng/DSC4005-DSC4020.dng")
+        self.assertEqual(capture["adc_levels_for_pixelshift16"], ["d020"])
+
     def test_adc_outputs_are_marked_regeneratable(self) -> None:
         root = self.make_scan_root()
 

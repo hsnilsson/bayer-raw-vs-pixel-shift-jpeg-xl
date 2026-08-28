@@ -130,7 +130,7 @@ def collect_jobs(scan_root: Path, output_root: Path, levels: list[str]) -> list[
                     (
                         "adc_jxl_dng",
                         level,
-                        str(Path("adc_jxl_dng") / level / capture["pixelshift16_dng"]),
+                        str(Path("adc_jxl_dng") / level / Path(capture["pixelshift16_dng"]).name),
                     )
                 )
         for role, level, relative in sources:
