@@ -23,6 +23,7 @@ from break_even_image_tools import (  # noqa: E402
 import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
 import make_break_even_review_panels as review_panels  # noqa: E402
+import make_break_even_context_images as context_images  # noqa: E402
 import generate_break_even_report_site as report_site  # noqa: E402
 import run_rendered_ps16_jxl_matrix as rendered_matrix  # noqa: E402
 
@@ -204,6 +205,20 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertEqual(report_site.classify_delta_e(1.7), "warn")
         self.assertEqual(report_site.classify_delta_e(2.7), "risk")
         self.assertEqual(report_site.classify_delta_e(3.5), "bad")
+
+    def test_context_crop_parser_accepts_valid_crop(self) -> None:
+        self.assertEqual(context_images.parse_crop("10,20,30,40"), (10, 20, 30, 40))
+
+    def test_report_site_context_paths_only_reads_pngs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "frame").mkdir()
+            write_png(root / "frame" / "context.png", textured_rgb(12, 12))
+            (root / "frame" / "source.tif").write_bytes(b"not published")
+
+            contexts = report_site.context_paths(root)
+
+            self.assertEqual([path.name for path in contexts], ["context.png"])
 
     def test_report_site_marks_under_budget_warn_color_as_under_budget(self) -> None:
         summary = report_site.LevelSummary(
