@@ -159,7 +159,7 @@ These results are not yet a universal archival recommendation.
   zoom, and pan
 - [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
   generate a local HTML report with color-coded break-even tables and review
-  panel/context navigation
+  context plus fullscreen crop-viewer navigation
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix
@@ -226,7 +226,8 @@ python scripts\run_archival_break_even.py --write-templates
 
 For the actual break-even search, generate and analyze JPEG XL distances that
 bracket the RAW61 storage budget, currently including `d020`, `d022`, `d025`,
-`d028`, and `d030`; `d020` maps to JPEG XL distance `0.20`.
+`d028`, and `d030`, with `d200` used as an intentionally harsh visual anchor in
+the crop viewer; `d020` maps to JPEG XL distance `0.20`.
 
 See [docs/local-scan-workflow.md](docs/local-scan-workflow.md) before adding new
 local scan material.

@@ -38,6 +38,7 @@ DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
 DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT = ROOT / "site/assets/review-viewers"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
+DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030", "d200"]
 DEFAULT_CASES = [
     "fuji_679_f_ii_1983|_DSC6980",
     "kodak_gold_200_5_1997|_DSC6735",
@@ -222,8 +223,12 @@ def make_viewer(
     if transform_name not in transforms:
         raise SystemExit(f"Unknown transform: {transform_name}")
     transform = transforms[transform_name]
-    images: dict[str, str] = {"reference": "reference.png", "raw61": "raw61.png"}
-    labels: dict[str, str] = {"reference": "PS16 reference", "raw61": "RAW61 local aligned"}
+    images: dict[str, str] = {"reference": "reference.png", "ps16_lossless": "reference.png", "raw61": "raw61.png"}
+    labels: dict[str, str] = {
+        "reference": "PS16 reference",
+        "ps16_lossless": "PS16 lossless / reference",
+        "raw61": "RAW61 local aligned",
+    }
     output_dir = args.output_dir / local_study.slugify(scan_set) / set_id
     output_dir.mkdir(parents=True, exist_ok=True)
     save_display(output_dir / images["reference"], transform.apply(ref_crop), args.max_dim, force=args.force)
@@ -290,7 +295,7 @@ def main() -> int:
         cases = [(case.scan_set, case.set_id) for case in choose_cases(read_csv_rows(args.matrix), args.case_limit)]
     else:
         cases = [parse_case(value) for value in DEFAULT_CASES]
-    levels = args.level or ["d025", "d030"]
+    levels = args.level or DEFAULT_LEVELS
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
     written = []
     for scan_set, set_id in cases:

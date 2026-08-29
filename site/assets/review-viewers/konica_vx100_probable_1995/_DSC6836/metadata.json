@@ -1,12 +1,14 @@
 {
   "labels": {
     "reference": "PS16 reference",
+    "ps16_lossless": "PS16 lossless / reference",
     "raw61": "RAW61 local aligned",
     "jxl_d020": "PS16 JXL d020",
     "jxl_d022": "PS16 JXL d022",
     "jxl_d025": "PS16 JXL d025",
     "jxl_d028": "PS16 JXL d028",
-    "jxl_d030": "PS16 JXL d030"
+    "jxl_d030": "PS16 JXL d030",
+    "jxl_d200": "PS16 JXL d200"
   },
   "scan_set": "konica_vx100_probable_1995",
   "set_id": "_DSC6836",

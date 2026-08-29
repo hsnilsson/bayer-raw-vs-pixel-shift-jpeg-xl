@@ -300,6 +300,46 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("ps16_reference_manual-01.png", html)
             self.assertLess(html.index("ps16_reference_manual-01.png"), html.index("d025_manual-01_identity.png"))
 
+    def test_report_site_embeds_fullscreen_crop_viewer_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic_scan" / "frame001"
+            viewer_dir.mkdir(parents=True)
+            viewer_index = viewer_dir / "index.html"
+            viewer_index.write_text("<html></html>", encoding="utf-8")
+            for name in ["reference.png", "raw61.png", "jxl_d020.png", "jxl_d200.png"]:
+                write_png(viewer_dir / name, textured_rgb(12, 12))
+            (viewer_dir / "metadata.json").write_text(
+                """{
+                  "labels": {
+                    "raw61": "RAW61 local aligned",
+                    "jxl_d020": "PS16 JXL d020",
+                    "jxl_d200": "PS16 JXL d200"
+                  },
+                  "scan_set": "Synthetic Scan",
+                  "set_id": "frame001",
+                  "transform": "identity",
+                  "crop": [1, 2, 3, 4],
+                  "local_raw61_alignment": {"applied": true, "shift_x_px": 1, "shift_y_px": -1}
+                }""",
+                encoding="utf-8",
+            )
+
+            html = report_site.render_html(
+                rows=[],
+                summaries=[],
+                panels=[],
+                contexts=[],
+                output=root / "site" / "index.html",
+                viewers=[viewer_index],
+            )
+
+            self.assertIn('id="cropModal"', html)
+            self.assertIn('data-open-crop-viewer data-viewer-index="0"', html)
+            self.assertIn('"key": "ps16_lossless"', html)
+            self.assertIn('"key": "jxl_d200"', html)
+            self.assertIn("hard visual check", html)
+
     def test_crop_guide_reads_multiple_exact_magenta_markers(self) -> None:
         guide = np.zeros((110, 140, 3), dtype=np.uint8)
         guide[51:57, 21:27] = (255, 0, 255)

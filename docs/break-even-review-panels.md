@@ -80,10 +80,13 @@ python scripts\make_break_even_review_viewers.py `
   --level d022 `
   --level d025 `
   --level d028 `
-  --level d030
+  --level d030 `
+  --level d200
 ```
 
 Open the resulting `index.html` for a crop. It supports side-by-side viewing,
 a keyboard toggle that copies the right-hand candidate over the left reference,
 zoom, and drag-to-pan. The viewer uses the same crop-local RAW61 alignment as
-the static panel generator.
+the static panel generator. The report-level fullscreen viewer always includes
+the PS16 reference as a lossless baseline, and `d200` is a deliberately
+heavy-compression visual anchor.
