@@ -168,6 +168,24 @@ def fmt(value: float | None, digits: int = 2, suffix: str = "") -> str:
     return f"{value:.{digits}f}{suffix}"
 
 
+def fmt_with_unit(value: float | None, digits: int, unit: str) -> str:
+    if value is None:
+        return "-"
+    return f"{value:.{digits}f} {unit}"
+
+
+def fmt_delta_e(value: float | None) -> str:
+    if value is None:
+        return "-"
+    return f"{value:.2f} &Delta;E00"
+
+
+def fmt_raw61_ratio(value: float | None) -> str:
+    if value is None:
+        return "-"
+    return f"{value:.2f}x RAW61"
+
+
 def level_sort(level: str) -> tuple[int, str]:
     digits = "".join(char for char in level if char.isdigit())
     return (int(digits) if digits else 9999, level)
@@ -427,6 +445,12 @@ def ratio_reading(value: float | None) -> str:
     if value <= 1.1:
         return "near RAW61 baseline"
     return "worse than RAW61 baseline"
+
+
+def structure_reading(value: float | None) -> str:
+    if value is None:
+        return "missing"
+    return "unitless high-pass loss; lower is closer to PS16"
 
 
 def status_reading(status: str) -> str:
@@ -1000,13 +1024,13 @@ def render_html(
             <tr>
               <td><strong>{esc(item.level)}</strong></td>
               <td class="{status_class}">{esc(item.status)}<br><span class="subtle">{esc(status_reading(item.status))}</span></td>
-              <td class="{size_class}">{fmt(item.median_size_pct, 1, "%")}{bar(item.median_size_pct)}</td>
-              <td>{fmt(item.median_retained_mib, 1)} MiB<br><span class="subtle">RAW61 median {fmt(item.median_raw61_mib, 1)} MiB</span></td>
-              <td>{fmt(item.min_size_pct, 1, "%")} - {fmt(item.max_size_pct, 1, "%")}<br><span class="subtle">{fmt(item.min_retained_mib, 1)} - {fmt(item.max_retained_mib, 1)} MiB</span></td>
-              <td class="{color_class}">{fmt(item.p95_jxl_delta_e, 2)}<br><span class="subtle">{esc(delta_e_reading(item.p95_jxl_delta_e))}</span></td>
-              <td class="{color_ratio_class}">{fmt(item.median_color_ratio, 2)}x<br><span class="subtle">{esc(ratio_reading(item.median_color_ratio))}</span></td>
-              <td>{fmt(item.median_jxl_structure_loss, 3)}</td>
-              <td class="{structure_ratio_class}">{fmt(item.median_structure_ratio, 2)}x<br><span class="subtle">{esc(ratio_reading(item.median_structure_ratio))}</span></td>
+              <td class="{size_class}"><strong>{fmt_with_unit(item.median_size_pct, 1, "% of RAW61")}</strong><br><span class="subtle">{esc(size_reading(item.median_size_pct))}</span>{bar(item.median_size_pct)}</td>
+              <td><strong>{fmt_with_unit(item.median_retained_mib, 1, "MiB")}</strong><br><span class="subtle">JXL median; RAW61 median {fmt_with_unit(item.median_raw61_mib, 1, "MiB")}</span></td>
+              <td><strong>{fmt(item.min_size_pct, 1, "%")} - {fmt_with_unit(item.max_size_pct, 1, "% of RAW61")}</strong><br><span class="subtle">{fmt_with_unit(item.min_retained_mib, 1, "MiB")} - {fmt_with_unit(item.max_retained_mib, 1, "MiB")}</span></td>
+              <td class="{color_class}"><strong>{fmt_delta_e(item.p95_jxl_delta_e)}</strong><br><span class="subtle">{esc(delta_e_reading(item.p95_jxl_delta_e))}</span></td>
+              <td class="{color_ratio_class}"><strong>{fmt_raw61_ratio(item.median_color_ratio)}</strong><br><span class="subtle">{esc(ratio_reading(item.median_color_ratio))}</span></td>
+              <td><strong>{fmt_with_unit(item.median_jxl_structure_loss, 3, "loss")}</strong><br><span class="subtle">{esc(structure_reading(item.median_jxl_structure_loss))}</span></td>
+              <td class="{structure_ratio_class}"><strong>{fmt_raw61_ratio(item.median_structure_ratio)}</strong><br><span class="subtle">{esc(ratio_reading(item.median_structure_ratio))}</span></td>
               <td class="{verdict_class}">{verdict_text(item.verdicts)}</td>
             </tr>
             """
@@ -1346,13 +1370,13 @@ def render_html(
         <tr>
           <th>{abbr("JXL level", "JPEG XL distance label. d030 means distance 0.30.")}</th>
           <th>{abbr("Current gate", "Plain-language gate combining size and current diagnostics. Too large means the image metrics may be good, but the file is still larger than the paired RAW61 target.")}</th>
-          <th>{abbr("Median size vs RAW61", "Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.")}</th>
-          <th>{abbr("Median retained size", "Median encoded JXL file size, with paired RAW61 median shown for context.")}</th>
-          <th>{abbr("Size range", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
-          <th>{abbr("JXL color p95", "95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.")}</th>
-          <th>{abbr("Color loss ratio", "Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.")}</th>
-          <th>{abbr("JXL structure", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.")}</th>
-          <th>{abbr("Structure ratio", "Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.")}</th>
+          <th>{abbr("Median size (% RAW61)", "Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.")}</th>
+          <th>{abbr("Median retained size (MiB)", "Median encoded JXL file size, with paired RAW61 median shown for context.")}</th>
+          <th>{abbr("Size range (% RAW61 / MiB)", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
+          <th>{abbr("JXL color p95 (DeltaE00)", "95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.")}</th>
+          <th>{abbr("Color loss ratio (x RAW61)", "Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.")}</th>
+          <th>{abbr("JXL structure loss (unitless)", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16. Use the structure ratio and visual viewer for interpretation.")}</th>
+          <th>{abbr("Structure ratio (x RAW61)", "Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.")}</th>
           <th>{abbr("Verdicts", "Counts of conservative matrix verdicts for this level.")}</th>
         </tr>
       </thead>
@@ -1360,6 +1384,16 @@ def render_html(
         {''.join(level_rows)}
       </tbody>
     </table>
+
+    <h2>Color Legend And Units</h2>
+    <section class="questions">
+      <div class="card"><h3>Current gate</h3><p><span class="pill good">green</span> means the level passes the current size, color and structure gates. <span class="pill warn">yellow</span> means review zone. <span class="pill bad">red</span> means too large or image risk. This is a decision label, not a measured unit.</p></div>
+      <div class="card"><h3>Size cells</h3><p>Unit: percent of paired RAW61 size, plus encoded MiB. <span class="pill good">green</span> is at or below 100% RAW61. <span class="pill warn">yellow</span> is up to 115%. <span class="pill bad">red</span> is clearly over the RAW61 storage budget.</p></div>
+      <div class="card"><h3>&Delta;E00 cells</h3><p>Unit: CIEDE2000 color difference. The table uses patch p95 after the current negative-density stress transform. <span class="pill good">green</span> is below 1. <span class="pill warn">yellow</span> is 1-2. <span class="pill risk">orange</span> is 2-3. <span class="pill bad">red</span> is above 3.</p></div>
+      <div class="card"><h3>Ratio cells</h3><p>Unit: multiple of the RAW61-vs-PS16 baseline. Example: 0.25x RAW61 means one quarter of the RAW61 baseline error. Values below 1 favor PS16 JXL for that metric.</p></div>
+      <div class="card"><h3>Structure cells</h3><p>Absolute structure loss is a unitless high-pass diagnostic, so it is not color coded by itself. The color-coded structure ratio compares that loss to RAW61; below 1 means closer to PS16 than RAW61.</p></div>
+      <div class="card"><h3>FADGI note</h3><p>These colors are interpretation aids, not formal FADGI conformance. The useful FADGI lesson here is to keep color, tone, registration, sharpening, noise and structure separate instead of collapsing everything into one score.</p></div>
+    </section>
 
     <h2>RAW61 Baseline By Frame</h2>
     <div class="note">
@@ -1396,14 +1430,6 @@ def render_html(
       <p>The viewer supports side-by-side comparison, a keyboard toggle that copies the selected candidate over the left reference pane, zoom, and pan. Full-frame context thumbnails show where the crop came from. Static diagnostic panels are kept as local regenerated artifacts unless explicitly included in a private/local report build.</p>
     </div>
     {''.join(visual_review_cards)}
-
-    <h2>Color Legend</h2>
-    <section class="questions">
-      <div class="card"><h3>Size cells</h3><p><span class="pill good">green</span> at or below RAW61. <span class="pill warn">yellow</span> within 15% above RAW61. <span class="pill bad">red</span> clearly over budget.</p></div>
-      <div class="card"><h3>&Delta;E00 cells</h3><p><span class="pill good">green</span> below 1. <span class="pill warn">yellow</span> 1-2. <span class="pill risk">orange</span> 2-3. <span class="pill bad">red</span> above 3. These are diagnostic, not formal FADGI ratings.</p></div>
-      <div class="card"><h3>Ratio cells</h3><p><span class="pill good">green</span> below 0.5x RAW61 baseline. <span class="pill warn">yellow</span> below 0.8x. <span class="pill risk">orange</span> near parity. <span class="pill bad">red</span> worse than RAW61 baseline.</p></div>
-      <div class="card"><h3>Diff panels</h3><p>Bright diff pixels mean different from PS16. RAW61 diff includes sampling, scaling, alignment, acutance and render differences. JXL diff is mostly codec error.</p></div>
-    </section>
 
     <h2>FADGI Context</h2>
     <div class="card">

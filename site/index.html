@@ -256,13 +256,13 @@
         <tr>
           <th><abbr title="JPEG XL distance label. d030 means distance 0.30.">JXL level</abbr></th>
           <th><abbr title="Plain-language gate combining size and current diagnostics. Too large means the image metrics may be good, but the file is still larger than the paired RAW61 target.">Current gate</abbr></th>
-          <th><abbr title="Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.">Median size vs RAW61</abbr></th>
-          <th><abbr title="Median encoded JXL file size, with paired RAW61 median shown for context.">Median retained size</abbr></th>
-          <th><abbr title="Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.">Size range</abbr></th>
-          <th><abbr title="95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.">JXL color p95</abbr></th>
-          <th><abbr title="Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.">Color loss ratio</abbr></th>
-          <th><abbr title="Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.">JXL structure</abbr></th>
-          <th><abbr title="Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.">Structure ratio</abbr></th>
+          <th><abbr title="Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.">Median size (% RAW61)</abbr></th>
+          <th><abbr title="Median encoded JXL file size, with paired RAW61 median shown for context.">Median retained size (MiB)</abbr></th>
+          <th><abbr title="Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.">Size range (% RAW61 / MiB)</abbr></th>
+          <th><abbr title="95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.">JXL color p95 (DeltaE00)</abbr></th>
+          <th><abbr title="Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.">Color loss ratio (x RAW61)</abbr></th>
+          <th><abbr title="Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16. Use the structure ratio and visual viewer for interpretation.">JXL structure loss (unitless)</abbr></th>
+          <th><abbr title="Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.">Structure ratio (x RAW61)</abbr></th>
           <th><abbr title="Counts of conservative matrix verdicts for this level.">Verdicts</abbr></th>
         </tr>
       </thead>
@@ -271,70 +271,80 @@
             <tr>
               <td><strong>d020</strong></td>
               <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
-              <td class="bad">118.2%<span class="bar"><span style="width:23.6%"></span></span></td>
-              <td>83.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>66.6% - 134.9%<br><span class="subtle">69.2 - 92.6 MiB</span></td>
-              <td class="good">0.14<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.372</td>
-              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="bad"><strong>118.2 % of RAW61</strong><br><span class="subtle">larger than RAW61</span><span class="bar"><span style="width:23.6%"></span></span></td>
+              <td><strong>83.7 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>66.6% - 134.9 % of RAW61</strong><br><span class="subtle">69.2 MiB - 92.6 MiB</span></td>
+              <td class="good"><strong>0.14 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.372 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 13</td>
             </tr>
             
             <tr>
               <td><strong>d022</strong></td>
               <td class="warn">Review zone<br><span class="subtle">near the storage or image-quality boundary; needs visual review</span></td>
-              <td class="warn">103.0%<span class="bar"><span style="width:20.6%"></span></span></td>
-              <td>73.2 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>58.2% - 121.4%<br><span class="subtle">58.2 - 83.6 MiB</span></td>
-              <td class="good">0.12<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.374</td>
-              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn"><strong>103.0 % of RAW61</strong><br><span class="subtle">near RAW61 budget</span><span class="bar"><span style="width:20.6%"></span></span></td>
+              <td><strong>73.2 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>58.2% - 121.4 % of RAW61</strong><br><span class="subtle">58.2 MiB - 83.6 MiB</span></td>
+              <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.374 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="warn">ps16_jxl_likely_wins: 8, uncertain_over_budget: 7</td>
             </tr>
             
             <tr>
               <td><strong>d025</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">82.9%<span class="bar"><span style="width:16.6%"></span></span></td>
-              <td>60.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>47.8% - 104.4%<br><span class="subtle">47.0 - 71.2 MiB</span></td>
-              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.374</td>
-              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good"><strong>82.9 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span><span class="bar"><span style="width:16.6%"></span></span></td>
+              <td><strong>60.1 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>47.8% - 104.4 % of RAW61</strong><br><span class="subtle">47.0 MiB - 71.2 MiB</span></td>
+              <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.374 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
             <tr>
               <td><strong>d028</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">68.7%<span class="bar"><span style="width:13.7%"></span></span></td>
-              <td>50.3 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>40.0% - 88.7%<br><span class="subtle">40.1 - 60.2 MiB</span></td>
-              <td class="good">0.12<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.377</td>
-              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good"><strong>68.7 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span><span class="bar"><span style="width:13.7%"></span></span></td>
+              <td><strong>50.3 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>40.0% - 88.7 % of RAW61</strong><br><span class="subtle">40.1 MiB - 60.2 MiB</span></td>
+              <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.377 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
             <tr>
               <td><strong>d030</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">62.6%<span class="bar"><span style="width:12.5%"></span></span></td>
-              <td>45.6 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>36.2% - 79.2%<br><span class="subtle">36.6 - 53.9 MiB</span></td>
-              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.378</td>
-              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good"><strong>62.6 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span><span class="bar"><span style="width:12.5%"></span></span></td>
+              <td><strong>45.6 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>36.2% - 79.2 % of RAW61</strong><br><span class="subtle">36.6 MiB - 53.9 MiB</span></td>
+              <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.378 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
       </tbody>
     </table>
+
+    <h2>Color Legend And Units</h2>
+    <section class="questions">
+      <div class="card"><h3>Current gate</h3><p><span class="pill good">green</span> means the level passes the current size, color and structure gates. <span class="pill warn">yellow</span> means review zone. <span class="pill bad">red</span> means too large or image risk. This is a decision label, not a measured unit.</p></div>
+      <div class="card"><h3>Size cells</h3><p>Unit: percent of paired RAW61 size, plus encoded MiB. <span class="pill good">green</span> is at or below 100% RAW61. <span class="pill warn">yellow</span> is up to 115%. <span class="pill bad">red</span> is clearly over the RAW61 storage budget.</p></div>
+      <div class="card"><h3>&Delta;E00 cells</h3><p>Unit: CIEDE2000 color difference. The table uses patch p95 after the current negative-density stress transform. <span class="pill good">green</span> is below 1. <span class="pill warn">yellow</span> is 1-2. <span class="pill risk">orange</span> is 2-3. <span class="pill bad">red</span> is above 3.</p></div>
+      <div class="card"><h3>Ratio cells</h3><p>Unit: multiple of the RAW61-vs-PS16 baseline. Example: 0.25x RAW61 means one quarter of the RAW61 baseline error. Values below 1 favor PS16 JXL for that metric.</p></div>
+      <div class="card"><h3>Structure cells</h3><p>Absolute structure loss is a unitless high-pass diagnostic, so it is not color coded by itself. The color-coded structure ratio compares that loss to RAW61; below 1 means closer to PS16 than RAW61.</p></div>
+      <div class="card"><h3>FADGI note</h3><p>These colors are interpretation aids, not formal FADGI conformance. The useful FADGI lesson here is to keep color, tone, registration, sharpening, noise and structure separate instead of collapsing everything into one score.</p></div>
+    </section>
 
     <h2>RAW61 Baseline By Frame</h2>
     <div class="note">
@@ -601,14 +611,6 @@
               <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6917/index.html" data-open-crop-viewer data-viewer-index="15"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-
-    <h2>Color Legend</h2>
-    <section class="questions">
-      <div class="card"><h3>Size cells</h3><p><span class="pill good">green</span> at or below RAW61. <span class="pill warn">yellow</span> within 15% above RAW61. <span class="pill bad">red</span> clearly over budget.</p></div>
-      <div class="card"><h3>&Delta;E00 cells</h3><p><span class="pill good">green</span> below 1. <span class="pill warn">yellow</span> 1-2. <span class="pill risk">orange</span> 2-3. <span class="pill bad">red</span> above 3. These are diagnostic, not formal FADGI ratings.</p></div>
-      <div class="card"><h3>Ratio cells</h3><p><span class="pill good">green</span> below 0.5x RAW61 baseline. <span class="pill warn">yellow</span> below 0.8x. <span class="pill risk">orange</span> near parity. <span class="pill bad">red</span> worse than RAW61 baseline.</p></div>
-      <div class="card"><h3>Diff panels</h3><p>Bright diff pixels mean different from PS16. RAW61 diff includes sampling, scaling, alignment, acutance and render differences. JXL diff is mostly codec error.</p></div>
-    </section>
 
     <h2>FADGI Context</h2>
     <div class="card">

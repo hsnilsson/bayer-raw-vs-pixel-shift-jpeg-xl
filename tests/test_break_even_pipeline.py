@@ -251,6 +251,47 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
             self.assertEqual([path.name for path in contexts], ["context.png"])
 
+    def test_report_site_places_color_legend_after_level_table_with_units(self) -> None:
+        summary = report_site.LevelSummary(
+            level="d030",
+            rows=3,
+            median_retained_mib=54.0,
+            min_retained_mib=50.0,
+            max_retained_mib=60.0,
+            median_raw61_mib=68.0,
+            median_size_pct=80.0,
+            min_size_pct=70.0,
+            max_size_pct=90.0,
+            median_jxl_delta_e=0.12,
+            p95_jxl_delta_e=0.16,
+            median_raw_delta_e=5.0,
+            median_color_ratio=0.031,
+            median_jxl_structure_loss=0.24,
+            median_raw_structure_loss=1.0,
+            median_structure_ratio=0.24,
+            verdicts={"ps16_jxl_likely_wins": 3},
+            status="Passes current gates",
+        )
+
+        html = report_site.render_html(
+            rows=[],
+            summaries=[summary],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+        )
+
+        self.assertLess(html.index("<h2>Level Summary</h2>"), html.index("<h2>Color Legend And Units</h2>"))
+        self.assertLess(
+            html.index("<h2>Color Legend And Units</h2>"),
+            html.index("<h2>RAW61 Baseline By Frame</h2>"),
+        )
+        self.assertIn("80.0 % of RAW61", html)
+        self.assertIn("54.0 MiB", html)
+        self.assertIn("0.16 &Delta;E00", html)
+        self.assertIn("0.03x RAW61", html)
+        self.assertIn("unitless high-pass loss", html)
+
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
