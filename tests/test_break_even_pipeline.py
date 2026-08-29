@@ -220,7 +220,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
             self.assertEqual([path.name for path in contexts], ["context.png"])
 
-    def test_report_site_marks_under_budget_warn_color_as_under_budget(self) -> None:
+    def test_report_site_marks_under_budget_warn_color_as_passing_current_gates(self) -> None:
         summary = report_site.LevelSummary(
             level="d030",
             rows=3,
@@ -242,7 +242,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             status="",
         )
 
-        self.assertEqual(report_site.status_for(summary), "Under budget")
+        self.assertEqual(report_site.status_for(summary), "Passes current gates")
 
     def test_rendered_matrix_merge_replaces_matching_rows(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -98,15 +98,15 @@
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Candidate Rows</h3><div class="metric">156</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
-      <div class="card"><h3>Complete Rows</h3><div class="metric">117</div><p class="muted">rows with size, color and structure data</p></div>
-      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">81</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
-      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030, d050, d075...</div><p class="muted">levels whose median size is at or below RAW61</p></div>
+      <div class="card"><h3>Candidate Rows</h3><div class="metric">95</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
+      <div class="card"><h3>Complete Rows</h3><div class="metric">60</div><p class="muted">rows with size, color and structure data</p></div>
+      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">45</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
+      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030</div><p class="muted">levels whose median size is at or below RAW61</p></div>
     </section>
 
     <h2>Current Reading</h2>
     <div class="note">
-      <p><strong>The current local data puts the storage break-even between d020 (114.1%) and d022 (98.6%).</strong></p>
+      <p><strong>The current local data puts the storage break-even between d022 (102.3%) and d025 (81.8%).</strong></p>
       <p>The current numeric result should be read as provisional: the RAW61 baseline still includes render-profile, demosaic/acutance and registration effects, while PS16 JXL is measured against the PS16 render. That is intentional for the archive-value question, but it must be documented and visually reviewed.</p>
     </div>
 
@@ -147,11 +147,12 @@
     <h2>Level Summary</h2>
     <div class="note">
       <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines are moved to the next table because they do not change when the JXL distance changes.</p>
+      <p><strong>Decision gate:</strong> a level is only treated as a current PS16 JXL win when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
       <p><strong>Important:</strong> the colors below are diagnostic labels, not FADGI conformance claims. FADGI-style target measurements are interpretation anchors because this project compares rendered film scans and compression candidates, not calibrated capture-target conformance.</p>
     </div>
     <section class="questions">
       <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
-      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Around 0.16 is very small codec color movement in this diagnostic setup.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
       <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
       <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
     </section>
@@ -159,7 +160,7 @@
       <thead>
         <tr>
           <th><abbr title="JPEG XL distance label. d030 means distance 0.30.">JXL level</abbr></th>
-          <th><abbr title="Plain-language status. Over RAW61 budget means the image metrics may be good, but the file is still larger than the paired RAW61 target.">Status</abbr></th>
+          <th><abbr title="Plain-language gate combining size and current diagnostics. Too large means the image metrics may be good, but the file is still larger than the paired RAW61 target.">Current gate</abbr></th>
           <th><abbr title="Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.">Median size vs RAW61</abbr></th>
           <th><abbr title="Median encoded JXL file size, with paired RAW61 median shown for context.">Median retained size</abbr></th>
           <th><abbr title="Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.">Size range</abbr></th>
@@ -173,172 +174,68 @@
       <tbody>
         
             <tr>
-              <td><strong>d003</strong></td>
-              <td class="bad">Over RAW61 budget</td>
-              <td class="bad">474.6%<span class="bar"><span style="width:94.9%"></span></span></td>
-              <td>324.3 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>254.8% - 511.6%<br><span class="subtle">307.5 - 344.5 MiB</span></td>
-              <td class="good">0.06<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.00x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.153</td>
-              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">uncertain_over_budget: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d005</strong></td>
-              <td class="bad">Over RAW61 budget</td>
-              <td class="bad">361.0%<span class="bar"><span style="width:72.2%"></span></span></td>
-              <td>247.4 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>196.8% - 396.7%<br><span class="subtle">231.9 - 267.1 MiB</span></td>
-              <td class="good">0.09<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.00x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.156</td>
-              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">uncertain_over_budget: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d010</strong></td>
-              <td class="bad">Over RAW61 budget</td>
-              <td class="bad">224.3%<span class="bar"><span style="width:44.9%"></span></span></td>
-              <td>152.0 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>126.1% - 250.4%<br><span class="subtle">142.9 - 168.6 MiB</span></td>
-              <td class="good">0.11<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.159</td>
-              <td class="good">0.16x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">uncertain_over_budget: 9</td>
-            </tr>
-            
-            <tr>
               <td><strong>d020</strong></td>
-              <td class="warn">Budget edge</td>
-              <td class="warn">114.1%<span class="bar"><span style="width:22.8%"></span></span></td>
-              <td>79.8 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>66.6% - 128.8%<br><span class="subtle">70.6 - 90.8 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
+              <td class="bad">117.2%<span class="bar"><span style="width:23.4%"></span></span></td>
+              <td>83.4 MiB<br><span class="subtle">RAW61 median 67.5 MiB</span></td>
+              <td>66.6% - 134.9%<br><span class="subtle">70.6 - 92.6 MiB</span></td>
+              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.163</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 7</td>
+              <td>0.363</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 10</td>
             </tr>
             
             <tr>
               <td><strong>d022</strong></td>
-              <td class="warn">Budget edge</td>
-              <td class="good">98.6%<span class="bar"><span style="width:19.7%"></span></span></td>
-              <td>69.6 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>58.2% - 112.5%<br><span class="subtle">61.2 - 82.0 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.162</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">ps16_jxl_likely_wins: 7, uncertain_over_budget: 2</td>
+              <td class="warn">Review zone<br><span class="subtle">near the storage or image-quality boundary; needs visual review</span></td>
+              <td class="warn">102.3%<span class="bar"><span style="width:20.5%"></span></span></td>
+              <td>72.5 MiB<br><span class="subtle">RAW61 median 67.5 MiB</span></td>
+              <td>58.2% - 121.1%<br><span class="subtle">61.2 - 83.6 MiB</span></td>
+              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.365</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">ps16_jxl_likely_wins: 7, uncertain_over_budget: 5</td>
             </tr>
             
             <tr>
               <td><strong>d025</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">79.6%<span class="bar"><span style="width:15.9%"></span></span></td>
-              <td>56.0 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>47.8% - 92.1%<br><span class="subtle">49.8 - 68.6 MiB</span></td>
+              <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
+              <td class="good">81.8%<span class="bar"><span style="width:16.4%"></span></span></td>
+              <td>59.1 MiB<br><span class="subtle">RAW61 median 67.5 MiB</span></td>
+              <td>47.8% - 101.9%<br><span class="subtle">49.8 - 71.2 MiB</span></td>
               <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.163</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
+              <td>0.365</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 12</td>
             </tr>
             
             <tr>
               <td><strong>d028</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">66.4%<span class="bar"><span style="width:13.3%"></span></span></td>
-              <td>46.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>40.0% - 77.5%<br><span class="subtle">42.2 - 56.0 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.164</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
+              <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
+              <td class="good">68.4%<span class="bar"><span style="width:13.7%"></span></span></td>
+              <td>49.5 MiB<br><span class="subtle">RAW61 median 67.5 MiB</span></td>
+              <td>40.0% - 85.7%<br><span class="subtle">42.2 - 60.2 MiB</span></td>
+              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.368</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 12</td>
             </tr>
             
             <tr>
               <td><strong>d030</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">60.1%<span class="bar"><span style="width:12.0%"></span></span></td>
-              <td>41.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>36.2% - 70.4%<br><span class="subtle">38.5 - 49.6 MiB</span></td>
-              <td class="good">0.17<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.164</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d050</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">35.5%<span class="bar"><span style="width:7.1%"></span></span></td>
-              <td>25.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>21.2% - 40.7%<br><span class="subtle">23.0 - 29.4 MiB</span></td>
-              <td class="good">0.21<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.168</td>
-              <td class="good">0.17x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d075</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">20.5%<span class="bar"><span style="width:4.1%"></span></span></td>
-              <td>15.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>12.3% - 23.7%<br><span class="subtle">13.3 - 18.0 MiB</span></td>
-              <td class="good">0.32<br><span class="subtle">small codec color shift</span></td>
-              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.172</td>
-              <td class="good">0.18x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d100</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">15.7%<span class="bar"><span style="width:3.1%"></span></span></td>
-              <td>11.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>9.5% - 18.3%<br><span class="subtle">10.1 - 14.6 MiB</span></td>
-              <td class="good">0.55<br><span class="subtle">small codec color shift</span></td>
-              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.177</td>
-              <td class="good">0.18x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d150</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">11.5%<span class="bar"><span style="width:2.3%"></span></span></td>
-              <td>8.4 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>6.8% - 13.4%<br><span class="subtle">7.3 - 10.7 MiB</span></td>
-              <td class="warn">1.08<br><span class="subtle">visible if inspected</span></td>
-              <td class="good">0.03x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.184</td>
-              <td class="good">0.19x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
-            </tr>
-            
-            <tr>
-              <td><strong>d200</strong></td>
-              <td class="good">Under budget</td>
-              <td class="good">9.3%<span class="bar"><span style="width:2.0%"></span></span></td>
-              <td>6.8 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
-              <td>5.4% - 10.9%<br><span class="subtle">5.9 - 8.5 MiB</span></td>
-              <td class="warn">1.24<br><span class="subtle">visible if inspected</span></td>
-              <td class="good">0.04x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.191</td>
-              <td class="good">0.20x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 9</td>
+              <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
+              <td class="good">62.0%<span class="bar"><span style="width:12.4%"></span></span></td>
+              <td>44.8 MiB<br><span class="subtle">RAW61 median 67.5 MiB</span></td>
+              <td>36.2% - 76.7%<br><span class="subtle">38.5 - 53.9 MiB</span></td>
+              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.367</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 12</td>
             </tr>
             
       </tbody>
@@ -363,93 +260,123 @@
       <tbody>
         
             <tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6938</strong></td>
+              <td>0.84</td>
+              <td class="bad">9.30</td>
+              <td>1.346</td>
+              <td>0.04</td>
+              <td>0.481</td>
+            </tr>
+            
+            <tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6959</strong></td>
+              <td>0.91</td>
+              <td class="bad">4.32</td>
+              <td>1.065</td>
+              <td>0.11</td>
+              <td>0.277</td>
+            </tr>
+            
+            <tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6980</strong></td>
+              <td>0.92</td>
+              <td class="bad">19.46</td>
+              <td>1.187</td>
+              <td>0.03</td>
+              <td>0.378</td>
+            </tr>
+            
+            <tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6735</strong></td>
               <td>1.21</td>
-              <td class="bad">26.65</td>
-              <td>1.533</td>
-              <td>0.47</td>
-              <td>0.165</td>
+              <td class="bad">21.15</td>
+              <td>1.511</td>
+              <td>0.10</td>
+              <td>0.295</td>
             </tr>
             
             <tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6756</strong></td>
-              <td>0.80</td>
-              <td class="bad">4.26</td>
-              <td>1.025</td>
-              <td>0.19</td>
-              <td>0.190</td>
+              <td>0.85</td>
+              <td class="bad">4.76</td>
+              <td>1.240</td>
+              <td>0.06</td>
+              <td>0.358</td>
             </tr>
             
             <tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6793</strong></td>
-              <td>0.77</td>
+              <td>0.78</td>
               <td class="bad">5.64</td>
-              <td>0.975</td>
-              <td>0.15</td>
-              <td>0.191</td>
+              <td>1.217</td>
+              <td>0.04</td>
+              <td>0.352</td>
             </tr>
             
             <tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6814</strong></td>
-              <td>0.93</td>
-              <td class="risk">2.57</td>
-              <td>0.993</td>
-              <td>0.09</td>
-              <td>0.133</td>
+              <td>0.96</td>
+              <td class="bad">3.71</td>
+              <td>1.209</td>
+              <td>0.04</td>
+              <td>0.246</td>
             </tr>
             
             <tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6577</strong></td>
-              <td>0.92</td>
-              <td class="bad">4.87</td>
-              <td>0.788</td>
-              <td>1.64</td>
-              <td>0.027</td>
+              <td>0.99</td>
+              <td class="bad">5.01</td>
+              <td>0.954</td>
+              <td>0.09</td>
+              <td>0.062</td>
             </tr>
             
             <tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6619</strong></td>
-              <td>0.80</td>
-              <td class="bad">7.19</td>
-              <td>1.041</td>
-              <td>0.46</td>
-              <td>0.208</td>
+              <td>0.86</td>
+              <td class="bad">7.66</td>
+              <td>1.248</td>
+              <td>0.15</td>
+              <td>0.396</td>
             </tr>
             
             <tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6640</strong></td>
-              <td>0.78</td>
-              <td class="bad">13.08</td>
-              <td>0.988</td>
-              <td>0.64</td>
-              <td>0.234</td>
+              <td>0.87</td>
+              <td class="bad">13.23</td>
+              <td>1.196</td>
+              <td>0.20</td>
+              <td>0.447</td>
             </tr>
             
             <tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6661</strong></td>
-              <td>0.73</td>
-              <td class="bad">4.95</td>
-              <td>1.103</td>
-              <td>0.14</td>
-              <td>0.277</td>
+              <td>0.75</td>
+              <td class="bad">4.82</td>
+              <td>1.268</td>
+              <td>0.09</td>
+              <td>0.498</td>
             </tr>
             
             <tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6682</strong></td>
-              <td>0.91</td>
+              <td>1.02</td>
               <td class="bad">3.83</td>
-              <td>1.113</td>
-              <td>0.24</td>
-              <td>0.223</td>
+              <td>1.295</td>
+              <td>0.10</td>
+              <td>0.427</td>
             </tr>
             
       </tbody>
@@ -457,7 +384,7 @@
 
     <h2>Render/Profile Audit</h2>
     <section class="questions">
-      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 11 RAW61 rows and 11 PS16 rows.</p></div>
+      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 18 RAW61 rows and 18 PS16 rows.</p></div>
       <div class="card"><h3>Color management</h3><p>Input profile: <code>(camera)</code><br>Working profile: <code>ProPhoto</code><br>Output profile: <code>RTv4_Large</code></p></div>
       <div class="card"><h3>White balance warning</h3><p>WB enabled: <code>true</code><br>WB setting: <code>Camera</code></p><p class="muted">Camera WB can differ between ARW and PixelShift2DNG metadata, so RAW61 may render less orange even with the same profile file.</p></div>
       <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>amaze</code><br>Sharpening enabled: <code>false</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>

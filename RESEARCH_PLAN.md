@@ -12,6 +12,32 @@ as conservative JPEG XL preserve more useful film information than a lower
 resolution raw capture?
 ```
 
+## Intended Collection And Decision Context
+
+The motivating use case is a collection of approximately 20,000 negatives,
+mostly everyday photographs of people's lives. The physical negatives are to
+be preserved. The digital archive is therefore intended to be a highly useful,
+high-quality representation with a documented rescan path, rather than the only
+surviving copy of the source object.
+
+The preference for PixelShift 16 is partly visual: local 240 MP scans render
+dye clouds, grain-like structure, and smooth color variation more pleasantly
+than the paired single-shot captures. PixelShift's denser color sampling may
+also reduce demosaicing artifacts, but claims of improved color accuracy must
+still be tested separately from subjective appearance. Capture speed is not the
+main constraint in the current hardware setup: a bright Valoi easy35 v2 source
+allows an approximate nine-second 16-frame sequence versus a two-second single
+exposure, corresponding to about 39 additional nominal exposure hours over the
+whole collection.
+
+These facts make the operational research question more specific: can the
+240 MP result be merged, conservatively compressed, verified, copied, and
+cleared from a limited working disk with little or no per-frame intervention?
+The physical-original policy may justify a different production decision from
+the project's general recommendation for irreplaceable born-digital masters,
+but it does not remove the need to measure JPEG XL latitude, color behavior,
+metadata retention, and decoder compatibility.
+
 Review status: reviewed on 2026-08-15 against the sources summarized in
 [RELATED_WORK.md](RELATED_WORK.md) and against the repository's current public
 and private exploratory results. The plan deliberately separates verified
