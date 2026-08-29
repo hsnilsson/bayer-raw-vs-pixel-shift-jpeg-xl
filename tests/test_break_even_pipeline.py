@@ -292,6 +292,70 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("0.03x RAW61", html)
         self.assertIn("unitless high-pass loss", html)
 
+    def test_report_site_level_table_has_help_row_and_lossless_reference(self) -> None:
+        summary = report_site.LevelSummary(
+            level="d030",
+            rows=3,
+            median_retained_mib=54.0,
+            min_retained_mib=50.0,
+            max_retained_mib=60.0,
+            median_raw61_mib=68.0,
+            median_size_pct=80.0,
+            min_size_pct=70.0,
+            max_size_pct=90.0,
+            median_jxl_delta_e=0.12,
+            p95_jxl_delta_e=0.16,
+            median_raw_delta_e=5.0,
+            median_color_ratio=0.031,
+            median_jxl_structure_loss=0.24,
+            median_raw_structure_loss=1.0,
+            median_structure_ratio=0.24,
+            verdicts={"ps16_jxl_likely_wins": 3},
+            status="Passes current gates",
+        )
+
+        html = report_site.render_html(
+            rows=[],
+            summaries=[summary],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+        )
+
+        self.assertIn('class="column-help-row"', html)
+        self.assertIn('data-full="JPEG XL distance label.', html)
+        self.assertIn("<strong>lossless</strong>", html)
+        self.assertLess(html.index("<strong>lossless</strong>"), html.index("<strong>d030</strong>"))
+        self.assertNotIn('class="bar"', html)
+
+    def test_report_site_question_cards_include_answers_so_far(self) -> None:
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+        )
+
+        self.assertEqual(html.count("<summary>Answer so far</summary>"), 4)
+        self.assertIn("small color or tone losses hidden inside the orange mask", html)
+        self.assertIn("Current complete rows favor PS16 JXL", html)
+
+    def test_report_site_documents_adc_dng_jxl_caveats(self) -> None:
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+        )
+
+        self.assertIn("<h2>ADC DNG/JXL Caveats</h2>", html)
+        self.assertIn("Stored image shape", html)
+        self.assertIn("Crop origin / active placement", html)
+        self.assertIn("<code>WhiteLevel</code>", html)
+        self.assertIn("<code>OpcodeList2</code>", html)
+
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -380,6 +444,37 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"key": "ps16_lossless"', html)
             self.assertIn('"key": "jxl_d200"', html)
             self.assertIn("hard visual check", html)
+
+    def test_report_site_visual_review_items_are_not_foldouts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic_scan" / "frame001"
+            viewer_dir.mkdir(parents=True)
+            viewer_index = viewer_dir / "index.html"
+            viewer_index.write_text("<html></html>", encoding="utf-8")
+            for name in ["reference.png", "raw61.png", "jxl_d020.png"]:
+                write_png(viewer_dir / name, textured_rgb(12, 12))
+            (viewer_dir / "metadata.json").write_text(
+                """{
+                  "labels": {"raw61": "RAW61 local aligned", "jxl_d020": "PS16 JXL d020"},
+                  "scan_set": "Synthetic Scan",
+                  "set_id": "frame001"
+                }""",
+                encoding="utf-8",
+            )
+
+            html = report_site.render_html(
+                rows=[],
+                summaries=[],
+                panels=[],
+                contexts=[],
+                output=root / "site" / "index.html",
+                viewers=[viewer_index],
+            )
+
+            self.assertIn('class="review-item"', html)
+            self.assertIn("Open fullscreen crop viewer", html)
+            self.assertNotIn('class="panel-group review-group"', html)
 
     def test_crop_guide_reads_multiple_exact_magenta_markers(self) -> None:
         guide = np.zeros((110, 140, 3), dtype=np.uint8)
