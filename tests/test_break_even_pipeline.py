@@ -20,12 +20,14 @@ from break_even_image_tools import (  # noqa: E402
     structure_metrics,
     write_rgb_tiff,
 )
+from incremental_cache import fingerprint, fresh, make_entry  # noqa: E402
 import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
 import make_break_even_review_panels as review_panels  # noqa: E402
 import make_break_even_context_images as context_images  # noqa: E402
 import generate_break_even_report_site as report_site  # noqa: E402
 import run_rendered_ps16_jxl_matrix as rendered_matrix  # noqa: E402
+import read_crop_selection_guides as crop_guides  # noqa: E402
 
 
 def write_png(path: Path, arr: np.ndarray) -> None:
@@ -54,6 +56,24 @@ def textured_rgb(height: int = 96, width: int = 128) -> np.ndarray:
 
 
 class BreakEvenPipelineTests(unittest.TestCase):
+    def test_incremental_cache_invalidates_changed_input_or_output(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source = root / "source.bin"
+            output = root / "derived.bin"
+            source.write_bytes(b"source-v1")
+            output.write_bytes(b"derived-v1")
+            expected = fingerprint({"source": source.stat().st_mtime_ns, "parameter": "v1"})
+            entry = make_entry(expected, {"output": output}, root)
+
+            self.assertTrue(fresh(entry, expected, {"output": output}, root))
+            output.write_bytes(b"derived-v2-with-change")
+            self.assertFalse(fresh(entry, expected, {"output": output}, root))
+
+            entry = make_entry(expected, {"output": output}, root)
+            changed = fingerprint({"source": source.stat().st_mtime_ns, "parameter": "v2"})
+            self.assertFalse(fresh(entry, changed, {"output": output}, root))
+
     def test_phase_correlation_returns_alignment_shift(self) -> None:
         reference = np.zeros((64, 64), dtype=np.float32)
         reference[20:30, 25:35] = 1.0
@@ -230,6 +250,75 @@ class BreakEvenPipelineTests(unittest.TestCase):
             contexts = report_site.context_paths(root)
 
             self.assertEqual([path.name for path in contexts], ["context.png"])
+
+    def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            panel_dir = root / "film" / "frame"
+            panel_dir.mkdir(parents=True)
+            write_png(panel_dir / "d020_auto-detail_identity.png", textured_rgb(12, 12))
+            write_png(panel_dir / "d020_center_identity.png", textured_rgb(12, 12))
+
+            panels = report_site.panel_paths(root, root / "report" / "index.html")
+
+            self.assertEqual(
+                [path.name for path in panels],
+                ["d020_auto-detail_identity.png", "d020_center_identity.png"],
+            )
+
+    def test_report_site_excludes_case_by_scan_set_or_slug(self) -> None:
+        rows = [
+            {"scan_set": "Private test set", "set_id": "PRIVATE_FRAME"},
+            {"scan_set": "Kodak5035 H190-1983", "set_id": "_DSC6577"},
+        ]
+        excludes = {("private_test_set", "PRIVATE_FRAME")}
+
+        filtered = report_site.filter_rows(rows, excludes)
+
+        self.assertEqual([row["set_id"] for row in filtered], ["_DSC6577"])
+
+    def test_report_site_places_contexts_in_matching_panel_group(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            panel_dir = root / "panels" / "film" / "frame"
+            context_dir = root / "contexts" / "film" / "frame"
+            panel_dir.mkdir(parents=True)
+            context_dir.mkdir(parents=True)
+            panel_path = panel_dir / "d025_manual-01_identity.png"
+            context_path = context_dir / "ps16_reference_manual-01.png"
+            write_png(panel_path, textured_rgb(12, 12))
+            write_png(context_path, textured_rgb(12, 12))
+
+            html = report_site.render_html(
+                rows=[],
+                summaries=[],
+                panels=[panel_path],
+                contexts=[context_path],
+                output=root / "report" / "index.html",
+            )
+
+            self.assertIn("ps16_reference_manual-01.png", html)
+            self.assertLess(html.index("ps16_reference_manual-01.png"), html.index("d025_manual-01_identity.png"))
+
+    def test_crop_guide_reads_multiple_exact_magenta_markers(self) -> None:
+        guide = np.zeros((110, 140, 3), dtype=np.uint8)
+        guide[51:57, 21:27] = (255, 0, 255)
+        guide[81:87, 101:107] = (255, 0, 255)
+        metadata = {
+            "marker_rgb": [255, 0, 255],
+            "image_offset": [0, 10],
+            "display_width": 140,
+            "display_height": 100,
+            "source_width": 1400,
+            "source_height": 1000,
+        }
+
+        crops = crop_guides.marker_crops(guide, metadata, crop_size=200, minimum_marker_pixels=4)
+
+        self.assertEqual(len(crops), 2)
+        self.assertEqual([item["name"] for item in crops], ["manual-01", "manual-02"])
+        self.assertEqual(crops[0]["marker_display"], [24, 44])
+        self.assertEqual(crops[1]["marker_display"], [104, 74])
 
     def test_report_site_marks_under_budget_warn_color_as_passing_current_gates(self) -> None:
         summary = report_site.LevelSummary(

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import shutil
 import subprocess
 import sys
@@ -39,7 +40,7 @@ DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
 DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT_DIR = ROOT / "results/break_even_review_panels"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
-DEFAULT_LEVELS = ["d020", "d030", "d100", "d200"]
+DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030"]
 DEFAULT_TRANSFORMS = ["identity", "negative_density_hard_print"]
 
 
@@ -68,6 +69,23 @@ def relpath(path: Path, root: Path = ROOT) -> str:
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def read_crop_plan(path: Path | None) -> dict[tuple[str, str], list[tuple[str, str]]]:
+    if path is None or not path.is_file():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    plan: dict[tuple[str, str], list[tuple[str, str]]] = {}
+    for item in payload.get("cases", {}).values():
+        key = (str(item.get("scan_set", "")), str(item.get("set_id", "")))
+        specs = []
+        for crop_item in item.get("crops", []):
+            values = crop_item.get("crop", [])
+            if len(values) == 4:
+                specs.append((str(crop_item.get("name", f"manual-{len(specs) + 1:02d}")), ",".join(str(value) for value in values)))
+        if specs:
+            plan[key] = specs
+    return plan
 
 
 def as_float(value: str | None, default: float = 0.0) -> float:
@@ -339,17 +357,20 @@ def main() -> int:
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--transform", action="append", default=None)
     parser.add_argument("--crop", action="append", default=None, help="Crop as x,y,width,height in PS16 coordinates.")
+    parser.add_argument("--crop-plan", type=Path, help="JSON crop plan produced by read_crop_selection_guides.py.")
     parser.add_argument("--case-limit", type=int, default=3)
     parser.add_argument("--crop-size", type=int, default=768)
     parser.add_argument("--panel-size", type=int, default=360)
     parser.add_argument("--diff-gain", type=float, default=16.0)
     parser.add_argument("--disable-local-raw61-align", action="store_true")
     parser.add_argument("--max-local-shift", type=float, default=32.0)
+    parser.add_argument("--force", action="store_true", help="rewrite existing panel PNGs")
     args = parser.parse_args()
 
     if args.crop_size <= 0 or args.panel_size <= 0:
         raise SystemExit("--crop-size and --panel-size must be positive")
     rows = read_csv_rows(args.matrix)
+    crop_plan = read_crop_plan(args.crop_plan)
     cases = args.case or choose_cases(rows, args.case_limit)
     levels = args.level or DEFAULT_LEVELS
     transforms = args.transform or DEFAULT_TRANSFORMS
@@ -373,6 +394,7 @@ def main() -> int:
         "",
     ]
     written = 0
+    reused = 0
     with tempfile.TemporaryDirectory(prefix="break-even-jxl-") as temp_dir:
         temp_root = Path(temp_dir)
         for case in cases:
@@ -385,6 +407,8 @@ def main() -> int:
             raw_full = read_rgb_image(raw_path)
             crop_specs = [(f"manual-{idx:02d}", value) for idx, value in enumerate(args.crop or [], 1)]
             if not crop_specs:
+                crop_specs = crop_plan.get((case.scan_set, case.set_id), [])
+            if not crop_specs:
                 crop_specs = default_crops(reference_full, args.crop_size)
             case_dir = args.output_dir / local_study.slugify(case.scan_set) / case.set_id
             index_lines.append(f"## {case.scan_set} / {case.set_id}")
@@ -396,10 +420,30 @@ def main() -> int:
                 if not source_jxl.is_file():
                     index_lines.append(f"- skipped `{level}`: missing `{relpath(source_jxl)}`")
                     continue
+                output_specs = [
+                    (
+                        crop_name,
+                        crop_spec,
+                        transform_name,
+                        case_dir / f"{level}_{crop_name}_{transform_name}.png",
+                        f"{case.scan_set} / {case.set_id} / {level} / {crop_name} / {transform_name}",
+                    )
+                    for crop_name, crop_spec in crop_specs
+                    for transform_name in transforms
+                ]
+                if not args.force and output_specs and all(output.is_file() for *_unused, output, _title in output_specs):
+                    for *_unused, output, _title in output_specs:
+                        index_lines.append(f"- [{output.name}]({relpath(output, args.output_dir)})")
+                    reused += len(output_specs)
+                    continue
                 decoded = temp_root / local_study.slugify(case.scan_set) / case.set_id / level / "ps16_candidate.ppm"
                 run_decode(djxl, source_jxl, decoded)
                 jxl_full = read_rgb_image(decoded)
-                for crop_name, crop_spec in crop_specs:
+                for crop_name, crop_spec, transform_name, output, title in output_specs:
+                    if output.is_file() and not args.force:
+                        index_lines.append(f"- [{output.name}]({relpath(output, args.output_dir)})")
+                        reused += 1
+                        continue
                     ref_crop = crop(reference_full, crop_spec)
                     raw_crop = crop(raw_full, crop_spec)
                     jxl_crop = crop(jxl_full, crop_spec)
@@ -408,26 +452,23 @@ def main() -> int:
                         alignment = LocalAlignment(0.0, 0.0, 0.0, False)
                     else:
                         aligned_raw_crop, alignment = local_align_raw61(ref_crop, raw_crop, args.max_local_shift)
-                    for transform_name in transforms:
-                        output = case_dir / f"{level}_{crop_name}_{transform_name}.png"
-                        title = f"{case.scan_set} / {case.set_id} / {level} / {crop_name} / {transform_name}"
-                        compose_panel(
-                            ref_crop,
-                            aligned_raw_crop,
-                            jxl_crop,
-                            title,
-                            transform_name,
-                            output,
-                            panel_size=args.panel_size,
-                            diff_gain=args.diff_gain,
-                            local_alignment=alignment,
-                        )
-                        index_lines.append(f"- [{output.name}]({relpath(output, args.output_dir)})")
-                        written += 1
+                    compose_panel(
+                        ref_crop,
+                        aligned_raw_crop,
+                        jxl_crop,
+                        title,
+                        transform_name,
+                        output,
+                        panel_size=args.panel_size,
+                        diff_gain=args.diff_gain,
+                        local_alignment=alignment,
+                    )
+                    index_lines.append(f"- [{output.name}]({relpath(output, args.output_dir)})")
+                    written += 1
             index_lines.append("")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     (args.output_dir / "INDEX.md").write_text("\n".join(index_lines) + "\n", encoding="utf-8")
-    print(f"Wrote {written} panel(s) to {relpath(args.output_dir)}")
+    print(f"Wrote {written} panel(s) to {relpath(args.output_dir)}; reused {reused} existing panel(s)")
     return 0
 
 

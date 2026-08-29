@@ -271,6 +271,9 @@ def analyze_case(
     djxl: str | None = None,
     cached_jxl_detail: StructureDetailRow | None = None,
     cached_raw_detail: StructureDetailRow | None = None,
+    prepared_reference: Any | None = None,
+    prepared_raw61: Any | None = None,
+    prepared_analysis_scale: float | None = None,
 ) -> tuple[StructureOutputRow, list[StructureDetailRow]]:
     scope = crop_spec or "full"
     if cached_raw_detail is not None and cached_jxl_detail is not None:
@@ -318,24 +321,37 @@ def analyze_case(
             [],
         )
 
-    reference = crop(read_rgb_image(reference_path), crop_spec)
-    raw61 = crop(read_rgb_image(raw61_path), crop_spec)
+    if prepared_reference is None:
+        reference = crop(read_rgb_image(reference_path), crop_spec)
+    else:
+        reference = prepared_reference
+    if cached_raw_detail is None:
+        raw61 = prepared_raw61 if prepared_raw61 is not None else crop(read_rgb_image(raw61_path), crop_spec)
+    else:
+        raw61 = None
     jxl = None
     if cached_jxl_detail is None:
         if jxl_path.suffix.lower() == ".jxl" and not djxl:
             raise ValueError("djxl is required when the JXL candidate path is a standalone .jxl file")
         jxl = crop(read_jxl_candidate(jxl_path, djxl or ""), crop_spec)
-    if reference.shape != raw61.shape or (jxl is not None and reference.shape != jxl.shape):
+    if (raw61 is not None and reference.shape != raw61.shape) or (
+        jxl is not None and reference.shape != jxl.shape
+    ):
         raise ValueError(
             f"{scan_set}/{set_id}/{level}: structure input shapes differ after crop: "
             f"{reference.shape}, {raw61.shape}, {jxl.shape if jxl is not None else 'cached'}"
         )
-    reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
-    raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
+    if prepared_reference is None:
+        reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
+    else:
+        analysis_scale = prepared_analysis_scale or 1.0
+    if raw61 is not None and prepared_raw61 is None:
+        raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
     if cached_raw_detail is not None:
         raw_detail = replace(cached_raw_detail, level=level)
         raw_cache_note = "; reused_raw61_detail=true"
     else:
+        assert raw61 is not None
         raw_detail = detail_row(scan_set, set_id, level, scope, "raw61_registered", reference, raw61, highpass_radius)
         raw_cache_note = ""
     if cached_jxl_detail is not None:
@@ -375,11 +391,23 @@ def analyze_case_group(
     rows: list[StructureOutputRow] = []
     details: list[StructureDetailRow] = []
     raw_detail_cache: dict[tuple[str, str, str], StructureDetailRow] = {}
+    prepared_reference: Any | None = None
+    prepared_raw61: Any | None = None
+    prepared_analysis_scale: float | None = None
     for case in cases:
         scan_set, set_id, level = case[:3]
         scope = crop_spec or "full"
         cached_jxl = reusable_jxl.get((scan_set, set_id, level, scope))
         cached_raw = raw_detail_cache.get((scan_set, set_id, scope))
+        if cached_jxl is None or cached_raw is None:
+            reference_path = case[3]
+            raw61_path = case[4]
+            if prepared_reference is None and reference_path.is_file():
+                prepared_reference = crop(read_rgb_image(reference_path), crop_spec)
+                prepared_reference, prepared_analysis_scale = resize_to_max_dim(prepared_reference, max_analysis_dim)
+            if cached_raw is None and prepared_raw61 is None and raw61_path.is_file():
+                prepared_raw61 = crop(read_rgb_image(raw61_path), crop_spec)
+                prepared_raw61, _ = resize_to_max_dim(prepared_raw61, max_analysis_dim)
         row, detail_rows = analyze_case(
             *case,
             crop_spec=crop_spec,
@@ -388,6 +416,9 @@ def analyze_case_group(
             djxl=djxl,
             cached_jxl_detail=cached_jxl,
             cached_raw_detail=cached_raw,
+            prepared_reference=prepared_reference,
+            prepared_raw61=prepared_raw61,
+            prepared_analysis_scale=prepared_analysis_scale,
         )
         rows.append(row)
         details.extend(detail_rows)

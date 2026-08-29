@@ -1,0 +1,26 @@
+{
+  "labels": {
+    "reference": "PS16 reference",
+    "raw61": "RAW61 local aligned",
+    "jxl_d020": "PS16 JXL d020",
+    "jxl_d022": "PS16 JXL d022",
+    "jxl_d025": "PS16 JXL d025",
+    "jxl_d028": "PS16 JXL d028",
+    "jxl_d030": "PS16 JXL d030"
+  },
+  "scan_set": "fuji_679_f_ii_1983",
+  "set_id": "_DSC6959",
+  "transform": "identity",
+  "crop": [
+    3182,
+    4782,
+    512,
+    512
+  ],
+  "local_raw61_alignment": {
+    "shift_x_px": 6.0,
+    "shift_y_px": -2.0,
+    "confidence": 64.47830189827764,
+    "applied": true
+  }
+}

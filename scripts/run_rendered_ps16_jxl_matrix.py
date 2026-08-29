@@ -21,6 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 from break_even_image_tools import crop, read_rgb_image, resize_to_max_dim  # noqa: E402
 from color_patch_metrics import patch_metric_rows, summarize_patch_metric_rows  # noqa: E402
+from incremental_cache import file_state, fingerprint, fresh, load_cache, make_entry, save_cache  # noqa: E402
 from jxl_levels import DEFAULT_LEVELS, distance_for_level, require_level  # noqa: E402
 from run_public_latitude_stress import build_transforms, metrics, write_ppm  # noqa: E402
 
@@ -31,6 +32,7 @@ DEFAULT_RESULTS_DIR = ROOT / "results/rendered_ps16_jxl_matrix"
 DEFAULT_CJXL = ROOT / "work/jxl-tools/bin/cjxl.exe"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
 HARD_TRANSFORM = "negative_density_hard_print"
+CACHE_FILENAME = "artifact_cache.json"
 
 
 @dataclass
@@ -63,6 +65,114 @@ def mib(path: Path | None) -> float | None:
 
 def usable_file(path: Path) -> bool:
     return path.is_file() and path.stat().st_size > 0
+
+
+def cache_code_states() -> list[dict[str, Any] | None]:
+    return [
+        file_state(Path(__file__), ROOT),
+        file_state(ROOT / "src/break_even_image_tools.py", ROOT),
+        file_state(ROOT / "src/color_patch_metrics.py", ROOT),
+        file_state(ROOT / "scripts/run_public_latitude_stress.py", ROOT),
+    ]
+
+
+def artifact_fingerprint(
+    source: Path,
+    level: str,
+    cjxl: str,
+    djxl: str,
+    effort: int,
+) -> str:
+    return fingerprint(
+        {
+            "kind": "rendered_ps16_jxl_artifacts",
+            "source": file_state(source, ROOT),
+            "cjxl": file_state(Path(cjxl), ROOT),
+            "djxl": file_state(Path(djxl), ROOT),
+            "level": level,
+            "distance": distance_for_level(level),
+            "effort": effort,
+            "code": cache_code_states(),
+        }
+    )
+
+
+def metrics_fingerprint(
+    source: Path,
+    encoded: Path,
+    decoded: Path,
+    djxl: str,
+    level: str,
+    patch_size: int,
+    patch_color_space: str,
+    crop_spec: str | None,
+    max_analysis_dim: int,
+) -> str:
+    return fingerprint(
+        {
+            "kind": "rendered_ps16_jxl_metrics",
+            "source": file_state(source, ROOT),
+            "encoded": file_state(encoded, ROOT),
+            "decoded": file_state(decoded, ROOT),
+            "djxl": file_state(Path(djxl), ROOT),
+            "level": level,
+            "patch_size": patch_size,
+            "patch_color_space": patch_color_space,
+            "crop": crop_spec,
+            "max_analysis_dim": max_analysis_dim,
+            "code": cache_code_states(),
+        }
+    )
+
+
+def metric_cache_outputs(source: Path, encoded: Path, decoded: Path) -> dict[str, Path]:
+    outputs = {"source": source, "encoded": encoded}
+    if usable_file(decoded):
+        outputs["decoded"] = decoded
+    return outputs
+
+
+def existing_metrics_are_current(
+    source: Path,
+    encoded: Path,
+    key: tuple[str, str, str],
+    pixel_keys: set[tuple[str, ...]],
+    patch_keys: set[tuple[str, ...]],
+) -> bool:
+    return (
+        existing_encoded_is_current(source, encoded)
+        and key in pixel_keys
+        and key in patch_keys
+    )
+
+
+def result_key(scan_set: str, set_id: str, level: str) -> tuple[str, str, str]:
+    return scan_set, set_id, level
+
+
+def result_key_set(rows: list[dict[str, str]], fields: tuple[str, ...]) -> set[tuple[str, ...]]:
+    return {tuple(row.get(field, "") for field in fields) for row in rows}
+
+
+def existing_artifacts_are_current(
+    source: Path,
+    encoded: Path,
+    decoded: Path,
+    matrix_row: dict[str, str] | None,
+) -> bool:
+    """Trust a pre-cache run once its recorded row and file timestamps agree."""
+    if not matrix_row or matrix_row.get("status") != "encoded_decoded":
+        return False
+    if not usable_file(encoded) or not usable_file(decoded):
+        return False
+    return encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns and decoded.stat().st_mtime_ns >= encoded.stat().st_mtime_ns
+
+
+def existing_encoded_is_current(source: Path, encoded: Path) -> bool:
+    return (
+        usable_file(encoded)
+        and encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns
+    )
 
 
 def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
@@ -341,6 +451,13 @@ def main() -> int:
         help="Merge this run into existing result CSVs instead of replacing them.",
     )
     parser.add_argument(
+        "--no-incremental",
+        dest="incremental",
+        action="store_false",
+        help="Revisit every selected row instead of reusing the artifact cache.",
+    )
+    parser.set_defaults(incremental=True)
+    parser.add_argument(
         "--discard-intermediates",
         action="store_true",
         help="Delete decoded PNG and reference PPM intermediates after metrics are written.",
@@ -376,45 +493,129 @@ def main() -> int:
     if args.limit:
         renders = renders[: args.limit]
 
-    source_ppms: set[Path] = set()
+    cache_path = args.results_dir / CACHE_FILENAME
+    cache = load_cache(cache_path)
+    cache_entries = cache.setdefault("entries", {})
+    existing_matrix_rows = read_csv_rows(args.results_dir / "rendered_ps16_jxl_matrix.csv")
+    existing_pixel_rows = read_csv_rows(args.results_dir / "pixel_metrics.csv")
+    existing_patch_rows = read_csv_rows(args.results_dir / "patch_metrics.csv")
+    existing_matrix_by_key = {
+        result_key(row.get("scan_set", ""), row.get("set_id", ""), row.get("level", "")): row
+        for row in existing_matrix_rows
+    }
+    existing_pixel_keys = result_key_set(existing_pixel_rows, ("scan_set", "set_id", "level"))
+    existing_patch_keys = result_key_set(existing_patch_rows, ("scan_set", "set_id", "level"))
+
+    source_ppms: dict[Path, Path] = {}
+    jobs = []
+    cached_rows: list[MatrixRow] = []
+    skipped_cached = 0
     for scan_set, set_id, source in renders:
-        ppm, _encoded, _decoded = output_paths(args.output_root, source, levels[0])
-        source_ppms.add(ppm)
-        needs_ppm = args.force or not usable_file(ppm)
-        if not needs_ppm:
-            for level in levels:
-                _ppm, encoded, _decoded = output_paths(args.output_root, source, level)
-                if not usable_file(encoded):
-                    needs_ppm = True
-                    break
-        if needs_ppm:
+        for level in levels:
+            ppm, encoded, decoded = output_paths(args.output_root, source, level)
+            key = "|".join(result_key(scan_set, set_id, level))
+            entry = cache_entries.get(key) if isinstance(cache_entries.get(key), dict) else {}
+            artifact_entry = entry.get("artifact") if isinstance(entry.get("artifact"), dict) else None
+            artifact_fp = artifact_fingerprint(source, level, cjxl, djxl, args.effort)
+            artifact_outputs = {"encoded": encoded, "decoded": decoded}
+            artifact_fresh = fresh(artifact_entry, artifact_fp, artifact_outputs, ROOT)
+            encoded_fresh = fresh(artifact_entry, artifact_fp, {"encoded": encoded}, ROOT)
+            if not encoded_fresh:
+                encoded_fresh = existing_encoded_is_current(source, encoded)
+            if not artifact_fresh and existing_artifacts_are_current(
+                source, encoded, decoded, existing_matrix_by_key.get(result_key(scan_set, set_id, level))
+            ):
+                artifact_fresh = True
+                artifact_entry = make_entry(artifact_fp, artifact_outputs, ROOT)
+
+            metric_fp = metrics_fingerprint(
+                source,
+                encoded,
+                decoded,
+                djxl,
+                level,
+                args.patch_size,
+                args.patch_color_space,
+                args.crop,
+                args.max_analysis_dim,
+            )
+            metric_entry = entry.get("metrics") if isinstance(entry.get("metrics"), dict) else None
+            metric_outputs = metric_cache_outputs(source, encoded, decoded)
+            metric_fresh = (
+                artifact_fresh
+                and result_key(scan_set, set_id, level) in existing_pixel_keys
+                and result_key(scan_set, set_id, level) in existing_patch_keys
+                and fresh(metric_entry, metric_fp, metric_outputs, ROOT)
+            )
+            if not metric_fresh and args.incremental and existing_metrics_are_current(
+                source,
+                encoded,
+                result_key(scan_set, set_id, level),
+                existing_pixel_keys,
+                existing_patch_keys,
+            ):
+                metric_fresh = True
+                artifact_entry = artifact_entry or make_entry(artifact_fp, {"encoded": encoded}, ROOT)
+                metric_entry = make_entry(metric_fp, metric_outputs, ROOT)
+            can_skip = args.incremental and not args.force and (
+                (args.no_metrics and artifact_fresh) or metric_fresh
+            )
+            if can_skip:
+                cache_entries[key] = {
+                    "artifact": artifact_entry or make_entry(artifact_fp, artifact_outputs, ROOT),
+                    "metrics": metric_entry or make_entry(metric_fp, metric_outputs, ROOT),
+                }
+                existing = existing_matrix_by_key.get(result_key(scan_set, set_id, level))
+                if existing and existing.get("status") != "encoded_decoded":
+                    cached_rows.append(
+                        MatrixRow(
+                            scan_set=scan_set,
+                            set_id=set_id,
+                            level=level,
+                            source_tif=relpath(source),
+                            encoded_jxl=relpath(encoded),
+                            decoded_tif=existing.get("decoded_tif", relpath(decoded)),
+                            source_mib=mib(source) or 0.0,
+                            encoded_mib=mib(encoded),
+                            decoded_mib=float(existing.get("decoded_mib") or 0.0) or None,
+                            status="encoded_decoded",
+                            notes="reused existing encoded artifact and stored metrics",
+                        )
+                    )
+                skipped_cached += 1
+                continue
+
+            encode_required = args.force or not encoded_fresh
+            if encode_required:
+                source_ppms[ppm] = source
+            jobs.append(
+                (
+                    scan_set,
+                    set_id,
+                    source,
+                    level,
+                    args.output_root,
+                    args.results_dir,
+                    cjxl,
+                    djxl,
+                    args.effort,
+                    encode_required,
+                    args.discard_intermediates,
+                    args.no_metrics,
+                    args.patch_size,
+                    args.patch_color_space,
+                    args.crop,
+                    args.max_analysis_dim,
+                )
+            )
+
+    print(f"Planned {len(jobs)} row(s); reused {skipped_cached} cached row(s).")
+    for ppm, source in source_ppms.items():
+        if args.force or not usable_file(ppm) or ppm.stat().st_mtime_ns < source.stat().st_mtime_ns:
             ppm.parent.mkdir(parents=True, exist_ok=True)
             write_ppm(ppm, read_rgb_image(source))
 
-    jobs = [
-        (
-            scan_set,
-            set_id,
-            source,
-            level,
-            args.output_root,
-            args.results_dir,
-            cjxl,
-            djxl,
-            args.effort,
-            args.force,
-            args.discard_intermediates,
-            args.no_metrics,
-            args.patch_size,
-            args.patch_color_space,
-            args.crop,
-            args.max_analysis_dim,
-        )
-        for scan_set, set_id, source in renders
-        for level in levels
-    ]
-
-    rows: list[MatrixRow] = []
+    rows: list[MatrixRow] = list(cached_rows)
     pixel_rows: list[dict[str, Any]] = []
     patch_rows: list[dict[str, Any]] = []
     if args.jobs == 1:
@@ -432,12 +633,47 @@ def main() -> int:
                 pixel_rows.extend(p_rows)
                 patch_rows.extend(patch)
 
+    for row in rows:
+        if row.status != "encoded_decoded":
+            continue
+        _ppm, encoded, decoded = output_paths(
+            args.output_root,
+            Path(ROOT / row.source_tif),
+            row.level,
+        )
+        artifact_fp = artifact_fingerprint(Path(ROOT / row.source_tif), row.level, cjxl, djxl, args.effort)
+        key = "|".join(result_key(row.scan_set, row.set_id, row.level))
+        cache_entry = {"artifact": make_entry(artifact_fp, {"encoded": encoded, "decoded": decoded}, ROOT)}
+        if not args.no_metrics and any(
+            item.get("scan_set") == row.scan_set
+            and item.get("set_id") == row.set_id
+            and item.get("level") == row.level
+            for item in pixel_rows
+        ):
+            metric_fp = metrics_fingerprint(
+                Path(ROOT / row.source_tif),
+                encoded,
+                decoded,
+                djxl,
+                row.level,
+                args.patch_size,
+                args.patch_color_space,
+                args.crop,
+                args.max_analysis_dim,
+            )
+            cache_entry["metrics"] = make_entry(
+                metric_fp,
+                metric_cache_outputs(Path(ROOT / row.source_tif), encoded, decoded),
+                ROOT,
+            )
+        cache_entries[key] = cache_entry
+
     if args.discard_intermediates:
         for ppm in source_ppms:
             ppm.unlink(missing_ok=True)
 
     args.results_dir.mkdir(parents=True, exist_ok=True)
-    if args.merge_existing:
+    if args.merge_existing or args.incremental:
         matrix_rows = merge_rows(
             args.results_dir / "rendered_ps16_jxl_matrix.csv",
             rows,
@@ -490,6 +726,7 @@ def main() -> int:
         ),
         encoding="utf-8",
     )
+    save_cache(cache_path, cache)
     print(f"Wrote {len(matrix_rows)} rendered PS16 JXL row(s) to {relpath(args.results_dir)}")
     return 0
 

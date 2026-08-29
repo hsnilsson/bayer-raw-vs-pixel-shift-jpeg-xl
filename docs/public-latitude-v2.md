@@ -9,6 +9,19 @@ It is still not a final archival proof. It is a reproducible public stress test
 that helps rank JPEG XL distance settings and reveal whether small compression
 errors become more visible after hard editing.
 
+## Where the post-inversion test happens
+
+The JPEG XL encode is performed on the fixed linear/rendered source first. After
+decoding, both the reference and candidate are passed through the same
+`negative_density_*` transform before error metrics are calculated. This is a
+**post-codec, post-inversion-like stress test**: it tests whether codec
+differences are amplified by a negative-to-positive density curve.
+
+It is not a claim that the transform reproduces FilmLab, Negative Lab Pro, or
+any other particular inverter. An application-specific export remains a useful
+second test, but its result must be labelled by application, profile, and
+settings rather than treated as a universal inversion result.
+
 ## Inputs
 
 The run used 2048 px center crops from six public images:
