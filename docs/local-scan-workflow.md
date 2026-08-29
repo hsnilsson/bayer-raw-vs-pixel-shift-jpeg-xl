@@ -42,6 +42,41 @@ The manifest records capture groups, PixelShift sequences, ADC levels already
 present, privacy status, and local archive triage. Use `--hash` only when you
 need strong file identity checks; it can be slow for large scan folders.
 
+## Quick PS16 Intake Trial (Windows)
+
+For a small same-day scanning trial, put the camera files directly in one new
+scan-set folder. Configure PixelShift2DNG once to:
+
+- process ARW files;
+- save DNG files in the input folder;
+- name output from the first filename, a dash, and the last filename;
+- skip conversion when the destination already exists.
+
+Then close PixelShift2DNG and preview what the intake runner detects:
+
+```powershell
+python scripts\run_ps16_intake.py "input\trial-roll" --dry-run
+```
+
+Run the merge, conservative Adobe JPEG XL DNG conversion at distance `0.05`,
+and structural validation:
+
+```powershell
+python scripts\run_ps16_intake.py "input\trial-roll" --level d005 --hash
+```
+
+The runner uses ExifTool's PixelShift group and shot metadata, invokes
+PixelShift2DNG's **Analyze + Convert All** button through Windows UI Automation,
+waits for stable DNG output, creates `adc_jxl_dng/d005/`, and writes
+`ps16_intake_manifest.json`. It deliberately never deletes or moves an ARW or
+intermediate DNG. Keep the PixelShift2DNG window visible during this first trial
+so warnings can be reviewed.
+
+This is a trial intake path, not yet a continuous production watcher. A future
+standalone intake tool should add archive-copy verification, disk-pressure
+backoff, quarantine, recovery, and unattended-operation tests before gaining
+any deletion capability.
+
 ## Adobe DNG Converter Candidates
 
 If ADC DNG/JXL candidates are missing, generate them:

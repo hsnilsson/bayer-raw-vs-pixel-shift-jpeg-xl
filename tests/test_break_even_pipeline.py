@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -208,6 +208,17 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
     def test_context_crop_parser_accepts_valid_crop(self) -> None:
         self.assertEqual(context_images.parse_crop("10,20,30,40"), (10, 20, 30, 40))
+
+    def test_context_crop_label_is_placed_outside_crop_box(self) -> None:
+        image = Image.new("RGB", (900, 600), "white")
+        draw = ImageDraw.Draw(image)
+        rect = [150, 225, 174, 249]
+
+        x, y = context_images.crop_label_position(draw, rect, "crop: manual-01", image.size)
+        left, top, right, bottom = context_images.label_bounds(draw, (x, y), "crop: manual-01")
+        overlaps_crop = not (right < rect[0] or left > rect[2] or bottom < rect[1] or top > rect[3])
+
+        self.assertFalse(overlaps_crop)
 
     def test_report_site_context_paths_only_reads_pngs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
