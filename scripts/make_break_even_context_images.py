@@ -86,12 +86,44 @@ def to_display(arr: np.ndarray) -> Image.Image:
     return Image.fromarray(np.round(values[:, :, :3] * 255).astype(np.uint8), mode="RGB")
 
 
-def draw_label(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str) -> None:
+def label_bounds(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str) -> tuple[int, int, int, int]:
     font = ImageFont.load_default()
     bbox = draw.textbbox(xy, text, font=font)
-    padded = (bbox[0] - 5, bbox[1] - 4, bbox[2] + 5, bbox[3] + 4)
+    return (bbox[0] - 5, bbox[1] - 4, bbox[2] + 5, bbox[3] + 4)
+
+
+def draw_label(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str) -> None:
+    font = ImageFont.load_default()
+    padded = label_bounds(draw, xy, text)
     draw.rectangle(padded, fill=(255, 255, 255))
     draw.text(xy, text, fill=(25, 25, 25), font=font)
+
+
+def crop_label_position(
+    draw: ImageDraw.ImageDraw,
+    rect: list[int],
+    text: str,
+    image_size: tuple[int, int],
+) -> tuple[int, int]:
+    width, height = image_size
+    margin = 8
+    candidates = [
+        (rect[0], rect[1] - 24),
+        (rect[0], rect[3] + 10),
+        (rect[2] + 10, rect[1]),
+        (rect[0] - 80, rect[1]),
+        (margin, height - 24),
+    ]
+    for x, y in candidates:
+        x = min(max(margin, x), width - margin)
+        y = min(max(margin, y), height - margin)
+        left, top, right, bottom = label_bounds(draw, (x, y), text)
+        if left < 0 or top < 0 or right > width or bottom > height:
+            continue
+        overlaps_crop = not (right < rect[0] or left > rect[2] or bottom < rect[1] or top > rect[3])
+        if not overlaps_crop:
+            return x, y
+    return margin, max(margin, height - 24)
 
 
 def render_context(
@@ -121,7 +153,7 @@ def render_context(
     for inset in range(line_width):
         draw.rectangle([rect[0] - inset, rect[1] - inset, rect[2] + inset, rect[3] + inset], outline=(255, 212, 0))
     draw_label(draw, (10, 10), label)
-    draw_label(draw, (max(10, rect[0] + 6), max(28, rect[1] + 6)), crop_name)
+    draw_label(draw, crop_label_position(draw, rect, f"crop: {crop_name}", display.size), f"crop: {crop_name}")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     display.save(output)
