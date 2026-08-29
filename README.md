@@ -10,6 +10,38 @@ The central question is not simply "is JPEG XL identical to DNG?" It is:
 > JPEG XL preserve more relevant information about a film original than a lower
 > resolution raw capture?
 
+## Practical Motivation
+
+This investigation grew out of a concrete private scanning project involving
+roughly 20,000 negatives, mostly ordinary photographs of people's lives. The
+physical negatives will be retained, but keeping every 16-frame camera-raw
+sequence and every large intermediate file would make the digital workflow
+unnecessarily expensive and difficult to operate.
+
+PixelShift 16 is not being pursued only for nominal resolution. In the local
+material, the 240 MP result gives dye clouds, grain-like texture, and smooth
+color variation a visibly more pleasing and coherent appearance than the
+single-shot capture. Full-color spatial sampling may also reduce Bayer
+interpolation artifacts and improve the color information presented to the
+later profiling and negative-inversion stages. Whether that produces more
+accurate final color remains a testable question rather than an assumption;
+lighting, camera spectral response, profiling, and inversion still matter.
+
+The capture-time penalty is acceptable in the intended setup. With a bright
+Valoi easy35 v2 light source, a 16-frame sequence takes approximately nine
+seconds, compared with roughly two seconds for a single exposure. Across
+20,000 frames, the nominal extra exposure time is about 39 hours, before the
+handling time shared by both methods. That makes high-resolution capture
+operationally plausible; automated merging, compression, verification, and
+workspace cleanup are the larger remaining workflow problems.
+
+The practical goal is therefore to retain the visual and editing value of the
+240 MP scan, including most of the useful negative latitude, in a conservative
+JPEG XL representation small enough for a large collection. Because the
+physical negatives remain available for rescanning, this preservation policy
+has a different risk profile from using lossy JPEG XL as the sole surviving
+record of irreplaceable born-digital material.
+
 Current working hypothesis:
 
 - DNG or another lossless/raw-like master remains the safest per-pixel archive

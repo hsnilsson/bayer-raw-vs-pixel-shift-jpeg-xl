@@ -151,13 +151,13 @@ def status_for(summary: LevelSummary) -> str:
     structure_ratio = classify_ratio(summary.median_structure_ratio)
     verdict = classify_verdict(summary.verdicts)
     if size == "bad":
-        return "Over RAW61 budget"
+        return "Too large"
     if verdict == "bad" or color == "bad":
         return "Image risk"
     if size == "good" and verdict == "good" and color in {"good", "warn"} and "bad" not in {color_ratio, structure_ratio}:
-        return "Under budget"
+        return "Passes current gates"
     if "risk" in {color, color_ratio, structure_ratio} or "warn" in {size, color, color_ratio, structure_ratio, verdict}:
-        return "Budget edge"
+        return "Review zone"
     return "Incomplete"
 
 
@@ -313,9 +313,9 @@ def bar(value: float | None, max_pct: float = 500.0) -> str:
 
 def level_status_class(status: str) -> str:
     return {
-        "Under budget": "good",
-        "Budget edge": "warn",
-        "Over RAW61 budget": "bad",
+        "Passes current gates": "good",
+        "Review zone": "warn",
+        "Too large": "bad",
         "Image risk": "bad",
     }.get(status, "unknown")
 
@@ -354,6 +354,15 @@ def ratio_reading(value: float | None) -> str:
     if value <= 1.1:
         return "near RAW61 baseline"
     return "worse than RAW61 baseline"
+
+
+def status_reading(status: str) -> str:
+    return {
+        "Too large": "image metrics may still be strong, but median size is above RAW61",
+        "Review zone": "near the storage or image-quality boundary; needs visual review",
+        "Passes current gates": "median size is under RAW61 and current diagnostics favor PS16 JXL",
+        "Image risk": "one or more current image diagnostics fails conservative thresholds",
+    }.get(status, "incomplete evidence")
 
 
 def conclusion_text(summaries: list[LevelSummary]) -> str:
@@ -466,7 +475,7 @@ def render_html(
     baselines = summarize_baselines(rows)
     profile = read_profile_flags(DEFAULT_PROFILE)
     raw61_renders, ps16_renders = render_pair_count(DEFAULT_RENDER_INDEX)
-    best_zone = [item.level for item in summaries if item.status == "Under budget"]
+    best_zone = [item.level for item in summaries if item.status == "Passes current gates"]
     zone_text = ", ".join(best_zone[:5]) + ("..." if len(best_zone) > 5 else "") if best_zone else "none yet"
     current_conclusion = conclusion_text(summaries)
 
@@ -482,7 +491,7 @@ def render_html(
             f"""
             <tr>
               <td><strong>{esc(item.level)}</strong></td>
-              <td class="{status_class}">{esc(item.status)}</td>
+              <td class="{status_class}">{esc(item.status)}<br><span class="subtle">{esc(status_reading(item.status))}</span></td>
               <td class="{size_class}">{fmt(item.median_size_pct, 1, "%")}{bar(item.median_size_pct)}</td>
               <td>{fmt(item.median_retained_mib, 1)} MiB<br><span class="subtle">RAW61 median {fmt(item.median_raw61_mib, 1)} MiB</span></td>
               <td>{fmt(item.min_size_pct, 1, "%")} - {fmt(item.max_size_pct, 1, "%")}<br><span class="subtle">{fmt(item.min_retained_mib, 1)} - {fmt(item.max_retained_mib, 1)} MiB</span></td>
@@ -711,11 +720,12 @@ def render_html(
     <h2>Level Summary</h2>
     <div class="note">
       <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines are moved to the next table because they do not change when the JXL distance changes.</p>
+      <p><strong>Decision gate:</strong> a level is only treated as a current PS16 JXL win when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
       <p><strong>Important:</strong> the colors below are diagnostic labels, not FADGI conformance claims. FADGI-style target measurements are interpretation anchors because this project compares rendered film scans and compression candidates, not calibrated capture-target conformance.</p>
     </div>
     <section class="questions">
       <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
-      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Around 0.16 is very small codec color movement in this diagnostic setup.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
       <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
       <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
     </section>
@@ -723,7 +733,7 @@ def render_html(
       <thead>
         <tr>
           <th>{abbr("JXL level", "JPEG XL distance label. d030 means distance 0.30.")}</th>
-          <th>{abbr("Status", "Plain-language status. Over RAW61 budget means the image metrics may be good, but the file is still larger than the paired RAW61 target.")}</th>
+          <th>{abbr("Current gate", "Plain-language gate combining size and current diagnostics. Too large means the image metrics may be good, but the file is still larger than the paired RAW61 target.")}</th>
           <th>{abbr("Median size vs RAW61", "Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.")}</th>
           <th>{abbr("Median retained size", "Median encoded JXL file size, with paired RAW61 median shown for context.")}</th>
           <th>{abbr("Size range", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
