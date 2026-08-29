@@ -1,0 +1,2 @@
+# Keep privacy-sensitive local captures out of the public report and its assets.
+# Format: scan_set_or_slug|set_id

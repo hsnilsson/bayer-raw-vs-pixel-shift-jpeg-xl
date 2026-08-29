@@ -253,6 +253,25 @@ fixed RawTherapee-rendered PS16 master, without depending on whether downstream
 raw applications can read ADC DNG/JXL. It is the current practical path for the
 RAW61-vs-PS16 break-even question.
 
+The matrix runner is incremental by default. It stores one fingerprint per
+scan/set/level in
+`results/rendered_ps16_jxl_matrix/artifact_cache.json`, covering source TIFF,
+JPEG XL tools, encoding parameters, analysis parameters, and relevant code
+files. Existing encoded/decoded artifacts and metrics are reused when their
+fingerprints and output states still match. A first run can bootstrap existing
+JXL files and saved metrics without encoding them again. Use only the levels
+needed for the current question, for example:
+
+```powershell
+python scripts\run_rendered_ps16_jxl_matrix.py --jobs 2 `
+  --level d020 --level d022 --level d025 --level d028 --level d030
+```
+
+Use `--no-incremental` to revisit every selected row, or `--force` when a
+deliberate full re-encode and re-measurement is required. The runner merges
+incremental results into the existing CSVs automatically; this prevents a
+partial level selection from erasing earlier levels.
+
 Measure automatic structure retention:
 
 ```powershell
@@ -274,6 +293,10 @@ step, the batch overview defaults to a 2048 px longest side; native-detail
 structure claims should be rerun on selected crops with `--max-analysis-dim 0`.
 If only the RAW61 registration has changed, `--reuse-jxl-details-csv` avoids
 re-decoding every standalone JXL candidate and recomputes only the RAW61 side.
+The structure runner also reuses the loaded and resized PS16/RAW61 arrays across
+all JXL levels within one frame. For a faster run with enough RAM, add
+`--jobs 2`; keep it at `1` if the machine starts paging, because each parallel
+frame can temporarily hold large image arrays.
 
 Archival break-even matrix:
 
@@ -317,13 +340,14 @@ folders and are reproducible from local inputs.
 Generate small local review panels for the current break-even evidence:
 
 ```powershell
-python scripts\make_break_even_review_panels.py
+python scripts\make_break_even_review_panels.py --case-limit 999
 ```
 
 The panels are written to `results/break_even_review_panels/`. They are meant
 for local review before any claim is published: compare whether the registered
 RAW61 baseline is plausibly worse than PS16, and whether JXL artifacts remain
 small in the same crops after the hard negative-density transform.
+Existing panel PNGs are reused unless `--force` is passed.
 See [break-even-review-panels.md](break-even-review-panels.md) for a plain
 explanation of each panel tile and how to score it.
 
@@ -342,13 +366,16 @@ Build the local HTML navigation/report page:
 ```powershell
 python scripts\generate_break_even_report_site.py `
   --output site\index.html `
-  --copy-panels-to site\assets\review-panels `
-  --copy-contexts-to site\assets\review-contexts
+  --copy-contexts-to site\assets\review-contexts `
+  --viewers site\assets\review-viewers
 ```
 
 Open `site/index.html` locally. The page joins the current break-even CSV,
 simple color-coded diagnostic labels, FADGI-inspired context, selected context
-thumbnails, and selected review panels.
+thumbnails, and interactive viewers.
+Static review panels stay in `results/break_even_review_panels/` by default
+because they are large regenerated artifacts. Add `--include-panels` only for a
+private/local report where those links are explicitly needed.
 
 ## What To Add Next
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import html
+import json
 import os
 import shutil
 import statistics
@@ -13,12 +14,21 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
+import sys
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import run_local_scan_study as local_study  # noqa: E402
+
+
 DEFAULT_MATRIX = ROOT / "results/archival_break_even/archival_break_even_matrix.csv"
 DEFAULT_PANELS = ROOT / "results/break_even_review_panels"
 DEFAULT_CONTEXTS = ROOT / "results/break_even_review_contexts"
 DEFAULT_OUTPUT = ROOT / "results/break_even_report/index.html"
 DEFAULT_PROFILE = ROOT / "profiles/rawtherapee/neutral-render.pp3"
 DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_index.csv"
+DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
+DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
+DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
 
 
 @dataclass(frozen=True)
@@ -60,6 +70,69 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return []
     with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def read_exclude_cases(path: Path | None, explicit: list[str] | None = None) -> set[tuple[str, str]]:
+    cases: set[tuple[str, str]] = set()
+    values = list(explicit or [])
+    if path and path.is_file():
+        values.extend(path.read_text(encoding="utf-8").splitlines())
+    for value in values:
+        text = value.strip()
+        if not text or text.startswith("#"):
+            continue
+        parts = [part.strip() for part in text.split("|")]
+        if len(parts) != 2 or not all(parts):
+            raise ValueError(f'exclude case must be "scan_set_or_slug|set_id": {value!r}')
+        cases.add((parts[0], parts[1]))
+    return cases
+
+
+def read_annotations(path: Path | None) -> dict[tuple[str, str], dict[str, str]]:
+    if path is None or not path.is_file():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    annotations: dict[tuple[str, str], dict[str, str]] = {}
+    for key, value in payload.items():
+        parts = [part.strip() for part in key.split("|", 1)]
+        if len(parts) == 2 and isinstance(value, dict):
+            item = {str(name): str(item) for name, item in value.items()}
+            annotations[(parts[0], parts[1])] = item
+            annotations[(local_study.slugify(parts[0]), parts[1])] = item
+    return annotations
+
+
+def annotation_for(scan_set_or_slug: str, set_id: str, annotations: dict[tuple[str, str], dict[str, str]]) -> dict[str, str]:
+    slug = local_study.slugify(scan_set_or_slug)
+    return annotations.get((scan_set_or_slug, set_id), annotations.get((slug, set_id), {}))
+
+
+def case_is_excluded(scan_set_or_slug: str, set_id: str, excludes: set[tuple[str, str]]) -> bool:
+    if not excludes:
+        return False
+    slug = scan_set_or_slug.lower()
+    try:
+        slug = local_study.slugify(scan_set_or_slug)
+    except Exception:
+        pass
+    return (scan_set_or_slug, set_id) in excludes or (slug, set_id) in excludes
+
+
+def filter_rows(rows: list[dict[str, str]], excludes: set[tuple[str, str]]) -> list[dict[str, str]]:
+    return [
+        row
+        for row in rows
+        if not case_is_excluded(row.get("scan_set", ""), row.get("set_id", ""), excludes)
+    ]
+
+
+def filter_case_paths(paths: list[Path], excludes: set[tuple[str, str]]) -> list[Path]:
+    filtered: list[Path] = []
+    for path in paths:
+        if len(path.parts) >= 3 and case_is_excluded(path.parent.parent.name, path.parent.name, excludes):
+            continue
+        filtered.append(path)
+    return filtered
 
 
 def parse_float(value: str | None) -> float | None:
@@ -388,11 +461,7 @@ def conclusion_text(summaries: list[LevelSummary]) -> str:
 def panel_paths(panel_root: Path, output: Path) -> list[Path]:
     if not panel_root.is_dir():
         return []
-    panels = [
-        path
-        for path in panel_root.rglob("*.png")
-        if "manual" in path.name.lower()
-    ]
+    panels = list(panel_root.rglob("*.png"))
     panels.sort(key=lambda path: (path.parent.as_posix(), level_sort(path.name), path.name))
     return panels
 
@@ -417,6 +486,23 @@ def context_paths(context_root: Path) -> list[Path]:
 def context_groups(contexts: list[Path]) -> dict[str, list[Path]]:
     groups: dict[str, list[Path]] = defaultdict(list)
     for path in contexts:
+        parent = path.parent
+        label = "/".join(parent.parts[-2:]) if len(parent.parts) >= 2 else parent.name
+        groups[label].append(path)
+    return dict(sorted(groups.items()))
+
+
+def viewer_paths(viewer_root: Path) -> list[Path]:
+    if not viewer_root.is_dir():
+        return []
+    paths = [path for path in viewer_root.rglob("index.html")]
+    paths.sort(key=lambda path: path.parent.as_posix())
+    return paths
+
+
+def viewer_groups(viewers: list[Path]) -> dict[str, list[Path]]:
+    groups: dict[str, list[Path]] = defaultdict(list)
+    for path in viewers:
         parent = path.parent
         label = "/".join(parent.parts[-2:]) if len(parent.parts) >= 2 else parent.name
         groups[label].append(path)
@@ -467,7 +553,10 @@ def render_html(
     panels: list[Path],
     contexts: list[Path],
     output: Path,
+    viewers: list[Path] | None = None,
+    annotations: dict[tuple[str, str], dict[str, str]] | None = None,
 ) -> str:
+    annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
     promising = sum(1 for row in complete if row.get("verdict") == "ps16_jxl_likely_wins")
     blocked = len(rows) - len(complete)
@@ -507,10 +596,17 @@ def render_html(
     baseline_rows = []
     for item in baselines:
         raw_color_class = classify_delta_e(item.raw_delta_e_stress)
+        annotation = annotation_for(item.scan_set, item.set_id, annotations)
+        material_label = annotation.get("material_label", item.scan_set)
+        role_html = (
+            f'<br><span class="subtle">{esc(annotation["sample_role"])}</span>'
+            if annotation.get("sample_role")
+            else ""
+        )
         baseline_rows.append(
             f"""
             <tr>
-              <td>{esc(item.scan_set)}</td>
+              <td>{esc(material_label)}{role_html}</td>
               <td><strong>{esc(item.set_id)}</strong></td>
               <td>{fmt(item.raw_delta_e_identity, 2)}</td>
               <td class="{raw_color_class}">{fmt(item.raw_delta_e_stress, 2)}</td>
@@ -521,55 +617,56 @@ def render_html(
             """
         )
 
-    panel_group_cards = []
-    for group_name, group_paths in panel_groups(panels).items():
-        image_cards = []
-        for path in group_paths:
+    panel_lookup = panel_groups(panels)
+    context_lookup = context_groups(contexts)
+    viewer_lookup = viewer_groups(viewers or [])
+    review_groups = sorted(set(panel_lookup) | set(context_lookup) | set(viewer_lookup))
+    visual_review_cards = []
+    for group_name in review_groups:
+        group_scan_set, group_set_id = group_name.rsplit("/", 1)
+        group_annotation = annotation_for(group_scan_set, group_set_id, annotations)
+        display_group_name = group_name
+        if group_annotation.get("material_label"):
+            display_group_name = f'{group_annotation["material_label"]} / {group_set_id}'
+        viewer_links = []
+        for path in viewer_lookup.get(group_name, []):
+            src = relpath(path, output)
+            viewer_links.append(
+                f'<a class="primary-viewer" href="{esc(src)}"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a>'
+            )
+        context_cards = []
+        for path in context_lookup.get(group_name, []):
             name = path.name
             src = relpath(path, output)
-            image_cards.append(
-                f"""
-                <a class="panel-card" href="{esc(src)}">
-                  <img src="{esc(src)}" alt="{esc(name)}">
-                  <span>{esc(name)}</span>
-                </a>
-                """
+            context_cards.append(
+                f'<a class="context-card" href="{esc(src)}"><img src="{esc(src)}" alt="{esc(name)}" loading="lazy"><span>{esc(name)}</span></a>'
             )
-        panel_group_cards.append(
+        panel_cards = []
+        for path in panel_lookup.get(group_name, []):
+            name = path.name
+            src = relpath(path, output)
+            panel_cards.append(
+                f'<a class="panel-card" href="{esc(src)}"><img src="{esc(src)}" alt="{esc(name)}" loading="lazy"><span>{esc(name)}</span></a>'
+            )
+        blocks = []
+        if viewer_links:
+            blocks.append(f'<div class="primary-viewers">{"".join(viewer_links)}</div>')
+        if context_cards:
+            blocks.append(f'<h3>Full-frame context</h3><div class="context-grid">{"".join(context_cards)}</div>')
+        if panel_cards:
+            blocks.append(f'<h3>Static diagnostic panels</h3><div class="panel-grid">{"".join(panel_cards)}</div>')
+        if not blocks:
+            blocks.append('<p class="muted">No visual artifacts found yet.</p>')
+        visual_review_cards.append(
             f"""
-            <details class="panel-group" {'open' if not panel_group_cards else ''}>
-              <summary>{esc(group_name)} <span>{len(group_paths)} panel(s)</span></summary>
-              <div class="panel-grid">{''.join(image_cards)}</div>
+            <details class="panel-group review-group" {'open' if not visual_review_cards else ''}>
+              <summary>{esc(display_group_name)} <span>{len(viewer_links)} viewer(s), {len(context_cards)} context image(s){", " + str(len(panel_cards)) + " panel(s)" if panel_cards else ""}</span></summary>
+              {''.join(blocks)}
             </details>
             """
         )
-    if not panel_group_cards:
-        panel_group_cards.append('<p class="muted">No manual review panels found yet.</p>')
-
-    context_group_cards = []
-    for group_name, group_paths in context_groups(contexts).items():
-        image_cards = []
-        for path in group_paths:
-            name = path.name
-            src = relpath(path, output)
-            image_cards.append(
-                f"""
-                <a class="context-card" href="{esc(src)}">
-                  <img src="{esc(src)}" alt="{esc(name)}">
-                  <span>{esc(name)}</span>
-                </a>
-                """
-            )
-        context_group_cards.append(
-            f"""
-            <details class="panel-group" {'open' if not context_group_cards else ''}>
-              <summary>{esc(group_name)} <span>{len(group_paths)} context image(s)</span></summary>
-              <div class="context-grid">{''.join(image_cards)}</div>
-            </details>
-            """
-        )
-    if not context_group_cards:
-        context_group_cards.append('<p class="muted">No full-frame context thumbnails found yet.</p>')
+    if not visual_review_cards:
+        visual_review_cards.append('<p class="muted">No visual review artifacts found yet.</p>')
 
     return f"""<!doctype html>
 <html lang="en">
@@ -652,6 +749,11 @@ def render_html(
     .context-card {{ display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
     .context-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
     .context-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
+    .viewer-link {{ display: inline-block; margin: 10px 0 2px; color: #075985; font-weight: 700; }}
+    .review-group h3 {{ margin-top: 16px; }}
+    .primary-viewers {{ display: grid; gap: 8px; margin-top: 12px; }}
+    .primary-viewer {{ display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 2px solid #075985; background: #eef8ff; color: #075985; text-decoration: none; }}
+    .primary-viewer span {{ color: var(--muted); font-size: 13px; }}
     .note {{ border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }}
     .small-table th, .small-table td {{ font-size: 13px; }}
     ul {{ margin-top: 8px; }}
@@ -725,7 +827,7 @@ def render_html(
     </div>
     <section class="questions">
       <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
-      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a post-codec, negative-density inversion proxy. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
       <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
       <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
     </section>
@@ -737,7 +839,7 @@ def render_html(
           <th>{abbr("Median size vs RAW61", "Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.")}</th>
           <th>{abbr("Median retained size", "Median encoded JXL file size, with paired RAW61 median shown for context.")}</th>
           <th>{abbr("Size range", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
-          <th>{abbr("JXL color p95", "95th percentile across frame-level JXL patch p95 DeltaE00 after hard negative-density stress. Measures codec color/tone movement.")}</th>
+          <th>{abbr("JXL color p95", "95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.")}</th>
           <th>{abbr("Color loss ratio", "Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.")}</th>
           <th>{abbr("JXL structure", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.")}</th>
           <th>{abbr("Structure ratio", "Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.")}</th>
@@ -778,16 +880,12 @@ def render_html(
       <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>{esc(profile["raw_bayer_method"])}</code><br>Sharpening enabled: <code>{esc(profile["sharpening_enabled"])}</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
     </section>
 
-    <h2>Full-frame Context</h2>
+    <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> show where the published crop panels come from inside the larger rendered frame without publishing the full-resolution source images.</p>
-      <p>The yellow box marks the crop region used for visual review. These thumbnails are for orientation only; metric calculations use the underlying 16-bit rendered files and the listed crop coordinates.</p>
+      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table. Each film or representative frame is grouped here, with the interactive crop viewer first.</p>
+      <p>The viewer supports side-by-side comparison, a keyboard toggle that copies the selected candidate over the left reference pane, zoom, and pan. Full-frame context thumbnails show where the crop came from. Static diagnostic panels are kept as local regenerated artifacts unless explicitly included in a private/local report build.</p>
     </div>
-    {''.join(context_group_cards)}
-
-    <h2>Visual Review Panels</h2>
-    <p class="muted">The current local panel set is concentrated on one approved frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
-    {''.join(panel_group_cards)}
+    {''.join(visual_review_cards)}
 
     <h2>Color Legend</h2>
     <section class="questions">
@@ -825,22 +923,56 @@ def main() -> int:
         help="Copy selected review panels into this asset directory before linking them. Useful for publishing site/.",
     )
     parser.add_argument(
+        "--include-panels",
+        action="store_true",
+        help="Include static diagnostic panels in the report. Omit for the public site build; they are large regenerated artifacts.",
+    )
+    parser.add_argument(
         "--copy-contexts-to",
         type=Path,
         help="Copy small full-frame context thumbnails into this asset directory before linking them.",
     )
+    parser.add_argument(
+        "--viewers",
+        type=Path,
+        default=None,
+        help="Optional root containing generated interactive review viewers.",
+    )
+    parser.add_argument(
+        "--annotations",
+        type=Path,
+        default=DEFAULT_ANNOTATIONS,
+        help="Optional JSON annotations for correcting presentation labels without changing source metrics.",
+    )
+    parser.add_argument(
+        "--exclude-cases-file",
+        type=Path,
+        default=DEFAULT_EXCLUDE_CASES,
+        help='Optional denylist with one "scan_set_or_slug|set_id" per line.',
+    )
+    parser.add_argument(
+        "--exclude-case",
+        action="append",
+        default=None,
+        help='Exclude one case from report rows and image assets as "scan_set_or_slug|set_id". Repeatable.',
+    )
     args = parser.parse_args()
 
-    rows = read_rows(args.matrix)
+    excludes = read_exclude_cases(args.exclude_cases_file, args.exclude_case)
+    annotations = read_annotations(args.annotations)
+    rows = filter_rows(read_rows(args.matrix), excludes)
     summaries = summarize_levels(rows)
-    panels = panel_paths(args.panels, args.output)
-    contexts = context_paths(args.contexts)
+    if args.copy_panels_to and not args.include_panels:
+        raise SystemExit("--copy-panels-to requires --include-panels; public site builds should omit static panels.")
+    panels = filter_case_paths(panel_paths(args.panels, args.output), excludes) if args.include_panels else []
+    contexts = filter_case_paths(context_paths(args.contexts), excludes)
+    viewers = filter_case_paths(viewer_paths(args.viewers), excludes) if args.viewers else []
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
         contexts = copy_context_assets(contexts, args.contexts, args.copy_contexts_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(render_html(rows, summaries, panels, contexts, args.output), encoding="utf-8")
+    args.output.write_text(render_html(rows, summaries, panels, contexts, args.output, viewers, annotations), encoding="utf-8")
     print(f"Wrote {args.output}")
     return 0
 

@@ -117,6 +117,8 @@ These results are not yet a universal archival recommendation.
   adding scan folders under ignored `input/`
 - [docs/break-even-review-panels.md](docs/break-even-review-panels.md): how to
   read local RAW61-vs-PS16/JXL visual review panels
+- [docs/manual-crop-selection.md](docs/manual-crop-selection.md): select
+  multiple review areas with exact-color Paint markers
 - [scripts/download_testdata.py](scripts/download_testdata.py): fetch public test
   targets and images
 - [scripts/create_scan_manifest.py](scripts/create_scan_manifest.py): create
@@ -143,13 +145,18 @@ These results are not yet a universal archival recommendation.
   measure high-pass structure retention for RAW61 and PS16 JXL candidates
 - [scripts/run_rendered_ps16_jxl_matrix.py](scripts/run_rendered_ps16_jxl_matrix.py):
   encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and
-  measure codec loss without relying on DNG/JXL application support
+  measure codec loss without relying on DNG/JXL application support. The
+  default mode is incremental and records per-row fingerprints in
+  `results/rendered_ps16_jxl_matrix/artifact_cache.json`.
 - [scripts/make_break_even_review_panels.py](scripts/make_break_even_review_panels.py):
   create local visual panels for reviewing RAW61-vs-PS16 baseline and
   standalone JXL candidates
 - [scripts/make_break_even_context_images.py](scripts/make_break_even_context_images.py):
   create small full-frame context thumbnails that mark where selected review
   crops come from, without publishing full-size scans
+- [scripts/make_break_even_review_viewers.py](scripts/make_break_even_review_viewers.py):
+  create small static viewers with side-by-side, candidate-on-reference overlay,
+  zoom, and pan
 - [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
   generate a local HTML report with color-coded break-even tables and review
   panel/context navigation

@@ -79,6 +79,11 @@
     .context-card { display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
     .context-card img { display: block; width: 100%; height: auto; background: #fff; }
     .context-card span { display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }
+    .viewer-link { display: inline-block; margin: 10px 0 2px; color: #075985; font-weight: 700; }
+    .review-group h3 { margin-top: 16px; }
+    .primary-viewers { display: grid; gap: 8px; margin-top: 12px; }
+    .primary-viewer { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 2px solid #075985; background: #eef8ff; color: #075985; text-decoration: none; }
+    .primary-viewer span { color: var(--muted); font-size: 13px; }
     .note { border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }
     .small-table th, .small-table td { font-size: 13px; }
     ul { margin-top: 8px; }
@@ -98,15 +103,15 @@
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Candidate Rows</h3><div class="metric">95</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
-      <div class="card"><h3>Complete Rows</h3><div class="metric">80</div><p class="muted">rows with size, color and structure data</p></div>
-      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">59</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
+      <div class="card"><h3>Candidate Rows</h3><div class="metric">90</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
+      <div class="card"><h3>Complete Rows</h3><div class="metric">75</div><p class="muted">rows with size, color and structure data</p></div>
+      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">55</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
       <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030</div><p class="muted">levels whose median size is at or below RAW61</p></div>
     </section>
 
     <h2>Current Reading</h2>
     <div class="note">
-      <p><strong>The current local data puts the storage break-even between d022 (102.3%) and d025 (81.8%).</strong></p>
+      <p><strong>The current local data puts the storage break-even between d022 (103.0%) and d025 (82.9%).</strong></p>
       <p>The current numeric result should be read as provisional: the RAW61 baseline still includes render-profile, demosaic/acutance and registration effects, while PS16 JXL is measured against the PS16 render. That is intentional for the archive-value question, but it must be documented and visually reviewed.</p>
     </div>
 
@@ -152,7 +157,7 @@
     </div>
     <section class="questions">
       <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
-      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a hard negative-density stress transform. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a post-codec, negative-density inversion proxy. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
       <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
       <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
     </section>
@@ -164,7 +169,7 @@
           <th><abbr title="Median retained JXL size as percent of paired 61 MP raw size. Below 100% is within budget.">Median size vs RAW61</abbr></th>
           <th><abbr title="Median encoded JXL file size, with paired RAW61 median shown for context.">Median retained size</abbr></th>
           <th><abbr title="Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.">Size range</abbr></th>
-          <th><abbr title="95th percentile across frame-level JXL patch p95 DeltaE00 after hard negative-density stress. Measures codec color/tone movement.">JXL color p95</abbr></th>
+          <th><abbr title="95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.">JXL color p95</abbr></th>
           <th><abbr title="Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.">Color loss ratio</abbr></th>
           <th><abbr title="Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16.">JXL structure</abbr></th>
           <th><abbr title="Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.">Structure ratio</abbr></th>
@@ -176,66 +181,66 @@
             <tr>
               <td><strong>d020</strong></td>
               <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
-              <td class="bad">117.2%<span class="bar"><span style="width:23.4%"></span></span></td>
-              <td>83.4 MiB<br><span class="subtle">RAW61 median 67.0 MiB</span></td>
+              <td class="bad">118.2%<span class="bar"><span style="width:23.6%"></span></span></td>
+              <td>83.7 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
               <td>66.6% - 134.9%<br><span class="subtle">69.2 - 92.6 MiB</span></td>
-              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.14<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.378</td>
+              <td>0.372</td>
               <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 14</td>
+              <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 13</td>
             </tr>
             
             <tr>
               <td><strong>d022</strong></td>
               <td class="warn">Review zone<br><span class="subtle">near the storage or image-quality boundary; needs visual review</span></td>
-              <td class="warn">102.3%<span class="bar"><span style="width:20.5%"></span></span></td>
-              <td>72.5 MiB<br><span class="subtle">RAW61 median 67.0 MiB</span></td>
+              <td class="warn">103.0%<span class="bar"><span style="width:20.6%"></span></span></td>
+              <td>73.2 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
               <td>58.2% - 121.4%<br><span class="subtle">58.2 - 83.6 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.12<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.379</td>
-              <td class="good">0.31x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="warn">ps16_jxl_likely_wins: 9, uncertain_over_budget: 7</td>
+              <td>0.374</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">ps16_jxl_likely_wins: 8, uncertain_over_budget: 7</td>
             </tr>
             
             <tr>
               <td><strong>d025</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">81.8%<span class="bar"><span style="width:16.4%"></span></span></td>
-              <td>59.1 MiB<br><span class="subtle">RAW61 median 67.0 MiB</span></td>
+              <td class="good">82.9%<span class="bar"><span style="width:16.6%"></span></span></td>
+              <td>60.1 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
               <td>47.8% - 104.4%<br><span class="subtle">47.0 - 71.2 MiB</span></td>
               <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
-              <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.382</td>
-              <td class="good">0.31x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 16</td>
+              <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td>0.374</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
             <tr>
               <td><strong>d028</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">68.4%<span class="bar"><span style="width:13.7%"></span></span></td>
-              <td>49.5 MiB<br><span class="subtle">RAW61 median 67.0 MiB</span></td>
+              <td class="good">68.7%<span class="bar"><span style="width:13.7%"></span></span></td>
+              <td>50.3 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
               <td>40.0% - 88.7%<br><span class="subtle">40.1 - 60.2 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.12<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.01x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.383</td>
-              <td class="good">0.31x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 16</td>
+              <td>0.377</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
             <tr>
               <td><strong>d030</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good">62.0%<span class="bar"><span style="width:12.4%"></span></span></td>
-              <td>44.8 MiB<br><span class="subtle">RAW61 median 67.0 MiB</span></td>
+              <td class="good">62.6%<span class="bar"><span style="width:12.5%"></span></span></td>
+              <td>45.6 MiB<br><span class="subtle">RAW61 median 67.3 MiB</span></td>
               <td>36.2% - 79.2%<br><span class="subtle">36.6 - 53.9 MiB</span></td>
-              <td class="good">0.16<br><span class="subtle">very small codec color shift</span></td>
+              <td class="good">0.15<br><span class="subtle">very small codec color shift</span></td>
               <td class="good">0.02x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td>0.385</td>
-              <td class="good">0.31x<br><span class="subtle">well below RAW61 baseline</span></td>
-              <td class="good">ps16_jxl_likely_wins: 16</td>
+              <td>0.378</td>
+              <td class="good">0.30x<br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
             
       </tbody>
@@ -330,7 +335,7 @@
             </tr>
             
             <tr>
-              <td>Kodak5035 H190-1983</td>
+              <td>Adox high-resolution black-and-white test target<br><span class="subtle">Vlad resolution target</span></td>
               <td><strong>_DSC6577</strong></td>
               <td>0.99</td>
               <td class="bad">5.01</td>
@@ -347,16 +352,6 @@
               <td>1.248</td>
               <td>0.15</td>
               <td>0.396</td>
-            </tr>
-            
-            <tr>
-              <td>Kodak5035 H190-1983</td>
-              <td><strong>_DSC6640</strong></td>
-              <td>0.87</td>
-              <td class="bad">13.23</td>
-              <td>1.196</td>
-              <td>0.20</td>
-              <td>0.447</td>
             </tr>
             
             <tr>
@@ -424,390 +419,96 @@
 
     <h2>Render/Profile Audit</h2>
     <section class="questions">
-      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 18 RAW61 rows and 18 PS16 rows.</p></div>
+      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 17 RAW61 rows and 17 PS16 rows.</p></div>
       <div class="card"><h3>Color management</h3><p>Input profile: <code>(camera)</code><br>Working profile: <code>ProPhoto</code><br>Output profile: <code>RTv4_Large</code></p></div>
       <div class="card"><h3>White balance warning</h3><p>WB enabled: <code>true</code><br>WB setting: <code>Camera</code></p><p class="muted">Camera WB can differ between ARW and PixelShift2DNG metadata, so RAW61 may render less orange even with the same profile file.</p></div>
       <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>amaze</code><br>Sharpening enabled: <code>false</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
     </section>
 
-    <h2>Full-frame Context</h2>
+    <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> show where the published crop panels come from inside the larger rendered frame without publishing the full-resolution source images.</p>
-      <p>The yellow box marks the crop region used for visual review. These thumbnails are for orientation only; metric calculations use the underlying 16-bit rendered files and the listed crop coordinates.</p>
+      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table. Each film or representative frame is grouped here, with the interactive crop viewer first.</p>
+      <p>The viewer supports side-by-side comparison, a keyboard toggle that copies the selected candidate over the left reference pane, zoom, and pan. Full-frame context thumbnails show where the crop came from. Static diagnostic panels are kept as local regenerated artifacts unless explicitly included in a private/local report build.</p>
     </div>
     
-            <details class="panel-group" open>
-              <summary>fuji_679_f_ii_1983/_DSC6938 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" open>
+              <summary>fuji_679_f_ii_1983/_DSC6938 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>fuji_679_f_ii_1983/_DSC6959 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>fuji_679_f_ii_1983/_DSC6959 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>fuji_679_f_ii_1983/_DSC6980 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>fuji_679_f_ii_1983/_DSC6980 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6577 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>Adox high-resolution black-and-white test target / _DSC6577 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6577/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6619 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak5035_h190_1983/_DSC6598 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6598/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6640 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6640/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6640/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6640/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6640/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak5035_h190_1983/_DSC6619 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6619/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6661 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak5035_h190_1983/_DSC6661 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6661/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6682 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak5035_h190_1983/_DSC6682 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6682/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak_gold_200_5_1997/_DSC6735 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak_gold_200_5_1997/_DSC6735 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak_gold_200_5_1997/_DSC6756 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak_gold_200_5_1997/_DSC6756 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak_gold_200_5_1997/_DSC6793 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak_gold_200_5_1997/_DSC6793 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>kodak_gold_200_5_1997/_DSC6814 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>kodak_gold_200_5_1997/_DSC6814 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>konica_vx100_probable_1995/_DSC6836 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>konica_vx100_probable_1995/_DSC6836 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6836/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>konica_vx100_probable_1995/_DSC6857 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>konica_vx100_probable_1995/_DSC6857 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6857/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>konica_vx100_probable_1995/_DSC6879 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>konica_vx100_probable_1995/_DSC6879 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6879/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
-            <details class="panel-group" >
-              <summary>konica_vx100_probable_1995/_DSC6917 <span>2 context image(s)</span></summary>
-              <div class="context-grid">
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png">
-                  <span>ps16_reference_manual-01.png</span>
-                </a>
-                
-                <a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png">
-                  <img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png">
-                  <span>raw61_registered_manual-01.png</span>
-                </a>
-                </div>
-            </details>
-            
-
-    <h2>Visual Review Panels</h2>
-    <p class="muted">The current local panel set is concentrated on one approved frame. Groups are collapsible so more films, crops and stress views can be added without making the report unreadable.</p>
-    
-            <details class="panel-group" open>
-              <summary>fuji_679_f_ii_1983/_DSC6980 <span>4 panel(s)</span></summary>
-              <div class="panel-grid">
-                <a class="panel-card" href="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d025_manual-01_identity.png">
-                  <img src="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d025_manual-01_identity.png" alt="d025_manual-01_identity.png">
-                  <span>d025_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d025_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d025_manual-01_negative_density_hard_print.png" alt="d025_manual-01_negative_density_hard_print.png">
-                  <span>d025_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d030_manual-01_identity.png">
-                  <img src="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d030_manual-01_identity.png" alt="d030_manual-01_identity.png">
-                  <span>d030_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d030_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/fuji_679_f_ii_1983/_DSC6980/d030_manual-01_negative_density_hard_print.png" alt="d030_manual-01_negative_density_hard_print.png">
-                  <span>d030_manual-01_negative_density_hard_print.png</span>
-                </a>
-                </div>
-            </details>
-            
-            <details class="panel-group" >
-              <summary>kodak5035_h190_1983/_DSC6640 <span>4 panel(s)</span></summary>
-              <div class="panel-grid">
-                <a class="panel-card" href="assets/review-panels/kodak5035_h190_1983/_DSC6640/d025_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak5035_h190_1983/_DSC6640/d025_manual-01_identity.png" alt="d025_manual-01_identity.png">
-                  <span>d025_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak5035_h190_1983/_DSC6640/d025_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak5035_h190_1983/_DSC6640/d025_manual-01_negative_density_hard_print.png" alt="d025_manual-01_negative_density_hard_print.png">
-                  <span>d025_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak5035_h190_1983/_DSC6640/d030_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak5035_h190_1983/_DSC6640/d030_manual-01_identity.png" alt="d030_manual-01_identity.png">
-                  <span>d030_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak5035_h190_1983/_DSC6640/d030_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak5035_h190_1983/_DSC6640/d030_manual-01_negative_density_hard_print.png" alt="d030_manual-01_negative_density_hard_print.png">
-                  <span>d030_manual-01_negative_density_hard_print.png</span>
-                </a>
-                </div>
-            </details>
-            
-            <details class="panel-group" >
-              <summary>kodak_gold_200_5_1997/_DSC6735 <span>10 panel(s)</span></summary>
-              <div class="panel-grid">
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_identity.png" alt="d020_manual-01_identity.png">
-                  <span>d020_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d020_manual-01_negative_density_hard_print.png" alt="d020_manual-01_negative_density_hard_print.png">
-                  <span>d020_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_identity.png" alt="d022_manual-01_identity.png">
-                  <span>d022_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d022_manual-01_negative_density_hard_print.png" alt="d022_manual-01_negative_density_hard_print.png">
-                  <span>d022_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_identity.png" alt="d025_manual-01_identity.png">
-                  <span>d025_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d025_manual-01_negative_density_hard_print.png" alt="d025_manual-01_negative_density_hard_print.png">
-                  <span>d025_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_identity.png" alt="d028_manual-01_identity.png">
-                  <span>d028_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d028_manual-01_negative_density_hard_print.png" alt="d028_manual-01_negative_density_hard_print.png">
-                  <span>d028_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_identity.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_identity.png" alt="d030_manual-01_identity.png">
-                  <span>d030_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/kodak_gold_200_5_1997/_DSC6735/d030_manual-01_negative_density_hard_print.png" alt="d030_manual-01_negative_density_hard_print.png">
-                  <span>d030_manual-01_negative_density_hard_print.png</span>
-                </a>
-                </div>
-            </details>
-            
-            <details class="panel-group" >
-              <summary>konica_vx100_probable_1995/_DSC6917 <span>4 panel(s)</span></summary>
-              <div class="panel-grid">
-                <a class="panel-card" href="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d025_manual-01_identity.png">
-                  <img src="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d025_manual-01_identity.png" alt="d025_manual-01_identity.png">
-                  <span>d025_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d025_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d025_manual-01_negative_density_hard_print.png" alt="d025_manual-01_negative_density_hard_print.png">
-                  <span>d025_manual-01_negative_density_hard_print.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d030_manual-01_identity.png">
-                  <img src="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d030_manual-01_identity.png" alt="d030_manual-01_identity.png">
-                  <span>d030_manual-01_identity.png</span>
-                </a>
-                
-                <a class="panel-card" href="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d030_manual-01_negative_density_hard_print.png">
-                  <img src="assets/review-panels/konica_vx100_probable_1995/_DSC6917/d030_manual-01_negative_density_hard_print.png" alt="d030_manual-01_negative_density_hard_print.png">
-                  <span>d030_manual-01_negative_density_hard_print.png</span>
-                </a>
-                </div>
+            <details class="panel-group review-group" >
+              <summary>konica_vx100_probable_1995/_DSC6917 <span>1 viewer(s), 2 context image(s)</span></summary>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6917/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
 
