@@ -14,11 +14,11 @@ resolution raw capture?
 
 ## Intended Collection And Decision Context
 
-The motivating use case is a collection of approximately 20,000 negatives,
-mostly everyday photographs of people's lives. The physical negatives are to
-be preserved. The digital archive is therefore intended to be a highly useful,
-high-quality representation with a documented rescan path, rather than the only
-surviving copy of the source object.
+The motivating use case is a privately held collection of approximately 20,000
+negatives. The physical originals are to be preserved. The digital archive is
+therefore intended to be a highly useful, high-quality representation with a
+documented rescan path, rather than the only surviving copy of the source
+object.
 
 The preference for PixelShift 16 is partly visual: local 240 MP scans render
 dye clouds, grain-like structure, and smooth color variation more pleasantly

@@ -12,11 +12,11 @@ The central question is not simply "is JPEG XL identical to DNG?" It is:
 
 ## Practical Motivation
 
-This investigation grew out of a concrete private scanning project involving
-roughly 20,000 negatives, mostly ordinary photographs of people's lives. The
-physical negatives will be retained, but keeping every 16-frame camera-raw
-sequence and every large intermediate file would make the digital workflow
-unnecessarily expensive and difficult to operate.
+This investigation grew out of a concrete scanning project involving
+approximately 20,000 privately held negatives. The physical originals will be
+retained, but keeping every 16-frame camera-raw sequence and every large
+intermediate file would make the digital workflow unnecessarily expensive and
+difficult to operate.
 
 PixelShift 16 is not being pursued only for nominal resolution. In the local
 material, the 240 MP result gives dye clouds, grain-like texture, and smooth
