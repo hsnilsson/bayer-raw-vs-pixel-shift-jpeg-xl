@@ -348,6 +348,13 @@ def abbr(label: str, title: str) -> str:
     return f'<abbr title="{esc(title)}">{esc(label)}</abbr>'
 
 
+def column_help(short: str, full: str) -> str:
+    return (
+        f'<th><span class="column-help" tabindex="0" title="{esc(full)}" '
+        f'data-full="{esc(full)}">{esc(short)}</span></th>'
+    )
+
+
 def read_profile_flags(path: Path) -> dict[str, str]:
     flags = {
         "white_balance_enabled": "unknown",
@@ -393,13 +400,6 @@ def render_pair_count(path: Path) -> tuple[int, int]:
     raw61 = sum(1 for row in rows if row.get("role") == "raw61")
     ps16 = sum(1 for row in rows if row.get("role") == "ps16")
     return raw61, ps16
-
-
-def bar(value: float | None, max_pct: float = 500.0) -> str:
-    if value is None:
-        return ""
-    width = max(2.0, min(100.0, value / max_pct * 100.0))
-    return f'<span class="bar"><span style="width:{width:.1f}%"></span></span>'
 
 
 def level_status_class(status: str) -> str:
@@ -460,6 +460,23 @@ def status_reading(status: str) -> str:
         "Passes current gates": "median size is under RAW61 and current diagnostics favor PS16 JXL",
         "Image risk": "one or more current image diagnostics fails conservative thresholds",
     }.get(status, "incomplete evidence")
+
+
+def lossless_reference_row() -> str:
+    return (
+        '<tr class="reference-row">'
+        '<td><strong>lossless</strong></td>'
+        '<td class="unknown">Reference only<br><span class="subtle">not counted as a break-even candidate</span></td>'
+        '<td>not in current matrix<br><span class="subtle">complete standalone lossless sizes still need a separate run</span></td>'
+        '<td>-<br><span class="subtle">shown to anchor the codec scale</span></td>'
+        '<td>-</td>'
+        '<td class="good"><strong>0.00 &Delta;E00</strong><br><span class="subtle">by definition against the PS16 reference</span></td>'
+        '<td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec color loss</span></td>'
+        '<td><strong>0.000 loss</strong><br><span class="subtle">zero high-pass codec loss</span></td>'
+        '<td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec structure loss</span></td>'
+        "<td>baseline; excluded from break-even counts</td>"
+        "</tr>"
+    )
 
 
 def conclusion_text(summaries: list[LevelSummary]) -> str:
@@ -1011,7 +1028,7 @@ def render_html(
     current_conclusion = conclusion_text(summaries)
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations)
 
-    level_rows = []
+    level_rows = [lossless_reference_row()]
     for item in summaries:
         size_class = classify_size(item.median_size_pct)
         color_class = classify_delta_e(item.p95_jxl_delta_e)
@@ -1024,7 +1041,7 @@ def render_html(
             <tr>
               <td><strong>{esc(item.level)}</strong></td>
               <td class="{status_class}">{esc(item.status)}<br><span class="subtle">{esc(status_reading(item.status))}</span></td>
-              <td class="{size_class}"><strong>{fmt_with_unit(item.median_size_pct, 1, "% of RAW61")}</strong><br><span class="subtle">{esc(size_reading(item.median_size_pct))}</span>{bar(item.median_size_pct)}</td>
+              <td class="{size_class}"><strong>{fmt_with_unit(item.median_size_pct, 1, "% of RAW61")}</strong><br><span class="subtle">{esc(size_reading(item.median_size_pct))}</span></td>
               <td><strong>{fmt_with_unit(item.median_retained_mib, 1, "MiB")}</strong><br><span class="subtle">JXL median; RAW61 median {fmt_with_unit(item.median_raw61_mib, 1, "MiB")}</span></td>
               <td><strong>{fmt(item.min_size_pct, 1, "%")} - {fmt_with_unit(item.max_size_pct, 1, "% of RAW61")}</strong><br><span class="subtle">{fmt_with_unit(item.min_retained_mib, 1, "MiB")} - {fmt_with_unit(item.max_retained_mib, 1, "MiB")}</span></td>
               <td class="{color_class}"><strong>{fmt_delta_e(item.p95_jxl_delta_e)}</strong><br><span class="subtle">{esc(delta_e_reading(item.p95_jxl_delta_e))}</span></td>
@@ -1101,12 +1118,18 @@ def render_html(
             blocks.append(f'<h3>Static diagnostic panels</h3><div class="panel-grid">{"".join(panel_cards)}</div>')
         if not blocks:
             blocks.append('<p class="muted">No visual artifacts found yet.</p>')
+        artifact_count = f"{len(viewer_links)} viewer(s), {len(context_cards)} context image(s)"
+        if panel_cards:
+            artifact_count += f", {len(panel_cards)} panel(s)"
         visual_review_cards.append(
             f"""
-            <details class="panel-group review-group" {'open' if not visual_review_cards else ''}>
-              <summary>{esc(display_group_name)} <span>{len(viewer_links)} viewer(s), {len(context_cards)} context image(s){", " + str(len(panel_cards)) + " panel(s)" if panel_cards else ""}</span></summary>
+            <section class="review-item">
+              <div class="review-heading">
+                <h3>{esc(display_group_name)}</h3>
+                <span>{esc(artifact_count)}</span>
+              </div>
               {''.join(blocks)}
-            </details>
+            </section>
             """
         )
     if not visual_review_cards:
@@ -1163,29 +1186,57 @@ def render_html(
     }}
     .metric {{ font-size: 28px; font-weight: 700; margin-top: 4px; }}
     .questions {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .question-card details {{ margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }}
+    .question-card summary {{ cursor: pointer; font-weight: 700; color: #075985; }}
+    .question-card details p {{ margin: 8px 0 0; color: var(--muted); font-size: 13px; }}
     .flow {{ display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); gap: 10px; align-items: stretch; }}
     .flow-col {{ display: grid; gap: 8px; }}
     .flow-box {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-height: 82px; }}
     .flow-box strong {{ display: block; margin-bottom: 4px; }}
     .flow-box p {{ font-size: 13px; color: var(--muted); margin: 0; }}
     .arrow {{ display: flex; align-items: center; justify-content: center; color: var(--muted); font-weight: 700; }}
+    .adc-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .adc-item {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }}
+    .adc-item h3 code {{ font-size: 15px; }}
+    .adc-item dl {{ margin: 0; }}
+    .adc-item dt {{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }}
+    .adc-item dd {{ margin: 3px 0 0; }}
     table {{ width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }}
     th, td {{ text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }}
     th {{ font-size: 12px; color: var(--muted); background: #f0f2f4; position: sticky; top: 0; }}
+    thead, th {{ overflow: visible; }}
+    .column-help-row th {{ top: 35px; background: #f8fafc; color: #47515c; font-weight: 400; }}
+    .column-help {{ position: relative; display: block; max-width: 17ch; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: help; outline-offset: 2px; }}
+    .column-help::after {{
+      content: attr(data-full);
+      display: none;
+      position: absolute;
+      left: 0;
+      top: calc(100% + 6px);
+      z-index: 50;
+      width: min(330px, 70vw);
+      white-space: normal;
+      color: #f8fafc;
+      background: #111827;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.25);
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }}
+    .column-help:hover::after, .column-help:focus::after {{ display: block; }}
     abbr {{ text-decoration: underline dotted; cursor: help; }}
     td.good, .pill.good {{ background: var(--good-bg); color: var(--good-ink); }}
     td.warn, .pill.warn {{ background: var(--warn-bg); color: var(--warn-ink); }}
     td.risk, .pill.risk {{ background: var(--risk-bg); color: var(--risk-ink); }}
     td.bad, .pill.bad {{ background: var(--bad-bg); color: var(--bad-ink); }}
     td.unknown, .pill.unknown {{ background: var(--unknown-bg); color: var(--unknown-ink); }}
+    .reference-row td {{ background: #f8fafc; }}
+    .reference-row td.good {{ background: var(--good-bg); color: var(--good-ink); }}
+    .reference-row td.unknown {{ background: var(--unknown-bg); color: var(--unknown-ink); }}
     .pill {{ display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 700; }}
-    .bar {{ display: block; height: 6px; margin-top: 5px; background: #e3e7eb; border-radius: 999px; overflow: hidden; }}
-    .bar span {{ display: block; height: 100%; background: currentColor; opacity: 0.55; }}
     .panel-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }}
-    .panel-group {{ margin-bottom: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }}
-    .panel-group summary {{ cursor: pointer; font-weight: 700; }}
-    .panel-group summary span {{ color: var(--muted); font-weight: 400; margin-left: 8px; }}
-    .panel-group .panel-grid {{ margin-top: 10px; }}
     .panel-card {{ display: block; color: inherit; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }}
     .panel-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
     .panel-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
@@ -1194,7 +1245,11 @@ def render_html(
     .context-card img {{ display: block; width: 100%; height: auto; background: #fff; }}
     .context-card span {{ display: block; padding: 8px 10px; font-size: 13px; color: var(--muted); }}
     .viewer-link {{ display: inline-block; margin: 10px 0 2px; color: #075985; font-weight: 700; }}
-    .review-group h3 {{ margin-top: 16px; }}
+    .review-item {{ padding: 16px 0; border-top: 1px solid var(--line); }}
+    .review-heading {{ display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }}
+    .review-heading h3 {{ margin: 0; }}
+    .review-heading span {{ color: var(--muted); font-size: 13px; }}
+    .review-item h3 {{ margin-top: 16px; }}
     .primary-viewers {{ display: grid; gap: 8px; margin-top: 12px; }}
     .primary-viewer {{ display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 2px solid #075985; background: #eef8ff; color: #075985; text-decoration: none; }}
     .primary-viewer span {{ color: var(--muted); font-size: 13px; }}
@@ -1287,10 +1342,11 @@ def render_html(
     .crop-modal-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 900px) {{
-      .grid, .questions, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
+      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
+      .review-heading {{ align-items: flex-start; flex-direction: column; }}
       .crop-modal {{ grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 1fr) auto; }}
       .crop-modal-sidebar {{ max-height: 20vh; }}
       .crop-modal-left, .crop-modal-right {{ border: 0; border-bottom: 1px solid #2b333b; }}
@@ -1302,8 +1358,8 @@ def render_html(
 <body>
   <header>
     <h1>JPEG XL vs RAW61 Break-even Report</h1>
-    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost.</p>
-    <p class="muted">Current build from local test material. The page publishes selected small review artifacts only; full-resolution source files stay outside the site artifact.</p>
+    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost. The motive is practical: camera scanning can capture more useful film detail with PixelShift, but RAW/DNG storage grows fast enough to become the limiting factor for a real archive.</p>
+    <p class="muted">Because much of the material is color negative film, inversion matters: small color or tone losses hidden inside the orange mask can be amplified when the negative is inverted and corrected. Current build from local test material. The page publishes selected small review artifacts only; full-resolution source files stay outside the site artifact.</p>
   </header>
   <main>
     <section class="grid">
@@ -1321,10 +1377,38 @@ def render_html(
 
     <h2>What Are We Asking?</h2>
     <section class="questions">
-      <div class="card"><h3>1. Codec question</h3><p><strong>PS16 reference vs PS16 JXL.</strong> This is apples-to-apples and measures JPEG XL damage to a fixed rendered image state.</p></div>
-      <div class="card"><h3>2. Archive-value question</h3><p><strong>PS16 JXL vs RAW61.</strong> This is intentionally a workflow tradeoff: more sampling plus lossy coding versus less sampling plus raw preservation.</p></div>
-      <div class="card"><h3>3. Break-even question</h3><p>At what JXL distance does PS16 JXL stop carrying more useful film information than RAW61 at the same storage budget?</p></div>
-      <div class="card"><h3>4. Operational question</h3><p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p></div>
+      <div class="card question-card">
+        <h3>1. Codec question</h3>
+        <p><strong>PS16 reference vs PS16 JXL.</strong> This is apples-to-apples and measures JPEG XL damage to a fixed rendered image state.</p>
+        <details>
+          <summary>Answer so far</summary>
+          <p>The tested lossy levels show very small patch color movement against the PS16 reference. Codec damage is not zero, and trained visual review can still see grain/texture changes, so this remains a quality-threshold question rather than a pure pass/fail.</p>
+        </details>
+      </div>
+      <div class="card question-card">
+        <h3>2. Archive-value question</h3>
+        <p><strong>PS16 JXL vs RAW61.</strong> This is intentionally a workflow tradeoff: more sampling plus lossy coding versus less sampling plus raw preservation.</p>
+        <details>
+          <summary>Answer so far</summary>
+          <p>Current complete rows favor PS16 JXL in {promising} of {len(complete)} comparisons, but RAW61 still has raw-edit latitude and fewer workflow assumptions. This is why the report separates codec damage from the broader archive-value verdict.</p>
+        </details>
+      </div>
+      <div class="card question-card">
+        <h3>3. Break-even question</h3>
+        <p>At what JXL distance does PS16 JXL stop carrying more useful film information than RAW61 at the same storage budget?</p>
+        <details>
+          <summary>Answer so far</summary>
+          <p>{current_conclusion} The current under-budget candidates are {esc(zone_text)}. The boundary still needs more film material and visual review before it should be treated as a general recommendation.</p>
+        </details>
+      </div>
+      <div class="card question-card">
+        <h3>4. Operational question</h3>
+        <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
+        <details>
+          <summary>Answer so far</summary>
+          <p>Standalone rendered PS16 JXL is testable now. ADC DNG/JXL remains an experimental branch because current local tests found metadata and geometry changes that cannot yet be proven harmless.</p>
+        </details>
+      </div>
     </section>
 
     <h2>Workflow Being Tested</h2>
@@ -1353,10 +1437,62 @@ def render_html(
       </div>
     </section>
 
+    <h2>ADC DNG/JXL Caveats</h2>
+    <div class="note">
+      <p><strong>What this section is for:</strong> document the specific source-DNG fields that changed in current Adobe DNG Converter lossy DNG/JXL tests. These changes may be valid ADC output, but they are not yet proven harmless for a sole archive master.</p>
+    </div>
+    <section class="adc-grid">
+      <div class="adc-item">
+        <h3>Stored image shape</h3>
+        <dl>
+          <dt>What it is for</dt>
+          <dd>The encoded raster dimensions define the pixel grid that raw processors decode and place before any default crop is applied.</dd>
+          <dt>Why not just change it back</dt>
+          <dd>If ADC writes a different stored raster, old dimensions could describe pixels that are no longer present or no longer aligned with the encoded JXL payload.</dd>
+          <dt>Mitigation</dt>
+          <dd>Compare active crops, register locally, document the changed geometry, and keep the original DNG until the DNG/JXL path can be verified end to end.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Crop origin / active placement</h3>
+        <dl>
+          <dt>What it is for</dt>
+          <dd>Crop-origin metadata tells software where the useful image area begins and how to place or trim sensor-edge pixels.</dd>
+          <dt>Why not just change it back</dt>
+          <dd>Copying the original crop origin onto a rewritten raster can shift the image, expose invalid edge pixels, or hide valid pixels.</dd>
+          <dt>Mitigation</dt>
+          <dd>Use crop-aware comparisons and treat any copied geometry metadata as unsafe unless a renderer confirms identical placement.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3><code>WhiteLevel</code></h3>
+        <dl>
+          <dt>What it is for</dt>
+          <dd><code>WhiteLevel</code> defines the meaningful saturation scale for linear raw samples and affects highlight normalization.</dd>
+          <dt>Why not just change it back</dt>
+          <dd>ADC lossy output can use a different stored sample range. Restoring the old value may make the image render too dark, too bright, or clipped.</dd>
+          <dt>Mitigation</dt>
+          <dd>Render through one fixed profile, inspect highlight behavior, and compare normalized outputs. This can diagnose the issue, but it does not restore original raw-scale semantics.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3><code>OpcodeList2</code></h3>
+        <dl>
+          <dt>What it is for</dt>
+          <dd>DNG opcodes can describe required processing after linearization, such as polynomial maps or geometry-related corrections tied to the stored image state.</dd>
+          <dt>Why not just change it back</dt>
+          <dd>Opcodes are tied to a specific pixel geometry and processing domain. Reusing old opcode data after ADC rewrites the payload can apply the wrong correction.</dd>
+          <dt>Mitigation</dt>
+          <dd>Decode tests can apply the current opcode model, but archive use still needs application support and round-trip validation. For now this is a blocker for treating ADC lossy DNG/JXL as a drop-in DNG replacement.</dd>
+        </dl>
+      </div>
+    </section>
+
     <h2>Level Summary</h2>
     <div class="note">
       <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines are moved to the next table because they do not change when the JXL distance changes.</p>
       <p><strong>Decision gate:</strong> a level is only treated as a current PS16 JXL win when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
+      <p><strong>Lossless row:</strong> shown as a zero-codec-loss reference. It is not counted as a break-even candidate until complete standalone lossless size rows are generated for the same material.</p>
       <p><strong>Important:</strong> the colors below are diagnostic labels, not FADGI conformance claims. FADGI-style target measurements are interpretation anchors because this project compares rendered film scans and compression candidates, not calibrated capture-target conformance.</p>
     </div>
     <section class="questions">
@@ -1378,6 +1514,18 @@ def render_html(
           <th>{abbr("JXL structure loss (unitless)", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16. Use the structure ratio and visual viewer for interpretation.")}</th>
           <th>{abbr("Structure ratio (x RAW61)", "Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.")}</th>
           <th>{abbr("Verdicts", "Counts of conservative matrix verdicts for this level.")}</th>
+        </tr>
+        <tr class="column-help-row">
+          {column_help("Codec setting", "JPEG XL distance label. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. Lossless is a reference row, not a break-even candidate.")}
+          {column_help("Decision label", "Plain-language status after combining size and the current diagnostics. Too large means the image metrics may still look strong, but the median file size is above the paired RAW61 budget.")}
+          {column_help("Storage budget", "Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.")}
+          {column_help("Actual size", "Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.")}
+          {column_help("Spread", "Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content.")}
+          {column_help("Color stress", "95th percentile CIEDE2000 color difference for PS16 JXL versus the PS16 reference after the current negative-density inversion proxy. Unit is DeltaE00; lower is better.")}
+          {column_help("Color vs RAW61", "Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic.")}
+          {column_help("Detail loss", "Median unitless high-pass detail loss for PS16 JXL versus PS16. This absolute number is mainly diagnostic; interpret it with the structure ratio and visual crop viewer.")}
+          {column_help("Detail vs RAW61", "Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61.")}
+          {column_help("Row verdicts", "Counts of per-frame verdict labels at this JXL level. These counts explain whether the summary is broad or driven by a few frames.")}
         </tr>
       </thead>
       <tbody>
