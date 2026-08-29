@@ -28,11 +28,14 @@ python scripts\make_break_even_review_viewers.py `
   --level d022 `
   --level d025 `
   --level d028 `
-  --level d030
+  --level d030 `
+  --level d200
 ```
 
 The viewer supports side-by-side viewing, a candidate-on-reference overlay
-toggle, zoom, and pan.
+toggle, zoom, and pan. It always includes the PS16 reference as the lossless
+baseline, and `d200` is included only as a deliberately heavy-compression visual
+anchor.
 Keep these small derived crops limited to approved public cases.
 
 Do not commit locally generated scan panels or full-size renders automatically.

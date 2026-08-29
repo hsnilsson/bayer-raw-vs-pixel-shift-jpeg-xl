@@ -509,6 +509,96 @@ def viewer_groups(viewers: list[Path]) -> dict[str, list[Path]]:
     return dict(sorted(groups.items()))
 
 
+def viewer_level_key(path: Path) -> tuple[int, str]:
+    name = path.stem
+    if name.startswith("jxl_"):
+        return level_sort(name.removeprefix("jxl_"))
+    return (9999, name)
+
+
+def viewer_display_label(scan_set_or_slug: str, set_id: str, annotations: dict[tuple[str, str], dict[str, str]]) -> str:
+    annotation = annotation_for(scan_set_or_slug, set_id, annotations)
+    if annotation.get("material_label"):
+        return f'{annotation["material_label"]} / {set_id}'
+    return f"{scan_set_or_slug} / {set_id}"
+
+
+def viewer_records(
+    viewers: list[Path],
+    output: Path,
+    annotations: dict[tuple[str, str], dict[str, str]],
+) -> tuple[list[dict[str, object]], dict[str, int]]:
+    records: list[dict[str, object]] = []
+    index_by_path: dict[str, int] = {}
+    for index_path in viewers:
+        directory = index_path.parent
+        metadata_path = directory / "metadata.json"
+        try:
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.is_file() else {}
+        except json.JSONDecodeError:
+            metadata = {}
+        labels = metadata.get("labels", {}) if isinstance(metadata.get("labels", {}), dict) else {}
+        scan_set = str(metadata.get("scan_set") or directory.parent.name)
+        set_id = str(metadata.get("set_id") or directory.name)
+        candidates: list[dict[str, str]] = []
+        reference_path = directory / "reference.png"
+        if reference_path.is_file():
+            candidates.append(
+                {
+                    "key": "ps16_lossless",
+                    "label": "PS16 lossless / reference",
+                    "src": relpath(reference_path, output),
+                    "role": "baseline",
+                }
+            )
+        raw61_path = directory / "raw61.png"
+        if raw61_path.is_file():
+            candidates.append(
+                {
+                    "key": "raw61",
+                    "label": str(labels.get("raw61", "RAW61 local aligned")),
+                    "src": relpath(raw61_path, output),
+                    "role": "raw61",
+                }
+            )
+        for path in sorted(directory.glob("jxl_*.png"), key=viewer_level_key):
+            key = path.stem
+            label = str(labels.get(key, key.replace("_", " ").upper()))
+            if key in {"jxl_d100", "jxl_d150", "jxl_d200"}:
+                label = f"{label} (hard visual check)"
+            candidates.append(
+                {
+                    "key": key,
+                    "label": label,
+                    "src": relpath(path, output),
+                    "role": "jxl",
+                }
+            )
+        if not reference_path.is_file() or not candidates:
+            continue
+        annotation = annotation_for(scan_set, set_id, annotations)
+        index_by_path[str(index_path.resolve())] = len(records)
+        records.append(
+            {
+                "index": len(records),
+                "group": "/".join(directory.parts[-2:]),
+                "label": viewer_display_label(scan_set, set_id, annotations),
+                "material": annotation.get("material_label", scan_set),
+                "sampleRole": annotation.get("sample_role", ""),
+                "setId": set_id,
+                "scanSet": scan_set,
+                "reference": relpath(reference_path, output),
+                "candidates": candidates,
+                "metadata": {
+                    "transform": str(metadata.get("transform", "")),
+                    "crop": metadata.get("crop", []),
+                    "localRaw61Alignment": metadata.get("local_raw61_alignment", {}),
+                },
+            }
+        )
+    return records, index_by_path
+
+
 def copy_panel_assets(panels: list[Path], panel_root: Path, target_root: Path) -> list[Path]:
     copied: list[Path] = []
     for path in panels:
@@ -547,6 +637,334 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
+def crop_viewer_modal(records: list[dict[str, object]]) -> str:
+    viewer_json = json.dumps(records, ensure_ascii=True).replace("<", "\\u003c")
+    return """  <div class="crop-modal" id="cropModal" role="dialog" aria-modal="true" aria-labelledby="cropModalTitle" hidden>
+    <aside class="crop-modal-sidebar crop-modal-left">
+      <div class="crop-modal-sidebar-header">
+        <strong>Film candidates</strong>
+        <span id="cropFilmCount"></span>
+      </div>
+      <div class="crop-choice-list" id="cropFilmList"></div>
+    </aside>
+    <section class="crop-modal-stage">
+      <div class="crop-modal-toolbar">
+        <div>
+          <h2 id="cropModalTitle">Crop Review</h2>
+          <p id="cropModalMeta"></p>
+        </div>
+        <div class="crop-modal-actions">
+          <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
+          <button type="button" id="cropZoomOut" title="Zoom out">-</button>
+          <button type="button" id="cropZoomIn" title="Zoom in">+</button>
+          <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
+          <button type="button" id="cropClose" class="crop-close" aria-label="Close crop viewer">Close</button>
+        </div>
+      </div>
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-modal-status" id="cropStatus"></div>
+    </section>
+    <aside class="crop-modal-sidebar crop-modal-right">
+      <div class="crop-modal-sidebar-header">
+        <strong>Candidate quality</strong>
+        <span id="cropQualityCount"></span>
+      </div>
+      <div class="crop-choice-list" id="cropQualityList"></div>
+    </aside>
+  </div>
+  <script type="application/json" id="cropViewerData">__VIEWER_DATA__</script>
+  <script>
+  (() => {
+    const viewers = JSON.parse(document.getElementById("cropViewerData").textContent || "[]");
+    const modal = document.getElementById("cropModal");
+    const canvas = document.getElementById("cropCanvas");
+    const ctx = canvas.getContext("2d");
+    const filmList = document.getElementById("cropFilmList");
+    const qualityList = document.getElementById("cropQualityList");
+    const filmCount = document.getElementById("cropFilmCount");
+    const qualityCount = document.getElementById("cropQualityCount");
+    const title = document.getElementById("cropModalTitle");
+    const meta = document.getElementById("cropModalMeta");
+    const status = document.getElementById("cropStatus");
+    const overlayToggle = document.getElementById("cropOverlayToggle");
+    const imageCache = new Map();
+    let loadSerial = 0;
+    const state = {
+      viewerIndex: 0,
+      candidateKey: "",
+      overlay: false,
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
+      referenceImage: null,
+      candidateImage: null
+    };
+
+    if (!viewers.length) return;
+
+    function currentViewer() {
+      return viewers[Math.max(0, Math.min(viewers.length - 1, state.viewerIndex))];
+    }
+
+    function currentCandidate() {
+      const viewer = currentViewer();
+      return viewer.candidates.find((candidate) => candidate.key === state.candidateKey) || viewer.candidates[0];
+    }
+
+    function loadImage(src) {
+      if (imageCache.has(src)) return imageCache.get(src);
+      const promise = new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error(src));
+        image.src = src;
+      });
+      imageCache.set(src, promise);
+      return promise;
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    function fitScale(image, width, height) {
+      return Math.min(width / image.width, height / image.height);
+    }
+
+    function drawImageFit(image, x, y, width, height, clipRect) {
+      if (!image) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clipRect[0], clipRect[1], clipRect[2], clipRect[3]);
+      ctx.clip();
+      ctx.imageSmoothingEnabled = state.zoom < 2;
+      const scale = fitScale(image, width, height) * state.zoom;
+      const drawnWidth = image.width * scale;
+      const drawnHeight = image.height * scale;
+      ctx.drawImage(
+        image,
+        x + (width - drawnWidth) / 2 + state.panX,
+        y + (height - drawnHeight) / 2 + state.panY,
+        drawnWidth,
+        drawnHeight
+      );
+      ctx.restore();
+    }
+
+    function drawPaneLabel(text, x, y) {
+      ctx.save();
+      ctx.font = "12px Arial, sans-serif";
+      const metrics = ctx.measureText(text);
+      ctx.fillStyle = "rgba(0,0,0,.62)";
+      ctx.fillRect(x + 10, y + 10, metrics.width + 18, 24);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(text, x + 19, y + 27);
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!modal.classList.contains("is-open")) return;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#101316";
+      ctx.fillRect(0, 0, width, height);
+      const half = width / 2;
+      drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
+      drawImageFit(state.candidateImage, half, 0, half, height, [half, 0, half, height]);
+      if (state.overlay) {
+        drawImageFit(state.candidateImage, 0, 0, half, height, [0, 0, half, height]);
+      }
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,.5)";
+      ctx.beginPath();
+      ctx.moveTo(half, 0);
+      ctx.lineTo(half, height);
+      ctx.stroke();
+      ctx.restore();
+      const candidate = currentCandidate();
+      drawPaneLabel(state.overlay ? `${candidate.label} over PS16` : "PS16 reference", 0, 0);
+      drawPaneLabel(candidate.label, half, 0);
+    }
+
+    async function loadCurrentImages() {
+      const serial = ++loadSerial;
+      const viewer = currentViewer();
+      const candidate = currentCandidate();
+      status.textContent = "Loading crop images...";
+      try {
+        const [referenceImage, candidateImage] = await Promise.all([
+          loadImage(viewer.reference),
+          loadImage(candidate.src)
+        ]);
+        if (serial !== loadSerial) return;
+        state.referenceImage = referenceImage;
+        state.candidateImage = candidateImage;
+        status.textContent = "";
+        resizeCanvas();
+        draw();
+      } catch (error) {
+        if (serial !== loadSerial) return;
+        status.textContent = "Could not load this crop image.";
+      }
+    }
+
+    function resetView() {
+      state.zoom = 1;
+      state.panX = 0;
+      state.panY = 0;
+    }
+
+    function renderFilmList() {
+      filmList.textContent = "";
+      filmCount.textContent = `${viewers.length}`;
+      viewers.forEach((viewer, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "crop-choice";
+        button.setAttribute("aria-pressed", String(index === state.viewerIndex));
+        const name = document.createElement("strong");
+        name.textContent = viewer.label;
+        button.appendChild(name);
+        if (viewer.sampleRole) {
+          const role = document.createElement("span");
+          role.textContent = viewer.sampleRole;
+          button.appendChild(role);
+        }
+        button.addEventListener("click", () => setViewer(index));
+        filmList.appendChild(button);
+      });
+    }
+
+    function renderQualityList() {
+      const viewer = currentViewer();
+      qualityList.textContent = "";
+      qualityCount.textContent = `${viewer.candidates.length}`;
+      viewer.candidates.forEach((candidate) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `crop-choice ${candidate.role || ""}`;
+        button.setAttribute("aria-pressed", String(candidate.key === state.candidateKey));
+        const name = document.createElement("strong");
+        name.textContent = candidate.label;
+        button.appendChild(name);
+        const role = document.createElement("span");
+        role.textContent = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
+        button.appendChild(role);
+        button.addEventListener("click", () => setCandidate(candidate.key));
+        qualityList.appendChild(button);
+      });
+    }
+
+    function updateHeading() {
+      const viewer = currentViewer();
+      const alignment = viewer.metadata.localRaw61Alignment || {};
+      title.textContent = viewer.label;
+      const parts = [];
+      if (viewer.metadata.transform) parts.push(viewer.metadata.transform);
+      if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
+      if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
+      meta.textContent = parts.join(" | ");
+    }
+
+    function setViewer(index) {
+      state.viewerIndex = index;
+      const viewer = currentViewer();
+      state.candidateKey = viewer.candidates[0] ? viewer.candidates[0].key : "";
+      resetView();
+      renderFilmList();
+      renderQualityList();
+      updateHeading();
+      loadCurrentImages();
+    }
+
+    function setCandidate(key) {
+      state.candidateKey = key;
+      resetView();
+      renderQualityList();
+      loadCurrentImages();
+    }
+
+    function setOverlay(enabled) {
+      state.overlay = enabled;
+      overlayToggle.setAttribute("aria-pressed", String(enabled));
+      overlayToggle.textContent = enabled ? "Side-by-side" : "Overlay";
+      draw();
+    }
+
+    function openModal(index) {
+      modal.hidden = false;
+      modal.classList.add("is-open");
+      document.body.classList.add("crop-modal-open");
+      setOverlay(false);
+      setViewer(index);
+      document.getElementById("cropClose").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      document.body.classList.remove("crop-modal-open");
+      modal.hidden = true;
+    }
+
+    document.querySelectorAll("[data-open-crop-viewer]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        openModal(Number(link.getAttribute("data-viewer-index") || 0));
+      });
+    });
+    document.getElementById("cropClose").addEventListener("click", closeModal);
+    overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
+    document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
+    document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
+    document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
+    canvas.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      state.zoom = Math.max(.25, Math.min(10, state.zoom * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
+      draw();
+    }, { passive: false });
+    canvas.addEventListener("pointerdown", (event) => {
+      state.dragging = true;
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
+      canvas.classList.add("dragging");
+      canvas.setPointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("pointermove", (event) => {
+      if (!state.dragging) return;
+      state.panX += event.clientX - state.lastX;
+      state.panY += event.clientY - state.lastY;
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
+      draw();
+    });
+    canvas.addEventListener("pointerup", (event) => {
+      state.dragging = false;
+      canvas.classList.remove("dragging");
+      canvas.releasePointerCapture(event.pointerId);
+    });
+    window.addEventListener("resize", () => {
+      if (!modal.classList.contains("is-open")) return;
+      resizeCanvas();
+      draw();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (!modal.classList.contains("is-open")) return;
+      if (event.key === "Escape") closeModal();
+      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) setOverlay(!state.overlay);
+    });
+  })();
+  </script>
+""".replace("__VIEWER_DATA__", viewer_json)
+
+
 def render_html(
     rows: list[dict[str, str]],
     summaries: list[LevelSummary],
@@ -567,6 +985,7 @@ def render_html(
     best_zone = [item.level for item in summaries if item.status == "Passes current gates"]
     zone_text = ", ".join(best_zone[:5]) + ("..." if len(best_zone) > 5 else "") if best_zone else "none yet"
     current_conclusion = conclusion_text(summaries)
+    viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations)
 
     level_rows = []
     for item in summaries:
@@ -631,8 +1050,9 @@ def render_html(
         viewer_links = []
         for path in viewer_lookup.get(group_name, []):
             src = relpath(path, output)
+            viewer_index = viewer_index_by_path.get(str(path.resolve()), 0)
             viewer_links.append(
-                f'<a class="primary-viewer" href="{esc(src)}"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a>'
+                f'<a class="primary-viewer" href="{esc(src)}" data-open-crop-viewer data-viewer-index="{viewer_index}"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a>'
             )
         context_cards = []
         for path in context_lookup.get(group_name, []):
@@ -756,12 +1176,102 @@ def render_html(
     .primary-viewer span {{ color: var(--muted); font-size: 13px; }}
     .note {{ border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }}
     .small-table th, .small-table td {{ font-size: 13px; }}
+    body.crop-modal-open {{ overflow: hidden; }}
+    .crop-modal[hidden] {{ display: none; }}
+    .crop-modal {{
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      grid-template-columns: minmax(210px, 280px) minmax(0, 1fr) minmax(190px, 240px);
+      min-height: 100vh;
+      background: #0f1215;
+      color: #f4f7fa;
+    }}
+    .crop-modal-sidebar {{
+      overflow: auto;
+      border-color: #2b333b;
+      background: #171b20;
+      padding: 12px;
+    }}
+    .crop-modal-left {{ border-right: 1px solid #2b333b; }}
+    .crop-modal-right {{ border-left: 1px solid #2b333b; }}
+    .crop-modal-sidebar-header {{
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 0 10px;
+      background: #171b20;
+      color: #f4f7fa;
+    }}
+    .crop-modal-sidebar-header span {{ color: #a6b0ba; }}
+    .crop-choice-list {{ display: grid; gap: 8px; }}
+    .crop-choice {{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      border: 1px solid #333d47;
+      border-radius: 8px;
+      background: #20262d;
+      color: #f4f7fa;
+      padding: 9px 10px;
+      text-align: left;
+      cursor: pointer;
+    }}
+    .crop-choice:hover, .crop-choice[aria-pressed="true"] {{ border-color: #7dd3fc; background: #0c4a6e; }}
+    .crop-choice span {{ color: #a6b0ba; font-size: 12px; }}
+    .crop-choice[aria-pressed="true"] span {{ color: #d8eefc; }}
+    .crop-modal-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
+    .crop-modal-toolbar {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b333b;
+      background: #15191e;
+    }}
+    .crop-modal-toolbar h2 {{ margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }}
+    .crop-modal-toolbar p {{ margin: 0; color: #a6b0ba; font-size: 12px; }}
+    .crop-modal-actions {{ display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }}
+    .crop-modal-actions button {{
+      border: 1px solid #3e4a56;
+      border-radius: 8px;
+      background: #20262d;
+      color: #f4f7fa;
+      padding: 7px 10px;
+      cursor: pointer;
+    }}
+    .crop-modal-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
+    .crop-modal-actions .crop-close {{ background: #f4f7fa; color: #111827; border-color: #f4f7fa; }}
+    #cropCanvas {{
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      background: #101316;
+      cursor: grab;
+      touch-action: none;
+    }}
+    #cropCanvas.dragging {{ cursor: grabbing; }}
+    .crop-modal-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 900px) {{
       .grid, .questions, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
+      .crop-modal {{ grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 1fr) auto; }}
+      .crop-modal-sidebar {{ max-height: 20vh; }}
+      .crop-modal-left, .crop-modal-right {{ border: 0; border-bottom: 1px solid #2b333b; }}
+      .crop-modal-right {{ border-top: 1px solid #2b333b; }}
+      .crop-modal-toolbar {{ align-items: flex-start; flex-direction: column; }}
     }}
   </style>
 </head>
@@ -906,6 +1416,7 @@ def render_html(
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
     </div>
   </main>
+{crop_viewer_modal(viewer_manifest)}
 </body>
 </html>
 """

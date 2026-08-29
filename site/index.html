@@ -86,12 +86,102 @@
     .primary-viewer span { color: var(--muted); font-size: 13px; }
     .note { border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }
     .small-table th, .small-table td { font-size: 13px; }
+    body.crop-modal-open { overflow: hidden; }
+    .crop-modal[hidden] { display: none; }
+    .crop-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      grid-template-columns: minmax(210px, 280px) minmax(0, 1fr) minmax(190px, 240px);
+      min-height: 100vh;
+      background: #0f1215;
+      color: #f4f7fa;
+    }
+    .crop-modal-sidebar {
+      overflow: auto;
+      border-color: #2b333b;
+      background: #171b20;
+      padding: 12px;
+    }
+    .crop-modal-left { border-right: 1px solid #2b333b; }
+    .crop-modal-right { border-left: 1px solid #2b333b; }
+    .crop-modal-sidebar-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 0 10px;
+      background: #171b20;
+      color: #f4f7fa;
+    }
+    .crop-modal-sidebar-header span { color: #a6b0ba; }
+    .crop-choice-list { display: grid; gap: 8px; }
+    .crop-choice {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      border: 1px solid #333d47;
+      border-radius: 8px;
+      background: #20262d;
+      color: #f4f7fa;
+      padding: 9px 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .crop-choice:hover, .crop-choice[aria-pressed="true"] { border-color: #7dd3fc; background: #0c4a6e; }
+    .crop-choice span { color: #a6b0ba; font-size: 12px; }
+    .crop-choice[aria-pressed="true"] span { color: #d8eefc; }
+    .crop-modal-stage { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+    .crop-modal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b333b;
+      background: #15191e;
+    }
+    .crop-modal-toolbar h2 { margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }
+    .crop-modal-toolbar p { margin: 0; color: #a6b0ba; font-size: 12px; }
+    .crop-modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .crop-modal-actions button {
+      border: 1px solid #3e4a56;
+      border-radius: 8px;
+      background: #20262d;
+      color: #f4f7fa;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+    .crop-modal-actions button[aria-pressed="true"] { background: #075985; border-color: #7dd3fc; }
+    .crop-modal-actions .crop-close { background: #f4f7fa; color: #111827; border-color: #f4f7fa; }
+    #cropCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      background: #101316;
+      cursor: grab;
+      touch-action: none;
+    }
+    #cropCanvas.dragging { cursor: grabbing; }
+    .crop-modal-status { min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }
     ul { margin-top: 8px; }
     @media (max-width: 900px) {
       .grid, .questions, .panel-grid, .context-grid, .flow { grid-template-columns: 1fr; }
       .arrow { display: none; }
       header, main { padding: 16px; }
       table { font-size: 13px; }
+      .crop-modal { grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 1fr) auto; }
+      .crop-modal-sidebar { max-height: 20vh; }
+      .crop-modal-left, .crop-modal-right { border: 0; border-bottom: 1px solid #2b333b; }
+      .crop-modal-right { border-top: 1px solid #2b333b; }
+      .crop-modal-toolbar { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -433,82 +523,82 @@
     
             <details class="panel-group review-group" open>
               <summary>fuji_679_f_ii_1983/_DSC6938 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/index.html" data-open-crop-viewer data-viewer-index="0"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>fuji_679_f_ii_1983/_DSC6959 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/index.html" data-open-crop-viewer data-viewer-index="1"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>fuji_679_f_ii_1983/_DSC6980 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/index.html" data-open-crop-viewer data-viewer-index="2"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>Adox high-resolution black-and-white test target / _DSC6577 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6577/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6577/index.html" data-open-crop-viewer data-viewer-index="3"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak5035_h190_1983/_DSC6598 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6598/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6598/index.html" data-open-crop-viewer data-viewer-index="4"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak5035_h190_1983/_DSC6619 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6619/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6619/index.html" data-open-crop-viewer data-viewer-index="5"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak5035_h190_1983/_DSC6661 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6661/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6661/index.html" data-open-crop-viewer data-viewer-index="6"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak5035_h190_1983/_DSC6682 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6682/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6682/index.html" data-open-crop-viewer data-viewer-index="7"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak_gold_200_5_1997/_DSC6735 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/index.html" data-open-crop-viewer data-viewer-index="8"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak_gold_200_5_1997/_DSC6756 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/index.html" data-open-crop-viewer data-viewer-index="9"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak_gold_200_5_1997/_DSC6793 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/index.html" data-open-crop-viewer data-viewer-index="10"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>kodak_gold_200_5_1997/_DSC6814 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/index.html" data-open-crop-viewer data-viewer-index="11"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>konica_vx100_probable_1995/_DSC6836 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6836/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6836/index.html" data-open-crop-viewer data-viewer-index="12"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>konica_vx100_probable_1995/_DSC6857 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6857/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6857/index.html" data-open-crop-viewer data-viewer-index="13"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>konica_vx100_probable_1995/_DSC6879 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6879/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6879/index.html" data-open-crop-viewer data-viewer-index="14"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
             <details class="panel-group review-group" >
               <summary>konica_vx100_probable_1995/_DSC6917 <span>1 viewer(s), 2 context image(s)</span></summary>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6917/index.html"><strong>Open interactive crop viewer</strong><span>Side-by-side, candidate-on-reference overlay, zoom, and pan for pixel-level review.</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
+              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6917/index.html" data-open-crop-viewer data-viewer-index="15"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
             </details>
             
 
@@ -531,5 +621,329 @@
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
     </div>
   </main>
+  <div class="crop-modal" id="cropModal" role="dialog" aria-modal="true" aria-labelledby="cropModalTitle" hidden>
+    <aside class="crop-modal-sidebar crop-modal-left">
+      <div class="crop-modal-sidebar-header">
+        <strong>Film candidates</strong>
+        <span id="cropFilmCount"></span>
+      </div>
+      <div class="crop-choice-list" id="cropFilmList"></div>
+    </aside>
+    <section class="crop-modal-stage">
+      <div class="crop-modal-toolbar">
+        <div>
+          <h2 id="cropModalTitle">Crop Review</h2>
+          <p id="cropModalMeta"></p>
+        </div>
+        <div class="crop-modal-actions">
+          <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
+          <button type="button" id="cropZoomOut" title="Zoom out">-</button>
+          <button type="button" id="cropZoomIn" title="Zoom in">+</button>
+          <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
+          <button type="button" id="cropClose" class="crop-close" aria-label="Close crop viewer">Close</button>
+        </div>
+      </div>
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-modal-status" id="cropStatus"></div>
+    </section>
+    <aside class="crop-modal-sidebar crop-modal-right">
+      <div class="crop-modal-sidebar-header">
+        <strong>Candidate quality</strong>
+        <span id="cropQualityCount"></span>
+      </div>
+      <div class="crop-choice-list" id="cropQualityList"></div>
+    </aside>
+  </div>
+  <script type="application/json" id="cropViewerData">[{"index": 0, "group": "fuji_679_f_ii_1983/_DSC6938", "label": "fuji_679_f_ii_1983 / _DSC6938", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6938", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -2.0, "confidence": 46.334643196743116, "applied": true}}}, {"index": 1, "group": "fuji_679_f_ii_1983/_DSC6959", "label": "fuji_679_f_ii_1983 / _DSC6959", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6959", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -2.0, "confidence": 64.47830189827764, "applied": true}}}, {"index": 2, "group": "fuji_679_f_ii_1983/_DSC6980", "label": "fuji_679_f_ii_1983 / _DSC6980", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6980", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -3.0, "confidence": 57.62191828117657, "applied": true}}}, {"index": 3, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 47.005240973868496, "applied": true}}}, {"index": 4, "group": "kodak5035_h190_1983/_DSC6598", "label": "Kodak5035 H190-1983 / _DSC6598", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6598", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 4.0, "shift_y_px": 2.0, "confidence": 31.222386274813513, "applied": true}}}, {"index": 5, "group": "kodak5035_h190_1983/_DSC6619", "label": "Kodak5035 H190-1983 / _DSC6619", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6619", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -1.0, "confidence": 70.5057062067525, "applied": true}}}, {"index": 6, "group": "kodak5035_h190_1983/_DSC6661", "label": "Kodak5035 H190-1983 / _DSC6661", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6661", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 65.11602843762284, "applied": true}}}, {"index": 7, "group": "kodak5035_h190_1983/_DSC6682", "label": "Kodak5035 H190-1983 / _DSC6682", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6682", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 76.59111817470202, "applied": true}}}, {"index": 8, "group": "kodak_gold_200_5_1997/_DSC6735", "label": "Kodak Gold 200-5 1997 / _DSC6735", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6735", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 10.0, "shift_y_px": 4.0, "confidence": 44.1209196514524, "applied": true}}}, {"index": 9, "group": "kodak_gold_200_5_1997/_DSC6756", "label": "Kodak Gold 200-5 1997 / _DSC6756", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6756", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 59.715167228004994, "applied": true}}}, {"index": 10, "group": "kodak_gold_200_5_1997/_DSC6793", "label": "Kodak Gold 200-5 1997 / _DSC6793", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6793", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": 0.0, "confidence": 60.21334749301236, "applied": true}}}, {"index": 11, "group": "kodak_gold_200_5_1997/_DSC6814", "label": "Kodak Gold 200-5 1997 / _DSC6814", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6814", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 5.0, "shift_y_px": -1.0, "confidence": 60.629758880985314, "applied": true}}}, {"index": 12, "group": "konica_vx100_probable_1995/_DSC6836", "label": "konica_vx100_probable_1995 / _DSC6836", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6836", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 39.33025343822836, "applied": true}}}, {"index": 13, "group": "konica_vx100_probable_1995/_DSC6857", "label": "konica_vx100_probable_1995 / _DSC6857", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6857", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -1.0, "confidence": 49.14299062310164, "applied": true}}}, {"index": 14, "group": "konica_vx100_probable_1995/_DSC6879", "label": "konica_vx100_probable_1995 / _DSC6879", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6879", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 8.0, "shift_y_px": -1.0, "confidence": 69.61968105802205, "applied": true}}}, {"index": 15, "group": "konica_vx100_probable_1995/_DSC6917", "label": "konica_vx100_probable_1995 / _DSC6917", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6917", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 8.0, "shift_y_px": -1.0, "confidence": 55.31306863962779, "applied": true}}}]</script>
+  <script>
+  (() => {
+    const viewers = JSON.parse(document.getElementById("cropViewerData").textContent || "[]");
+    const modal = document.getElementById("cropModal");
+    const canvas = document.getElementById("cropCanvas");
+    const ctx = canvas.getContext("2d");
+    const filmList = document.getElementById("cropFilmList");
+    const qualityList = document.getElementById("cropQualityList");
+    const filmCount = document.getElementById("cropFilmCount");
+    const qualityCount = document.getElementById("cropQualityCount");
+    const title = document.getElementById("cropModalTitle");
+    const meta = document.getElementById("cropModalMeta");
+    const status = document.getElementById("cropStatus");
+    const overlayToggle = document.getElementById("cropOverlayToggle");
+    const imageCache = new Map();
+    let loadSerial = 0;
+    const state = {
+      viewerIndex: 0,
+      candidateKey: "",
+      overlay: false,
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
+      referenceImage: null,
+      candidateImage: null
+    };
+
+    if (!viewers.length) return;
+
+    function currentViewer() {
+      return viewers[Math.max(0, Math.min(viewers.length - 1, state.viewerIndex))];
+    }
+
+    function currentCandidate() {
+      const viewer = currentViewer();
+      return viewer.candidates.find((candidate) => candidate.key === state.candidateKey) || viewer.candidates[0];
+    }
+
+    function loadImage(src) {
+      if (imageCache.has(src)) return imageCache.get(src);
+      const promise = new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error(src));
+        image.src = src;
+      });
+      imageCache.set(src, promise);
+      return promise;
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    function fitScale(image, width, height) {
+      return Math.min(width / image.width, height / image.height);
+    }
+
+    function drawImageFit(image, x, y, width, height, clipRect) {
+      if (!image) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clipRect[0], clipRect[1], clipRect[2], clipRect[3]);
+      ctx.clip();
+      ctx.imageSmoothingEnabled = state.zoom < 2;
+      const scale = fitScale(image, width, height) * state.zoom;
+      const drawnWidth = image.width * scale;
+      const drawnHeight = image.height * scale;
+      ctx.drawImage(
+        image,
+        x + (width - drawnWidth) / 2 + state.panX,
+        y + (height - drawnHeight) / 2 + state.panY,
+        drawnWidth,
+        drawnHeight
+      );
+      ctx.restore();
+    }
+
+    function drawPaneLabel(text, x, y) {
+      ctx.save();
+      ctx.font = "12px Arial, sans-serif";
+      const metrics = ctx.measureText(text);
+      ctx.fillStyle = "rgba(0,0,0,.62)";
+      ctx.fillRect(x + 10, y + 10, metrics.width + 18, 24);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(text, x + 19, y + 27);
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!modal.classList.contains("is-open")) return;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#101316";
+      ctx.fillRect(0, 0, width, height);
+      const half = width / 2;
+      drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
+      drawImageFit(state.candidateImage, half, 0, half, height, [half, 0, half, height]);
+      if (state.overlay) {
+        drawImageFit(state.candidateImage, 0, 0, half, height, [0, 0, half, height]);
+      }
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,.5)";
+      ctx.beginPath();
+      ctx.moveTo(half, 0);
+      ctx.lineTo(half, height);
+      ctx.stroke();
+      ctx.restore();
+      const candidate = currentCandidate();
+      drawPaneLabel(state.overlay ? `${candidate.label} over PS16` : "PS16 reference", 0, 0);
+      drawPaneLabel(candidate.label, half, 0);
+    }
+
+    async function loadCurrentImages() {
+      const serial = ++loadSerial;
+      const viewer = currentViewer();
+      const candidate = currentCandidate();
+      status.textContent = "Loading crop images...";
+      try {
+        const [referenceImage, candidateImage] = await Promise.all([
+          loadImage(viewer.reference),
+          loadImage(candidate.src)
+        ]);
+        if (serial !== loadSerial) return;
+        state.referenceImage = referenceImage;
+        state.candidateImage = candidateImage;
+        status.textContent = "";
+        resizeCanvas();
+        draw();
+      } catch (error) {
+        if (serial !== loadSerial) return;
+        status.textContent = "Could not load this crop image.";
+      }
+    }
+
+    function resetView() {
+      state.zoom = 1;
+      state.panX = 0;
+      state.panY = 0;
+    }
+
+    function renderFilmList() {
+      filmList.textContent = "";
+      filmCount.textContent = `${viewers.length}`;
+      viewers.forEach((viewer, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "crop-choice";
+        button.setAttribute("aria-pressed", String(index === state.viewerIndex));
+        const name = document.createElement("strong");
+        name.textContent = viewer.label;
+        button.appendChild(name);
+        if (viewer.sampleRole) {
+          const role = document.createElement("span");
+          role.textContent = viewer.sampleRole;
+          button.appendChild(role);
+        }
+        button.addEventListener("click", () => setViewer(index));
+        filmList.appendChild(button);
+      });
+    }
+
+    function renderQualityList() {
+      const viewer = currentViewer();
+      qualityList.textContent = "";
+      qualityCount.textContent = `${viewer.candidates.length}`;
+      viewer.candidates.forEach((candidate) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `crop-choice ${candidate.role || ""}`;
+        button.setAttribute("aria-pressed", String(candidate.key === state.candidateKey));
+        const name = document.createElement("strong");
+        name.textContent = candidate.label;
+        button.appendChild(name);
+        const role = document.createElement("span");
+        role.textContent = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
+        button.appendChild(role);
+        button.addEventListener("click", () => setCandidate(candidate.key));
+        qualityList.appendChild(button);
+      });
+    }
+
+    function updateHeading() {
+      const viewer = currentViewer();
+      const alignment = viewer.metadata.localRaw61Alignment || {};
+      title.textContent = viewer.label;
+      const parts = [];
+      if (viewer.metadata.transform) parts.push(viewer.metadata.transform);
+      if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
+      if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
+      meta.textContent = parts.join(" | ");
+    }
+
+    function setViewer(index) {
+      state.viewerIndex = index;
+      const viewer = currentViewer();
+      state.candidateKey = viewer.candidates[0] ? viewer.candidates[0].key : "";
+      resetView();
+      renderFilmList();
+      renderQualityList();
+      updateHeading();
+      loadCurrentImages();
+    }
+
+    function setCandidate(key) {
+      state.candidateKey = key;
+      resetView();
+      renderQualityList();
+      loadCurrentImages();
+    }
+
+    function setOverlay(enabled) {
+      state.overlay = enabled;
+      overlayToggle.setAttribute("aria-pressed", String(enabled));
+      overlayToggle.textContent = enabled ? "Side-by-side" : "Overlay";
+      draw();
+    }
+
+    function openModal(index) {
+      modal.hidden = false;
+      modal.classList.add("is-open");
+      document.body.classList.add("crop-modal-open");
+      setOverlay(false);
+      setViewer(index);
+      document.getElementById("cropClose").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      document.body.classList.remove("crop-modal-open");
+      modal.hidden = true;
+    }
+
+    document.querySelectorAll("[data-open-crop-viewer]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        openModal(Number(link.getAttribute("data-viewer-index") || 0));
+      });
+    });
+    document.getElementById("cropClose").addEventListener("click", closeModal);
+    overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
+    document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
+    document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
+    document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
+    canvas.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      state.zoom = Math.max(.25, Math.min(10, state.zoom * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
+      draw();
+    }, { passive: false });
+    canvas.addEventListener("pointerdown", (event) => {
+      state.dragging = true;
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
+      canvas.classList.add("dragging");
+      canvas.setPointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("pointermove", (event) => {
+      if (!state.dragging) return;
+      state.panX += event.clientX - state.lastX;
+      state.panY += event.clientY - state.lastY;
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
+      draw();
+    });
+    canvas.addEventListener("pointerup", (event) => {
+      state.dragging = false;
+      canvas.classList.remove("dragging");
+      canvas.releasePointerCapture(event.pointerId);
+    });
+    window.addEventListener("resize", () => {
+      if (!modal.classList.contains("is-open")) return;
+      resizeCanvas();
+      draw();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (!modal.classList.contains("is-open")) return;
+      if (event.key === "Escape") closeModal();
+      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) setOverlay(!state.overlay);
+    });
+  })();
+  </script>
+
 </body>
 </html>
