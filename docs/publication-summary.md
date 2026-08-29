@@ -40,7 +40,7 @@ The current practical result is:
 - JPEG XL lossless can preserve a chosen 16-bit rendered/extracted state
   exactly, but the tested storage savings were modest.
 - The current local storage-budget matrix crosses the paired 61 MP RAW budget
-  around `d022`; this is promising but still preliminary.
+  between `d022` and `d025`; this is promising but still preliminary.
 - JPEG XL `d=0.05` remains an interesting conservative lossy candidate in the
   older ADC/stress tracks, while the newer standalone-JXL break-even sweep uses
   finer `d020` through `d030` levels.
@@ -92,8 +92,8 @@ A cautious public framing:
 > This is a reproducible investigation into whether conservative JPEG XL can
 > make high-resolution PixelShift camera scanning practical under real storage
 > constraints. Current local real-negative tests cross the 61 MP RAW storage
-> budget around JPEG XL `d022`, but this is still not a recommendation to delete
-> raw/DNG originals.
+> budget between JPEG XL `d022` and `d025`, but this is still not a
+> recommendation to delete raw/DNG originals.
 
 ## Feedback Wanted
 
