@@ -1672,6 +1672,15 @@ def render_html(
           <th>{abbr("Worst JXL color", "Worst JXL stress DeltaE00 across levels currently in the matrix.")}</th>
           <th>{abbr("Worst JXL structure", "Worst JXL structure loss across levels currently in the matrix.")}</th>
         </tr>
+        <tr class="column-help-row">
+          {column_help("Material group", "Scan collection or material label. Rows with the same name belong to the same film, target, or source batch, but each frame is evaluated separately.")}
+          {column_help("Capture id", "Specific frame or capture-set identifier used to join the paired RAW61, PS16 reference, and JXL evidence for this row.")}
+          {column_help("Baseline color", "95th-percentile patch CIEDE2000 difference for RAW61 versus the PS16 reference before the negative-density stress transform. Lower means the RAW61 render is closer to PS16; this is not JXL codec loss.")}
+          {column_help("Baseline under stress", "The same RAW61-versus-PS16 patch color comparison after the negative-density inversion proxy. It shows how capture, profile, and tone differences can become larger after film-style inversion.")}
+          {column_help("Baseline detail", "Unitless high-pass detail loss for RAW61 versus PS16 after registration. Lower means structurally closer to PS16; the value can include capture, demosaic, acutance, and alignment differences, not codec loss.")}
+          {column_help("Worst codec color", "Largest PS16 JXL-versus-PS16 stress DeltaE00 found across the JXL levels currently included for this frame. It identifies the most color-disruptive tested level; lower is better.")}
+          {column_help("Worst codec detail", "Largest unitless PS16 JXL-versus-PS16 high-pass structure loss across the JXL levels currently included for this frame. Higher means more detail movement; confirm important cases in the crop viewer.")}
+        </tr>
       </thead>
       <tbody>
         {''.join(row.strip() for row in baseline_rows)}
