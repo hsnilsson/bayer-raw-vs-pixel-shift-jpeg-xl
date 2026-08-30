@@ -1,0 +1,794 @@
+[
+  {
+    "source": "outputs/rawtherapee_renders/fuji_679_f_ii_1983/_DSC6938/ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6938",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      11502,
+      3527,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6938/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6938",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      11502,
+      3527,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/fuji_679_f_ii_1983/_DSC6959/ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6959",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      12224,
+      466,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6959/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6959",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      12224,
+      466,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/fuji_679_f_ii_1983/_DSC6980/ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6980",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      1870,
+      5482,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6980/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png",
+    "scan_set": "fuji_679_f_ii_1983",
+    "set_id": "_DSC6980",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      1870,
+      5482,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6577/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      11204,
+      4589,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      11204,
+      4589,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6577/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-02.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "PS16 reference",
+    "crop_name": "manual-02",
+    "crop": [
+      13458,
+      2273,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-02.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "RAW61 registered",
+    "crop_name": "manual-02",
+    "crop": [
+      13458,
+      2273,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6577/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-03.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "PS16 reference",
+    "crop_name": "manual-03",
+    "crop": [
+      12458,
+      6098,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-03.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "RAW61 registered",
+    "crop_name": "manual-03",
+    "crop": [
+      12458,
+      6098,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6577/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-04.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "PS16 reference",
+    "crop_name": "manual-04",
+    "crop": [
+      15095,
+      6247,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-04.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6577",
+    "role": "RAW61 registered",
+    "crop_name": "manual-04",
+    "crop": [
+      15095,
+      6247,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6598/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6598",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      7696,
+      5206,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6598/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6598",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      7696,
+      5206,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6619/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6619",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      6292,
+      4355,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6619/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6619",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      6292,
+      4355,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6661/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6661",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      11480,
+      3038,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6661/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6661",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      11480,
+      3038,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6682/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6682",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      15775,
+      5354,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6682/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6682",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      15775,
+      5354,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6682/ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-02.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6682",
+    "role": "PS16 reference",
+    "crop_name": "manual-02",
+    "crop": [
+      8716,
+      2166,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6682/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-02.png",
+    "scan_set": "Kodak5035 H190-1983",
+    "set_id": "_DSC6682",
+    "role": "RAW61 registered",
+    "crop_name": "manual-02",
+    "crop": [
+      8716,
+      2166,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak_gold_200_5_1997/_DSC6735/ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6735",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      7164,
+      5567,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak_gold_200_5_1997/_DSC6735/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6735",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      7164,
+      5567,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak_gold_200_5_1997/_DSC6756/ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6756",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      10885,
+      6290,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak_gold_200_5_1997/_DSC6756/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6756",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      10885,
+      6290,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak_gold_200_5_1997/_DSC6793/ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6793",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      7866,
+      5949,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak_gold_200_5_1997/_DSC6793/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6793",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      7866,
+      5949,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/kodak_gold_200_5_1997/_DSC6814/ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6814",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      8525,
+      4844,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/kodak_gold_200_5_1997/_DSC6814/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png",
+    "scan_set": "Kodak Gold 200-5 1997",
+    "set_id": "_DSC6814",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      8525,
+      4844,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6836/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6836",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      16201,
+      7714,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6836/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6836",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      16201,
+      7714,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6857/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6857",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      14436,
+      9669,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6857/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6857",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      14436,
+      9669,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6879/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6879",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      9269,
+      1338,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6879/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6879",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      9269,
+      1338,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6879/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-02.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6879",
+    "role": "PS16 reference",
+    "crop_name": "manual-02",
+    "crop": [
+      4506,
+      6098,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6879/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-02.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6879",
+    "role": "RAW61 registered",
+    "crop_name": "manual-02",
+    "crop": [
+      4506,
+      6098,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6917/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6917",
+    "role": "PS16 reference",
+    "crop_name": "manual-01",
+    "crop": [
+      3890,
+      3357,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6917/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6917",
+    "role": "RAW61 registered",
+    "crop_name": "manual-01",
+    "crop": [
+      3890,
+      3357,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6917/ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-02.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6917",
+    "role": "PS16 reference",
+    "crop_name": "manual-02",
+    "crop": [
+      12331,
+      3675,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  },
+  {
+    "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6917/raw61_registered_to_ps16.tif",
+    "output": "site/assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-02.png",
+    "scan_set": "konica_vx100_probable_1995",
+    "set_id": "_DSC6917",
+    "role": "RAW61 registered",
+    "crop_name": "manual-02",
+    "crop": [
+      12331,
+      3675,
+      768,
+      768
+    ],
+    "source_width": 19136,
+    "source_height": 12752,
+    "output_width": 900,
+    "output_height": 600
+  }
+]

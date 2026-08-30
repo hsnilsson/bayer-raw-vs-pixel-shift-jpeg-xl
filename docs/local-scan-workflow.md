@@ -356,9 +356,20 @@ approved crops. The yellow box marks the crop used by the review panels:
 
 ```powershell
 python scripts\make_break_even_context_images.py `
-  --case "<scan-set>|<frame-id>" `
-  --crop <x,y,width,height> `
-  --crop-name <crop-name>
+  --crop-plan results\break_even_crop_guides\crop_plan.json `
+  --output-dir site\assets\review-contexts
+```
+
+Generate interactive crop viewers from the same crop plan:
+
+```powershell
+python scripts\make_break_even_review_viewers.py `
+  --all-complete `
+  --crop-plan results\break_even_crop_guides\crop_plan.json `
+  --output-dir site\assets\review-viewers `
+  --jobs 2 `
+  --level d020 --level d022 --level d025 --level d028 --level d030 `
+  --level d100 --level d200
 ```
 
 Build the local HTML navigation/report page:

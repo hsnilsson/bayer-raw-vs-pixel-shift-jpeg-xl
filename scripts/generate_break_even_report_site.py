@@ -129,7 +129,15 @@ def filter_rows(rows: list[dict[str, str]], excludes: set[tuple[str, str]]) -> l
 def filter_case_paths(paths: list[Path], excludes: set[tuple[str, str]]) -> list[Path]:
     filtered: list[Path] = []
     for path in paths:
+        if path.name == "index.html":
+            metadata = read_viewer_metadata(path)
+            scan_set = str(metadata.get("scan_set", ""))
+            set_id = str(metadata.get("set_id", ""))
+            if scan_set and set_id and case_is_excluded(scan_set, set_id, excludes):
+                continue
         if len(path.parts) >= 3 and case_is_excluded(path.parent.parent.name, path.parent.name, excludes):
+            continue
+        if len(path.parts) >= 4 and case_is_excluded(path.parent.parent.parent.name, path.parent.parent.name, excludes):
             continue
         filtered.append(path)
     return filtered
@@ -349,10 +357,7 @@ def abbr(label: str, title: str) -> str:
 
 
 def column_help(short: str, full: str) -> str:
-    return (
-        f'<th><span class="column-help" tabindex="0" title="{esc(full)}" '
-        f'data-full="{esc(full)}">{esc(short)}</span></th>'
-    )
+    return f'<th><span class="column-help">{esc(full)}</span></th>'
 
 
 def read_profile_flags(path: Path) -> dict[str, str]:
@@ -537,16 +542,53 @@ def viewer_paths(viewer_root: Path) -> list[Path]:
     if not viewer_root.is_dir():
         return []
     paths = [path for path in viewer_root.rglob("index.html")]
+    nested_cases: set[tuple[str, str]] = set()
+    for path in paths:
+        try:
+            relative = path.relative_to(viewer_root)
+        except ValueError:
+            continue
+        if len(relative.parts) >= 4:
+            nested_cases.add((relative.parts[0], relative.parts[1]))
+    filtered = []
+    for path in paths:
+        try:
+            relative = path.relative_to(viewer_root)
+        except ValueError:
+            filtered.append(path)
+            continue
+        if len(relative.parts) == 3 and (relative.parts[0], relative.parts[1]) in nested_cases:
+            continue
+        filtered.append(path)
+    paths = filtered
     paths.sort(key=lambda path: path.parent.as_posix())
     return paths
+
+
+def read_viewer_metadata(index_path: Path) -> dict[str, object]:
+    metadata_path = index_path.parent / "metadata.json"
+    try:
+        return json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.is_file() else {}
+    except json.JSONDecodeError:
+        return {}
+
+
+def viewer_group_name(index_path: Path) -> str:
+    metadata = read_viewer_metadata(index_path)
+    scan_set = str(metadata.get("scan_set") or "")
+    set_id = str(metadata.get("set_id") or "")
+    if scan_set and set_id:
+        return f"{local_study.slugify(scan_set)}/{set_id}"
+    parent = index_path.parent
+    if len(parent.parts) >= 3:
+        return "/".join(parent.parts[-3:-1]) if parent.name.startswith("manual-") else "/".join(parent.parts[-2:])
+    return parent.name
 
 
 def viewer_groups(viewers: list[Path]) -> dict[str, list[Path]]:
     groups: dict[str, list[Path]] = defaultdict(list)
     for path in viewers:
-        parent = path.parent
-        label = "/".join(parent.parts[-2:]) if len(parent.parts) >= 2 else parent.name
-        groups[label].append(path)
+        groups[viewer_group_name(path)].append(path)
     return dict(sorted(groups.items()))
 
 
@@ -573,14 +615,11 @@ def viewer_records(
     index_by_path: dict[str, int] = {}
     for index_path in viewers:
         directory = index_path.parent
-        metadata_path = directory / "metadata.json"
-        try:
-            metadata = json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.is_file() else {}
-        except json.JSONDecodeError:
-            metadata = {}
+        metadata = read_viewer_metadata(index_path)
         labels = metadata.get("labels", {}) if isinstance(metadata.get("labels", {}), dict) else {}
         scan_set = str(metadata.get("scan_set") or directory.parent.name)
         set_id = str(metadata.get("set_id") or directory.name)
+        crop_name = str(metadata.get("crop_name") or "")
         candidates: list[dict[str, str]] = []
         reference_path = directory / "reference.png"
         if reference_path.is_file():
@@ -618,12 +657,15 @@ def viewer_records(
         if not reference_path.is_file() or not candidates:
             continue
         annotation = annotation_for(scan_set, set_id, annotations)
+        label = viewer_display_label(scan_set, set_id, annotations)
+        if crop_name:
+            label = f"{label} / {crop_name}"
         index_by_path[str(index_path.resolve())] = len(records)
         records.append(
             {
                 "index": len(records),
-                "group": "/".join(directory.parts[-2:]),
-                "label": viewer_display_label(scan_set, set_id, annotations),
+                "group": viewer_group_name(index_path),
+                "label": label,
                 "material": annotation.get("material_label", scan_set),
                 "sampleRole": annotation.get("sample_role", ""),
                 "setId": set_id,
@@ -632,6 +674,7 @@ def viewer_records(
                 "candidates": candidates,
                 "metadata": {
                     "transform": str(metadata.get("transform", "")),
+                    "cropName": crop_name,
                     "crop": metadata.get("crop", []),
                     "localRaw61Alignment": metadata.get("local_raw61_alignment", {}),
                 },
@@ -678,58 +721,60 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
-def crop_viewer_modal(records: list[dict[str, object]]) -> str:
+def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
+    if not records:
+        return '<p class="muted">No interactive visual review artifacts found yet.</p>'
     viewer_json = json.dumps(records, ensure_ascii=True).replace("<", "\\u003c")
-    return """  <div class="crop-modal" id="cropModal" role="dialog" aria-modal="true" aria-labelledby="cropModalTitle" hidden>
-    <aside class="crop-modal-sidebar crop-modal-left">
-      <div class="crop-modal-sidebar-header">
+    return """  <section class="crop-workspace" id="cropWorkspace" aria-labelledby="cropViewerTitle">
+    <aside class="crop-sidebar crop-sidebar-left">
+      <div class="crop-sidebar-header">
         <strong>Film candidates</strong>
         <span id="cropFilmCount"></span>
       </div>
       <div class="crop-choice-list" id="cropFilmList"></div>
     </aside>
-    <section class="crop-modal-stage">
-      <div class="crop-modal-toolbar">
+    <section class="crop-stage">
+      <div class="crop-toolbar">
         <div>
-          <h2 id="cropModalTitle">Crop Review</h2>
-          <p id="cropModalMeta"></p>
+          <h3 id="cropViewerTitle">Crop Review</h3>
+          <p id="cropViewerMeta"></p>
         </div>
-        <div class="crop-modal-actions">
+        <div class="crop-actions">
           <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
-          <button type="button" id="cropClose" class="crop-close" aria-label="Close crop viewer">Close</button>
         </div>
       </div>
-      <canvas id="cropCanvas"></canvas>
-      <div class="crop-modal-status" id="cropStatus"></div>
+      <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
+      <div class="crop-status" id="cropStatus" aria-live="polite"></div>
     </section>
-    <aside class="crop-modal-sidebar crop-modal-right">
-      <div class="crop-modal-sidebar-header">
+    <aside class="crop-sidebar crop-sidebar-right">
+      <div class="crop-sidebar-header">
         <strong>Candidate quality</strong>
         <span id="cropQualityCount"></span>
       </div>
       <div class="crop-choice-list" id="cropQualityList"></div>
     </aside>
-  </div>
+  </section>
   <script type="application/json" id="cropViewerData">__VIEWER_DATA__</script>
   <script>
   (() => {
     const viewers = JSON.parse(document.getElementById("cropViewerData").textContent || "[]");
-    const modal = document.getElementById("cropModal");
+    const workspace = document.getElementById("cropWorkspace");
     const canvas = document.getElementById("cropCanvas");
     const ctx = canvas.getContext("2d");
     const filmList = document.getElementById("cropFilmList");
     const qualityList = document.getElementById("cropQualityList");
     const filmCount = document.getElementById("cropFilmCount");
     const qualityCount = document.getElementById("cropQualityCount");
-    const title = document.getElementById("cropModalTitle");
-    const meta = document.getElementById("cropModalMeta");
+    const title = document.getElementById("cropViewerTitle");
+    const meta = document.getElementById("cropViewerMeta");
     const status = document.getElementById("cropStatus");
     const overlayToggle = document.getElementById("cropOverlayToggle");
     const imageCache = new Map();
     let loadSerial = 0;
+    let activeChoiceList = "film";
     const state = {
       viewerIndex: 0,
       candidateKey: "",
@@ -744,7 +789,7 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
       candidateImage: null
     };
 
-    if (!viewers.length) return;
+    if (!viewers.length || !workspace) return;
 
     function currentViewer() {
       return viewers[Math.max(0, Math.min(viewers.length - 1, state.viewerIndex))];
@@ -811,7 +856,6 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
     }
 
     function draw() {
-      if (!modal.classList.contains("is-open")) return;
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       ctx.clearRect(0, 0, width, height);
@@ -879,7 +923,11 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
           role.textContent = viewer.sampleRole;
           button.appendChild(role);
         }
-        button.addEventListener("click", () => setViewer(index));
+        button.addEventListener("click", () => {
+          activeChoiceList = "film";
+          setViewer(index);
+        });
+        button.addEventListener("focus", () => { activeChoiceList = "film"; });
         filmList.appendChild(button);
       });
     }
@@ -899,7 +947,11 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
         const role = document.createElement("span");
         role.textContent = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
         button.appendChild(role);
-        button.addEventListener("click", () => setCandidate(candidate.key));
+        button.addEventListener("click", () => {
+          activeChoiceList = "quality";
+          setCandidate(candidate.key);
+        });
+        button.addEventListener("focus", () => { activeChoiceList = "quality"; });
         qualityList.appendChild(button);
       });
     }
@@ -909,6 +961,7 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
       const alignment = viewer.metadata.localRaw61Alignment || {};
       title.textContent = viewer.label;
       const parts = [];
+      if (viewer.metadata.cropName) parts.push(viewer.metadata.cropName);
       if (viewer.metadata.transform) parts.push(viewer.metadata.transform);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
@@ -940,28 +993,24 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
       draw();
     }
 
-    function openModal(index) {
-      modal.hidden = false;
-      modal.classList.add("is-open");
-      document.body.classList.add("crop-modal-open");
-      setOverlay(false);
-      setViewer(index);
-      document.getElementById("cropClose").focus();
+    function moveViewer(delta) {
+      const nextIndex = Math.max(0, Math.min(viewers.length - 1, state.viewerIndex + delta));
+      if (nextIndex === state.viewerIndex) return;
+      setViewer(nextIndex);
+      const button = filmList.querySelectorAll("button")[nextIndex];
+      if (button) button.focus();
     }
 
-    function closeModal() {
-      modal.classList.remove("is-open");
-      document.body.classList.remove("crop-modal-open");
-      modal.hidden = true;
+    function moveCandidate(delta) {
+      const candidates = currentViewer().candidates;
+      const currentIndex = Math.max(0, candidates.findIndex((candidate) => candidate.key === state.candidateKey));
+      const nextIndex = Math.max(0, Math.min(candidates.length - 1, currentIndex + delta));
+      if (nextIndex === currentIndex) return;
+      setCandidate(candidates[nextIndex].key);
+      const button = qualityList.querySelectorAll("button")[nextIndex];
+      if (button) button.focus();
     }
 
-    document.querySelectorAll("[data-open-crop-viewer]").forEach((link) => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        openModal(Number(link.getAttribute("data-viewer-index") || 0));
-      });
-    });
-    document.getElementById("cropClose").addEventListener("click", closeModal);
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
@@ -992,15 +1041,28 @@ def crop_viewer_modal(records: list[dict[str, object]]) -> str:
       canvas.releasePointerCapture(event.pointerId);
     });
     window.addEventListener("resize", () => {
-      if (!modal.classList.contains("is-open")) return;
       resizeCanvas();
       draw();
     });
     document.addEventListener("keydown", (event) => {
-      if (!modal.classList.contains("is-open")) return;
-      if (event.key === "Escape") closeModal();
-      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) setOverlay(!state.overlay);
+      if (!workspace.contains(document.activeElement)) return;
+      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) {
+        setOverlay(!state.overlay);
+        return;
+      }
+      if (["ArrowDown", "ArrowRight"].includes(event.key)) {
+        event.preventDefault();
+        if (activeChoiceList === "quality") moveCandidate(1);
+        else moveViewer(1);
+      }
+      if (["ArrowUp", "ArrowLeft"].includes(event.key)) {
+        event.preventDefault();
+        if (activeChoiceList === "quality") moveCandidate(-1);
+        else moveViewer(-1);
+      }
     });
+    setOverlay(false);
+    setViewer(0);
   })();
   </script>
 """.replace("__VIEWER_DATA__", viewer_json)
@@ -1080,7 +1142,12 @@ def render_html(
     panel_lookup = panel_groups(panels)
     context_lookup = context_groups(contexts)
     viewer_lookup = viewer_groups(viewers or [])
-    review_groups = sorted(set(panel_lookup) | set(context_lookup) | set(viewer_lookup))
+    review_group_set = set(panel_lookup) | set(viewer_lookup)
+    if viewer_lookup:
+        review_group_set |= set(context_lookup) & review_group_set
+    else:
+        review_group_set |= set(context_lookup)
+    review_groups = sorted(review_group_set)
     visual_review_cards = []
     for group_name in review_groups:
         group_scan_set, group_set_id = group_name.rsplit("/", 1)
@@ -1089,14 +1156,21 @@ def render_html(
         if group_annotation.get("material_label"):
             display_group_name = f'{group_annotation["material_label"]} / {group_set_id}'
         viewer_links = []
+        viewer_crop_names = []
         for path in viewer_lookup.get(group_name, []):
             src = relpath(path, output)
+            metadata = read_viewer_metadata(path)
+            crop_name = str(metadata.get("crop_name") or path.parent.name)
+            transform_name = str(metadata.get("transform") or "identity")
+            viewer_crop_names.append(crop_name)
             viewer_index = viewer_index_by_path.get(str(path.resolve()), 0)
             viewer_links.append(
-                f'<a class="primary-viewer" href="{esc(src)}" data-open-crop-viewer data-viewer-index="{viewer_index}"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a>'
+                f'<a class="primary-viewer" href="{esc(src)}" data-open-crop-viewer data-viewer-index="{viewer_index}"><strong>Open fullscreen crop viewer</strong><span>{esc(crop_name)} / {esc(transform_name)}</span></a>'
             )
         context_cards = []
         for path in context_lookup.get(group_name, []):
+            if viewer_crop_names and not any(path.stem.endswith(f"_{crop_name}") for crop_name in viewer_crop_names):
+                continue
             name = path.name
             src = relpath(path, output)
             context_cards.append(
@@ -1134,6 +1208,11 @@ def render_html(
         )
     if not visual_review_cards:
         visual_review_cards.append('<p class="muted">No visual review artifacts found yet.</p>')
+    visual_review_html = (
+        crop_viewer_workspace(viewer_manifest)
+        if viewer_manifest
+        else "".join(visual_review_cards)
+    )
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1205,27 +1284,8 @@ def render_html(
     th, td {{ text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }}
     th {{ font-size: 12px; color: var(--muted); background: #f0f2f4; position: sticky; top: 0; }}
     thead, th {{ overflow: visible; }}
-    .column-help-row th {{ top: 35px; background: #f8fafc; color: #47515c; font-weight: 400; }}
-    .column-help {{ position: relative; display: block; max-width: 17ch; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: help; outline-offset: 2px; }}
-    .column-help::after {{
-      content: attr(data-full);
-      display: none;
-      position: absolute;
-      left: 0;
-      top: calc(100% + 6px);
-      z-index: 50;
-      width: min(330px, 70vw);
-      white-space: normal;
-      color: #f8fafc;
-      background: #111827;
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 6px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.25);
-      padding: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-    }}
-    .column-help:hover::after, .column-help:focus::after {{ display: block; }}
+    .column-help-row th {{ position: static; background: #f8fafc; color: #47515c; font-weight: 400; }}
+    .column-help {{ display: block; min-width: 12ch; white-space: normal; font-size: 11px; line-height: 1.4; }}
     abbr {{ text-decoration: underline dotted; cursor: help; }}
     td.good, .pill.good {{ background: var(--good-bg); color: var(--good-ink); }}
     td.warn, .pill.warn {{ background: var(--warn-bg); color: var(--warn-ink); }}
@@ -1255,27 +1315,26 @@ def render_html(
     .primary-viewer span {{ color: var(--muted); font-size: 13px; }}
     .note {{ border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }}
     .small-table th, .small-table td {{ font-size: 13px; }}
-    body.crop-modal-open {{ overflow: hidden; }}
-    .crop-modal[hidden] {{ display: none; }}
-    .crop-modal {{
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
+    .crop-workspace {{
       display: grid;
-      grid-template-columns: minmax(210px, 280px) minmax(0, 1fr) minmax(190px, 240px);
-      min-height: 100vh;
+      grid-template-columns: minmax(190px, 250px) minmax(0, 1fr) minmax(180px, 220px);
+      height: clamp(560px, 72vh, 760px);
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid #2b333b;
+      border-radius: 10px;
       background: #0f1215;
       color: #f4f7fa;
     }}
-    .crop-modal-sidebar {{
+    .crop-sidebar {{
       overflow: auto;
       border-color: #2b333b;
       background: #171b20;
       padding: 12px;
     }}
-    .crop-modal-left {{ border-right: 1px solid #2b333b; }}
-    .crop-modal-right {{ border-left: 1px solid #2b333b; }}
-    .crop-modal-sidebar-header {{
+    .crop-sidebar-left {{ border-right: 1px solid #2b333b; }}
+    .crop-sidebar-right {{ border-left: 1px solid #2b333b; }}
+    .crop-sidebar-header {{
       position: sticky;
       top: 0;
       z-index: 1;
@@ -1286,7 +1345,7 @@ def render_html(
       background: #171b20;
       color: #f4f7fa;
     }}
-    .crop-modal-sidebar-header span {{ color: #a6b0ba; }}
+    .crop-sidebar-header span {{ color: #a6b0ba; }}
     .crop-choice-list {{ display: grid; gap: 8px; }}
     .crop-choice {{
       width: 100%;
@@ -1305,8 +1364,8 @@ def render_html(
     .crop-choice:hover, .crop-choice[aria-pressed="true"] {{ border-color: #7dd3fc; background: #0c4a6e; }}
     .crop-choice span {{ color: #a6b0ba; font-size: 12px; }}
     .crop-choice[aria-pressed="true"] span {{ color: #d8eefc; }}
-    .crop-modal-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
-    .crop-modal-toolbar {{
+    .crop-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
+    .crop-toolbar {{
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1316,10 +1375,10 @@ def render_html(
       border-bottom: 1px solid #2b333b;
       background: #15191e;
     }}
-    .crop-modal-toolbar h2 {{ margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }}
-    .crop-modal-toolbar p {{ margin: 0; color: #a6b0ba; font-size: 12px; }}
-    .crop-modal-actions {{ display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }}
-    .crop-modal-actions button {{
+    .crop-toolbar h3 {{ margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }}
+    .crop-toolbar p {{ margin: 0; color: #a6b0ba; font-size: 12px; }}
+    .crop-actions {{ display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }}
+    .crop-actions button {{
       border: 1px solid #3e4a56;
       border-radius: 8px;
       background: #20262d;
@@ -1327,8 +1386,7 @@ def render_html(
       padding: 7px 10px;
       cursor: pointer;
     }}
-    .crop-modal-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
-    .crop-modal-actions .crop-close {{ background: #f4f7fa; color: #111827; border-color: #f4f7fa; }}
+    .crop-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
     #cropCanvas {{
       display: block;
       width: 100%;
@@ -1339,7 +1397,7 @@ def render_html(
       touch-action: none;
     }}
     #cropCanvas.dragging {{ cursor: grabbing; }}
-    .crop-modal-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
+    .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 900px) {{
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
@@ -1347,11 +1405,11 @@ def render_html(
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
       .review-heading {{ align-items: flex-start; flex-direction: column; }}
-      .crop-modal {{ grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 1fr) auto; }}
-      .crop-modal-sidebar {{ max-height: 20vh; }}
-      .crop-modal-left, .crop-modal-right {{ border: 0; border-bottom: 1px solid #2b333b; }}
-      .crop-modal-right {{ border-top: 1px solid #2b333b; }}
-      .crop-modal-toolbar {{ align-items: flex-start; flex-direction: column; }}
+      .crop-workspace {{ height: auto; grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 620px) auto; }}
+      .crop-sidebar {{ max-height: 220px; }}
+      .crop-sidebar-left, .crop-sidebar-right {{ border: 0; border-bottom: 1px solid #2b333b; }}
+      .crop-sidebar-right {{ border-top: 1px solid #2b333b; }}
+      .crop-toolbar {{ align-items: flex-start; flex-direction: column; }}
     }}
   </style>
 </head>
@@ -1439,51 +1497,107 @@ def render_html(
 
     <h2>ADC DNG/JXL Caveats</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> document the specific source-DNG fields that changed in current Adobe DNG Converter lossy DNG/JXL tests. These changes may be valid ADC output, but they are not yet proven harmless for a sole archive master.</p>
+      <p><strong>Short answer:</strong> Adobe DNG Converter 18.5 did create DNG 1.7 files with internal JPEG XL. The lossless main-image path was exact in the tested low-level crops and showed no preservation-review metadata changes after normalization. The blocker is narrower: lossy ADC output is a rewritten image state, not merely the old pixel payload with a new compression tag, and the current reference workflow cannot yet render and validate it end to end.</p>
+      <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” means that no defect has been proved, but the evidence needed for a sole-master claim is still missing.</p>
     </div>
     <section class="adc-grid">
       <div class="adc-item">
-        <h3>Stored image shape</h3>
+        <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>The encoded raster dimensions define the pixel grid that raw processors decode and place before any default crop is applied.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>If ADC writes a different stored raster, old dimensions could describe pixels that are no longer present or no longer aligned with the encoded JXL payload.</dd>
-          <dt>Mitigation</dt>
-          <dd>Compare active crops, register locally, document the changed geometry, and keep the original DNG until the DNG/JXL path can be verified end to end.</dd>
+          <dt>Observed</dt>
+          <dd>In the active PixelShift 16 batches, lossy ADC changed the main raster from <code>19200&times;12752</code> to <code>19120&times;12736</code>. The small earlier smoke-test files showed the same pattern at <code>9600&times;6376</code> to <code>9552&times;6360</code>. Lossless ADC kept the source shape.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy file no longer has the source file's stored pixel grid. This may be a valid flattening of the active area, but direct pixel indexing and geometry metadata from the source are no longer interchangeable.</dd>
+          <dt>What closes it</dt>
+          <dd>Compare the same active image area through a crop-aware renderer, confirm that no useful edge pixels or placement information are lost, and keep the source DNG until that result is reproducible.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3>Crop origin / active placement</h3>
+        <h3>Crop origin / active placement <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>Crop-origin metadata tells software where the useful image area begins and how to place or trim sensor-edge pixels.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>Copying the original crop origin onto a rewritten raster can shift the image, expose invalid edge pixels, or hide valid pixels.</dd>
-          <dt>Mitigation</dt>
-          <dd>Use crop-aware comparisons and treat any copied geometry metadata as unsafe unless a renderer confirms identical placement.</dd>
+          <dt>Observed</dt>
+          <dd>The active crop origin changed from <code>[8, 8]</code> in the source to <code>[0, 0]</code> in every checked lossy candidate. This is consistent with ADC writing the active area as the new stored raster.</dd>
+          <dt>Actual problem</dt>
+          <dd>The coordinate system changed. Copying the old crop tag back would shift the image or trim a second time; comparing the two rasters without applying their own crop metadata would compare different locations.</dd>
+          <dt>What closes it</dt>
+          <dd>Verify placement in at least two independent full DNG render paths and compare registered active areas rather than raw array coordinates.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3><code>WhiteLevel</code></h3>
+        <h3><code>WhiteLevel</code> <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd><code>WhiteLevel</code> defines the meaningful saturation scale for linear raw samples and affects highlight normalization.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>ADC lossy output can use a different stored sample range. Restoring the old value may make the image render too dark, too bright, or clipped.</dd>
-          <dt>Mitigation</dt>
-          <dd>Render through one fixed profile, inspect highlight behavior, and compare normalized outputs. This can diagnose the issue, but it does not restore original raw-scale semantics.</dd>
+          <dt>Observed</dt>
+          <dd>Lossy ADC changed all three channel values from <code>14848</code> to <code>65535</code>. Lossless ADC retained <code>14848</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The stored sample domain was rescaled. Restoring the old tag or dividing both files by one assumed scale can produce false tone, clipping, or highlight-recovery differences.</dd>
+          <dt>What closes it</dt>
+          <dd>Use each file's declared scale, apply its required opcodes, then test clipping and recoverable latitude through the same trusted renderer. The current low-level normalization is diagnostic evidence, not a restoration of the original raw-scale semantics.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3><code>OpcodeList2</code></h3>
+        <h3><code>OpcodeList2</code> <span class="pill risk">Confirmed dependency</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>DNG opcodes can describe required processing after linearization, such as polynomial maps or geometry-related corrections tied to the stored image state.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>Opcodes are tied to a specific pixel geometry and processing domain. Reusing old opcode data after ADC rewrites the payload can apply the wrong correction.</dd>
-          <dt>Mitigation</dt>
-          <dd>Decode tests can apply the current opcode model, but archive use still needs application support and round-trip validation. For now this is a blocker for treating ADC lossy DNG/JXL as a drop-in DNG replacement.</dd>
+          <dt>Observed</dt>
+          <dd>The checked lossy files added three channel-specific <code>MapPolynomial</code> operations where the source had no <code>OpcodeList2</code>. Applying those maps removed the large false domain mismatch in the first raster comparison.</dd>
+          <dt>Actual problem</dt>
+          <dd>A decoder that extracts the JXL pixels but ignores the DNG opcodes does not recover the intended linear values. Correct rendering now depends on complete support for this processing step.</dd>
+          <dt>What closes it</dt>
+          <dd>Confirm the same result in independent DNG renderers and record which archive applications apply the opcode correctly. Copying or deleting the opcode is not a safe repair.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Lossy embedded color path <span class="pill warn">Confirmed sample, limited scope</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Representative main-image tiles from two local files used the JPEG XL XYB path for lossy <code>d=0.05</code>; lossless main-image tiles used the original-profile, non-XYB path. The outer DNG still labels the image <code>LinearRaw</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy path is not a direct preservation of camera-native linear channel samples. A perceptual transform may behave well for normal viewing yet respond differently to negative inversion, channel balancing, or future extreme edits.</dd>
+          <dt>What closes it</dt>
+          <dd>Inspect representative tiles across the corpus and run the actual ADC output through the same post-inversion and grading tests used for the archive decision.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>RawTherapee compatibility <span class="pill bad">Confirmed incompatibility</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
+          <dt>Actual problem</dt>
+          <dd>The project cannot feed source and ADC candidate into its one fixed RawTherapee render pipeline. This is a concrete workflow incompatibility, not evidence that the embedded JXL pixels are corrupt.</dd>
+          <dt>What closes it</dt>
+          <dd>A RawTherapee version that opens and correctly processes DNG 1.7/JXL, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Independent full-DNG decode <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>The project can extract main-image JXL tiles, decode matched crop windows, normalize by the declared white level, and apply the observed <code>MapPolynomial</code> opcodes. Lossless crops are exact through that path.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>This custom low-level check is not a second complete DNG implementation. It does not prove that crop, color matrices, opcodes, previews, and metadata are interpreted consistently by independent archive applications.</dd>
+          <dt>What closes it</dt>
+          <dd>Matching color-managed renders from at least one independent DNG/JXL-capable application, followed by an application matrix for the tools expected in the real workflow.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Real edit and visual review <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>Low-level crop metrics already show the expected ordering: lossless is exact, <code>d=0.03</code> is cleaner than <code>d=0.05</code>, and <code>d=0.10</code> develops a much worse error tail after negative-like stress.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>There is no blinded, end-to-end comparison of source and ADC DNG/JXL after a real color-managed inversion and grading workflow. Low average patch color error does not rule out objectionable grain, texture, or local-density changes.</dd>
+          <dt>What closes it</dt>
+          <dd>Registered same-render outputs, clipping and latitude checks, and blinded visual review on representative real negatives.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Storage-budget coverage <span class="pill bad">Not reached</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Lossless ADC retained roughly <code>85-97%</code> of the source PS16 DNG size in complete local rows. Even the tested lossy <code>d=0.10</code> files were about <code>161-888%</code> of their paired 61 MP raw files.</dd>
+          <dt>Actual problem</dt>
+          <dd>The tested conservative ADC levels do not yet answer the project's same-storage question. They reduce PS16 storage substantially but remain larger than the RAW61 budget.</dd>
+          <dt>What closes it</dt>
+          <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
         </dl>
       </div>
     </section>
@@ -1529,7 +1643,7 @@ def render_html(
         </tr>
       </thead>
       <tbody>
-        {''.join(level_rows)}
+        {''.join(row.strip() for row in level_rows)}
       </tbody>
     </table>
 
@@ -1560,7 +1674,7 @@ def render_html(
         </tr>
       </thead>
       <tbody>
-        {''.join(baseline_rows)}
+        {''.join(row.strip() for row in baseline_rows)}
       </tbody>
     </table>
 
@@ -1574,10 +1688,10 @@ def render_html(
 
     <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table. Each film or representative frame is grouped here, with the interactive crop viewer first.</p>
-      <p>The viewer supports side-by-side comparison, a keyboard toggle that copies the selected candidate over the left reference pane, zoom, and pan. Full-frame context thumbnails show where the crop came from. Static diagnostic panels are kept as local regenerated artifacts unless explicitly included in a private/local report build.</p>
+      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table in one shared comparison workspace.</p>
+      <p>Select a film crop on the left and a quality candidate on the right. The viewer supports side-by-side comparison, overlay, zoom, pan, and keyboard navigation without leaving the report.</p>
     </div>
-    {''.join(visual_review_cards)}
+    {visual_review_html}
 
     <h2>FADGI Context</h2>
     <div class="card">
@@ -1590,7 +1704,6 @@ def render_html(
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
     </div>
   </main>
-{crop_viewer_modal(viewer_manifest)}
 </body>
 </html>
 """

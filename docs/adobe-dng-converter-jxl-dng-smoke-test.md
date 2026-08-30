@@ -179,6 +179,22 @@ through RawTherapee, Adobe Camera Raw, Lightroom, FilmLab, or another practical
 film workflow; it only makes the low-level DNG/JXL comparison respect the DNG
 opcode processing model.
 
+## RawTherapee Compatibility Probe
+
+On 2026-08-29, RawTherapee 5.12 CLI was tested with the fixed project profile
+against one lossless ADC DNG/JXL and the matching lossy `d=0.05` candidate.
+Both attempts stopped at file loading with:
+
+```text
+Error loading file: <ADC candidate>.dng
+```
+
+The source PixelShift2DNG files are already rendered by the same project
+workflow. This establishes a concrete incompatibility in the current
+RawTherapee 5.12 path; it does not show that the embedded JPEG XL codestream is
+corrupt. It means RawTherapee cannot currently provide the controlled
+source-versus-ADC same-render comparison required by this project.
+
 ## What This Changes
 
 This removes one major blocker from the project. There is now a practical
@@ -202,6 +218,7 @@ The best current candidate tracks become:
 - Render original PixelShift2DNG and ADC JXL DNG through the same trusted
   pipeline and compare pixels.
 - Repeat the metadata diff on public/anonymized test material.
-- Test whether RawTherapee, Adobe tools, FilmLab, and other relevant software
-  can open and color-manage the ADC JXL DNG files correctly.
+- Re-test RawTherapee when DNG 1.7/JXL support changes; test whether Adobe tools,
+  FilmLab, and other relevant software can open and color-manage the ADC JXL DNG
+  files correctly.
 - Re-run latitude-stress tests on ADC-generated JXL DNG output.

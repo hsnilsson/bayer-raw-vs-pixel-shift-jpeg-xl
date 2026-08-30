@@ -200,6 +200,10 @@ as safe as the sole retained master.
 - Why is the current rendered RAW61-vs-PS16 color/tone baseline so large on
   some local pairs: true sampling difference, render/profile mismatch,
   PixelShift2DNG difference, exposure/WB mismatch, or registration/crop issue?
+- Does Sony Imaging Edge Desktop/Viewer produce a meaningfully different PS16
+  merged reference from the same ARW sequences than PixelShift2DNG? This should
+  be tested as a merge-pipeline control before blaming either JPEG XL or
+  PixelShift2DNG for color/geometry differences.
 - At which standalone JXL distance do native-detail crops stop preserving more
   useful film structure than the registered 61 MP raw baseline? The current
   size break-even is around `d022`, but the structure/color failure boundary has

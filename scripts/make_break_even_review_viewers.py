@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import json
 import shutil
 import subprocess
@@ -38,13 +39,14 @@ DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
 DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT = ROOT / "site/assets/review-viewers"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
-DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030", "d200"]
+DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030", "d100", "d200"]
 DEFAULT_CASES = [
     "fuji_679_f_ii_1983|_DSC6980",
     "kodak_gold_200_5_1997|_DSC6735",
     "konica_vx100_probable_1995|_DSC6917",
 ]
 DEFAULT_CROP = (3182, 4782, 512, 512)
+DEFAULT_CROP_NAME = "manual-01"
 
 
 def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
@@ -79,6 +81,33 @@ def parse_crop(value: str) -> tuple[int, int, int, int]:
     if x < 0 or y < 0 or width <= 0 or height <= 0:
         raise argparse.ArgumentTypeError("crop values must be non-negative x/y and positive width/height")
     return x, y, width, height
+
+
+def read_crop_plan(path: Path | None) -> dict[tuple[str, str], list[tuple[str, tuple[int, int, int, int]]]]:
+    if path is None or not path.is_file():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    plan: dict[tuple[str, str], list[tuple[str, tuple[int, int, int, int]]]] = {}
+    for item in payload.get("cases", {}).values():
+        key = (str(item.get("scan_set", "")), str(item.get("set_id", "")))
+        if not all(key):
+            continue
+        crops: list[tuple[str, tuple[int, int, int, int]]] = []
+        for crop_item in item.get("crops", []):
+            values = crop_item.get("crop", [])
+            if len(values) != 4:
+                continue
+            try:
+                crop_values = tuple(int(value) for value in values)
+            except (TypeError, ValueError):
+                continue
+            if crop_values[2] <= 0 or crop_values[3] <= 0:
+                continue
+            name = str(crop_item.get("name") or f"manual-{len(crops) + 1:02d}")
+            crops.append((name, crop_values))
+        if crops:
+            plan[key] = crops
+    return plan
 
 
 def to_display(arr: np.ndarray, max_dim: int) -> Image.Image:
@@ -205,6 +234,7 @@ def make_viewer(
     set_id: str,
     levels: list[str],
     transform_name: str,
+    crop_name: str,
     crop_spec: tuple[int, int, int, int],
     args: argparse.Namespace,
     djxl: str,
@@ -229,7 +259,7 @@ def make_viewer(
         "ps16_lossless": "PS16 lossless / reference",
         "raw61": "RAW61 local aligned",
     }
-    output_dir = args.output_dir / local_study.slugify(scan_set) / set_id
+    output_dir = args.output_dir / local_study.slugify(scan_set) / set_id / crop_name
     output_dir.mkdir(parents=True, exist_ok=True)
     save_display(output_dir / images["reference"], transform.apply(ref_crop), args.max_dim, force=args.force)
     save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=args.force)
@@ -254,6 +284,7 @@ def make_viewer(
         "labels": labels,
         "scan_set": scan_set,
         "set_id": set_id,
+        "crop_name": crop_name,
         "transform": transform_name,
         "crop": list(crop_spec),
         "local_raw61_alignment": {
@@ -264,7 +295,7 @@ def make_viewer(
         },
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    title = f"{scan_set} / {set_id} / {transform_name}"
+    title = f"{scan_set} / {set_id} / {crop_name} / {transform_name}"
     (output_dir / "index.html").write_text(html_page(title, images, metadata), encoding="utf-8")
     return output_dir / "index.html"
 
@@ -283,12 +314,16 @@ def main() -> int:
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--transform", default="identity")
     parser.add_argument("--crop", type=parse_crop, default=DEFAULT_CROP)
+    parser.add_argument("--crop-plan", type=Path, help="JSON crop plan produced by read_crop_selection_guides.py or serve_crop_selection.py.")
     parser.add_argument("--max-dim", type=int, default=1024)
     parser.add_argument("--max-local-shift", type=float, default=32.0)
+    parser.add_argument("--jobs", type=int, default=1, help="number of crop viewers to build in parallel")
     parser.add_argument("--force", action="store_true", help="rewrite existing viewer images")
     args = parser.parse_args()
     if args.max_dim <= 0:
         raise SystemExit("--max-dim must be positive")
+    if args.jobs <= 0:
+        raise SystemExit("--jobs must be positive")
     if args.case:
         cases = args.case
     elif args.all_complete:
@@ -296,12 +331,32 @@ def main() -> int:
     else:
         cases = [parse_case(value) for value in DEFAULT_CASES]
     levels = args.level or DEFAULT_LEVELS
+    crop_plan = read_crop_plan(args.crop_plan)
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
-    written = []
+    tasks = []
     for scan_set, set_id in cases:
-        result = make_viewer(scan_set, set_id, levels, args.transform, args.crop, args, djxl)
-        if result:
-            written.append(str(result))
+        crop_specs = crop_plan.get((scan_set, set_id))
+        if not crop_specs and not crop_plan:
+            crop_specs = [(DEFAULT_CROP_NAME, args.crop)]
+        for crop_name, crop_spec in crop_specs or []:
+            tasks.append((scan_set, set_id, crop_name, crop_spec))
+    written = []
+    if args.jobs == 1 or len(tasks) <= 1:
+        for scan_set, set_id, crop_name, crop_spec in tasks:
+            result = make_viewer(scan_set, set_id, levels, args.transform, crop_name, crop_spec, args, djxl)
+            if result:
+                written.append(str(result))
+    else:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            futures = [
+                executor.submit(make_viewer, scan_set, set_id, levels, args.transform, crop_name, crop_spec, args, djxl)
+                for scan_set, set_id, crop_name, crop_spec in tasks
+            ]
+            for future in concurrent.futures.as_completed(futures):
+                result = future.result()
+                if result:
+                    written.append(str(result))
+    written.sort()
     print(f"Wrote {len(written)} interactive viewer(s)")
     for path in written:
         print(path)

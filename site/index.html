@@ -68,27 +68,8 @@
     th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
     th { font-size: 12px; color: var(--muted); background: #f0f2f4; position: sticky; top: 0; }
     thead, th { overflow: visible; }
-    .column-help-row th { top: 35px; background: #f8fafc; color: #47515c; font-weight: 400; }
-    .column-help { position: relative; display: block; max-width: 17ch; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: help; outline-offset: 2px; }
-    .column-help::after {
-      content: attr(data-full);
-      display: none;
-      position: absolute;
-      left: 0;
-      top: calc(100% + 6px);
-      z-index: 50;
-      width: min(330px, 70vw);
-      white-space: normal;
-      color: #f8fafc;
-      background: #111827;
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 6px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.25);
-      padding: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .column-help:hover::after, .column-help:focus::after { display: block; }
+    .column-help-row th { position: static; background: #f8fafc; color: #47515c; font-weight: 400; }
+    .column-help { display: block; min-width: 12ch; white-space: normal; font-size: 11px; line-height: 1.4; }
     abbr { text-decoration: underline dotted; cursor: help; }
     td.good, .pill.good { background: var(--good-bg); color: var(--good-ink); }
     td.warn, .pill.warn { background: var(--warn-bg); color: var(--warn-ink); }
@@ -118,27 +99,26 @@
     .primary-viewer span { color: var(--muted); font-size: 13px; }
     .note { border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }
     .small-table th, .small-table td { font-size: 13px; }
-    body.crop-modal-open { overflow: hidden; }
-    .crop-modal[hidden] { display: none; }
-    .crop-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
+    .crop-workspace {
       display: grid;
-      grid-template-columns: minmax(210px, 280px) minmax(0, 1fr) minmax(190px, 240px);
-      min-height: 100vh;
+      grid-template-columns: minmax(190px, 250px) minmax(0, 1fr) minmax(180px, 220px);
+      height: clamp(560px, 72vh, 760px);
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid #2b333b;
+      border-radius: 10px;
       background: #0f1215;
       color: #f4f7fa;
     }
-    .crop-modal-sidebar {
+    .crop-sidebar {
       overflow: auto;
       border-color: #2b333b;
       background: #171b20;
       padding: 12px;
     }
-    .crop-modal-left { border-right: 1px solid #2b333b; }
-    .crop-modal-right { border-left: 1px solid #2b333b; }
-    .crop-modal-sidebar-header {
+    .crop-sidebar-left { border-right: 1px solid #2b333b; }
+    .crop-sidebar-right { border-left: 1px solid #2b333b; }
+    .crop-sidebar-header {
       position: sticky;
       top: 0;
       z-index: 1;
@@ -149,7 +129,7 @@
       background: #171b20;
       color: #f4f7fa;
     }
-    .crop-modal-sidebar-header span { color: #a6b0ba; }
+    .crop-sidebar-header span { color: #a6b0ba; }
     .crop-choice-list { display: grid; gap: 8px; }
     .crop-choice {
       width: 100%;
@@ -168,8 +148,8 @@
     .crop-choice:hover, .crop-choice[aria-pressed="true"] { border-color: #7dd3fc; background: #0c4a6e; }
     .crop-choice span { color: #a6b0ba; font-size: 12px; }
     .crop-choice[aria-pressed="true"] span { color: #d8eefc; }
-    .crop-modal-stage { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
-    .crop-modal-toolbar {
+    .crop-stage { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+    .crop-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -179,10 +159,10 @@
       border-bottom: 1px solid #2b333b;
       background: #15191e;
     }
-    .crop-modal-toolbar h2 { margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }
-    .crop-modal-toolbar p { margin: 0; color: #a6b0ba; font-size: 12px; }
-    .crop-modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-    .crop-modal-actions button {
+    .crop-toolbar h3 { margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }
+    .crop-toolbar p { margin: 0; color: #a6b0ba; font-size: 12px; }
+    .crop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .crop-actions button {
       border: 1px solid #3e4a56;
       border-radius: 8px;
       background: #20262d;
@@ -190,8 +170,7 @@
       padding: 7px 10px;
       cursor: pointer;
     }
-    .crop-modal-actions button[aria-pressed="true"] { background: #075985; border-color: #7dd3fc; }
-    .crop-modal-actions .crop-close { background: #f4f7fa; color: #111827; border-color: #f4f7fa; }
+    .crop-actions button[aria-pressed="true"] { background: #075985; border-color: #7dd3fc; }
     #cropCanvas {
       display: block;
       width: 100%;
@@ -202,7 +181,7 @@
       touch-action: none;
     }
     #cropCanvas.dragging { cursor: grabbing; }
-    .crop-modal-status { min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }
+    .crop-status { min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }
     ul { margin-top: 8px; }
     @media (max-width: 900px) {
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow { grid-template-columns: 1fr; }
@@ -210,11 +189,11 @@
       header, main { padding: 16px; }
       table { font-size: 13px; }
       .review-heading { align-items: flex-start; flex-direction: column; }
-      .crop-modal { grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 1fr) auto; }
-      .crop-modal-sidebar { max-height: 20vh; }
-      .crop-modal-left, .crop-modal-right { border: 0; border-bottom: 1px solid #2b333b; }
-      .crop-modal-right { border-top: 1px solid #2b333b; }
-      .crop-modal-toolbar { align-items: flex-start; flex-direction: column; }
+      .crop-workspace { height: auto; grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 620px) auto; }
+      .crop-sidebar { max-height: 220px; }
+      .crop-sidebar-left, .crop-sidebar-right { border: 0; border-bottom: 1px solid #2b333b; }
+      .crop-sidebar-right { border-top: 1px solid #2b333b; }
+      .crop-toolbar { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -226,10 +205,10 @@
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Candidate Rows</h3><div class="metric">90</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
-      <div class="card"><h3>Complete Rows</h3><div class="metric">75</div><p class="muted">rows with size, color and structure data</p></div>
-      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">55</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
-      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030</div><p class="muted">levels whose median size is at or below RAW61</p></div>
+      <div class="card"><h3>Candidate Rows</h3><div class="metric">140</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
+      <div class="card"><h3>Complete Rows</h3><div class="metric">105</div><p class="muted">rows with size, color and structure data</p></div>
+      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">85</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
+      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">d025, d028, d030, d100, d200</div><p class="muted">levels whose median size is at or below RAW61</p></div>
     </section>
 
     <h2>Current Reading</h2>
@@ -253,7 +232,7 @@
         <p><strong>PS16 JXL vs RAW61.</strong> This is intentionally a workflow tradeoff: more sampling plus lossy coding versus less sampling plus raw preservation.</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Current complete rows favor PS16 JXL in 55 of 75 comparisons, but RAW61 still has raw-edit latitude and fewer workflow assumptions. This is why the report separates codec damage from the broader archive-value verdict.</p>
+          <p>Current complete rows favor PS16 JXL in 85 of 105 comparisons, but RAW61 still has raw-edit latitude and fewer workflow assumptions. This is why the report separates codec damage from the broader archive-value verdict.</p>
         </details>
       </div>
       <div class="card question-card">
@@ -261,7 +240,7 @@
         <p>At what JXL distance does PS16 JXL stop carrying more useful film information than RAW61 at the same storage budget?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>The current local data puts the storage break-even between d022 (103.0%) and d025 (82.9%). The current under-budget candidates are d025, d028, d030. The boundary still needs more film material and visual review before it should be treated as a general recommendation.</p>
+          <p>The current local data puts the storage break-even between d022 (103.0%) and d025 (82.9%). The current under-budget candidates are d025, d028, d030, d100, d200. The boundary still needs more film material and visual review before it should be treated as a general recommendation.</p>
         </details>
       </div>
       <div class="card question-card">
@@ -302,51 +281,107 @@
 
     <h2>ADC DNG/JXL Caveats</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> document the specific source-DNG fields that changed in current Adobe DNG Converter lossy DNG/JXL tests. These changes may be valid ADC output, but they are not yet proven harmless for a sole archive master.</p>
+      <p><strong>Short answer:</strong> Adobe DNG Converter 18.5 did create DNG 1.7 files with internal JPEG XL. The lossless main-image path was exact in the tested low-level crops and showed no preservation-review metadata changes after normalization. The blocker is narrower: lossy ADC output is a rewritten image state, not merely the old pixel payload with a new compression tag, and the current reference workflow cannot yet render and validate it end to end.</p>
+      <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” means that no defect has been proved, but the evidence needed for a sole-master claim is still missing.</p>
     </div>
     <section class="adc-grid">
       <div class="adc-item">
-        <h3>Stored image shape</h3>
+        <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>The encoded raster dimensions define the pixel grid that raw processors decode and place before any default crop is applied.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>If ADC writes a different stored raster, old dimensions could describe pixels that are no longer present or no longer aligned with the encoded JXL payload.</dd>
-          <dt>Mitigation</dt>
-          <dd>Compare active crops, register locally, document the changed geometry, and keep the original DNG until the DNG/JXL path can be verified end to end.</dd>
+          <dt>Observed</dt>
+          <dd>In the active PixelShift 16 batches, lossy ADC changed the main raster from <code>19200&times;12752</code> to <code>19120&times;12736</code>. The small earlier smoke-test files showed the same pattern at <code>9600&times;6376</code> to <code>9552&times;6360</code>. Lossless ADC kept the source shape.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy file no longer has the source file's stored pixel grid. This may be a valid flattening of the active area, but direct pixel indexing and geometry metadata from the source are no longer interchangeable.</dd>
+          <dt>What closes it</dt>
+          <dd>Compare the same active image area through a crop-aware renderer, confirm that no useful edge pixels or placement information are lost, and keep the source DNG until that result is reproducible.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3>Crop origin / active placement</h3>
+        <h3>Crop origin / active placement <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>Crop-origin metadata tells software where the useful image area begins and how to place or trim sensor-edge pixels.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>Copying the original crop origin onto a rewritten raster can shift the image, expose invalid edge pixels, or hide valid pixels.</dd>
-          <dt>Mitigation</dt>
-          <dd>Use crop-aware comparisons and treat any copied geometry metadata as unsafe unless a renderer confirms identical placement.</dd>
+          <dt>Observed</dt>
+          <dd>The active crop origin changed from <code>[8, 8]</code> in the source to <code>[0, 0]</code> in every checked lossy candidate. This is consistent with ADC writing the active area as the new stored raster.</dd>
+          <dt>Actual problem</dt>
+          <dd>The coordinate system changed. Copying the old crop tag back would shift the image or trim a second time; comparing the two rasters without applying their own crop metadata would compare different locations.</dd>
+          <dt>What closes it</dt>
+          <dd>Verify placement in at least two independent full DNG render paths and compare registered active areas rather than raw array coordinates.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3><code>WhiteLevel</code></h3>
+        <h3><code>WhiteLevel</code> <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd><code>WhiteLevel</code> defines the meaningful saturation scale for linear raw samples and affects highlight normalization.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>ADC lossy output can use a different stored sample range. Restoring the old value may make the image render too dark, too bright, or clipped.</dd>
-          <dt>Mitigation</dt>
-          <dd>Render through one fixed profile, inspect highlight behavior, and compare normalized outputs. This can diagnose the issue, but it does not restore original raw-scale semantics.</dd>
+          <dt>Observed</dt>
+          <dd>Lossy ADC changed all three channel values from <code>14848</code> to <code>65535</code>. Lossless ADC retained <code>14848</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The stored sample domain was rescaled. Restoring the old tag or dividing both files by one assumed scale can produce false tone, clipping, or highlight-recovery differences.</dd>
+          <dt>What closes it</dt>
+          <dd>Use each file's declared scale, apply its required opcodes, then test clipping and recoverable latitude through the same trusted renderer. The current low-level normalization is diagnostic evidence, not a restoration of the original raw-scale semantics.</dd>
         </dl>
       </div>
       <div class="adc-item">
-        <h3><code>OpcodeList2</code></h3>
+        <h3><code>OpcodeList2</code> <span class="pill risk">Confirmed dependency</span></h3>
         <dl>
-          <dt>What it is for</dt>
-          <dd>DNG opcodes can describe required processing after linearization, such as polynomial maps or geometry-related corrections tied to the stored image state.</dd>
-          <dt>Why not just change it back</dt>
-          <dd>Opcodes are tied to a specific pixel geometry and processing domain. Reusing old opcode data after ADC rewrites the payload can apply the wrong correction.</dd>
-          <dt>Mitigation</dt>
-          <dd>Decode tests can apply the current opcode model, but archive use still needs application support and round-trip validation. For now this is a blocker for treating ADC lossy DNG/JXL as a drop-in DNG replacement.</dd>
+          <dt>Observed</dt>
+          <dd>The checked lossy files added three channel-specific <code>MapPolynomial</code> operations where the source had no <code>OpcodeList2</code>. Applying those maps removed the large false domain mismatch in the first raster comparison.</dd>
+          <dt>Actual problem</dt>
+          <dd>A decoder that extracts the JXL pixels but ignores the DNG opcodes does not recover the intended linear values. Correct rendering now depends on complete support for this processing step.</dd>
+          <dt>What closes it</dt>
+          <dd>Confirm the same result in independent DNG renderers and record which archive applications apply the opcode correctly. Copying or deleting the opcode is not a safe repair.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Lossy embedded color path <span class="pill warn">Confirmed sample, limited scope</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Representative main-image tiles from two local files used the JPEG XL XYB path for lossy <code>d=0.05</code>; lossless main-image tiles used the original-profile, non-XYB path. The outer DNG still labels the image <code>LinearRaw</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy path is not a direct preservation of camera-native linear channel samples. A perceptual transform may behave well for normal viewing yet respond differently to negative inversion, channel balancing, or future extreme edits.</dd>
+          <dt>What closes it</dt>
+          <dd>Inspect representative tiles across the corpus and run the actual ADC output through the same post-inversion and grading tests used for the archive decision.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>RawTherapee compatibility <span class="pill bad">Confirmed incompatibility</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
+          <dt>Actual problem</dt>
+          <dd>The project cannot feed source and ADC candidate into its one fixed RawTherapee render pipeline. This is a concrete workflow incompatibility, not evidence that the embedded JXL pixels are corrupt.</dd>
+          <dt>What closes it</dt>
+          <dd>A RawTherapee version that opens and correctly processes DNG 1.7/JXL, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Independent full-DNG decode <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>The project can extract main-image JXL tiles, decode matched crop windows, normalize by the declared white level, and apply the observed <code>MapPolynomial</code> opcodes. Lossless crops are exact through that path.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>This custom low-level check is not a second complete DNG implementation. It does not prove that crop, color matrices, opcodes, previews, and metadata are interpreted consistently by independent archive applications.</dd>
+          <dt>What closes it</dt>
+          <dd>Matching color-managed renders from at least one independent DNG/JXL-capable application, followed by an application matrix for the tools expected in the real workflow.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Real edit and visual review <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>Low-level crop metrics already show the expected ordering: lossless is exact, <code>d=0.03</code> is cleaner than <code>d=0.05</code>, and <code>d=0.10</code> develops a much worse error tail after negative-like stress.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>There is no blinded, end-to-end comparison of source and ADC DNG/JXL after a real color-managed inversion and grading workflow. Low average patch color error does not rule out objectionable grain, texture, or local-density changes.</dd>
+          <dt>What closes it</dt>
+          <dd>Registered same-render outputs, clipping and latitude checks, and blinded visual review on representative real negatives.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Storage-budget coverage <span class="pill bad">Not reached</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Lossless ADC retained roughly <code>85-97%</code> of the source PS16 DNG size in complete local rows. Even the tested lossy <code>d=0.10</code> files were about <code>161-888%</code> of their paired 61 MP raw files.</dd>
+          <dt>Actual problem</dt>
+          <dd>The tested conservative ADC levels do not yet answer the project's same-storage question. They reduce PS16 storage substantially but remain larger than the RAW61 budget.</dd>
+          <dt>What closes it</dt>
+          <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
         </dl>
       </div>
     </section>
@@ -379,21 +414,20 @@
           <th><abbr title="Counts of conservative matrix verdicts for this level.">Verdicts</abbr></th>
         </tr>
         <tr class="column-help-row">
-          <th><span class="column-help" tabindex="0" title="JPEG XL distance label. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. Lossless is a reference row, not a break-even candidate." data-full="JPEG XL distance label. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. Lossless is a reference row, not a break-even candidate.">Codec setting</span></th>
-          <th><span class="column-help" tabindex="0" title="Plain-language status after combining size and the current diagnostics. Too large means the image metrics may still look strong, but the median file size is above the paired RAW61 budget." data-full="Plain-language status after combining size and the current diagnostics. Too large means the image metrics may still look strong, but the median file size is above the paired RAW61 budget.">Decision label</span></th>
-          <th><span class="column-help" tabindex="0" title="Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller." data-full="Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.">Storage budget</span></th>
-          <th><span class="column-help" tabindex="0" title="Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units." data-full="Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.">Actual size</span></th>
-          <th><span class="column-help" tabindex="0" title="Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content." data-full="Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content.">Spread</span></th>
-          <th><span class="column-help" tabindex="0" title="95th percentile CIEDE2000 color difference for PS16 JXL versus the PS16 reference after the current negative-density inversion proxy. Unit is DeltaE00; lower is better." data-full="95th percentile CIEDE2000 color difference for PS16 JXL versus the PS16 reference after the current negative-density inversion proxy. Unit is DeltaE00; lower is better.">Color stress</span></th>
-          <th><span class="column-help" tabindex="0" title="Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic." data-full="Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic.">Color vs RAW61</span></th>
-          <th><span class="column-help" tabindex="0" title="Median unitless high-pass detail loss for PS16 JXL versus PS16. This absolute number is mainly diagnostic; interpret it with the structure ratio and visual crop viewer." data-full="Median unitless high-pass detail loss for PS16 JXL versus PS16. This absolute number is mainly diagnostic; interpret it with the structure ratio and visual crop viewer.">Detail loss</span></th>
-          <th><span class="column-help" tabindex="0" title="Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61." data-full="Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61.">Detail vs RAW61</span></th>
-          <th><span class="column-help" tabindex="0" title="Counts of per-frame verdict labels at this JXL level. These counts explain whether the summary is broad or driven by a few frames." data-full="Counts of per-frame verdict labels at this JXL level. These counts explain whether the summary is broad or driven by a few frames.">Row verdicts</span></th>
+          <th><span class="column-help">JPEG XL distance label. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. Lossless is a reference row, not a break-even candidate.</span></th>
+          <th><span class="column-help">Plain-language status after combining size and the current diagnostics. Too large means the image metrics may still look strong, but the median file size is above the paired RAW61 budget.</span></th>
+          <th><span class="column-help">Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.</span></th>
+          <th><span class="column-help">Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.</span></th>
+          <th><span class="column-help">Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content.</span></th>
+          <th><span class="column-help">95th percentile CIEDE2000 color difference for PS16 JXL versus the PS16 reference after the current negative-density inversion proxy. Unit is DeltaE00; lower is better.</span></th>
+          <th><span class="column-help">Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic.</span></th>
+          <th><span class="column-help">Median unitless high-pass detail loss for PS16 JXL versus PS16. This absolute number is mainly diagnostic; interpret it with the structure ratio and visual crop viewer.</span></th>
+          <th><span class="column-help">Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61.</span></th>
+          <th><span class="column-help">Counts of per-frame verdict labels at this JXL level. These counts explain whether the summary is broad or driven by a few frames.</span></th>
         </tr>
       </thead>
       <tbody>
-        <tr class="reference-row"><td><strong>lossless</strong></td><td class="unknown">Reference only<br><span class="subtle">not counted as a break-even candidate</span></td><td>not in current matrix<br><span class="subtle">complete standalone lossless sizes still need a separate run</span></td><td>-<br><span class="subtle">shown to anchor the codec scale</span></td><td>-</td><td class="good"><strong>0.00 &Delta;E00</strong><br><span class="subtle">by definition against the PS16 reference</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec color loss</span></td><td><strong>0.000 loss</strong><br><span class="subtle">zero high-pass codec loss</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec structure loss</span></td><td>baseline; excluded from break-even counts</td></tr>
-            <tr>
+        <tr class="reference-row"><td><strong>lossless</strong></td><td class="unknown">Reference only<br><span class="subtle">not counted as a break-even candidate</span></td><td>not in current matrix<br><span class="subtle">complete standalone lossless sizes still need a separate run</span></td><td>-<br><span class="subtle">shown to anchor the codec scale</span></td><td>-</td><td class="good"><strong>0.00 &Delta;E00</strong><br><span class="subtle">by definition against the PS16 reference</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec color loss</span></td><td><strong>0.000 loss</strong><br><span class="subtle">zero high-pass codec loss</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec structure loss</span></td><td>baseline; excluded from break-even counts</td></tr><tr>
               <td><strong>d020</strong></td>
               <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
               <td class="bad"><strong>118.2 % of RAW61</strong><br><span class="subtle">larger than RAW61</span></td>
@@ -401,12 +435,10 @@
               <td><strong>66.6% - 134.9 % of RAW61</strong><br><span class="subtle">69.2 MiB - 92.6 MiB</span></td>
               <td class="good"><strong>0.14 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
-              <td><strong>0.372 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
-              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.164 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="warn">ps16_jxl_likely_wins: 2, uncertain_over_budget: 13</td>
-            </tr>
-            
-            <tr>
+            </tr><tr>
               <td><strong>d022</strong></td>
               <td class="warn">Review zone<br><span class="subtle">near the storage or image-quality boundary; needs visual review</span></td>
               <td class="warn"><strong>103.0 % of RAW61</strong><br><span class="subtle">near RAW61 budget</span></td>
@@ -414,12 +446,10 @@
               <td><strong>58.2% - 121.4 % of RAW61</strong><br><span class="subtle">58.2 MiB - 83.6 MiB</span></td>
               <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
-              <td><strong>0.374 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
-              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.165 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="warn">ps16_jxl_likely_wins: 8, uncertain_over_budget: 7</td>
-            </tr>
-            
-            <tr>
+            </tr><tr>
               <td><strong>d025</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>82.9 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
@@ -427,12 +457,10 @@
               <td><strong>47.8% - 104.4 % of RAW61</strong><br><span class="subtle">47.0 MiB - 71.2 MiB</span></td>
               <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
-              <td><strong>0.374 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
-              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.165 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
-            </tr>
-            
-            <tr>
+            </tr><tr>
               <td><strong>d028</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>68.7 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
@@ -440,12 +468,10 @@
               <td><strong>40.0% - 88.7 % of RAW61</strong><br><span class="subtle">40.1 MiB - 60.2 MiB</span></td>
               <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
-              <td><strong>0.377 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
-              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.166 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
-            </tr>
-            
-            <tr>
+            </tr><tr>
               <td><strong>d030</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>62.6 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
@@ -453,11 +479,32 @@
               <td><strong>36.2% - 79.2 % of RAW61</strong><br><span class="subtle">36.6 MiB - 53.9 MiB</span></td>
               <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
-              <td><strong>0.378 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
-              <td class="good"><strong>0.30x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.167 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 15</td>
+            </tr><tr>
+              <td><strong>d100</strong></td>
+              <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
+              <td class="good"><strong>17.3 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
+              <td><strong>12.2 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>9.5% - 20.9 % of RAW61</strong><br><span class="subtle">8.7 MiB - 14.7 MiB</span></td>
+              <td class="good"><strong>0.58 &Delta;E00</strong><br><span class="subtle">small codec color shift</span></td>
+              <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.182 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.18x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="good">ps16_jxl_likely_wins: 15</td>
+            </tr><tr>
+              <td><strong>d200</strong></td>
+              <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
+              <td class="good"><strong>10.0 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
+              <td><strong>6.8 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.3 MiB</span></td>
+              <td><strong>5.4% - 12.0 % of RAW61</strong><br><span class="subtle">4.9 MiB - 8.5 MiB</span></td>
+              <td class="warn"><strong>1.11 &Delta;E00</strong><br><span class="subtle">visible if inspected</span></td>
+              <td class="good"><strong>0.04x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.208 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.20x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td class="good">ps16_jxl_likely_wins: 15</td>
             </tr>
-            
       </tbody>
     </table>
 
@@ -488,157 +535,127 @@
         </tr>
       </thead>
       <tbody>
-        
-            <tr>
+        <tr>
               <td>fuji_679_f_ii_1983</td>
               <td><strong>_DSC6938</strong></td>
               <td>0.84</td>
               <td class="bad">9.30</td>
-              <td>1.346</td>
-              <td>0.04</td>
-              <td>0.481</td>
-            </tr>
-            
-            <tr>
+              <td>1.150</td>
+              <td>0.16</td>
+              <td>0.308</td>
+            </tr><tr>
               <td>fuji_679_f_ii_1983</td>
               <td><strong>_DSC6959</strong></td>
               <td>0.91</td>
               <td class="bad">4.32</td>
-              <td>1.065</td>
-              <td>0.11</td>
-              <td>0.277</td>
-            </tr>
-            
-            <tr>
+              <td>0.841</td>
+              <td>0.29</td>
+              <td>0.137</td>
+            </tr><tr>
               <td>fuji_679_f_ii_1983</td>
               <td><strong>_DSC6980</strong></td>
               <td>0.92</td>
               <td class="bad">19.46</td>
-              <td>1.187</td>
-              <td>0.03</td>
-              <td>0.378</td>
-            </tr>
-            
-            <tr>
+              <td>0.970</td>
+              <td>0.88</td>
+              <td>0.199</td>
+            </tr><tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6735</strong></td>
               <td>1.21</td>
               <td class="bad">21.15</td>
-              <td>1.511</td>
-              <td>0.10</td>
-              <td>0.295</td>
-            </tr>
-            
-            <tr>
+              <td>1.533</td>
+              <td>0.47</td>
+              <td>0.165</td>
+            </tr><tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6756</strong></td>
               <td>0.85</td>
               <td class="bad">4.76</td>
-              <td>1.240</td>
-              <td>0.06</td>
-              <td>0.358</td>
-            </tr>
-            
-            <tr>
+              <td>1.025</td>
+              <td>0.19</td>
+              <td>0.190</td>
+            </tr><tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6793</strong></td>
               <td>0.78</td>
               <td class="bad">5.64</td>
-              <td>1.217</td>
-              <td>0.04</td>
-              <td>0.352</td>
-            </tr>
-            
-            <tr>
+              <td>0.975</td>
+              <td>0.15</td>
+              <td>0.191</td>
+            </tr><tr>
               <td>Kodak Gold 200-5 1997</td>
               <td><strong>_DSC6814</strong></td>
               <td>0.96</td>
               <td class="bad">3.71</td>
-              <td>1.209</td>
-              <td>0.04</td>
-              <td>0.246</td>
-            </tr>
-            
-            <tr>
+              <td>0.993</td>
+              <td>0.09</td>
+              <td>0.133</td>
+            </tr><tr>
               <td>Adox high-resolution black-and-white test target<br><span class="subtle">Vlad resolution target</span></td>
               <td><strong>_DSC6577</strong></td>
               <td>0.99</td>
               <td class="bad">5.01</td>
-              <td>0.954</td>
-              <td>0.09</td>
-              <td>0.062</td>
-            </tr>
-            
-            <tr>
+              <td>0.788</td>
+              <td>1.64</td>
+              <td>0.027</td>
+            </tr><tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6619</strong></td>
               <td>0.86</td>
               <td class="bad">7.66</td>
-              <td>1.248</td>
-              <td>0.15</td>
-              <td>0.396</td>
-            </tr>
-            
-            <tr>
+              <td>1.041</td>
+              <td>0.37</td>
+              <td>0.208</td>
+            </tr><tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6661</strong></td>
               <td>0.75</td>
               <td class="bad">4.82</td>
-              <td>1.268</td>
-              <td>0.09</td>
-              <td>0.498</td>
-            </tr>
-            
-            <tr>
+              <td>1.103</td>
+              <td>0.14</td>
+              <td>0.277</td>
+            </tr><tr>
               <td>Kodak5035 H190-1983</td>
               <td><strong>_DSC6682</strong></td>
               <td>1.02</td>
               <td class="bad">3.83</td>
-              <td>1.295</td>
-              <td>0.10</td>
-              <td>0.427</td>
-            </tr>
-            
-            <tr>
+              <td>1.113</td>
+              <td>0.24</td>
+              <td>0.223</td>
+            </tr><tr>
               <td>konica_vx100_probable_1995</td>
               <td><strong>_DSC6836</strong></td>
               <td>0.76</td>
               <td class="bad">9.36</td>
-              <td>1.297</td>
-              <td>0.15</td>
-              <td>0.602</td>
-            </tr>
-            
-            <tr>
+              <td>1.151</td>
+              <td>0.55</td>
+              <td>0.365</td>
+            </tr><tr>
               <td>konica_vx100_probable_1995</td>
               <td><strong>_DSC6857</strong></td>
               <td>0.95</td>
               <td class="bad">3.85</td>
-              <td>1.314</td>
-              <td>0.07</td>
-              <td>0.567</td>
-            </tr>
-            
-            <tr>
+              <td>1.174</td>
+              <td>0.10</td>
+              <td>0.341</td>
+            </tr><tr>
               <td>konica_vx100_probable_1995</td>
               <td><strong>_DSC6879</strong></td>
               <td>0.90</td>
               <td class="bad">3.34</td>
-              <td>1.290</td>
-              <td>0.05</td>
-              <td>0.392</td>
-            </tr>
-            
-            <tr>
+              <td>1.154</td>
+              <td>0.12</td>
+              <td>0.249</td>
+            </tr><tr>
               <td>konica_vx100_probable_1995</td>
               <td><strong>_DSC6917</strong></td>
               <td>1.03</td>
               <td class="risk">2.24</td>
-              <td>1.364</td>
-              <td>0.04</td>
-              <td>0.320</td>
+              <td>1.222</td>
+              <td>0.07</td>
+              <td>0.210</td>
             </tr>
-            
       </tbody>
     </table>
 
@@ -652,200 +669,59 @@
 
     <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table. Each film or representative frame is grouped here, with the interactive crop viewer first.</p>
-      <p>The viewer supports side-by-side comparison, a keyboard toggle that copies the selected candidate over the left reference pane, zoom, and pan. Full-frame context thumbnails show where the crop came from. Static diagnostic panels are kept as local regenerated artifacts unless explicitly included in a private/local report build.</p>
+      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table in one shared comparison workspace.</p>
+      <p>Select a film crop on the left and a quality candidate on the right. The viewer supports side-by-side comparison, overlay, zoom, pan, and keyboard navigation without leaving the report.</p>
     </div>
-    
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>fuji_679_f_ii_1983/_DSC6938</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/index.html" data-open-crop-viewer data-viewer-index="0"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6938/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>fuji_679_f_ii_1983/_DSC6959</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/index.html" data-open-crop-viewer data-viewer-index="1"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6959/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>fuji_679_f_ii_1983/_DSC6980</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/index.html" data-open-crop-viewer data-viewer-index="2"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png"><img src="assets/review-contexts/fuji_679_f_ii_1983/_DSC6980/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>Adox high-resolution black-and-white test target / _DSC6577</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6577/index.html" data-open-crop-viewer data-viewer-index="3"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6577/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak5035_h190_1983/_DSC6598</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6598/index.html" data-open-crop-viewer data-viewer-index="4"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6598/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak5035_h190_1983/_DSC6619</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6619/index.html" data-open-crop-viewer data-viewer-index="5"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6619/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak5035_h190_1983/_DSC6661</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6661/index.html" data-open-crop-viewer data-viewer-index="6"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6661/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak5035_h190_1983/_DSC6682</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak5035_h190_1983/_DSC6682/index.html" data-open-crop-viewer data-viewer-index="7"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak5035_h190_1983/_DSC6682/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak_gold_200_5_1997/_DSC6735</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/index.html" data-open-crop-viewer data-viewer-index="8"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6735/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak_gold_200_5_1997/_DSC6756</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/index.html" data-open-crop-viewer data-viewer-index="9"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6756/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak_gold_200_5_1997/_DSC6793</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/index.html" data-open-crop-viewer data-viewer-index="10"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6793/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>kodak_gold_200_5_1997/_DSC6814</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/index.html" data-open-crop-viewer data-viewer-index="11"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png"><img src="assets/review-contexts/kodak_gold_200_5_1997/_DSC6814/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>konica_vx100_probable_1995/_DSC6836</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6836/index.html" data-open-crop-viewer data-viewer-index="12"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6836/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>konica_vx100_probable_1995/_DSC6857</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6857/index.html" data-open-crop-viewer data-viewer-index="13"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6857/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>konica_vx100_probable_1995/_DSC6879</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6879/index.html" data-open-crop-viewer data-viewer-index="14"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6879/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-            <section class="review-item">
-              <div class="review-heading">
-                <h3>konica_vx100_probable_1995/_DSC6917</h3>
-                <span>1 viewer(s), 2 context image(s)</span>
-              </div>
-              <div class="primary-viewers"><a class="primary-viewer" href="assets/review-viewers/konica_vx100_probable_1995/_DSC6917/index.html" data-open-crop-viewer data-viewer-index="15"><strong>Open fullscreen crop viewer</strong><span>Fullscreen comparison workspace</span></a></div><h3>Full-frame context</h3><div class="context-grid"><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/ps16_reference_manual-01.png" alt="ps16_reference_manual-01.png" loading="lazy"><span>ps16_reference_manual-01.png</span></a><a class="context-card" href="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png"><img src="assets/review-contexts/konica_vx100_probable_1995/_DSC6917/raw61_registered_manual-01.png" alt="raw61_registered_manual-01.png" loading="lazy"><span>raw61_registered_manual-01.png</span></a></div>
-            </section>
-            
-
-    <h2>FADGI Context</h2>
-    <div class="card">
-      <p>Useful established metrics include CIEDE2000 color accuracy, tone response, white balance error, color-channel misregistration, SFR/sampling efficiency, sharpening, and noise. The relevant lesson for this project is not that our film-crop rows can claim FADGI stars, but that a credible imaging study should separate color, tone, registration, detail, sharpening, and noise instead of relying on PSNR or a single diff image.</p>
-      <ul>
-        <li>Official FADGI 2023 guidelines describe the still-image conformance system and its target/software basis.</li>
-        <li>FADGI/related practice commonly uses &Delta;E00 for color accuracy; strict published discussions cite average &Delta;E00 around 2 for highest-level color profiling, while older/practical references often discuss average 3 and maximum 6 as useful limits.</li>
-        <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
-      </ul>
-      <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
-    </div>
-  </main>
-  <div class="crop-modal" id="cropModal" role="dialog" aria-modal="true" aria-labelledby="cropModalTitle" hidden>
-    <aside class="crop-modal-sidebar crop-modal-left">
-      <div class="crop-modal-sidebar-header">
+      <section class="crop-workspace" id="cropWorkspace" aria-labelledby="cropViewerTitle">
+    <aside class="crop-sidebar crop-sidebar-left">
+      <div class="crop-sidebar-header">
         <strong>Film candidates</strong>
         <span id="cropFilmCount"></span>
       </div>
       <div class="crop-choice-list" id="cropFilmList"></div>
     </aside>
-    <section class="crop-modal-stage">
-      <div class="crop-modal-toolbar">
+    <section class="crop-stage">
+      <div class="crop-toolbar">
         <div>
-          <h2 id="cropModalTitle">Crop Review</h2>
-          <p id="cropModalMeta"></p>
+          <h3 id="cropViewerTitle">Crop Review</h3>
+          <p id="cropViewerMeta"></p>
         </div>
-        <div class="crop-modal-actions">
+        <div class="crop-actions">
           <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
-          <button type="button" id="cropClose" class="crop-close" aria-label="Close crop viewer">Close</button>
         </div>
       </div>
-      <canvas id="cropCanvas"></canvas>
-      <div class="crop-modal-status" id="cropStatus"></div>
+      <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
+      <div class="crop-status" id="cropStatus" aria-live="polite"></div>
     </section>
-    <aside class="crop-modal-sidebar crop-modal-right">
-      <div class="crop-modal-sidebar-header">
+    <aside class="crop-sidebar crop-sidebar-right">
+      <div class="crop-sidebar-header">
         <strong>Candidate quality</strong>
         <span id="cropQualityCount"></span>
       </div>
       <div class="crop-choice-list" id="cropQualityList"></div>
     </aside>
-  </div>
-  <script type="application/json" id="cropViewerData">[{"index": 0, "group": "fuji_679_f_ii_1983/_DSC6938", "label": "fuji_679_f_ii_1983 / _DSC6938", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6938", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -2.0, "confidence": 46.334643196743116, "applied": true}}}, {"index": 1, "group": "fuji_679_f_ii_1983/_DSC6959", "label": "fuji_679_f_ii_1983 / _DSC6959", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6959", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -2.0, "confidence": 64.47830189827764, "applied": true}}}, {"index": 2, "group": "fuji_679_f_ii_1983/_DSC6980", "label": "fuji_679_f_ii_1983 / _DSC6980", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6980", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -3.0, "confidence": 57.62191828117657, "applied": true}}}, {"index": 3, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 47.005240973868496, "applied": true}}}, {"index": 4, "group": "kodak5035_h190_1983/_DSC6598", "label": "Kodak5035 H190-1983 / _DSC6598", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6598", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 4.0, "shift_y_px": 2.0, "confidence": 31.222386274813513, "applied": true}}}, {"index": 5, "group": "kodak5035_h190_1983/_DSC6619", "label": "Kodak5035 H190-1983 / _DSC6619", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6619", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -1.0, "confidence": 70.5057062067525, "applied": true}}}, {"index": 6, "group": "kodak5035_h190_1983/_DSC6661", "label": "Kodak5035 H190-1983 / _DSC6661", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6661", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 65.11602843762284, "applied": true}}}, {"index": 7, "group": "kodak5035_h190_1983/_DSC6682", "label": "Kodak5035 H190-1983 / _DSC6682", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6682", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 76.59111817470202, "applied": true}}}, {"index": 8, "group": "kodak_gold_200_5_1997/_DSC6735", "label": "Kodak Gold 200-5 1997 / _DSC6735", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6735", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 10.0, "shift_y_px": 4.0, "confidence": 44.1209196514524, "applied": true}}}, {"index": 9, "group": "kodak_gold_200_5_1997/_DSC6756", "label": "Kodak Gold 200-5 1997 / _DSC6756", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6756", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 59.715167228004994, "applied": true}}}, {"index": 10, "group": "kodak_gold_200_5_1997/_DSC6793", "label": "Kodak Gold 200-5 1997 / _DSC6793", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6793", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": 0.0, "confidence": 60.21334749301236, "applied": true}}}, {"index": 11, "group": "kodak_gold_200_5_1997/_DSC6814", "label": "Kodak Gold 200-5 1997 / _DSC6814", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6814", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 5.0, "shift_y_px": -1.0, "confidence": 60.629758880985314, "applied": true}}}, {"index": 12, "group": "konica_vx100_probable_1995/_DSC6836", "label": "konica_vx100_probable_1995 / _DSC6836", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6836", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 7.0, "shift_y_px": -1.0, "confidence": 39.33025343822836, "applied": true}}}, {"index": 13, "group": "konica_vx100_probable_1995/_DSC6857", "label": "konica_vx100_probable_1995 / _DSC6857", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6857", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -1.0, "confidence": 49.14299062310164, "applied": true}}}, {"index": 14, "group": "konica_vx100_probable_1995/_DSC6879", "label": "konica_vx100_probable_1995 / _DSC6879", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6879", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 8.0, "shift_y_px": -1.0, "confidence": 69.61968105802205, "applied": true}}}, {"index": 15, "group": "konica_vx100_probable_1995/_DSC6917", "label": "konica_vx100_probable_1995 / _DSC6917", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6917", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "crop": [3182, 4782, 512, 512], "localRaw61Alignment": {"shift_x_px": 8.0, "shift_y_px": -1.0, "confidence": 55.31306863962779, "applied": true}}}]</script>
+  </section>
+  <script type="application/json" id="cropViewerData">[{"index": 0, "group": "fuji_679_f_ii_1983/_DSC6938", "label": "fuji_679_f_ii_1983 / _DSC6938 / manual-01", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6938", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [11502, 3527, 768, 768], "localRaw61Alignment": {"shift_x_px": -4.0, "shift_y_px": 0.0, "confidence": 107.7215189578655, "applied": true}}}, {"index": 1, "group": "fuji_679_f_ii_1983/_DSC6959", "label": "fuji_679_f_ii_1983 / _DSC6959 / manual-01", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6959", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6959/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [12224, 466, 768, 768], "localRaw61Alignment": {"shift_x_px": -5.0, "shift_y_px": 6.0, "confidence": 114.25978131378741, "applied": true}}}, {"index": 2, "group": "fuji_679_f_ii_1983/_DSC6980", "label": "fuji_679_f_ii_1983 / _DSC6980 / manual-01", "material": "fuji_679_f_ii_1983", "sampleRole": "", "setId": "_DSC6980", "scanSet": "fuji_679_f_ii_1983", "reference": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/fuji_679_f_ii_1983/_DSC6980/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [1870, 5482, 768, 768], "localRaw61Alignment": {"shift_x_px": 8.0, "shift_y_px": -4.0, "confidence": 63.085910825806764, "applied": true}}}, {"index": 3, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577 / manual-01", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [11204, 4589, 768, 768], "localRaw61Alignment": {"shift_x_px": -3.0, "shift_y_px": -1.0, "confidence": 116.7404498624022, "applied": true}}}, {"index": 4, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577 / manual-02", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-02/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-02", "crop": [13458, 2273, 768, 768], "localRaw61Alignment": {"shift_x_px": -6.0, "shift_y_px": 3.0, "confidence": 137.85127626799357, "applied": true}}}, {"index": 5, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577 / manual-03", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-03/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-03", "crop": [12458, 6098, 768, 768], "localRaw61Alignment": {"shift_x_px": -4.0, "shift_y_px": -3.0, "confidence": 82.41729628794535, "applied": true}}}, {"index": 6, "group": "kodak5035_h190_1983/_DSC6577", "label": "Adox high-resolution black-and-white test target / _DSC6577 / manual-04", "material": "Adox high-resolution black-and-white test target", "sampleRole": "Vlad resolution target", "setId": "_DSC6577", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6577/manual-04/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-04", "crop": [15095, 6247, 768, 768], "localRaw61Alignment": {"shift_x_px": -9.0, "shift_y_px": -2.0, "confidence": 36.26993211357143, "applied": true}}}, {"index": 7, "group": "kodak5035_h190_1983/_DSC6598", "label": "Kodak5035 H190-1983 / _DSC6598 / manual-01", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6598", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6598/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [7696, 5206, 768, 768], "localRaw61Alignment": {"shift_x_px": -2.0, "shift_y_px": 1.0, "confidence": 43.60189863958266, "applied": true}}}, {"index": 8, "group": "kodak5035_h190_1983/_DSC6619", "label": "Kodak5035 H190-1983 / _DSC6619 / manual-01", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6619", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6619/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [6292, 4355, 768, 768], "localRaw61Alignment": {"shift_x_px": 3.0, "shift_y_px": -1.0, "confidence": 89.2836075750714, "applied": true}}}, {"index": 9, "group": "kodak5035_h190_1983/_DSC6661", "label": "Kodak5035 H190-1983 / _DSC6661 / manual-01", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6661", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6661/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [11480, 3038, 768, 768], "localRaw61Alignment": {"shift_x_px": -3.0, "shift_y_px": 1.0, "confidence": 84.50322098433524, "applied": true}}}, {"index": 10, "group": "kodak5035_h190_1983/_DSC6682", "label": "Kodak5035 H190-1983 / _DSC6682 / manual-01", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6682", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [15775, 5354, 768, 768], "localRaw61Alignment": {"shift_x_px": -10.0, "shift_y_px": -2.0, "confidence": 89.08129619538332, "applied": true}}}, {"index": 11, "group": "kodak5035_h190_1983/_DSC6682", "label": "Kodak5035 H190-1983 / _DSC6682 / manual-02", "material": "Kodak5035 H190-1983", "sampleRole": "", "setId": "_DSC6682", "scanSet": "Kodak5035 H190-1983", "reference": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak5035_h190_1983/_DSC6682/manual-02/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-02", "crop": [8716, 2166, 768, 768], "localRaw61Alignment": {"shift_x_px": -1.0, "shift_y_px": 3.0, "confidence": 59.712590437405744, "applied": true}}}, {"index": 12, "group": "kodak_gold_200_5_1997/_DSC6735", "label": "Kodak Gold 200-5 1997 / _DSC6735 / manual-01", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6735", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6735/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [7164, 5567, 768, 768], "localRaw61Alignment": {"shift_x_px": 5.0, "shift_y_px": 3.0, "confidence": 88.5518104822617, "applied": true}}}, {"index": 13, "group": "kodak_gold_200_5_1997/_DSC6756", "label": "Kodak Gold 200-5 1997 / _DSC6756 / manual-01", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6756", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6756/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [10885, 6290, 768, 768], "localRaw61Alignment": {"shift_x_px": -3.0, "shift_y_px": -4.0, "confidence": 87.40629236597648, "applied": true}}}, {"index": 14, "group": "kodak_gold_200_5_1997/_DSC6793", "label": "Kodak Gold 200-5 1997 / _DSC6793 / manual-01", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6793", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6793/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [7866, 5949, 768, 768], "localRaw61Alignment": {"shift_x_px": 0.0, "shift_y_px": -3.0, "confidence": 99.20587813831118, "applied": true}}}, {"index": 15, "group": "kodak_gold_200_5_1997/_DSC6814", "label": "Kodak Gold 200-5 1997 / _DSC6814 / manual-01", "material": "Kodak Gold 200-5 1997", "sampleRole": "", "setId": "_DSC6814", "scanSet": "Kodak Gold 200-5 1997", "reference": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/kodak_gold_200_5_1997/_DSC6814/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [8525, 4844, 768, 768], "localRaw61Alignment": {"shift_x_px": 0.0, "shift_y_px": -1.0, "confidence": 86.1906979524219, "applied": true}}}, {"index": 16, "group": "konica_vx100_probable_1995/_DSC6836", "label": "konica_vx100_probable_1995 / _DSC6836 / manual-01", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6836", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6836/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [16201, 7714, 768, 768], "localRaw61Alignment": {"shift_x_px": -11.0, "shift_y_px": -6.0, "confidence": 77.07717938874012, "applied": true}}}, {"index": 17, "group": "konica_vx100_probable_1995/_DSC6857", "label": "konica_vx100_probable_1995 / _DSC6857 / manual-01", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6857", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6857/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [14436, 9669, 768, 768], "localRaw61Alignment": {"shift_x_px": -8.0, "shift_y_px": -9.0, "confidence": 60.30450435248333, "applied": true}}}, {"index": 18, "group": "konica_vx100_probable_1995/_DSC6879", "label": "konica_vx100_probable_1995 / _DSC6879 / manual-01", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6879", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [9269, 1338, 768, 768], "localRaw61Alignment": {"shift_x_px": -1.0, "shift_y_px": 4.0, "confidence": 123.08407028533864, "applied": true}}}, {"index": 19, "group": "konica_vx100_probable_1995/_DSC6879", "label": "konica_vx100_probable_1995 / _DSC6879 / manual-02", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6879", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6879/manual-02/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-02", "crop": [4506, 6098, 768, 768], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": -3.0, "confidence": 108.70577588448643, "applied": true}}}, {"index": 20, "group": "konica_vx100_probable_1995/_DSC6917", "label": "konica_vx100_probable_1995 / _DSC6917 / manual-01", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6917", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-01", "crop": [3890, 3357, 768, 768], "localRaw61Alignment": {"shift_x_px": 6.0, "shift_y_px": 1.0, "confidence": 31.648861444843227, "applied": true}}}, {"index": 21, "group": "konica_vx100_probable_1995/_DSC6917", "label": "konica_vx100_probable_1995 / _DSC6917 / manual-02", "material": "konica_vx100_probable_1995", "sampleRole": "", "setId": "_DSC6917", "scanSet": "konica_vx100_probable_1995", "reference": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/reference.png", "candidates": [{"key": "ps16_lossless", "label": "PS16 lossless / reference", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/reference.png", "role": "baseline"}, {"key": "raw61", "label": "RAW61 local aligned", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/raw61.png", "role": "raw61"}, {"key": "jxl_d020", "label": "PS16 JXL d020", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d020.png", "role": "jxl"}, {"key": "jxl_d022", "label": "PS16 JXL d022", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d022.png", "role": "jxl"}, {"key": "jxl_d025", "label": "PS16 JXL d025", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d025.png", "role": "jxl"}, {"key": "jxl_d028", "label": "PS16 JXL d028", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d028.png", "role": "jxl"}, {"key": "jxl_d030", "label": "PS16 JXL d030", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d030.png", "role": "jxl"}, {"key": "jxl_d100", "label": "PS16 JXL d100 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d100.png", "role": "jxl"}, {"key": "jxl_d200", "label": "PS16 JXL d200 (hard visual check)", "src": "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/jxl_d200.png", "role": "jxl"}], "metadata": {"transform": "identity", "cropName": "manual-02", "crop": [12331, 3675, 768, 768], "localRaw61Alignment": {"shift_x_px": -4.0, "shift_y_px": 0.0, "confidence": 115.47841217660829, "applied": true}}}]</script>
   <script>
   (() => {
     const viewers = JSON.parse(document.getElementById("cropViewerData").textContent || "[]");
-    const modal = document.getElementById("cropModal");
+    const workspace = document.getElementById("cropWorkspace");
     const canvas = document.getElementById("cropCanvas");
     const ctx = canvas.getContext("2d");
     const filmList = document.getElementById("cropFilmList");
     const qualityList = document.getElementById("cropQualityList");
     const filmCount = document.getElementById("cropFilmCount");
     const qualityCount = document.getElementById("cropQualityCount");
-    const title = document.getElementById("cropModalTitle");
-    const meta = document.getElementById("cropModalMeta");
+    const title = document.getElementById("cropViewerTitle");
+    const meta = document.getElementById("cropViewerMeta");
     const status = document.getElementById("cropStatus");
     const overlayToggle = document.getElementById("cropOverlayToggle");
     const imageCache = new Map();
     let loadSerial = 0;
+    let activeChoiceList = "film";
     const state = {
       viewerIndex: 0,
       candidateKey: "",
@@ -860,7 +736,7 @@
       candidateImage: null
     };
 
-    if (!viewers.length) return;
+    if (!viewers.length || !workspace) return;
 
     function currentViewer() {
       return viewers[Math.max(0, Math.min(viewers.length - 1, state.viewerIndex))];
@@ -927,7 +803,6 @@
     }
 
     function draw() {
-      if (!modal.classList.contains("is-open")) return;
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       ctx.clearRect(0, 0, width, height);
@@ -995,7 +870,11 @@
           role.textContent = viewer.sampleRole;
           button.appendChild(role);
         }
-        button.addEventListener("click", () => setViewer(index));
+        button.addEventListener("click", () => {
+          activeChoiceList = "film";
+          setViewer(index);
+        });
+        button.addEventListener("focus", () => { activeChoiceList = "film"; });
         filmList.appendChild(button);
       });
     }
@@ -1015,7 +894,11 @@
         const role = document.createElement("span");
         role.textContent = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
         button.appendChild(role);
-        button.addEventListener("click", () => setCandidate(candidate.key));
+        button.addEventListener("click", () => {
+          activeChoiceList = "quality";
+          setCandidate(candidate.key);
+        });
+        button.addEventListener("focus", () => { activeChoiceList = "quality"; });
         qualityList.appendChild(button);
       });
     }
@@ -1025,6 +908,7 @@
       const alignment = viewer.metadata.localRaw61Alignment || {};
       title.textContent = viewer.label;
       const parts = [];
+      if (viewer.metadata.cropName) parts.push(viewer.metadata.cropName);
       if (viewer.metadata.transform) parts.push(viewer.metadata.transform);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
@@ -1056,28 +940,24 @@
       draw();
     }
 
-    function openModal(index) {
-      modal.hidden = false;
-      modal.classList.add("is-open");
-      document.body.classList.add("crop-modal-open");
-      setOverlay(false);
-      setViewer(index);
-      document.getElementById("cropClose").focus();
+    function moveViewer(delta) {
+      const nextIndex = Math.max(0, Math.min(viewers.length - 1, state.viewerIndex + delta));
+      if (nextIndex === state.viewerIndex) return;
+      setViewer(nextIndex);
+      const button = filmList.querySelectorAll("button")[nextIndex];
+      if (button) button.focus();
     }
 
-    function closeModal() {
-      modal.classList.remove("is-open");
-      document.body.classList.remove("crop-modal-open");
-      modal.hidden = true;
+    function moveCandidate(delta) {
+      const candidates = currentViewer().candidates;
+      const currentIndex = Math.max(0, candidates.findIndex((candidate) => candidate.key === state.candidateKey));
+      const nextIndex = Math.max(0, Math.min(candidates.length - 1, currentIndex + delta));
+      if (nextIndex === currentIndex) return;
+      setCandidate(candidates[nextIndex].key);
+      const button = qualityList.querySelectorAll("button")[nextIndex];
+      if (button) button.focus();
     }
 
-    document.querySelectorAll("[data-open-crop-viewer]").forEach((link) => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        openModal(Number(link.getAttribute("data-viewer-index") || 0));
-      });
-    });
-    document.getElementById("cropClose").addEventListener("click", closeModal);
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
@@ -1108,17 +988,42 @@
       canvas.releasePointerCapture(event.pointerId);
     });
     window.addEventListener("resize", () => {
-      if (!modal.classList.contains("is-open")) return;
       resizeCanvas();
       draw();
     });
     document.addEventListener("keydown", (event) => {
-      if (!modal.classList.contains("is-open")) return;
-      if (event.key === "Escape") closeModal();
-      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) setOverlay(!state.overlay);
+      if (!workspace.contains(document.activeElement)) return;
+      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) {
+        setOverlay(!state.overlay);
+        return;
+      }
+      if (["ArrowDown", "ArrowRight"].includes(event.key)) {
+        event.preventDefault();
+        if (activeChoiceList === "quality") moveCandidate(1);
+        else moveViewer(1);
+      }
+      if (["ArrowUp", "ArrowLeft"].includes(event.key)) {
+        event.preventDefault();
+        if (activeChoiceList === "quality") moveCandidate(-1);
+        else moveViewer(-1);
+      }
     });
+    setOverlay(false);
+    setViewer(0);
   })();
   </script>
 
+
+    <h2>FADGI Context</h2>
+    <div class="card">
+      <p>Useful established metrics include CIEDE2000 color accuracy, tone response, white balance error, color-channel misregistration, SFR/sampling efficiency, sharpening, and noise. The relevant lesson for this project is not that our film-crop rows can claim FADGI stars, but that a credible imaging study should separate color, tone, registration, detail, sharpening, and noise instead of relying on PSNR or a single diff image.</p>
+      <ul>
+        <li>Official FADGI 2023 guidelines describe the still-image conformance system and its target/software basis.</li>
+        <li>FADGI/related practice commonly uses &Delta;E00 for color accuracy; strict published discussions cite average &Delta;E00 around 2 for highest-level color profiling, while older/practical references often discuss average 3 and maximum 6 as useful limits.</li>
+        <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
+      </ul>
+      <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
+    </div>
+  </main>
 </body>
 </html>

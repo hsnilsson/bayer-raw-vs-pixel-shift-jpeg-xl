@@ -1,0 +1,30 @@
+{
+  "labels": {
+    "reference": "PS16 reference",
+    "ps16_lossless": "PS16 lossless / reference",
+    "raw61": "RAW61 local aligned",
+    "jxl_d020": "PS16 JXL d020",
+    "jxl_d022": "PS16 JXL d022",
+    "jxl_d025": "PS16 JXL d025",
+    "jxl_d028": "PS16 JXL d028",
+    "jxl_d030": "PS16 JXL d030",
+    "jxl_d100": "PS16 JXL d100",
+    "jxl_d200": "PS16 JXL d200"
+  },
+  "scan_set": "Kodak5035 H190-1983",
+  "set_id": "_DSC6682",
+  "crop_name": "manual-01",
+  "transform": "identity",
+  "crop": [
+    15775,
+    5354,
+    768,
+    768
+  ],
+  "local_raw61_alignment": {
+    "shift_x_px": -10.0,
+    "shift_y_px": -2.0,
+    "confidence": 89.08129619538332,
+    "applied": true
+  }
+}
