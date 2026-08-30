@@ -373,6 +373,22 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("0.03x RAW61", html)
         self.assertIn("unitless high-pass loss", html)
 
+    def test_report_site_baseline_table_has_permanent_column_explanations(self) -> None:
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+        )
+
+        baseline_table = html[html.index("<h2>RAW61 Baseline By Frame</h2>") :]
+        self.assertIn('class="column-help-row"', baseline_table)
+        self.assertIn("Scan collection or material label.", baseline_table)
+        self.assertIn("this is not JXL codec loss", baseline_table)
+        self.assertIn("confirm important cases in the crop viewer", baseline_table)
+        self.assertNotIn('data-full=', baseline_table)
+
     def test_report_site_level_table_has_help_row_and_lossless_reference(self) -> None:
         summary = report_site.LevelSummary(
             level="d030",
