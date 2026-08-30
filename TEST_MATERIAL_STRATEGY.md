@@ -331,7 +331,10 @@ Each image set should have a sidecar note with:
 - aperture, ISO, shutter speed, and light source
 - film holder and stability notes
 - capture mode: single-shot, PixelShift 4, PixelShift 16
-- PixelShift2DNG version and settings
+- PixelShift merge software, version, output format, and settings
+- PixelShift2DNG version and settings, if used
+- Sony Imaging Edge Desktop/Viewer version and ARQ/export settings, if used as
+  a merge-control track
 - Adobe DNG Converter version and JXL settings
 - source file SHA-256 hashes
 - notes about visible content, privacy, and why the frame was selected

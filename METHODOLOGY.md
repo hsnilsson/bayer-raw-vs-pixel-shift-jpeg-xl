@@ -247,6 +247,12 @@ the RAW61 loss for the storage budget being tested. This is why RAW61 is not
 compared directly as raw sensor code values; it must go through the same
 declared render path before comparison.
 
+The current PS16 reference is produced from PixelShift2DNG output. Sony Imaging
+Edge Desktop/Viewer has not yet been run as a parallel merge control in this
+repo. That control is useful because it separates three questions that otherwise
+get conflated: Sony's reference merge behavior, PixelShift2DNG merge/render
+behavior, and JPEG XL codec damage after a fixed render.
+
 ### 6. Target-Based Capture Measurement
 
 Purpose: decide whether PixelShift 16 actually captures more useful film

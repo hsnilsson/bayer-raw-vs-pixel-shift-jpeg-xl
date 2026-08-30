@@ -66,6 +66,31 @@ def parse_crop(value: str) -> tuple[int, int, int, int]:
     return x, y, width, height
 
 
+def read_crop_plan(path: Path | None) -> list[tuple[ContextCase, str, tuple[int, int, int, int]]]:
+    if path is None or not path.is_file():
+        return []
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    jobs: list[tuple[ContextCase, str, tuple[int, int, int, int]]] = []
+    for item in payload.get("cases", {}).values():
+        scan_set = str(item.get("scan_set", ""))
+        set_id = str(item.get("set_id", ""))
+        if not scan_set or not set_id:
+            continue
+        for index, crop_item in enumerate(item.get("crops", []), 1):
+            values = crop_item.get("crop", [])
+            if len(values) != 4:
+                continue
+            try:
+                crop_values = tuple(int(value) for value in values)
+            except (TypeError, ValueError):
+                continue
+            if crop_values[2] <= 0 or crop_values[3] <= 0:
+                continue
+            crop_name = str(crop_item.get("name") or f"manual-{index:02d}")
+            jobs.append((ContextCase(scan_set, set_id), crop_name, crop_values))
+    return jobs
+
+
 def relpath(path: Path, root: Path = ROOT) -> str:
     try:
         return path.resolve().relative_to(root.resolve()).as_posix()
@@ -212,8 +237,9 @@ def build_contexts(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Create small full-frame context images for review-panel crops.")
-    parser.add_argument("--case", action="append", type=parse_case, required=True, help='Case as "scan set|set id".')
-    parser.add_argument("--crop", type=parse_crop, required=True, help="Crop as x,y,width,height in PS16 coordinates.")
+    parser.add_argument("--case", action="append", type=parse_case, default=None, help='Case as "scan set|set id".')
+    parser.add_argument("--crop", type=parse_crop, help="Crop as x,y,width,height in PS16 coordinates.")
+    parser.add_argument("--crop-plan", type=Path, help="JSON crop plan produced by read_crop_selection_guides.py or serve_crop_selection.py.")
     parser.add_argument("--crop-name", default="manual-01")
     parser.add_argument("--renders-root", type=Path, default=DEFAULT_RENDERS_ROOT)
     parser.add_argument("--registered-root", type=Path, default=DEFAULT_REGISTERED_ROOT)
@@ -222,16 +248,25 @@ def main() -> int:
     args = parser.parse_args()
     if args.max_long_side <= 0:
         raise SystemExit("--max-long-side must be positive")
+    jobs = read_crop_plan(args.crop_plan)
+    if not jobs:
+        if not args.case or args.crop is None:
+            raise SystemExit("Provide --crop-plan, or provide both --case and --crop.")
+        jobs = [(case, args.crop_name, args.crop) for case in args.case]
 
-    records = build_contexts(
-        args.case,
-        args.crop,
-        args.crop_name,
-        args.renders_root,
-        args.registered_root,
-        args.output_dir,
-        args.max_long_side,
-    )
+    records: list[ContextImage] = []
+    for case, crop_name, crop in jobs:
+        records.extend(
+            build_contexts(
+                [case],
+                crop,
+                crop_name,
+                args.renders_root,
+                args.registered_root,
+                args.output_dir,
+                args.max_long_side,
+            )
+        )
     manifest = args.output_dir / "manifest.json"
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text(json.dumps([asdict(record) for record in records], indent=2), encoding="utf-8")

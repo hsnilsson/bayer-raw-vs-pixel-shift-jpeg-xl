@@ -25,6 +25,7 @@ import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
 import make_break_even_review_panels as review_panels  # noqa: E402
 import make_break_even_context_images as context_images  # noqa: E402
+import make_break_even_review_viewers as review_viewers  # noqa: E402
 import generate_break_even_report_site as report_site  # noqa: E402
 import run_rendered_ps16_jxl_matrix as rendered_matrix  # noqa: E402
 import read_crop_selection_guides as crop_guides  # noqa: E402
@@ -206,6 +207,33 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("reused_jxl_detail=true", row.notes)
             self.assertEqual(details[1], cached)
 
+    def test_structure_metrics_group_resizes_uncached_jxl_like_prepared_reference(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            reference = textured_rgb(96, 128)
+            raw61 = np.clip(reference.astype(np.int16) - 2, 0, 255).astype(np.uint8)
+            jxl = np.clip(reference.astype(np.int16) + 1, 0, 255).astype(np.uint8)
+            ref_path = root / "ps16.png"
+            raw_path = root / "raw61.png"
+            jxl_path = root / "jxl.png"
+            write_png(ref_path, reference)
+            write_png(raw_path, raw61)
+            write_png(jxl_path, jxl)
+
+            rows, details = structure_runner.analyze_case_group(
+                [("Synthetic Scan", "frame001", "d100", ref_path, raw_path, jxl_path)],
+                crop_spec=None,
+                highpass_radius=2,
+                max_analysis_dim=64,
+                djxl="",
+                reusable_jxl={},
+            )
+
+            self.assertIn(rows[0].structure_verdict, {"ps16_jxl_likely_wins", "uncertain"})
+            self.assertIsNotNone(rows[0].jxl_structure_loss)
+            self.assertEqual(len(details), 2)
+            self.assertIn("analysis_scale=", rows[0].notes)
+
     def test_review_panel_local_alignment_corrects_crop_shift(self) -> None:
         reference = textured_rgb()
         shifted = np.roll(np.roll(reference, 2, axis=0), -3, axis=1)
@@ -228,6 +256,59 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
     def test_context_crop_parser_accepts_valid_crop(self) -> None:
         self.assertEqual(context_images.parse_crop("10,20,30,40"), (10, 20, 30, 40))
+
+    def test_context_images_reads_crop_plan_jobs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "crop_plan.json"
+            path.write_text(
+                """{
+                  "cases": {
+                    "film|frame": {
+                      "scan_set": "Film",
+                      "set_id": "frame",
+                      "crops": [
+                        {"name": "manual-01", "crop": [10, 20, 30, 40]},
+                        {"name": "manual-02", "crop": [50, 60, 70, 80]}
+                      ]
+                    }
+                  }
+                }""",
+                encoding="utf-8",
+            )
+
+            jobs = context_images.read_crop_plan(path)
+
+            self.assertEqual(
+                jobs,
+                [
+                    (context_images.ContextCase("Film", "frame"), "manual-01", (10, 20, 30, 40)),
+                    (context_images.ContextCase("Film", "frame"), "manual-02", (50, 60, 70, 80)),
+                ],
+            )
+
+    def test_review_viewers_reads_crop_plan_and_default_levels_include_hard_anchors(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "crop_plan.json"
+            path.write_text(
+                """{
+                  "cases": {
+                    "film|frame": {
+                      "scan_set": "Film",
+                      "set_id": "frame",
+                      "crops": [
+                        {"name": "manual-01", "crop": [10, 20, 30, 40]}
+                      ]
+                    }
+                  }
+                }""",
+                encoding="utf-8",
+            )
+
+            plan = review_viewers.read_crop_plan(path)
+
+            self.assertEqual(plan[("Film", "frame")], [("manual-01", (10, 20, 30, 40))])
+            self.assertIn("d100", review_viewers.DEFAULT_LEVELS)
+            self.assertIn("d200", review_viewers.DEFAULT_LEVELS)
 
     def test_context_crop_label_is_placed_outside_crop_box(self) -> None:
         image = Image.new("RGB", (900, 600), "white")
@@ -323,7 +404,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
         )
 
         self.assertIn('class="column-help-row"', html)
-        self.assertIn('data-full="JPEG XL distance label.', html)
+        self.assertIn('<span class="column-help">JPEG XL distance label.', html)
+        self.assertNotIn('data-full=', html)
         self.assertIn("<strong>lossless</strong>", html)
         self.assertLess(html.index("<strong>lossless</strong>"), html.index("<strong>d030</strong>"))
         self.assertNotIn('class="bar"', html)
@@ -355,6 +437,12 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("Crop origin / active placement", html)
         self.assertIn("<code>WhiteLevel</code>", html)
         self.assertIn("<code>OpcodeList2</code>", html)
+        self.assertIn("RawTherapee compatibility", html)
+        self.assertIn("Independent full-DNG decode", html)
+        self.assertIn("Real edit and visual review", html)
+        self.assertIn("Storage-budget coverage", html)
+        self.assertIn("19200&times;12752", html)
+        self.assertIn("Error loading file", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -405,7 +493,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("ps16_reference_manual-01.png", html)
             self.assertLess(html.index("ps16_reference_manual-01.png"), html.index("d025_manual-01_identity.png"))
 
-    def test_report_site_embeds_fullscreen_crop_viewer_manifest(self) -> None:
+    def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic_scan" / "frame001"
@@ -439,13 +527,18 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 viewers=[viewer_index],
             )
 
-            self.assertIn('id="cropModal"', html)
-            self.assertIn('data-open-crop-viewer data-viewer-index="0"', html)
+            self.assertIn('id="cropWorkspace"', html)
+            self.assertIn('aria-labelledby="cropViewerTitle"', html)
+            self.assertNotIn('id="cropModal"', html)
+            self.assertNotIn('data-open-crop-viewer', html)
             self.assertIn('"key": "ps16_lossless"', html)
             self.assertIn('"key": "jxl_d200"', html)
             self.assertIn("hard visual check", html)
+            self.assertIn('let activeChoiceList = "film";', html)
+            self.assertIn('button.addEventListener("focus", () => { activeChoiceList = "quality"; });', html)
+            self.assertIn('["ArrowDown", "ArrowRight"]', html)
 
-    def test_report_site_visual_review_items_are_not_foldouts(self) -> None:
+    def test_report_site_replaces_visual_review_items_with_inline_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic_scan" / "frame001"
@@ -472,9 +565,75 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 viewers=[viewer_index],
             )
 
-            self.assertIn('class="review-item"', html)
-            self.assertIn("Open fullscreen crop viewer", html)
+            self.assertIn('class="crop-workspace"', html)
+            self.assertNotIn('class="review-item"', html)
+            self.assertNotIn("Open fullscreen crop viewer", html)
             self.assertNotIn('class="panel-group review-group"', html)
+
+    def test_report_site_groups_nested_crop_viewers_by_case_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic_scan" / "frame001" / "manual-01"
+            context_dir = root / "site" / "assets" / "review-contexts" / "synthetic_scan" / "frame001"
+            viewer_dir.mkdir(parents=True)
+            context_dir.mkdir(parents=True)
+            viewer_index = viewer_dir / "index.html"
+            viewer_index.write_text("<html></html>", encoding="utf-8")
+            for name in ["reference.png", "raw61.png", "jxl_d100.png", "jxl_d200.png"]:
+                write_png(viewer_dir / name, textured_rgb(12, 12))
+            (viewer_dir / "metadata.json").write_text(
+                """{
+                  "labels": {
+                    "raw61": "RAW61 local aligned",
+                    "jxl_d100": "PS16 JXL d100",
+                    "jxl_d200": "PS16 JXL d200"
+                  },
+                  "scan_set": "Synthetic Scan",
+                  "set_id": "frame001",
+                  "crop_name": "manual-01",
+                  "transform": "identity",
+                  "crop": [1, 2, 3, 4]
+                }""",
+                encoding="utf-8",
+            )
+            context_path = context_dir / "ps16_reference_manual-01.png"
+            write_png(context_path, textured_rgb(12, 12))
+
+            html = report_site.render_html(
+                rows=[],
+                summaries=[],
+                panels=[],
+                contexts=[context_path],
+                output=root / "site" / "index.html",
+                viewers=[viewer_index],
+            )
+
+            self.assertIn("synthetic_scan/frame001", report_site.viewer_groups([viewer_index]))
+            self.assertIn("Synthetic Scan / frame001 / manual-01", html)
+            self.assertIn('"cropName": "manual-01"', html)
+            self.assertIn('"transform": "identity"', html)
+            self.assertIn('"key": "jxl_d100"', html)
+            self.assertIn('"key": "jxl_d200"', html)
+            self.assertIn('class="crop-workspace"', html)
+            self.assertNotIn("Open fullscreen crop viewer", html)
+            self.assertNotIn('class="review-item"', html)
+
+    def test_report_site_prefers_nested_crop_viewers_over_legacy_flat_viewer(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            viewer_root = root / "site" / "assets" / "review-viewers"
+            flat_dir = viewer_root / "synthetic_scan" / "frame001"
+            nested_dir = flat_dir / "manual-01"
+            flat_dir.mkdir(parents=True)
+            nested_dir.mkdir(parents=True)
+            flat_index = flat_dir / "index.html"
+            nested_index = nested_dir / "index.html"
+            flat_index.write_text("<html></html>", encoding="utf-8")
+            nested_index.write_text("<html></html>", encoding="utf-8")
+
+            paths = report_site.viewer_paths(viewer_root)
+
+            self.assertEqual(paths, [nested_index])
 
     def test_crop_guide_reads_multiple_exact_magenta_markers(self) -> None:
         guide = np.zeros((110, 140, 3), dtype=np.uint8)

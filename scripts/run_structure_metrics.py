@@ -334,6 +334,14 @@ def analyze_case(
         if jxl_path.suffix.lower() == ".jxl" and not djxl:
             raise ValueError("djxl is required when the JXL candidate path is a standalone .jxl file")
         jxl = crop(read_jxl_candidate(jxl_path, djxl or ""), crop_spec)
+    if prepared_reference is None:
+        reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
+    else:
+        analysis_scale = prepared_analysis_scale or 1.0
+    if raw61 is not None and prepared_raw61 is None:
+        raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
+    if jxl is not None:
+        jxl, _ = resize_to_max_dim(jxl, max_analysis_dim)
     if (raw61 is not None and reference.shape != raw61.shape) or (
         jxl is not None and reference.shape != jxl.shape
     ):
@@ -341,12 +349,6 @@ def analyze_case(
             f"{scan_set}/{set_id}/{level}: structure input shapes differ after crop: "
             f"{reference.shape}, {raw61.shape}, {jxl.shape if jxl is not None else 'cached'}"
         )
-    if prepared_reference is None:
-        reference, analysis_scale = resize_to_max_dim(reference, max_analysis_dim)
-    else:
-        analysis_scale = prepared_analysis_scale or 1.0
-    if raw61 is not None and prepared_raw61 is None:
-        raw61, _ = resize_to_max_dim(raw61, max_analysis_dim)
     if cached_raw_detail is not None:
         raw_detail = replace(cached_raw_detail, level=level)
         raw_cache_note = "; reused_raw61_detail=true"
@@ -359,7 +361,6 @@ def analyze_case(
         cache_note = "; reused_jxl_detail=true"
     else:
         assert jxl is not None
-        jxl, _ = resize_to_max_dim(jxl, max_analysis_dim)
         jxl_detail = detail_row(scan_set, set_id, level, scope, "ps16_jxl_candidate", reference, jxl, highpass_radius)
         cache_note = ""
     risk = artifact_risk(jxl_detail)
