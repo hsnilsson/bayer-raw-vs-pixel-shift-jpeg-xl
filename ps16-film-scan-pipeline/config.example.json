@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "id": "roll-2026-001",
+    "film_stock": "Kodak Gold 200",
+    "filmlab_profile": "Kodak Gold 100/200"
+  },
+  "paths": {
+    "incoming": "D:\\FilmScan\\incoming\\roll-2026-001",
+    "work": "C:\\FilmScanWork\\roll-2026-001",
+    "archive": "D:\\FilmScan\\archive\\roll-2026-001",
+    "filmlab_staging": "C:\\FilmScanStage\\roll-2026-001",
+    "positive_inbox": "C:\\FilmScanStage\\roll-2026-001\\positive-exports",
+    "positives": "D:\\FilmScan\\positives\\roll-2026-001",
+    "previews": "D:\\FilmScan\\previews\\roll-2026-001",
+    "errors": "C:\\FilmScanWork\\roll-2026-001\\errors",
+    "quarantine": "D:\\FilmScan\\quarantine\\roll-2026-001"
+  },
+  "tools": {
+    "pixelshift2dng": "C:\\Program Files\\LibRaw\\PixelShift2DNG\\PixelShift2DNG.exe",
+    "adobe_dng_converter": "C:\\Program Files\\Adobe\\Adobe DNG Converter\\Adobe DNG Converter.exe",
+    "exiftool": "C:\\Program Files\\ExifTool\\ExifTool.exe"
+  },
+  "watch": {
+    "poll_seconds": 5,
+    "stable_seconds": 15,
+    "output_timeout_seconds": 1800,
+    "minimum_free_gib": 25
+  },
+  "jpeg_xl_profiles": {
+    "archive": {
+      "enabled": true,
+      "level": "d005",
+      "effort": 7,
+      "required_for_cleanup": true
+    }
+  },
+  "filmlab": {
+    "enabled": true,
+    "input_profile": "archive",
+    "use_hardlinks_when_possible": true,
+    "launch_command": [],
+    "positive_extensions": [".tif", ".tiff", ".jpg", ".jpeg", ".png"]
+  },
+  "previews": {
+    "enabled": true,
+    "max_long_edge": 2400,
+    "jpeg_quality": 88
+  },
+  "cleanup": {
+    "enabled": false,
+    "require_positive": true
+  }
+}

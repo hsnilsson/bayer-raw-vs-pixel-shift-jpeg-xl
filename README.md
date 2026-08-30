@@ -1,5 +1,10 @@
 # JPEG XL vs DNG/PixelShift
 
+The restartable Windows intake, FilmLab staging, and quarantine workflow is a
+self-contained subtree in
+[`ps16-film-scan-pipeline/`](ps16-film-scan-pipeline/README.md), ready to be
+maintained here and exported as its own repository.
+
 Work in progress: a reproducible investigation into whether conservative JPEG XL
 compression can be a practical archive strategy for high-resolution camera scans
 of film.
