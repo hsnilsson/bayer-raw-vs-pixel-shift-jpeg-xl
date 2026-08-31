@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS raw_files (
 CREATE TABLE IF NOT EXISTS groups (
   group_id TEXT PRIMARY KEY, status TEXT NOT NULL DEFAULT 'discovered',
   expected INTEGER NOT NULL DEFAULT 16, dng_name TEXT, attempts INTEGER NOT NULL DEFAULT 0,
-  error TEXT, approved_at TEXT, updated_at TEXT NOT NULL
+  error TEXT, approved_at TEXT, cleaned_at TEXT, updated_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS outputs (
   group_id TEXT NOT NULL, kind TEXT NOT NULL, path TEXT NOT NULL,
@@ -112,6 +112,13 @@ def load_config(path: Path) -> dict[str, Any]:
         raise ValueError("preview generation requires paths.previews")
     if not config.get("filmlab", {}).get("enabled") and config.get("cleanup", {}).get("require_positive", True):
         raise ValueError("cleanup.require_positive must be false when FilmLab integration is disabled")
+    cleanup = config.get("cleanup", {})
+    if cleanup.get("retention_groups") is not None:
+        retention_groups = int(cleanup["retention_groups"])
+        if retention_groups < 0:
+            raise ValueError("cleanup.retention_groups must be >= 0")
+    if cleanup.get("prune_mode", "move") not in {"move", "delete"}:
+        raise ValueError("cleanup.prune_mode must be 'move' or 'delete'")
     incoming = expand_path(config["paths"]["incoming"])
     for key in ("work", "archive", "errors", "quarantine"):
         candidate = expand_path(config["paths"][key])
@@ -137,6 +144,9 @@ class Pipeline:
         raw_columns = {row[1] for row in self.db.execute("PRAGMA table_info(raw_files)")}
         if "sha256" not in raw_columns:
             self.db.execute("ALTER TABLE raw_files ADD COLUMN sha256 TEXT")
+        group_columns = {row[1] for row in self.db.execute("PRAGMA table_info(groups)")}
+        if "cleaned_at" not in group_columns:
+            self.db.execute("ALTER TABLE groups ADD COLUMN cleaned_at TEXT")
         self.db.commit()
         self._lock_handle = None
         if exclusive and not dry_run:
@@ -631,7 +641,13 @@ class Pipeline:
         self.db.execute("UPDATE groups SET status='approved',approved_at=?,updated_at=? WHERE group_id=?",
                         (utc_now(), utc_now(), group_id))
         self.db.commit()
-        self.event("explicitly approved for quarantine move", group_id=group_id)
+        self.event("explicitly approved for retention cleanup", group_id=group_id)
+
+    def retention_limit(self) -> int:
+        return int(self.config.get("cleanup", {}).get("retention_groups", 2))
+
+    def cleanup_mode(self) -> str:
+        return str(self.config.get("cleanup", {}).get("prune_mode", "move"))
 
     def assert_cleanup_outputs(self, group_id: str) -> None:
         required_kinds = ["source_dng"]
@@ -680,33 +696,69 @@ class Pipeline:
                 self.db.execute("UPDATE raw_files SET sha256=? WHERE path=?", (digest, str(source)))
         self.db.commit()
 
-    def quarantine(self, token: str) -> None:
+    def prune(self, token: str) -> None:
         if not self.config.get("cleanup", {}).get("enabled", False):
             raise RuntimeError("cleanup.enabled is false")
         expected = str(self.config["batch"]["id"])
         if token != expected:
             raise RuntimeError("approval token must exactly equal batch.id")
-        rows = self.db.execute("SELECT group_id FROM groups WHERE status='approved' ORDER BY group_id").fetchall()
+        limit = self.retention_limit()
+        rows = self.db.execute(
+            "SELECT group_id,status FROM groups WHERE status IN ('approved','quarantined') "
+            "ORDER BY COALESCE(approved_at,updated_at),group_id"
+        ).fetchall()
         if not rows:
-            raise RuntimeError("no explicitly approved groups")
+            raise RuntimeError("no approved or quarantined groups to prune")
+        if len(rows) <= limit:
+            self.event(f"cleanup retention window keeps {len(rows)} group(s); nothing to prune")
+            return
         root = self.paths["quarantine"].resolve()
-        for row in rows:
+        doomed = rows[:-limit] if limit else rows
+        for row in doomed:
             group_id = row["group_id"]
             target_dir = (root / ascii_name(group_id)).resolve()
             if root != target_dir and root not in target_dir.parents:
                 raise RuntimeError(f"unsafe quarantine target: {target_dir}")
-            target_dir.mkdir(parents=True, exist_ok=True)
             self.assert_cleanup_outputs(group_id)
             self.assert_raw_integrity(group_id, allow_quarantine=True)
-            for source in self.group_files(group_id):
-                if source.exists():
+            if self.cleanup_mode() == "move":
+                target_dir.mkdir(parents=True, exist_ok=True)
+                for source in self.group_files(group_id):
+                    if source.exists():
+                        target = target_dir / source.name
+                        if target.exists():
+                            raise RuntimeError(f"both raw source and quarantine target exist: {source} / {target}")
+                        shutil.move(str(source), str(target))
+                self.assert_raw_integrity(group_id, allow_quarantine=True)
+                self.set_group(group_id, "quarantined")
+                self.event(
+                    f"moved 16 raw exposures to recoverable quarantine {target_dir} "
+                    f"(retention window {limit})",
+                    group_id=group_id,
+                )
+            else:
+                raw_rows = self.db.execute(
+                    "SELECT path FROM raw_files WHERE group_id=? ORDER BY shot,path", (group_id,)
+                ).fetchall()
+                for raw_row in raw_rows:
+                    source = Path(raw_row["path"])
                     target = target_dir / source.name
-                    if target.exists():
-                        raise RuntimeError(f"both raw source and quarantine target exist: {source} / {target}")
-                    shutil.move(str(source), str(target))
-            self.assert_raw_integrity(group_id, allow_quarantine=True)
-            self.set_group(group_id, "quarantined")
-            self.event(f"moved 16 raw exposures to recoverable quarantine {target_dir}", group_id=group_id)
+                    present = [path for path in (source, target) if path.is_file()]
+                    if len(present) != 1:
+                        raise RuntimeError(
+                            f"raw must exist in exactly one expected location before deletion: {source} / {target}"
+                        )
+                    present[0].unlink()
+                cleaned_at = utc_now()
+                self.db.execute(
+                    "UPDATE groups SET status='cleaned',error=NULL,cleaned_at=?,updated_at=? WHERE group_id=?",
+                    (cleaned_at, cleaned_at, group_id),
+                )
+                self.db.commit()
+                self.event(
+                    f"deleted 16 verified raw exposures outside retention window (retain last {limit})",
+                    group_id=group_id,
+                )
 
 
 def parse_pixelshift_info(value: object) -> tuple[str, int, int] | None:
@@ -726,7 +778,7 @@ def ascii_name(value: str) -> str:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Restartable Windows PS16 mass-scan queue")
     parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("command", choices=["watch", "once", "status", "retry", "approve", "quarantine"])
+    parser.add_argument("command", choices=["watch", "once", "status", "retry", "approve", "prune"])
     parser.add_argument("--group-id")
     parser.add_argument("--approval-token")
     parser.add_argument("--dry-run", action="store_true")
@@ -752,10 +804,10 @@ def main(argv: list[str] | None = None) -> int:
             if not args.group_id:
                 raise ValueError("approve requires --group-id")
             pipeline.approve(args.group_id)
-        elif args.command == "quarantine":
+        elif args.command == "prune":
             if not args.approval_token:
-                raise ValueError("quarantine requires --approval-token")
-            pipeline.quarantine(args.approval_token)
+                raise ValueError("prune requires --approval-token")
+            pipeline.prune(args.approval_token)
         elif args.command == "once":
             pipeline.process_once()
         else:

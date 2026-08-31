@@ -1,6 +1,6 @@
 param(
     [string]$Config = (Join-Path $PSScriptRoot 'config.json'),
-    [ValidateSet('watch', 'once', 'status', 'retry', 'approve', 'quarantine')]
+    [ValidateSet('watch', 'once', 'status', 'retry', 'approve', 'prune')]
     [string]$Command = 'watch',
     [string]$GroupId,
     [string]$ApprovalToken,
