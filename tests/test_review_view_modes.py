@@ -31,6 +31,7 @@ class ReviewViewModesTests(unittest.TestCase):
             "shadow_recovery_luma_p12",
             "highlight_separation_luma_p88_p998",
             "negative_density_hard_print",
+            "negative_density_hard_shadow_recovery",
         ]:
             result = transforms[name].apply(reference)
             self.assertEqual(result.shape, reference.shape)
@@ -40,6 +41,10 @@ class ReviewViewModesTests(unittest.TestCase):
 
         self.assertEqual(transforms["shadow_recovery_luma_p12"].label, "Shadow recovery")
         self.assertEqual(transforms["highlight_separation_luma_p88_p998"].label, "Highlight separation")
+        self.assertEqual(
+            transforms["negative_density_hard_shadow_recovery"].label,
+            "Hard inversion + shadow recovery",
+        )
 
 
 if __name__ == "__main__":

@@ -1,2 +1,5 @@
 # Keep privacy-sensitive local captures out of the public report and its assets.
 # Format: scan_set_or_slug|set_id
+# This Adox target was moved into its own input folder. Rebuild it there before
+# publishing it under the corrected identity.
+Kodak5035 H190-1983|_DSC6577

@@ -323,6 +323,15 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
         y = normalized_logistic(y, contrast=9.0, midpoint=0.50)
         return np.clip(y, 0.0, 1.0)
 
+    def negative_density_hard_shadow_recovery(arr: np.ndarray) -> np.ndarray:
+        """Apply the hard density inversion, then lift its lower positive values."""
+        y = density_positive(arr)
+        y = np.clip((y - 0.035) / 0.90, 0.0, 1.0)
+        y = np.power(y, 0.68)
+        y = np.clip(y * np.array([1.07, 1.0, 0.94], dtype=np.float32), 0.0, 1.0)
+        y = normalized_logistic(y, contrast=9.0, midpoint=0.50)
+        return np.clip(y, 0.0, 1.0)
+
     def negative_density_shadow_print(arr: np.ndarray) -> np.ndarray:
         y = density_positive(arr)
         y = np.clip((y - 0.015) / 0.86, 0.0, 1.0)
@@ -355,7 +364,15 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
             "negative_density_hard_print",
             negative_density_hard_print,
             "Hard negative-density inversion",
-            "Existing program-independent negative-density inversion proxy; it is not a complete film inversion recipe.",
+            "Maps reference-normalized RGB transmission to density, then a positive image; clips 3.5%/10%, "
+            "applies a small fixed channel balance and strong contrast. A reproducible stress proxy, not a film-specific inversion.",
+        ),
+        Transform(
+            "negative_density_hard_shadow_recovery",
+            negative_density_hard_shadow_recovery,
+            "Hard inversion + shadow recovery",
+            "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. "
+            "A compound edit-resilience stress check, not a recommended film grade.",
         ),
         Transform("negative_density_shadow_print", negative_density_shadow_print, "Negative shadow print", "Negative display diagnostic."),
     ]

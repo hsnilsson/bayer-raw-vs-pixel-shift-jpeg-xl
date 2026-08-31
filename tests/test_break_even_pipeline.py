@@ -75,6 +75,53 @@ class BreakEvenPipelineTests(unittest.TestCase):
             changed = fingerprint({"source": source.stat().st_mtime_ns, "parameter": "v2"})
             self.assertFalse(fresh(entry, changed, {"output": output}, root))
 
+    def test_viewer_build_inputs_change_when_a_source_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            ps16 = root / "ps16.tif"
+            raw61 = root / "raw61_registered_to_ps16.tif"
+            jxl_root = root / "jxl"
+            jxl = jxl_root / "scan" / "frame" / "d030" / "ps16.jxl"
+            for path, contents in [(ps16, b"ps16"), (raw61, b"raw61"), (jxl, b"jxl")]:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(contents)
+
+            original = review_viewers.viewer_build_inputs(
+                ps16,
+                raw61,
+                jxl_root,
+                "scan",
+                "frame",
+                ["d030"],
+                ["identity"],
+                (1, 2, 3, 4),
+                1024,
+                360,
+                32.0,
+            )
+            raw61.write_bytes(b"raw61-updated")
+            updated = review_viewers.viewer_build_inputs(
+                ps16,
+                raw61,
+                jxl_root,
+                "scan",
+                "frame",
+                ["d030"],
+                ["identity"],
+                (1, 2, 3, 4),
+                1024,
+                360,
+                32.0,
+            )
+
+            self.assertNotEqual(fingerprint(original), fingerprint(updated))
+            self.assertFalse(review_viewers.viewer_metadata_is_current({}, original))
+            self.assertTrue(
+                review_viewers.viewer_metadata_is_current(
+                    {"build_fingerprint": fingerprint(updated)}, updated
+                )
+            )
+
     def test_phase_correlation_returns_alignment_shift(self) -> None:
         reference = np.zeros((64, 64), dtype=np.float32)
         reference[20:30, 25:35] = 1.0
@@ -309,6 +356,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertEqual(plan[("Film", "frame")], [("manual-01", (10, 20, 30, 40))])
             self.assertIn("d100", review_viewers.DEFAULT_LEVELS)
             self.assertIn("d200", review_viewers.DEFAULT_LEVELS)
+            self.assertEqual(review_viewers.DEFAULT_LEVELS[:3], ["d003", "d005", "d010"])
 
     def test_review_viewer_overview_is_small_and_marks_selected_crop(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -474,7 +522,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
             output=Path("site/index.html"),
         )
 
-        self.assertIn("<h2>ADC DNG/JXL Caveats</h2>", html)
+        self.assertIn("<h2>ADC DNG/JXL</h2>", html)
+        self.assertEqual(2, html.count('<details class="adc-disclosure">'))
+        self.assertNotIn('<details class="adc-disclosure" open>', html)
+        self.assertIn("Technical caveats and validation gaps", html)
+        self.assertIn("Nine documented items", html)
         self.assertIn("Stored image shape", html)
         self.assertIn("Crop origin / active placement", html)
         self.assertIn("<code>WhiteLevel</code>", html)
@@ -590,6 +642,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             )
 
             self.assertIn('id="cropWorkspace"', html)
+            self.assertIn('id="cropFullscreen"', html)
+            self.assertIn('workspace.requestFullscreen()', html)
             self.assertIn('aria-labelledby="cropViewerTitle"', html)
             self.assertNotIn('id="cropModal"', html)
             self.assertNotIn('data-open-crop-viewer', html)

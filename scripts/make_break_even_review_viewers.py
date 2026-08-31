@@ -30,6 +30,7 @@ from make_break_even_review_panels import (  # noqa: E402
     read_csv_rows,
     run_decode,
 )
+from incremental_cache import file_state, fingerprint  # noqa: E402
 from run_public_latitude_stress import build_transforms  # noqa: E402
 
 
@@ -39,12 +40,13 @@ DEFAULT_REGISTERED_ROOT = ROOT / "outputs/registered_raw61_to_ps16"
 DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT = ROOT / "site/assets/review-viewers"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
-DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030", "d100", "d200"]
+DEFAULT_LEVELS = ["d003", "d005", "d010", "d020", "d022", "d025", "d028", "d030", "d100", "d200"]
 DEFAULT_TRANSFORMS = [
     "identity",
     "shadow_recovery_luma_p12",
     "highlight_separation_luma_p88_p998",
     "negative_density_hard_print",
+    "negative_density_hard_shadow_recovery",
 ]
 DEFAULT_CASES = [
     "fuji_679_f_ii_1983|_DSC6980",
@@ -117,16 +119,75 @@ def read_crop_plan(path: Path | None) -> dict[tuple[str, str], list[tuple[str, t
     return plan
 
 
-def to_display(arr: np.ndarray, max_dim: int) -> Image.Image:
+def read_viewer_metadata(path: Path) -> dict[str, object]:
+    if not path.is_file():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def viewer_build_inputs(
+    ref_path: Path,
+    raw_path: Path,
+    rendered_jxl_root: Path,
+    scan_set: str,
+    set_id: str,
+    levels: list[str],
+    transform_names: list[str],
+    crop_spec: tuple[int, int, int, int],
+    max_dim: int,
+    overview_max_dim: int,
+    max_local_shift: float,
+) -> dict[str, object]:
+    """Record source state without hashing multi-gigabyte TIFFs on every viewer build."""
+    jxl_sources = {
+        level: file_state(jxl_path(rendered_jxl_root, scan_set, set_id, level), ROOT)
+        for level in levels
+    }
+    return {
+        "schema": 1,
+        "crop": list(crop_spec),
+        "transforms": transform_names,
+        "max_dim": max_dim,
+        "overview_max_dim": overview_max_dim,
+        "max_local_shift": max_local_shift,
+        "sources": {
+            "ps16": file_state(ref_path, ROOT),
+            "raw61_registered": file_state(raw_path, ROOT),
+            "jxl": jxl_sources,
+        },
+        "renderer_code": file_state(Path(__file__), ROOT),
+        "transform_code": file_state(SCRIPTS / "run_public_latitude_stress.py", ROOT),
+    }
+
+
+def viewer_metadata_is_current(metadata: dict[str, object], build_inputs: dict[str, object]) -> bool:
+    return metadata.get("build_fingerprint") == fingerprint(build_inputs)
+
+
+def display_range(arr: np.ndarray) -> tuple[np.float32, np.float32]:
     values = np.asarray(arr, dtype=np.float32)
     if values.ndim == 2:
         values = np.repeat(values[:, :, None], 3, axis=2)
     if np.issubdtype(arr.dtype, np.integer):
         values = values / float(np.iinfo(arr.dtype).max)
-    low, high = np.percentile(values[:, :, :3], [0.5, 99.5])
-    if high <= low:
-        high = low + 1e-6
-    values = np.clip((values[:, :, :3] - low) / (high - low), 0.0, 1.0)
+    low, high = (np.float32(value) for value in np.percentile(values[:, :, :3], [0.5, 99.5]))
+    return low, max(high, low + np.float32(1e-6))
+
+
+def to_display(arr: np.ndarray, max_dim: int, levels: tuple[np.float32, np.float32] | None = None) -> Image.Image:
+    values = np.asarray(arr, dtype=np.float32)
+    if values.ndim == 2:
+        values = np.repeat(values[:, :, None], 3, axis=2)
+    if np.issubdtype(arr.dtype, np.integer):
+        values = values / float(np.iinfo(arr.dtype).max)
+    # A shared PS16-derived display range preserves candidate color/tone
+    # differences. Per-image autolevels made RAW61/JXL saturation misleading.
+    low, high = levels or display_range(arr)
+    values = np.clip((values[:, :, :3] - low) / np.float32(high - low), 0.0, 1.0)
     image = Image.fromarray(np.round(values * 255).astype(np.uint8), mode="RGB")
     if max(image.size) > max_dim:
         scale = max_dim / max(image.size)
@@ -134,10 +195,10 @@ def to_display(arr: np.ndarray, max_dim: int) -> Image.Image:
     return image
 
 
-def save_display(path: Path, arr: np.ndarray, max_dim: int, *, force: bool) -> None:
+def save_display(path: Path, arr: np.ndarray, max_dim: int, *, force: bool, levels: tuple[np.float32, np.float32] | None = None) -> None:
     if path.is_file() and not force:
         return
-    to_display(arr, max_dim).save(path)
+    to_display(arr, max_dim, levels).save(path)
 
 
 def save_overview(
@@ -429,6 +490,26 @@ def make_viewer(
     raw_path = raw61_path(args.registered_root, scan_set, set_id)
     if not ref_path.is_file() or not raw_path.is_file():
         return None
+    output_dir = args.output_dir / local_study.slugify(scan_set) / set_id / crop_name
+    output_dir.mkdir(parents=True, exist_ok=True)
+    metadata_path = output_dir / "metadata.json"
+    build_inputs = viewer_build_inputs(
+        ref_path,
+        raw_path,
+        args.rendered_jxl_root,
+        scan_set,
+        set_id,
+        levels,
+        transform_names,
+        crop_spec,
+        args.max_dim,
+        args.overview_max_dim,
+        args.max_local_shift,
+    )
+    # Metadata without a fingerprint intentionally triggers one full rebuild.
+    rebuild_viewer = args.force or not viewer_metadata_is_current(
+        read_viewer_metadata(metadata_path), build_inputs
+    )
     reference_full = read_rgb_image(ref_path)
     raw_full = read_rgb_image(raw_path)
     crop_text = ",".join(str(value) for value in crop_spec)
@@ -444,10 +525,11 @@ def make_viewer(
             selected_transforms.append(transform_name)
     images_by_transform: dict[str, dict[str, str]] = {}
     for transform_name in selected_transforms:
+        is_identity = transform_name == "identity"
         images_by_transform[transform_name] = {
-            "reference": f"reference_{transform_name}.png",
-            "ps16_lossless": f"reference_{transform_name}.png",
-            "raw61": f"raw61_{transform_name}.png",
+            "reference": "reference.png" if is_identity else f"reference_{transform_name}.png",
+            "ps16_lossless": "reference.png" if is_identity else f"reference_{transform_name}.png",
+            "raw61": "raw61.png" if is_identity else f"raw61_{transform_name}.png",
         }
     overviews: dict[str, str] = {
         "reference": "overview_reference.png",
@@ -459,13 +541,13 @@ def make_viewer(
         "ps16_lossless": "PS16 lossless / reference",
         "raw61": "RAW61 local aligned",
     }
-    output_dir = args.output_dir / local_study.slugify(scan_set) / set_id / crop_name
-    output_dir.mkdir(parents=True, exist_ok=True)
     for transform_name in selected_transforms:
         transform = transforms[transform_name]
         images = images_by_transform[transform_name]
-        save_display(output_dir / images["reference"], transform.apply(ref_crop), args.max_dim, force=args.force)
-        save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=args.force)
+        reference_display = transform.apply(ref_crop)
+        reference_levels = display_range(reference_display)
+        save_display(output_dir / images["reference"], reference_display, args.max_dim, force=rebuild_viewer, levels=reference_levels)
+        save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=rebuild_viewer, levels=reference_levels)
     save_overview(
         output_dir / overviews["reference"],
         reference_full,
@@ -473,7 +555,7 @@ def make_viewer(
         labels["reference"],
         crop_name,
         args.overview_max_dim,
-        force=args.force,
+        force=rebuild_viewer,
     )
     save_overview(
         output_dir / overviews["raw61"],
@@ -482,7 +564,7 @@ def make_viewer(
         labels["raw61"],
         crop_name,
         args.overview_max_dim,
-        force=args.force,
+        force=rebuild_viewer,
     )
     with tempfile.TemporaryDirectory(prefix="break-even-viewer-") as temp_dir:
         temp_root = Path(temp_dir)
@@ -491,7 +573,9 @@ def make_viewer(
             if not source.is_file():
                 continue
             for transform_name in selected_transforms:
-                images_by_transform[transform_name][f"jxl_{level}"] = f"jxl_{level}_{transform_name}.png"
+                images_by_transform[transform_name][f"jxl_{level}"] = (
+                    f"jxl_{level}.png" if transform_name == "identity" else f"jxl_{level}_{transform_name}.png"
+                )
             overviews[f"jxl_{level}"] = f"overview_jxl_{level}.png"
             labels[f"jxl_{level}"] = f"PS16 JXL {level}"
             overview_output = output_dir / overviews[f"jxl_{level}"]
@@ -499,7 +583,7 @@ def make_viewer(
                 output_dir / images_by_transform[transform_name][f"jxl_{level}"]
                 for transform_name in selected_transforms
             ]
-            if all(path.is_file() for path in image_outputs) and overview_output.is_file() and not args.force:
+            if all(path.is_file() for path in image_outputs) and overview_output.is_file() and not rebuild_viewer:
                 continue
             decoded = temp_root / level / "ps16_candidate.ppm"
             run_decode(djxl, source, decoded)
@@ -507,7 +591,8 @@ def make_viewer(
             candidate = crop(candidate_full, crop_text)
             for transform_name in selected_transforms:
                 output = output_dir / images_by_transform[transform_name][f"jxl_{level}"]
-                save_display(output, transforms[transform_name].apply(candidate), args.max_dim, force=args.force)
+                reference_levels = display_range(transforms[transform_name].apply(ref_crop))
+                save_display(output, transforms[transform_name].apply(candidate), args.max_dim, force=rebuild_viewer, levels=reference_levels)
             save_overview(
                 overview_output,
                 candidate_full,
@@ -515,7 +600,7 @@ def make_viewer(
                 labels[f"jxl_{level}"],
                 crop_name,
                 args.overview_max_dim,
-                force=args.force,
+                force=rebuild_viewer,
             )
     if not selected_transforms or len(images_by_transform[selected_transforms[0]]) < 3:
         return None
@@ -536,6 +621,8 @@ def make_viewer(
         "default_transform": selected_transforms[0],
         "view_modes": view_modes,
         "images_by_transform": images_by_transform,
+        "build_inputs": build_inputs,
+        "build_fingerprint": fingerprint(build_inputs),
         "crop": list(crop_spec),
         "local_raw61_alignment": {
             "shift_x_px": alignment.shift_x_px,
@@ -544,7 +631,7 @@ def make_viewer(
             "applied": alignment.applied,
         },
     }
-    (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     title = f"{scan_set} / {set_id} / {crop_name}"
     (output_dir / "index.html").write_text(
         html_page(title, images_by_transform[selected_transforms[0]], metadata), encoding="utf-8"
