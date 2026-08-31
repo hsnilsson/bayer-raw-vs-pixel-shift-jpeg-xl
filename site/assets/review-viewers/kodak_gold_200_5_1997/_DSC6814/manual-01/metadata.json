@@ -46,21 +46,26 @@
     {
       "key": "negative_density_hard_print",
       "label": "Hard negative-density inversion",
-      "description": "Existing program-independent negative-density inversion proxy; it is not a complete film inversion recipe."
+      "description": "Maps reference-normalized RGB transmission to density, then a positive image; clips 3.5%/10%, applies a small fixed channel balance and strong contrast. A reproducible stress proxy, not a film-specific inversion."
+    },
+    {
+      "key": "negative_density_hard_shadow_recovery",
+      "label": "Hard inversion + shadow recovery",
+      "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
     }
   ],
   "images_by_transform": {
     "identity": {
-      "reference": "reference_identity.png",
-      "ps16_lossless": "reference_identity.png",
-      "raw61": "raw61_identity.png",
-      "jxl_d020": "jxl_d020_identity.png",
-      "jxl_d022": "jxl_d022_identity.png",
-      "jxl_d025": "jxl_d025_identity.png",
-      "jxl_d028": "jxl_d028_identity.png",
-      "jxl_d030": "jxl_d030_identity.png",
-      "jxl_d100": "jxl_d100_identity.png",
-      "jxl_d200": "jxl_d200_identity.png"
+      "reference": "reference.png",
+      "ps16_lossless": "reference.png",
+      "raw61": "raw61.png",
+      "jxl_d020": "jxl_d020.png",
+      "jxl_d022": "jxl_d022.png",
+      "jxl_d025": "jxl_d025.png",
+      "jxl_d028": "jxl_d028.png",
+      "jxl_d030": "jxl_d030.png",
+      "jxl_d100": "jxl_d100.png",
+      "jxl_d200": "jxl_d200.png"
     },
     "shadow_recovery_luma_p12": {
       "reference": "reference_shadow_recovery_luma_p12.png",
@@ -97,8 +102,99 @@
       "jxl_d030": "jxl_d030_negative_density_hard_print.png",
       "jxl_d100": "jxl_d100_negative_density_hard_print.png",
       "jxl_d200": "jxl_d200_negative_density_hard_print.png"
+    },
+    "negative_density_hard_shadow_recovery": {
+      "reference": "reference_negative_density_hard_shadow_recovery.png",
+      "ps16_lossless": "reference_negative_density_hard_shadow_recovery.png",
+      "raw61": "raw61_negative_density_hard_shadow_recovery.png",
+      "jxl_d020": "jxl_d020_negative_density_hard_shadow_recovery.png",
+      "jxl_d022": "jxl_d022_negative_density_hard_shadow_recovery.png",
+      "jxl_d025": "jxl_d025_negative_density_hard_shadow_recovery.png",
+      "jxl_d028": "jxl_d028_negative_density_hard_shadow_recovery.png",
+      "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
+      "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
+      "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
     }
   },
+  "build_inputs": {
+    "schema": 1,
+    "crop": [
+      8525,
+      4844,
+      768,
+      768
+    ],
+    "transforms": [
+      "identity",
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998",
+      "negative_density_hard_print",
+      "negative_density_hard_shadow_recovery"
+    ],
+    "max_dim": 1024,
+    "overview_max_dim": 360,
+    "max_local_shift": 32.0,
+    "sources": {
+      "ps16": {
+        "path": "outputs/rawtherapee_renders/kodak_gold_200_5_1997/_DSC6814/ps16.tif",
+        "size": 1464137956,
+        "mtime_ns": 1787688806889698700
+      },
+      "raw61_registered": {
+        "path": "outputs/registered_raw61_to_ps16/kodak_gold_200_5_1997/_DSC6814/raw61_registered_to_ps16.tif",
+        "size": 732066956,
+        "mtime_ns": 1787725407526660900
+      },
+      "jxl": {
+        "d020": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d020/ps16.jxl",
+          "size": 79417933,
+          "mtime_ns": 1788194420294508800
+        },
+        "d022": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d022/ps16.jxl",
+          "size": 71977766,
+          "mtime_ns": 1788194538288533700
+        },
+        "d025": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d025/ps16.jxl",
+          "size": 63702959,
+          "mtime_ns": 1788194523891728800
+        },
+        "d028": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d028/ps16.jxl",
+          "size": 57377910,
+          "mtime_ns": 1788194581642160900
+        },
+        "d030": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d030/ps16.jxl",
+          "size": 53814704,
+          "mtime_ns": 1788194602833322100
+        },
+        "d100": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d100/ps16.jxl",
+          "size": 13763552,
+          "mtime_ns": 1788194664764251100
+        },
+        "d200": {
+          "path": "outputs/rendered_ps16_jxl_matrix/kodak_gold_200_5_1997/_DSC6814/d200/ps16.jxl",
+          "size": 7529351,
+          "mtime_ns": 1788194678626172000
+        }
+      }
+    },
+    "renderer_code": {
+      "path": "scripts/make_break_even_review_viewers.py",
+      "size": 31832,
+      "mtime_ns": 1788209586120168600
+    },
+    "transform_code": {
+      "path": "scripts/run_public_latitude_stress.py",
+      "size": 19095,
+      "mtime_ns": 1788206715122204500
+    }
+  },
+  "build_fingerprint": "8e31de80647709bba307a61b3f6b2f43a37f6a718ec75eee00fc75fe8f3f99c9",
   "crop": [
     8525,
     4844,

@@ -26,7 +26,175 @@
     "jxl_d100": "overview_jxl_d100.png",
     "jxl_d200": "overview_jxl_d200.png"
   },
-  "transform": "identity",
+  "default_transform": "identity",
+  "view_modes": [
+    {
+      "key": "identity",
+      "label": "Normal",
+      "description": "Unmodified display of the rendered crop."
+    },
+    {
+      "key": "shadow_recovery_luma_p12",
+      "label": "Shadow recovery",
+      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+    },
+    {
+      "key": "highlight_separation_luma_p88_p998",
+      "label": "Highlight separation",
+      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+    },
+    {
+      "key": "negative_density_hard_print",
+      "label": "Hard negative-density inversion",
+      "description": "Maps reference-normalized RGB transmission to density, then a positive image; clips 3.5%/10%, applies a small fixed channel balance and strong contrast. A reproducible stress proxy, not a film-specific inversion."
+    },
+    {
+      "key": "negative_density_hard_shadow_recovery",
+      "label": "Hard inversion + shadow recovery",
+      "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
+    }
+  ],
+  "images_by_transform": {
+    "identity": {
+      "reference": "reference.png",
+      "ps16_lossless": "reference.png",
+      "raw61": "raw61.png",
+      "jxl_d020": "jxl_d020.png",
+      "jxl_d022": "jxl_d022.png",
+      "jxl_d025": "jxl_d025.png",
+      "jxl_d028": "jxl_d028.png",
+      "jxl_d030": "jxl_d030.png",
+      "jxl_d100": "jxl_d100.png",
+      "jxl_d200": "jxl_d200.png"
+    },
+    "shadow_recovery_luma_p12": {
+      "reference": "reference_shadow_recovery_luma_p12.png",
+      "ps16_lossless": "reference_shadow_recovery_luma_p12.png",
+      "raw61": "raw61_shadow_recovery_luma_p12.png",
+      "jxl_d020": "jxl_d020_shadow_recovery_luma_p12.png",
+      "jxl_d022": "jxl_d022_shadow_recovery_luma_p12.png",
+      "jxl_d025": "jxl_d025_shadow_recovery_luma_p12.png",
+      "jxl_d028": "jxl_d028_shadow_recovery_luma_p12.png",
+      "jxl_d030": "jxl_d030_shadow_recovery_luma_p12.png",
+      "jxl_d100": "jxl_d100_shadow_recovery_luma_p12.png",
+      "jxl_d200": "jxl_d200_shadow_recovery_luma_p12.png"
+    },
+    "highlight_separation_luma_p88_p998": {
+      "reference": "reference_highlight_separation_luma_p88_p998.png",
+      "ps16_lossless": "reference_highlight_separation_luma_p88_p998.png",
+      "raw61": "raw61_highlight_separation_luma_p88_p998.png",
+      "jxl_d020": "jxl_d020_highlight_separation_luma_p88_p998.png",
+      "jxl_d022": "jxl_d022_highlight_separation_luma_p88_p998.png",
+      "jxl_d025": "jxl_d025_highlight_separation_luma_p88_p998.png",
+      "jxl_d028": "jxl_d028_highlight_separation_luma_p88_p998.png",
+      "jxl_d030": "jxl_d030_highlight_separation_luma_p88_p998.png",
+      "jxl_d100": "jxl_d100_highlight_separation_luma_p88_p998.png",
+      "jxl_d200": "jxl_d200_highlight_separation_luma_p88_p998.png"
+    },
+    "negative_density_hard_print": {
+      "reference": "reference_negative_density_hard_print.png",
+      "ps16_lossless": "reference_negative_density_hard_print.png",
+      "raw61": "raw61_negative_density_hard_print.png",
+      "jxl_d020": "jxl_d020_negative_density_hard_print.png",
+      "jxl_d022": "jxl_d022_negative_density_hard_print.png",
+      "jxl_d025": "jxl_d025_negative_density_hard_print.png",
+      "jxl_d028": "jxl_d028_negative_density_hard_print.png",
+      "jxl_d030": "jxl_d030_negative_density_hard_print.png",
+      "jxl_d100": "jxl_d100_negative_density_hard_print.png",
+      "jxl_d200": "jxl_d200_negative_density_hard_print.png"
+    },
+    "negative_density_hard_shadow_recovery": {
+      "reference": "reference_negative_density_hard_shadow_recovery.png",
+      "ps16_lossless": "reference_negative_density_hard_shadow_recovery.png",
+      "raw61": "raw61_negative_density_hard_shadow_recovery.png",
+      "jxl_d020": "jxl_d020_negative_density_hard_shadow_recovery.png",
+      "jxl_d022": "jxl_d022_negative_density_hard_shadow_recovery.png",
+      "jxl_d025": "jxl_d025_negative_density_hard_shadow_recovery.png",
+      "jxl_d028": "jxl_d028_negative_density_hard_shadow_recovery.png",
+      "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
+      "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
+      "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
+    }
+  },
+  "build_inputs": {
+    "schema": 1,
+    "crop": [
+      9269,
+      1338,
+      768,
+      768
+    ],
+    "transforms": [
+      "identity",
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998",
+      "negative_density_hard_print",
+      "negative_density_hard_shadow_recovery"
+    ],
+    "max_dim": 1024,
+    "overview_max_dim": 360,
+    "max_local_shift": 32.0,
+    "sources": {
+      "ps16": {
+        "path": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6879/ps16.tif",
+        "size": 1464137956,
+        "mtime_ns": 1787951348449699900
+      },
+      "raw61_registered": {
+        "path": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6879/raw61_registered_to_ps16.tif",
+        "size": 732066956,
+        "mtime_ns": 1787977762864875400
+      },
+      "jxl": {
+        "d020": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d020/ps16.jxl",
+          "size": 93038881,
+          "mtime_ns": 1787973675027950500
+        },
+        "d022": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d022/ps16.jxl",
+          "size": 84606496,
+          "mtime_ns": 1787973741024851800
+        },
+        "d025": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d025/ps16.jxl",
+          "size": 72693003,
+          "mtime_ns": 1787973806157955800
+        },
+        "d028": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d028/ps16.jxl",
+          "size": 61711815,
+          "mtime_ns": 1787973870775222200
+        },
+        "d030": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d030/ps16.jxl",
+          "size": 55369233,
+          "mtime_ns": 1787973934838187000
+        },
+        "d100": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d100/ps16.jxl",
+          "size": 14628395,
+          "mtime_ns": 1788037955027263500
+        },
+        "d200": {
+          "path": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d200/ps16.jxl",
+          "size": 8191343,
+          "mtime_ns": 1788018856220762900
+        }
+      }
+    },
+    "renderer_code": {
+      "path": "scripts/make_break_even_review_viewers.py",
+      "size": 31832,
+      "mtime_ns": 1788209586120168600
+    },
+    "transform_code": {
+      "path": "scripts/run_public_latitude_stress.py",
+      "size": 19095,
+      "mtime_ns": 1788206715122204500
+    }
+  },
+  "build_fingerprint": "67c8c33be9b17c2cf3db8a2a232604672a5e05571785875ae2d65544394ed61c",
   "crop": [
     9269,
     1338,

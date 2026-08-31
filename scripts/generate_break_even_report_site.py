@@ -484,6 +484,44 @@ def lossless_reference_row() -> str:
     )
 
 
+def level_chart(summaries: list[LevelSummary]) -> str:
+    """Compact, separately scaled trends; ratios and storage do not share a unit."""
+    items = [item for item in summaries if item.median_size_pct is not None]
+    if not items:
+        return ""
+    charts = [
+        ("Storage vs RAW61", "%", [item.median_size_pct for item in items], 100.0),
+        ("Color loss vs RAW61", "x", [item.median_color_ratio for item in items], 1.0),
+        ("Structure loss vs RAW61", "x", [item.median_structure_ratio for item in items], 1.0),
+    ]
+    rendered = []
+    for title, unit, values, gate in charts:
+        numeric = [float(value) for value in values if value is not None]
+        if not numeric:
+            continue
+        maximum = max(max(numeric), gate) * 1.12
+        points = []
+        labels = []
+        for index, (item, value) in enumerate(zip(items, values)):
+            if value is None:
+                continue
+            x = 34 + index * (252 / max(1, len(items) - 1))
+            y = 116 - float(value) / maximum * 86
+            points.append(f"{x:.1f},{y:.1f}")
+            labels.append(f'<text x="{x:.1f}" y="136" text-anchor="middle">{esc(item.level)}</text>')
+        gate_y = 116 - gate / maximum * 86
+        rendered.append(
+            f'''<figure class="trend-chart"><figcaption><strong>{esc(title)}</strong><span>lower is better; dashed line = {gate:g}{esc(unit)} RAW61 gate</span></figcaption>
+            <svg viewBox="0 0 320 150" role="img" aria-label="{esc(title)} by JPEG XL distance">
+              <line x1="34" y1="116" x2="286" y2="116" class="chart-axis"/><line x1="34" y1="30" x2="34" y2="116" class="chart-axis"/>
+              <line x1="34" y1="{gate_y:.1f}" x2="286" y2="{gate_y:.1f}" class="chart-gate"/>
+              <text x="4" y="{gate_y + 4:.1f}">{gate:g}{esc(unit)}</text>
+              <polyline points="{' '.join(points)}" class="chart-line"/>{''.join(labels)}
+            </svg></figure>'''
+        )
+    return f'<section class="trend-charts" aria-label="Level trends">{"".join(rendered)}</section>'
+
+
 def conclusion_text(summaries: list[LevelSummary]) -> str:
     first_under = next((item for item in summaries if item.median_size_pct is not None and item.median_size_pct <= 100), None)
     last_over = None
@@ -794,6 +832,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
+          <button type="button" id="cropFullscreen" aria-pressed="false" title="Enter fullscreen visual review">Fullscreen</button>
         </div>
       </div>
       <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
@@ -822,6 +861,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     const meta = document.getElementById("cropViewerMeta");
     const status = document.getElementById("cropStatus");
     const overlayToggle = document.getElementById("cropOverlayToggle");
+    const fullscreenToggle = document.getElementById("cropFullscreen");
     const modeSelect = document.getElementById("cropMode");
     const imageCache = new Map();
     let loadSerial = 0;
@@ -845,6 +885,12 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     };
 
     if (!viewers.length || !workspace) return;
+
+    function updateFullscreenButton() {
+      const active = document.fullscreenElement === workspace;
+      fullscreenToggle.textContent = active ? "Exit fullscreen" : "Fullscreen";
+      fullscreenToggle.setAttribute("aria-pressed", String(active));
+    }
 
     function currentViewer() {
       return viewers[Math.max(0, Math.min(viewers.length - 1, state.viewerIndex))];
@@ -1140,6 +1186,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
+    fullscreenToggle.addEventListener("click", async () => {
+      if (document.fullscreenElement === workspace) await document.exitFullscreen();
+      else await workspace.requestFullscreen();
+    });
+    document.addEventListener("fullscreenchange", () => {
+      updateFullscreenButton();
+      window.setTimeout(() => { resizeCanvas(); draw(); }, 0);
+    });
     canvas.addEventListener("wheel", (event) => {
       event.preventDefault();
       state.zoom = Math.max(.25, Math.min(10, state.zoom * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
@@ -1252,6 +1306,7 @@ def render_html(
             </tr>
             """
         )
+    level_chart_html = level_chart(summaries)
 
     baseline_rows = []
     for item in baselines:
@@ -1412,6 +1467,20 @@ def render_html(
     .flow-box strong {{ display: block; margin-bottom: 4px; }}
     .flow-box p {{ font-size: 13px; color: var(--muted); margin: 0; }}
     .arrow {{ display: flex; align-items: center; justify-content: center; color: var(--muted); font-weight: 700; }}
+    .adc-disclosure {{ margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }}
+    .adc-disclosure > summary {{ display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 14px; cursor: pointer; list-style: none; color: #075985; }}
+    .adc-disclosure > summary::-webkit-details-marker {{ display: none; }}
+    .adc-disclosure > summary::before {{ content: "+"; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; background: #e0f2fe; font-size: 18px; font-weight: 700; line-height: 1; }}
+    .adc-disclosure[open] > summary::before {{ content: "−"; }}
+    .adc-disclosure > summary:hover {{ background: #f8fafc; }}
+    .adc-disclosure-title {{ display: block; font-weight: 700; }}
+    .adc-disclosure-subtitle {{ display: block; margin-top: 3px; color: var(--muted); font-size: 13px; font-weight: 400; }}
+    .adc-disclosure-action {{ color: var(--muted); font-size: 12px; font-weight: 700; white-space: nowrap; }}
+    .adc-disclosure-action::before {{ content: "Show details"; }}
+    .adc-disclosure[open] .adc-disclosure-action::before {{ content: "Hide details"; }}
+    .adc-disclosure-body {{ padding: 14px; border-top: 1px solid var(--line); }}
+    .adc-disclosure-body > :first-child {{ margin-top: 0; }}
+    .adc-disclosure-body > :last-child {{ margin-bottom: 0; }}
     .adc-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
     .adc-item {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }}
     .adc-item h3 code {{ font-size: 15px; }}
@@ -1453,6 +1522,15 @@ def render_html(
     .primary-viewer span {{ color: var(--muted); font-size: 13px; }}
     .note {{ border-left: 4px solid #6b7280; padding: 10px 12px; background: #fff; }}
     .small-table th, .small-table td {{ font-size: 13px; }}
+    .trend-charts {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 20px; }}
+    .trend-chart {{ margin: 0; padding: 10px; border: 1px solid var(--line); background: var(--panel); }}
+    .trend-chart figcaption {{ display: grid; gap: 2px; margin-bottom: 6px; }}
+    .trend-chart figcaption span {{ color: var(--muted); font-size: 12px; }}
+    .trend-chart svg {{ width: 100%; height: auto; overflow: visible; }}
+    .trend-chart text {{ fill: var(--muted); font-size: 10px; }}
+    .chart-axis {{ stroke: #aab4be; stroke-width: 1; }}
+    .chart-gate {{ stroke: #b45309; stroke-width: 1.5; stroke-dasharray: 4 3; }}
+    .chart-line {{ fill: none; stroke: #047857; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }}
     .crop-workspace {{
       display: grid;
       grid-template-columns: minmax(190px, 250px) minmax(0, 1fr) minmax(180px, 220px);
@@ -1524,6 +1602,8 @@ def render_html(
       padding: 7px 10px;
       cursor: pointer;
     }}
+    #cropOverlayToggle {{ min-width: 116px; text-align: center; }}
+    #cropFullscreen {{ min-width: 116px; text-align: center; }}
     .crop-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
     #cropCanvas {{
       display: block;
@@ -1536,9 +1616,10 @@ def render_html(
     }}
     #cropCanvas.dragging {{ cursor: grabbing; }}
     .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
+    .crop-workspace:fullscreen {{ width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 900px) {{
-      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow {{ grid-template-columns: 1fr; }}
+      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
@@ -1554,7 +1635,7 @@ def render_html(
 <body>
   <header>
     <h1>JPEG XL vs RAW61 Break-even Report</h1>
-    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the same storage cost. The motive is practical: camera scanning can capture more useful film detail with PixelShift, but RAW/DNG storage grows fast enough to become the limiting factor for a real archive.</p>
+    <p class="lead">This report asks whether a 240 MP PixelShift 16 capture stored as JPEG XL can preserve more archival value than a conventional 61 MP RAW file at roughly the <em>same storage cost</em>. The motive is practical: camera scanning can capture more useful film detail with PixelShift, but RAW/DNG storage grows fast enough to become the limiting factor for a real archive.</p>
     <p class="muted">Because much of the material is color negative film, inversion matters: small color or tone losses hidden inside the orange mask can be amplified when the negative is inverted and corrected. Current build from local test material. The page publishes selected small review artifacts only; full-resolution source files stay outside the site artifact.</p>
   </header>
   <main>
@@ -1633,12 +1714,21 @@ def render_html(
       </div>
     </section>
 
-    <h2>ADC DNG/JXL Caveats</h2>
+    <h2>ADC DNG/JXL</h2>
     <div class="note">
-      <p><strong>Short answer:</strong> Adobe DNG Converter 18.5 did create DNG 1.7 files with internal JPEG XL. The lossless main-image path was exact in the tested low-level crops and showed no preservation-review metadata changes after normalization. The blocker is narrower: lossy ADC output is a rewritten image state, not merely the old pixel payload with a new compression tag, and the current reference workflow cannot yet render and validate it end to end.</p>
-      <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” means that no defect has been proved, but the evidence needed for a sole-master claim is still missing.</p>
+      <p><strong>Current conclusion:</strong> Adobe DNG Converter 18.5 can create DNG 1.7 files with internal JPEG XL, and the tested lossless low-level crops were exact. Lossy ADC rewrites the image state and cannot yet be validated end to end in the reference workflow, so it remains experimental rather than a sole-master recommendation.</p>
     </div>
-    <section class="adc-grid">
+    <details class="adc-disclosure">
+      <summary>
+        <span>
+          <span class="adc-disclosure-title">Technical caveats and validation gaps</span>
+          <span class="adc-disclosure-subtitle">Nine documented items covering geometry, sample interpretation, application support, visual validation, and storage.</span>
+        </span>
+        <span class="adc-disclosure-action" aria-hidden="true"></span>
+      </summary>
+      <div class="adc-disclosure-body">
+        <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” means that no defect has been proved, but the evidence needed for a sole-master claim is still missing.</p>
+        <section class="adc-grid">
       <div class="adc-item">
         <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
         <dl>
@@ -1738,15 +1828,27 @@ def render_html(
           <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
         </dl>
       </div>
-    </section>
+        </section>
+      </div>
+    </details>
 
-    <h2>Why Negative-aware Preconditioning Is Not the Archive Recommendation</h2>
-    <div class="note">
-      <p><strong>Idea considered:</strong> transform the linear negative into a positive-looking, density-aware intermediate before lossy JPEG XL encoding, then apply the exact inverse transform after decoding and before FilmLab or another film inversion workflow. In principle this could steer JPEG XL's perceptual bit allocation toward differences that become visible in the final positive image.</p>
-      <p><strong>Why it was stopped:</strong> a useful transform would need channel-specific film-base correction, a strictly invertible density curve, no clipping, a declared wide-gamut color space, preserved parameters, and a custom restore step. A simple <code>1 - RGB</code> inversion does not remove the orange mask or model film density. Inside DNG/JXL, the approach is more fragile still because lossy Adobe output already changes the sample scale and geometry, uses the XYB path, and depends on channel-specific <code>MapPolynomial</code> operations.</p>
-      <p><strong>Estimated upside, not a measured result:</strong> the likely additional saving at comparable post-inversion quality is roughly <code>5-10%</code>; an optimistic upper range is about <code>10-20%</code>. More than <code>20%</code> appears unlikely without visible loss or reduced future editing latitude. The optimistic bound is illustrated by the Kodak Gold batch, where moving from <code>d=0.03</code> (2.42 GiB) to <code>d=0.05</code> (1.98 GiB) saved about 18%. Preconditioning would have to make the latter survive like the former to realize that full gain, which has not been demonstrated.</p>
-      <p><strong>Archive decision:</strong> that speculative saving does not justify a bespoke representation whose long-term interpretation depends on custom code and metadata. Prefer a lower JPEG XL distance or lossless storage and accept the lower compression ratio. Negative-aware preconditioning may remain an interesting codec experiment, but it is not recommended for the sole archive master.</p>
-    </div>
+    <details class="adc-disclosure">
+      <summary>
+        <span>
+          <span class="adc-disclosure-title">Why Negative-aware Preconditioning Is Not the Archive Recommendation</span>
+          <span class="adc-disclosure-subtitle">The investigated idea, its estimated upside, and why the archive workflow rejected it.</span>
+        </span>
+        <span class="adc-disclosure-action" aria-hidden="true"></span>
+      </summary>
+      <div class="adc-disclosure-body">
+        <div class="note">
+          <p><strong>Idea considered:</strong> transform the linear negative into a positive-looking, density-aware intermediate before lossy JPEG XL encoding, then apply the exact inverse transform after decoding and before FilmLab or another film inversion workflow. In principle this could steer JPEG XL's perceptual bit allocation toward differences that become visible in the final positive image.</p>
+          <p><strong>Why it was stopped:</strong> a useful transform would need channel-specific film-base correction, a strictly invertible density curve, no clipping, a declared wide-gamut color space, preserved parameters, and a custom restore step. A simple <code>1 - RGB</code> inversion does not remove the orange mask or model film density. Inside DNG/JXL, the approach is more fragile still because lossy Adobe output already changes the sample scale and geometry, uses the XYB path, and depends on channel-specific <code>MapPolynomial</code> operations.</p>
+          <p><strong>Estimated upside, not a measured result:</strong> the likely additional saving at comparable post-inversion quality is roughly <code>5-10%</code>; an optimistic upper range is about <code>10-20%</code>. More than <code>20%</code> appears unlikely without visible loss or reduced future editing latitude. The optimistic bound is illustrated by the Kodak Gold batch, where moving from <code>d=0.03</code> (2.42 GiB) to <code>d=0.05</code> (1.98 GiB) saved about 18%. Preconditioning would have to make the latter survive like the former to realize that full gain, which has not been demonstrated.</p>
+          <p><strong>Archive decision:</strong> that speculative saving does not justify a bespoke representation whose long-term interpretation depends on custom code and metadata. Prefer a lower JPEG XL distance or lossless storage and accept the lower compression ratio. Negative-aware preconditioning may remain an interesting codec experiment, but it is not recommended for the sole archive master.</p>
+        </div>
+      </div>
+    </details>
 
     <h2>Level Summary</h2>
     <div class="note">
@@ -1792,6 +1894,10 @@ def render_html(
         {''.join(row.strip() for row in level_rows)}
       </tbody>
     </table>
+
+    <h3>How The Tested Levels Move</h3>
+    <p class="muted">Each chart has its own vertical scale. The dashed line is the RAW61 comparison gate: 100% for storage and 1.0x for the two relative-error measures.</p>
+    {level_chart_html}
 
     <h2>Color Legend And Units</h2>
     <section class="questions">
