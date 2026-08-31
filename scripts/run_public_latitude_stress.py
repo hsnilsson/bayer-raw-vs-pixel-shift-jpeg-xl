@@ -232,6 +232,8 @@ def metrics(ref: np.ndarray, cand: np.ndarray, peak: float = 65535.0) -> dict[st
 class Transform:
     name: str
     apply: Callable[[np.ndarray], np.ndarray]
+    label: str = ""
+    description: str = ""
 
 
 def build_transforms(reference: np.ndarray) -> list[Transform]:
@@ -249,6 +251,14 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
     density_low = np.percentile(density_ref, 0.5, axis=(0, 1))
     density_high = np.percentile(density_ref, 99.5, axis=(0, 1))
     density_span = np.maximum(density_high - density_low, 1e-6)
+    reference_luma = (
+        ref_linear[:, :, 0] * 0.2126
+        + ref_linear[:, :, 1] * 0.7152
+        + ref_linear[:, :, 2] * 0.0722
+    )
+    shadow_white = max(float(np.percentile(reference_luma, 12.0)), 1e-6)
+    highlight_black = float(np.percentile(reference_luma, 88.0))
+    highlight_white = max(float(np.percentile(reference_luma, 99.8)), highlight_black + 1e-6)
 
     def density_positive(arr: np.ndarray) -> np.ndarray:
         x = np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
@@ -270,6 +280,17 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
         x = to_unit(arr)
         lifted = np.clip(x * 8.0, 0.0, 1.0)
         return np.power(lifted, 1 / 2.2)
+
+    def shadow_recovery(arr: np.ndarray) -> np.ndarray:
+        """Expand the lower reference luminance range in a shared linear scale."""
+        linear = np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
+        return np.power(np.clip(linear / shadow_white, 0.0, 1.0), 1 / 2.2)
+
+    def highlight_separation(arr: np.ndarray) -> np.ndarray:
+        """Expand the upper reference luminance range with the same channel mapping."""
+        linear = np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
+        expanded = (linear - highlight_black) / (highlight_white - highlight_black)
+        return np.power(np.clip(expanded, 0.0, 1.0), 1 / 2.2)
 
     def steep_curve(arr: np.ndarray) -> np.ndarray:
         x = to_unit(arr)
@@ -310,14 +331,33 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
         return np.clip(y, 0.0, 1.0)
 
     return [
-        Transform("identity", identity),
-        Transform("shadow_push_plus3stops", shadow_push),
-        Transform("steep_curve", steep_curve),
-        Transform("negative_percentile_stretch", negative_stretch),
-        Transform("negative_grade", negative_grade),
-        Transform("negative_density_print", negative_density_print),
-        Transform("negative_density_hard_print", negative_density_hard_print),
-        Transform("negative_density_shadow_print", negative_density_shadow_print),
+        Transform("identity", identity, "Normal", "Unmodified display of the rendered crop."),
+        Transform("shadow_push_plus3stops", shadow_push, "Legacy shadow push", "Legacy diagnostic transform."),
+        Transform(
+            "shadow_recovery_luma_p12",
+            shadow_recovery,
+            "Shadow recovery",
+            "Expands the reference crop's darkest 12% of linear luminance across the display range. "
+            "A deliberately strong edit-resilience check, not a recommended grade.",
+        ),
+        Transform("steep_curve", steep_curve, "Legacy steep curve", "Legacy diagnostic transform."),
+        Transform(
+            "highlight_separation_luma_p88_p998",
+            highlight_separation,
+            "Highlight separation",
+            "Expands the reference crop's 88th to 99.8th percentile of linear luminance. "
+            "A deliberately strong edit-resilience check, not a recommended grade.",
+        ),
+        Transform("negative_percentile_stretch", negative_stretch, "Negative percentile stretch", "Negative display diagnostic."),
+        Transform("negative_grade", negative_grade, "Negative grade", "Negative display diagnostic."),
+        Transform("negative_density_print", negative_density_print, "Negative density print", "Negative-density display diagnostic."),
+        Transform(
+            "negative_density_hard_print",
+            negative_density_hard_print,
+            "Hard negative-density inversion",
+            "Existing program-independent negative-density inversion proxy; it is not a complete film inversion recipe.",
+        ),
+        Transform("negative_density_shadow_print", negative_density_shadow_print, "Negative shadow print", "Negative display diagnostic."),
     ]
 
 

@@ -14,6 +14,18 @@
   "scan_set": "Kodak5035 H190-1983",
   "set_id": "_DSC6577",
   "crop_name": "manual-02",
+  "overviews": {
+    "reference": "overview_reference.png",
+    "ps16_lossless": "overview_reference.png",
+    "raw61": "overview_raw61.png",
+    "jxl_d020": "overview_jxl_d020.png",
+    "jxl_d022": "overview_jxl_d022.png",
+    "jxl_d025": "overview_jxl_d025.png",
+    "jxl_d028": "overview_jxl_d028.png",
+    "jxl_d030": "overview_jxl_d030.png",
+    "jxl_d100": "overview_jxl_d100.png",
+    "jxl_d200": "overview_jxl_d200.png"
+  },
   "transform": "identity",
   "crop": [
     13458,

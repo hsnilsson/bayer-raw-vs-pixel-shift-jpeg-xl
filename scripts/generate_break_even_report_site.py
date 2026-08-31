@@ -592,8 +592,8 @@ def viewer_groups(viewers: list[Path]) -> dict[str, list[Path]]:
     return dict(sorted(groups.items()))
 
 
-def viewer_level_key(path: Path) -> tuple[int, str]:
-    name = path.stem
+def viewer_level_key(path: Path | str) -> tuple[int, str]:
+    name = path.stem if isinstance(path, Path) else str(path)
     if name.startswith("jxl_"):
         return level_sort(name.removeprefix("jxl_"))
     return (9999, name)
@@ -617,32 +617,71 @@ def viewer_records(
         directory = index_path.parent
         metadata = read_viewer_metadata(index_path)
         labels = metadata.get("labels", {}) if isinstance(metadata.get("labels", {}), dict) else {}
+        overviews = metadata.get("overviews", {}) if isinstance(metadata.get("overviews", {}), dict) else {}
+        image_sets = metadata.get("images_by_transform", {}) if isinstance(metadata.get("images_by_transform", {}), dict) else {}
+        mode_items = metadata.get("view_modes", []) if isinstance(metadata.get("view_modes", []), list) else []
+        view_modes = [item for item in mode_items if isinstance(item, dict) and item.get("key") in image_sets]
+        if not view_modes:
+            legacy_key = str(metadata.get("transform") or "identity")
+            image_sets = {legacy_key: {"reference": "reference.png", "raw61": "raw61.png"}}
+            for path in directory.glob("jxl_*.png"):
+                image_sets[legacy_key][path.stem] = path.name
+            view_modes = [{"key": legacy_key, "label": "Normal", "description": "Unmodified display of the rendered crop."}]
+        default_mode = str(metadata.get("default_transform") or view_modes[0].get("key"))
+        if default_mode not in image_sets:
+            default_mode = str(view_modes[0].get("key"))
         scan_set = str(metadata.get("scan_set") or directory.parent.name)
         set_id = str(metadata.get("set_id") or directory.name)
         crop_name = str(metadata.get("crop_name") or "")
         candidates: list[dict[str, str]] = []
-        reference_path = directory / "reference.png"
+        reference_sources = {
+            str(mode.get("key")): relpath(directory / str(image_sets[str(mode.get("key"))].get("reference", "")), output)
+            for mode in view_modes
+            if (directory / str(image_sets[str(mode.get("key"))].get("reference", ""))).is_file()
+        }
+        reference_path = directory / str(image_sets[default_mode].get("reference", ""))
+        reference_overview_path = directory / str(overviews.get("reference", ""))
         if reference_path.is_file():
             candidates.append(
                 {
                     "key": "ps16_lossless",
                     "label": "PS16 lossless / reference",
-                    "src": relpath(reference_path, output),
+                    "src": reference_sources.get(default_mode, relpath(reference_path, output)),
+                    "sources": reference_sources,
                     "role": "baseline",
+                    "overview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
                 }
             )
-        raw61_path = directory / "raw61.png"
+        raw_sources = {
+            str(mode.get("key")): relpath(directory / str(image_sets[str(mode.get("key"))].get("raw61", "")), output)
+            for mode in view_modes
+            if (directory / str(image_sets[str(mode.get("key"))].get("raw61", ""))).is_file()
+        }
+        raw61_path = directory / str(image_sets[default_mode].get("raw61", ""))
+        raw61_overview_path = directory / str(overviews.get("raw61", ""))
         if raw61_path.is_file():
             candidates.append(
                 {
                     "key": "raw61",
                     "label": str(labels.get("raw61", "RAW61 local aligned")),
-                    "src": relpath(raw61_path, output),
+                    "src": raw_sources.get(default_mode, relpath(raw61_path, output)),
+                    "sources": raw_sources,
                     "role": "raw61",
+                    "overview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 }
             )
-        for path in sorted(directory.glob("jxl_*.png"), key=viewer_level_key):
-            key = path.stem
+        keys = sorted(
+            {key for image_set in image_sets.values() if isinstance(image_set, dict) for key in image_set if key.startswith("jxl_")},
+            key=viewer_level_key,
+        )
+        for key in keys:
+            sources = {
+                str(mode.get("key")): relpath(directory / str(image_sets[str(mode.get("key"))].get(key, "")), output)
+                for mode in view_modes
+                if (directory / str(image_sets[str(mode.get("key"))].get(key, ""))).is_file()
+            }
+            if default_mode not in sources:
+                continue
             label = str(labels.get(key, key.replace("_", " ").upper()))
             if key in {"jxl_d100", "jxl_d150", "jxl_d200"}:
                 label = f"{label} (hard visual check)"
@@ -650,8 +689,14 @@ def viewer_records(
                 {
                     "key": key,
                     "label": label,
-                    "src": relpath(path, output),
+                    "src": sources[default_mode],
+                    "sources": sources,
                     "role": "jxl",
+                    "overview": (
+                        relpath(directory / str(overviews.get(key, "")), output)
+                        if (directory / str(overviews.get(key, ""))).is_file()
+                        else ""
+                    ),
                 }
             )
         if not reference_path.is_file() or not candidates:
@@ -670,10 +715,14 @@ def viewer_records(
                 "sampleRole": annotation.get("sample_role", ""),
                 "setId": set_id,
                 "scanSet": scan_set,
-                "reference": relpath(reference_path, output),
+                "reference": reference_sources.get(default_mode, relpath(reference_path, output)),
+                "references": reference_sources,
+                "referenceOverview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
                 "candidates": candidates,
                 "metadata": {
-                    "transform": str(metadata.get("transform", "")),
+                    "transform": default_mode,
+                    "defaultTransform": default_mode,
+                    "viewModes": view_modes,
                     "cropName": crop_name,
                     "crop": metadata.get("crop", []),
                     "localRaw61Alignment": metadata.get("local_raw61_alignment", {}),
@@ -725,7 +774,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     if not records:
         return '<p class="muted">No interactive visual review artifacts found yet.</p>'
     viewer_json = json.dumps(records, ensure_ascii=True).replace("<", "\\u003c")
-    return """  <section class="crop-workspace" id="cropWorkspace" aria-labelledby="cropViewerTitle">
+    return """  <section class="crop-workspace" id="cropWorkspace" tabindex="0" aria-labelledby="cropViewerTitle">
     <aside class="crop-sidebar crop-sidebar-left">
       <div class="crop-sidebar-header">
         <strong>Film candidates</strong>
@@ -740,6 +789,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <p id="cropViewerMeta"></p>
         </div>
         <div class="crop-actions">
+          <label class="crop-mode-label">View <select id="cropMode" title="Choose the normal or extreme-edit diagnostic view"></select></label>
           <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
@@ -772,12 +822,15 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     const meta = document.getElementById("cropViewerMeta");
     const status = document.getElementById("cropStatus");
     const overlayToggle = document.getElementById("cropOverlayToggle");
+    const modeSelect = document.getElementById("cropMode");
     const imageCache = new Map();
     let loadSerial = 0;
     let activeChoiceList = "film";
+    let workspaceActive = false;
     const state = {
       viewerIndex: 0,
       candidateKey: "",
+      modeKey: "",
       overlay: false,
       zoom: 1,
       panX: 0,
@@ -786,7 +839,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       lastX: 0,
       lastY: 0,
       referenceImage: null,
-      candidateImage: null
+      candidateImage: null,
+      referenceOverviewImage: null,
+      candidateOverviewImage: null
     };
 
     if (!viewers.length || !workspace) return;
@@ -798,6 +853,20 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     function currentCandidate() {
       const viewer = currentViewer();
       return viewer.candidates.find((candidate) => candidate.key === state.candidateKey) || viewer.candidates[0];
+    }
+
+    function currentMode() {
+      const viewer = currentViewer();
+      const modes = viewer.metadata.viewModes || [];
+      return modes.find((mode) => mode.key === state.modeKey) || modes[0] || { key: "identity", label: "Normal", description: "" };
+    }
+
+    function referenceSource(viewer) {
+      return (viewer.references && viewer.references[state.modeKey]) || viewer.reference;
+    }
+
+    function candidateSource(candidate) {
+      return (candidate.sources && candidate.sources[state.modeKey]) || candidate.src;
     }
 
     function loadImage(src) {
@@ -844,6 +913,23 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.restore();
     }
 
+    function drawOverview(image, x, paneWidth, height) {
+      if (!image) return;
+      const maxWidth = Math.min(320, paneWidth * .54);
+      const maxHeight = Math.min(170, height * .27);
+      const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
+      const drawnWidth = image.width * scale;
+      const drawnHeight = image.height * scale;
+      const left = x + (paneWidth - drawnWidth) / 2;
+      const top = 12;
+      ctx.save();
+      ctx.globalAlpha = .92;
+      ctx.drawImage(image, left, top, drawnWidth, drawnHeight);
+      ctx.strokeStyle = "rgba(255,255,255,.32)";
+      ctx.strokeRect(left - .5, top - .5, drawnWidth + 1, drawnHeight + 1);
+      ctx.restore();
+    }
+
     function drawPaneLabel(text, x, y) {
       ctx.save();
       ctx.font = "12px Arial, sans-serif";
@@ -862,6 +948,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.fillStyle = "#101316";
       ctx.fillRect(0, 0, width, height);
       const half = width / 2;
+      drawOverview(state.referenceOverviewImage, 0, half, height);
+      drawOverview(state.candidateOverviewImage, half, half, height);
       drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
       drawImageFit(state.candidateImage, half, 0, half, height, [half, 0, half, height]);
       if (state.overlay) {
@@ -885,13 +973,17 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       const candidate = currentCandidate();
       status.textContent = "Loading crop images...";
       try {
-        const [referenceImage, candidateImage] = await Promise.all([
-          loadImage(viewer.reference),
-          loadImage(candidate.src)
+        const [referenceImage, candidateImage, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
+          loadImage(referenceSource(viewer)),
+          loadImage(candidateSource(candidate)),
+          viewer.referenceOverview ? loadImage(viewer.referenceOverview) : Promise.resolve(null),
+          candidate.overview ? loadImage(candidate.overview) : Promise.resolve(null)
         ]);
         if (serial !== loadSerial) return;
         state.referenceImage = referenceImage;
         state.candidateImage = candidateImage;
+        state.referenceOverviewImage = referenceOverviewImage;
+        state.candidateOverviewImage = candidateOverviewImage;
         status.textContent = "";
         resizeCanvas();
         draw();
@@ -956,33 +1048,63 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       });
     }
 
+    function renderModeSelect() {
+      const viewer = currentViewer();
+      const modes = viewer.metadata.viewModes || [];
+      modeSelect.textContent = "";
+      modes.forEach((mode) => {
+        const option = document.createElement("option");
+        option.value = mode.key;
+        option.textContent = mode.label || mode.key;
+        option.title = mode.description || "";
+        modeSelect.appendChild(option);
+      });
+      modeSelect.value = state.modeKey;
+    }
+
     function updateHeading() {
       const viewer = currentViewer();
       const alignment = viewer.metadata.localRaw61Alignment || {};
+      const mode = currentMode();
       title.textContent = viewer.label;
       const parts = [];
       if (viewer.metadata.cropName) parts.push(viewer.metadata.cropName);
-      if (viewer.metadata.transform) parts.push(viewer.metadata.transform);
+      if (mode.label) parts.push(mode.label);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
-      meta.textContent = parts.join(" | ");
+      meta.textContent = `${parts.join(" | ")}${mode.description ? ` - ${mode.description}` : ""}`;
     }
 
     function setViewer(index) {
+      const previousCandidateKey = state.candidateKey;
+      const previousModeKey = state.modeKey;
       state.viewerIndex = index;
       const viewer = currentViewer();
-      state.candidateKey = viewer.candidates[0] ? viewer.candidates[0].key : "";
+      state.candidateKey = viewer.candidates.some((candidate) => candidate.key === previousCandidateKey)
+        ? previousCandidateKey
+        : (viewer.candidates[0] ? viewer.candidates[0].key : "");
+      const modes = viewer.metadata.viewModes || [];
+      state.modeKey = modes.some((mode) => mode.key === previousModeKey)
+        ? previousModeKey
+        : (viewer.metadata.defaultTransform || (modes[0] ? modes[0].key : "identity"));
       resetView();
       renderFilmList();
       renderQualityList();
+      renderModeSelect();
       updateHeading();
       loadCurrentImages();
     }
 
     function setCandidate(key) {
       state.candidateKey = key;
-      resetView();
       renderQualityList();
+      loadCurrentImages();
+    }
+
+    function setMode(key) {
+      state.modeKey = key;
+      renderModeSelect();
+      updateHeading();
       loadCurrentImages();
     }
 
@@ -993,12 +1115,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       draw();
     }
 
-    function moveViewer(delta) {
+    function moveViewer(delta, preserveActiveList = false) {
+      const previousActiveList = activeChoiceList;
       const nextIndex = Math.max(0, Math.min(viewers.length - 1, state.viewerIndex + delta));
       if (nextIndex === state.viewerIndex) return;
       setViewer(nextIndex);
       const button = filmList.querySelectorAll("button")[nextIndex];
       if (button) button.focus();
+      if (preserveActiveList) activeChoiceList = previousActiveList;
     }
 
     function moveCandidate(delta) {
@@ -1012,6 +1136,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }
 
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
+    modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
@@ -1044,18 +1169,31 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       resizeCanvas();
       draw();
     });
+    document.addEventListener("pointerdown", (event) => {
+      workspaceActive = workspace.contains(event.target);
+    }, true);
     document.addEventListener("keydown", (event) => {
-      if (!workspace.contains(document.activeElement)) return;
+      if (!workspaceActive && !workspace.contains(document.activeElement)) return;
       if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) {
         setOverlay(!state.overlay);
         return;
       }
-      if (["ArrowDown", "ArrowRight"].includes(event.key)) {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        moveViewer(1, true);
+        return;
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        moveViewer(-1, true);
+        return;
+      }
+      if (event.key === "ArrowDown") {
         event.preventDefault();
         if (activeChoiceList === "quality") moveCandidate(1);
         else moveViewer(1);
       }
-      if (["ArrowUp", "ArrowLeft"].includes(event.key)) {
+      if (event.key === "ArrowUp") {
         event.preventDefault();
         if (activeChoiceList === "quality") moveCandidate(-1);
         else moveViewer(-1);
@@ -1601,6 +1739,14 @@ def render_html(
         </dl>
       </div>
     </section>
+
+    <h2>Why Negative-aware Preconditioning Is Not the Archive Recommendation</h2>
+    <div class="note">
+      <p><strong>Idea considered:</strong> transform the linear negative into a positive-looking, density-aware intermediate before lossy JPEG XL encoding, then apply the exact inverse transform after decoding and before FilmLab or another film inversion workflow. In principle this could steer JPEG XL's perceptual bit allocation toward differences that become visible in the final positive image.</p>
+      <p><strong>Why it was stopped:</strong> a useful transform would need channel-specific film-base correction, a strictly invertible density curve, no clipping, a declared wide-gamut color space, preserved parameters, and a custom restore step. A simple <code>1 - RGB</code> inversion does not remove the orange mask or model film density. Inside DNG/JXL, the approach is more fragile still because lossy Adobe output already changes the sample scale and geometry, uses the XYB path, and depends on channel-specific <code>MapPolynomial</code> operations.</p>
+      <p><strong>Estimated upside, not a measured result:</strong> the likely additional saving at comparable post-inversion quality is roughly <code>5-10%</code>; an optimistic upper range is about <code>10-20%</code>. More than <code>20%</code> appears unlikely without visible loss or reduced future editing latitude. The optimistic bound is illustrated by the Kodak Gold batch, where moving from <code>d=0.03</code> (2.42 GiB) to <code>d=0.05</code> (1.98 GiB) saved about 18%. Preconditioning would have to make the latter survive like the former to realize that full gain, which has not been demonstrated.</p>
+      <p><strong>Archive decision:</strong> that speculative saving does not justify a bespoke representation whose long-term interpretation depends on custom code and metadata. Prefer a lower JPEG XL distance or lossless storage and accept the lower compression ratio. Negative-aware preconditioning may remain an interesting codec experiment, but it is not recommended for the sole archive master.</p>
+    </div>
 
     <h2>Level Summary</h2>
     <div class="note">
