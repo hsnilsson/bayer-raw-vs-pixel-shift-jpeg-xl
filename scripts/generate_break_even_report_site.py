@@ -1578,7 +1578,7 @@ def render_html(
         <p><strong>PS16 reference vs PS16 JXL.</strong> This is apples-to-apples and measures JPEG XL damage to a fixed rendered image state.</p>
         <details>
           <summary>Answer so far</summary>
-          <p>The tested lossy levels show very small patch color movement against the PS16 reference. Codec damage is not zero, and trained visual review can still see grain/texture changes, so this remains a quality-threshold question rather than a pure pass/fail.</p>
+          <p>The tested lossy levels show very small patch color movement (small shifts in the measured average color of sampled image areas) against the PS16 reference. Codec damage is not zero, and the trained eye can still see grain/texture changes, so this remains a quality-threshold question rather than a pure pass/fail.</p>
         </details>
       </div>
       <div class="card question-card">
