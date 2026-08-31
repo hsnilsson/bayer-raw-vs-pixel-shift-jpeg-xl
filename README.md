@@ -1,4 +1,4 @@
-# JPEG XL vs DNG/PixelShift
+# Film Information Retention Under a Fixed Storage Budget: Comparing Lower-Resolution Bayer Raw with High-Resolution Pixel-Shift JPEG XL
 
 The restartable Windows intake, FilmLab staging, and quarantine workflow is a
 self-contained subtree in
