@@ -49,6 +49,8 @@
   },
   "cleanup": {
     "enabled": false,
-    "require_positive": true
+    "require_positive": true,
+    "retention_groups": 2,
+    "prune_mode": "move"
   }
 }

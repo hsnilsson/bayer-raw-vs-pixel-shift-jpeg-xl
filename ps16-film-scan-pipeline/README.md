@@ -1,8 +1,9 @@
 # Restartable PS16 mass-scan workflow for Windows
 
 This is the operational, safety-first workflow for continuously processing Sony
-PS16 rolls while scanning. It is deliberately conservative: no camera raw is
-ever deleted, and even the optional quarantine move needs two explicit approvals.
+PS16 rolls while scanning. It is conservative about verification, but cleanup
+is configurable: you can keep a rolling window of recent groups, move older raws
+to recoverable quarantine, or delete them once they fall outside the window.
 
 ## What the first version automates
 
@@ -141,10 +142,11 @@ Existing outputs are reused only when their current size and SHA-256 still match
 the queue record. ADC work happens below `work\adc-temp`; an interrupted temp
 file is never treated as an archive result.
 
-## Two-step raw quarantine (optional)
+## Retention cleanup
 
-There is no permanent-delete command. Keep `cleanup.enabled=false` until a roll
-has been visually reviewed. By default, a FilmLab positive is also required.
+Keep `cleanup.enabled=false` until the workflow is proven on your own storage
+layout. By default, a FilmLab positive is also required before a group can be
+approved for cleanup.
 
 First approve each reviewed group:
 
@@ -156,22 +158,24 @@ Approval rechecks every required retained output against its saved size and
 SHA-256, then computes and stores SHA-256 for all 16 ARWs. This intentionally
 takes time but happens outside the capture-critical conversion loop.
 
-Then set `cleanup.enabled=true` and perform a second, batch-scoped action. The
-approval token must exactly equal `batch.id`:
+Then set `cleanup.enabled=true` and run the retention sweep. The approval token
+must exactly equal `batch.id`:
 
 ```powershell
 .\start.ps1 -Config .\config.json `
-  -Command quarantine -ApprovalToken roll-2026-001
+  -Command prune -ApprovalToken roll-2026-001
 ```
 
-Only the 16 camera ARWs of explicitly approved groups are moved. The source DNG,
-archive-master DNG, positives, previews, queue, and checksums remain. Restore ARWs
-from the quarantine folder manually if needed; empty that folder only through a
-separate backup/retention policy after another review.
+By default the pipeline keeps the newest two approved groups and prunes older
+ones. Set `cleanup.retention_groups` to match your disk budget. With
+`cleanup.prune_mode="move"` the older camera raws go to recoverable quarantine;
+with `cleanup.prune_mode="delete"` they are removed after the verification
+checks have already passed.
 
-If Windows or the runner stops midway through a quarantine move, run the same
-command again. It verifies that every ARW exists in exactly one of the source or
-quarantine locations and resumes the remaining moves; conflicting duplicates or
+The source DNG, archive-master DNG, positives, previews, queue, and checksums
+remain. If Windows or the runner stops midway through a move-based prune, run
+the same command again. It verifies that each raw exists in exactly one of the
+expected places and resumes the remaining work; conflicting duplicates or
 checksum changes stop the operation.
 
 ## Known limits
@@ -185,14 +189,14 @@ checksum changes stop the operation.
 - The first version is single-process. A process lock refuses a second watcher
   against the same `work` database and is released automatically after a crash.
 - A 1 TB disk still needs free-space monitoring and an external backup policy;
-  quarantine is not a backup.
+  retention cleanup is not a backup.
 
 ## Synthetic verification
 
 The test suite creates 16 tiny fake ARWs and fake converter outputs in a temporary
 folder. It exercises restart/idempotency, the archive-master profile, FilmLab staging,
 positive preview creation, explicit approval, a rejected token, and recoverable
-quarantine without touching real photographs:
+retention cleanup without touching real photographs:
 
 ```powershell
 python -m unittest discover -s tests -v

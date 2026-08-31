@@ -107,7 +107,7 @@ class Ps16ScanPipelineTests(unittest.TestCase):
                 "positive_extensions": [".png"],
             },
             "previews": {"enabled": True, "max_long_edge": 100, "jpeg_quality": 80},
-            "cleanup": {"enabled": True, "require_positive": True},
+            "cleanup": {"enabled": True, "require_positive": True, "retention_groups": 0, "prune_mode": "move"},
         }
 
     def make_raws(self) -> None:
@@ -136,7 +136,37 @@ class Ps16ScanPipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "paths.archive"):
             pipeline_module.load_config(self.config_path)
 
-    def test_synthetic_restartable_flow_and_two_step_quarantine(self) -> None:
+    def test_config_rejects_invalid_cleanup_settings(self) -> None:
+        for key, value in (("retention_groups", -1), ("prune_mode", "erase")):
+            with self.subTest(key=key):
+                config = self.config()
+                config["cleanup"][key] = value
+                self.config_path.write_text(json.dumps(config), encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    pipeline_module.load_config(self.config_path)
+
+    def test_existing_queue_schema_gains_cleaned_at(self) -> None:
+        work = self.root / "work"
+        work.mkdir()
+        db = pipeline_module.sqlite3.connect(work / "queue.sqlite3")
+        try:
+            db.execute(
+                "CREATE TABLE groups (group_id TEXT PRIMARY KEY,status TEXT NOT NULL DEFAULT 'discovered',"
+                "expected INTEGER NOT NULL DEFAULT 16,dng_name TEXT,attempts INTEGER NOT NULL DEFAULT 0,"
+                "error TEXT,approved_at TEXT,updated_at TEXT NOT NULL)"
+            )
+            db.commit()
+        finally:
+            db.close()
+        config = pipeline_module.load_config(self.config_path)
+        pipeline = SyntheticPipeline(config, fake_adc_script=self.fake_adc)
+        try:
+            columns = {row[1] for row in pipeline.db.execute("PRAGMA table_info(groups)")}
+            self.assertIn("cleaned_at", columns)
+        finally:
+            pipeline.close()
+
+    def test_synthetic_restartable_flow_and_retention_prune(self) -> None:
         self.make_raws()
         pipeline = self.open_pipeline()
 
@@ -169,15 +199,26 @@ class Ps16ScanPipelineTests(unittest.TestCase):
         self.assertTrue((self.root / "previews" / f"{staged.stem}.jpg").is_file())
         pipeline.approve("42")
         with self.assertRaises(RuntimeError):
-            pipeline.quarantine("wrong-token")
+            pipeline.prune("wrong-token")
         self.assertTrue((self.incoming / "DSC0001.ARW").is_file())
 
-        pipeline.quarantine("roll-test")
+        pipeline.config["cleanup"]["retention_groups"] = 1
+        pipeline.prune("roll-test")
+        self.assertEqual(pipeline.group_status("42"), "approved")
+        self.assertTrue((self.incoming / "DSC0001.ARW").is_file())
+
+        pipeline.config["cleanup"]["retention_groups"] = 0
+        pipeline.prune("roll-test")
 
         self.assertEqual(pipeline.group_status("42"), "quarantined")
         self.assertFalse((self.incoming / "DSC0001.ARW").exists())
         self.assertTrue((self.root / "quarantine" / "42" / "DSC0001.ARW").is_file())
         self.assertTrue(source.is_file(), "derived DNG must not be moved with camera raws")
+
+        pipeline.config["cleanup"]["prune_mode"] = "delete"
+        pipeline.prune("roll-test")
+        self.assertEqual(pipeline.group_status("42"), "cleaned")
+        self.assertFalse((self.root / "quarantine" / "42" / "DSC0001.ARW").exists())
 
 
 if __name__ == "__main__":
