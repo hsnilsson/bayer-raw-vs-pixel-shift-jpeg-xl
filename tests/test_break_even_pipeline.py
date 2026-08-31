@@ -460,6 +460,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("Fully Measured Comparisons", html)
         self.assertIn("Median-size Budget Levels", html)
         self.assertIn("this is a size result, not a quality verdict", html)
+        self.assertIn("This compares two archival workflows, not sensor resolution in isolation", html)
+        self.assertIn("registered crop comparisons provided below", html)
 
     def test_report_site_documents_adc_dng_jxl_caveats(self) -> None:
         html = report_site.render_html(
