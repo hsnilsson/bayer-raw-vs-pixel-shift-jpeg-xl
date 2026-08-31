@@ -210,6 +210,36 @@ fixed render state for the study. That profile becomes part of the method
 because it controls demosaicing, white balance, camera profile, tone response,
 and sharpening.
 
+## Sony Imaging Edge Merge Control
+
+This optional private control asks a narrower question than the break-even
+matrix: does Sony Imaging Edge's Pixel Shift merge retain comparable structure
+to PixelShift2DNG when both start from the same 16 ARW files?
+
+Create the `.ARQ` in Imaging Edge from one complete PS16 sequence. Then render
+both the ARQ and its matching PixelShift2DNG DNG with the *same* fixed
+RawTherapee profile. Do not use an ad-hoc sRGB TIFF export as the comparison
+source: that would mix merge behavior with a different output profile, tone
+state, or sharpening state.
+
+For the two neutral TIFFs, run the local control:
+
+```powershell
+$env:JXL_PYDEPS = "$PWD\.deps\jxl_pydeps" # local optional TIFF dependency bundle
+python scripts\run_ied_merge_control.py `
+  --reference outputs\ied_merge_control\<scan-set>\<set>\pixelshift2dng_ps16_neutral.tif `
+  --candidate outputs\ied_merge_control\<scan-set>\<set>\ied_ps16_neutral.tif `
+  --output outputs\ied_merge_control\<scan-set>\<set>\merge_control.json `
+  --scan-set "<scan-set-name>" `
+  --set-id "<paired-single-shot-id>"
+```
+
+The result records global scale/translation, a downsampled full-frame structure
+diagnostic, and the manually selected native-detail crops. Its RGB error fields
+are diagnostics only, not color-accuracy or DeltaE claims: camera-profile
+interpretation can differ between the ARQ and DNG paths. It does not create
+public review assets and does not alter a JXL break-even verdict.
+
 Register the rendered 61 MP raw baseline to the rendered PS16 reference:
 
 ```powershell

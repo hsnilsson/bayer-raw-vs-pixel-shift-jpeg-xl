@@ -130,7 +130,21 @@ def shift_rgb(arr: np.ndarray, shift_x: float, shift_y: float, fill: int = 0) ->
     for idx in range(3):
         channel = arr[:, :, idx]
         if channel.dtype == np.uint16:
-            image = Image.fromarray(channel, mode="I;16")
+            # Pillow's affine transform silently maps I;16 samples to 8-bit values.
+            # Use float mode for the transform, then restore the original 16-bit range.
+            image = Image.fromarray(channel.astype(np.float32), mode="F")
+            shifted = np.asarray(
+                image.transform(
+                    (width, height),
+                    Image.Transform.AFFINE,
+                    (1.0, 0.0, -shift_x, 0.0, 1.0, -shift_y),
+                    resample=Image.Resampling.BICUBIC,
+                    fillcolor=float(fill),
+                ),
+                dtype=np.float32,
+            )
+            channels.append(np.clip(np.rint(shifted), 0, 65535).astype(np.uint16))
+            continue
         else:
             image = Image.fromarray(channel)
         shifted = image.transform(
