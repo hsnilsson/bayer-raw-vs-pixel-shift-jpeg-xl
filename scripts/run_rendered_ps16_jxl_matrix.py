@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from PIL import Image
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -33,6 +35,25 @@ DEFAULT_CJXL = ROOT / "work/jxl-tools/bin/cjxl.exe"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
 HARD_TRANSFORM = "negative_density_hard_print"
 CACHE_FILENAME = "artifact_cache.json"
+JXL_CONTAINER_SIGNATURE = b"\x00\x00\x00\x0cJXL \r\n\x87\n"
+JXL_ARCHIVE_LAYOUT_VERSION = 1
+PHOTO_METADATA_TAGS = (
+    "-Make",
+    "-Model",
+    "-Orientation",
+    "-LensMake",
+    "-LensModel",
+    "-LensInfo",
+    "-FocalLength",
+    "-FNumber",
+    "-ExposureTime",
+    "-ISO",
+    "-DateTimeOriginal",
+    "-CreateDate",
+    "-Artist",
+    "-Copyright",
+    "-ImageDescription",
+)
 
 
 @dataclass
@@ -67,6 +88,25 @@ def usable_file(path: Path) -> bool:
     return path.is_file() and path.stat().st_size > 0
 
 
+def is_jxl_container(path: Path) -> bool:
+    if not usable_file(path):
+        return False
+    with path.open("rb") as handle:
+        return handle.read(len(JXL_CONTAINER_SIGNATURE)) == JXL_CONTAINER_SIGNATURE
+
+
+def write_embedded_icc(source: Path, destination: Path) -> None:
+    Image.MAX_IMAGE_PIXELS = None
+    with Image.open(source) as image:
+        profile = image.info.get("icc_profile")
+    if not profile:
+        raise ValueError(f"{relpath(source)} has no embedded ICC profile")
+    if destination.is_file() and destination.read_bytes() == profile:
+        return
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(profile)
+
+
 def cache_code_states() -> list[dict[str, Any] | None]:
     return [
         file_state(Path(__file__), ROOT),
@@ -81,6 +121,7 @@ def artifact_fingerprint(
     level: str,
     cjxl: str,
     djxl: str,
+    exiftool: str,
     effort: int,
 ) -> str:
     return fingerprint(
@@ -89,9 +130,11 @@ def artifact_fingerprint(
             "source": file_state(source, ROOT),
             "cjxl": file_state(Path(cjxl), ROOT),
             "djxl": file_state(Path(djxl), ROOT),
+            "exiftool": file_state(Path(exiftool), ROOT),
             "level": level,
             "distance": distance_for_level(level),
             "effort": effort,
+            "jxl_archive_layout": JXL_ARCHIVE_LAYOUT_VERSION,
             "code": cache_code_states(),
         }
     )
@@ -163,14 +206,14 @@ def existing_artifacts_are_current(
     """Trust a pre-cache run once its recorded row and file timestamps agree."""
     if not matrix_row or matrix_row.get("status") != "encoded_decoded":
         return False
-    if not usable_file(encoded) or not usable_file(decoded):
+    if not is_jxl_container(encoded) or not usable_file(decoded):
         return False
     return encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns and decoded.stat().st_mtime_ns >= encoded.stat().st_mtime_ns
 
 
 def existing_encoded_is_current(source: Path, encoded: Path) -> bool:
     return (
-        usable_file(encoded)
+        is_jxl_container(encoded)
         and encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns
     )
 
@@ -232,8 +275,24 @@ def output_paths(output_root: Path, source: Path, level: str) -> tuple[Path, Pat
     return source_folder / "ps16_reference.ppm", level_folder / "ps16.jxl", level_folder / "ps16_candidate.png"
 
 
-def encode_command(cjxl: str, source: Path, encoded: Path, level: str, effort: int) -> list[str]:
-    cmd = [cjxl, str(source), str(encoded), "-e", str(effort)]
+def encode_command(
+    cjxl: str,
+    source: Path,
+    encoded: Path,
+    icc_path: Path,
+    level: str,
+    effort: int,
+) -> list[str]:
+    cmd = [
+        cjxl,
+        str(source),
+        str(encoded),
+        "--container=1",
+        "-x",
+        f"icc_pathname={icc_path}",
+        "-e",
+        str(effort),
+    ]
     distance = distance_for_level(level)
     if distance is None:
         cmd.append("-d")
@@ -245,6 +304,18 @@ def encode_command(cjxl: str, source: Path, encoded: Path, level: str, effort: i
 
 def decode_command(djxl: str, encoded: Path, decoded: Path) -> list[str]:
     return [djxl, str(encoded), str(decoded)]
+
+
+def metadata_copy_command(exiftool: str, source: Path, encoded: Path) -> list[str]:
+    return [
+        exiftool,
+        "-m",
+        "-overwrite_original",
+        "-TagsFromFile",
+        str(source),
+        *PHOTO_METADATA_TAGS,
+        str(encoded),
+    ]
 
 
 def run_checked(cmd: list[str]) -> tuple[bool, str]:
@@ -356,6 +427,7 @@ def process_render_level(
     results_dir: Path,
     cjxl: str,
     djxl: str,
+    exiftool: str,
     effort: int,
     force: bool,
     discard_intermediates: bool,
@@ -366,6 +438,7 @@ def process_render_level(
     max_analysis_dim: int,
 ) -> tuple[MatrixRow, list[dict[str, Any]], list[dict[str, Any]]]:
     ppm, encoded, decoded = output_paths(output_root, source, level)
+    icc_path = ppm.with_suffix(".icc")
     encoded.parent.mkdir(parents=True, exist_ok=True)
     row = MatrixRow(
         scan_set=scan_set,
@@ -381,10 +454,19 @@ def process_render_level(
         notes="",
     )
     if force or not usable_file(encoded):
-        ok, note = run_checked(encode_command(cjxl, ppm, encoded, level, effort))
+        if not usable_file(icc_path):
+            row.status = "metadata_failed"
+            row.notes = f"Missing ICC sidecar for {relpath(source)}"
+            return row, [], []
+        ok, note = run_checked(encode_command(cjxl, ppm, encoded, icc_path, level, effort))
         if not ok:
             encoded.unlink(missing_ok=True)
             row.status = "encode_failed"
+            row.notes = note
+            return row, [], []
+        ok, note = run_checked(metadata_copy_command(exiftool, source, encoded))
+        if not ok:
+            row.status = "metadata_failed"
             row.notes = note
             return row, [], []
     if force or not usable_file(decoded):
@@ -398,6 +480,7 @@ def process_render_level(
     row.encoded_mib = mib(encoded)
     row.decoded_mib = mib(decoded)
     row.status = "encoded_decoded"
+    row.notes = "ICC embedded; curated Exif copied from rendered TIFF"
     pixel_rows: list[dict[str, Any]] = []
     patch_rows: list[dict[str, Any]] = []
     if not no_metrics:
@@ -436,6 +519,7 @@ def main() -> int:
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--cjxl", type=Path)
     parser.add_argument("--djxl", type=Path)
+    parser.add_argument("--exiftool", type=Path, help="Path to ExifTool for copying curated photo metadata.")
     parser.add_argument("--effort", type=int, default=7)
     parser.add_argument("--limit", type=int, default=0, help="Limit number of PS16 renders for smoke tests.")
     parser.add_argument("--force", action="store_true")
@@ -483,6 +567,7 @@ def main() -> int:
     levels = [require_level(level) for level in (args.level or DEFAULT_LEVELS)]
     cjxl = find_tool("cjxl", DEFAULT_CJXL, args.cjxl)
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
+    exiftool = find_tool("exiftool", Path("exiftool"), args.exiftool)
     renders = discover_ps16_renders(args.renders_root)
     if args.scan_set:
         allowed_scan_sets = set(args.scan_set)
@@ -516,7 +601,7 @@ def main() -> int:
             key = "|".join(result_key(scan_set, set_id, level))
             entry = cache_entries.get(key) if isinstance(cache_entries.get(key), dict) else {}
             artifact_entry = entry.get("artifact") if isinstance(entry.get("artifact"), dict) else None
-            artifact_fp = artifact_fingerprint(source, level, cjxl, djxl, args.effort)
+            artifact_fp = artifact_fingerprint(source, level, cjxl, djxl, exiftool, args.effort)
             artifact_outputs = {"encoded": encoded, "decoded": decoded}
             artifact_fresh = fresh(artifact_entry, artifact_fp, artifact_outputs, ROOT)
             encoded_fresh = fresh(artifact_entry, artifact_fp, {"encoded": encoded}, ROOT)
@@ -598,6 +683,7 @@ def main() -> int:
                     args.results_dir,
                     cjxl,
                     djxl,
+                    exiftool,
                     args.effort,
                     encode_required,
                     args.discard_intermediates,
@@ -614,6 +700,7 @@ def main() -> int:
         if args.force or not usable_file(ppm) or ppm.stat().st_mtime_ns < source.stat().st_mtime_ns:
             ppm.parent.mkdir(parents=True, exist_ok=True)
             write_ppm(ppm, read_rgb_image(source))
+        write_embedded_icc(source, ppm.with_suffix(".icc"))
 
     rows: list[MatrixRow] = list(cached_rows)
     pixel_rows: list[dict[str, Any]] = []
@@ -641,7 +728,7 @@ def main() -> int:
             Path(ROOT / row.source_tif),
             row.level,
         )
-        artifact_fp = artifact_fingerprint(Path(ROOT / row.source_tif), row.level, cjxl, djxl, args.effort)
+        artifact_fp = artifact_fingerprint(Path(ROOT / row.source_tif), row.level, cjxl, djxl, exiftool, args.effort)
         key = "|".join(result_key(row.scan_set, row.set_id, row.level))
         cache_entry = {"artifact": make_entry(artifact_fp, {"encoded": encoded, "decoded": decoded}, ROOT)}
         if not args.no_metrics and any(
@@ -671,6 +758,7 @@ def main() -> int:
     if args.discard_intermediates:
         for ppm in source_ppms:
             ppm.unlink(missing_ok=True)
+            ppm.with_suffix(".icc").unlink(missing_ok=True)
 
     args.results_dir.mkdir(parents=True, exist_ok=True)
     if args.merge_existing or args.incremental:
