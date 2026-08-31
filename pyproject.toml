@@ -1,7 +1,7 @@
 [project]
-name = "jxl-archive-test"
+name = "bayer-raw-vs-pixelshift-jxl"
 version = "0.1.0"
-description = "Compare rendered DNG/TIFF image states through JPEG XL archival encode/decode tests."
+description = "Compare lower-resolution Bayer raw with high-resolution Pixel-Shift JPEG XL under a fixed storage budget."
 requires-python = ">=3.10"
 dependencies = [
   "numpy",
