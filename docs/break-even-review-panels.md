@@ -91,3 +91,10 @@ zoom, and drag-to-pan. The viewer uses the same crop-local RAW61 alignment as
 the static panel generator. The report-level fullscreen viewer always includes
 the PS16 reference as a lossless baseline, while `d100` and `d200` are
 deliberately heavy-compression visual anchors.
+
+The report viewer also draws a small full-frame overview behind each crop. The
+left overview follows the selected film/frame and crop; the right overview also
+follows the selected RAW61 or JXL quality. Because the overviews are rendered
+before the crop layers, zoomed or panned crops naturally cover them instead of
+being obscured. Up/Down moves through the most recently clicked sidebar.
+Left/Right always moves through the film/crop list on the left.

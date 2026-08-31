@@ -476,6 +476,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("Storage-budget coverage", html)
         self.assertIn("19200&times;12752", html)
         self.assertIn("Error loading file", html)
+        self.assertIn("Why Negative-aware Preconditioning Is Not the Archive Recommendation", html)
+        self.assertIn("likely additional saving", html)
+        self.assertIn("roughly <code>5-10%</code>", html)
+        self.assertIn("not recommended for the sole archive master", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

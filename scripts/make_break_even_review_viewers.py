@@ -10,7 +10,7 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,6 +40,12 @@ DEFAULT_RENDERED_JXL_ROOT = ROOT / "outputs/rendered_ps16_jxl_matrix"
 DEFAULT_OUTPUT = ROOT / "site/assets/review-viewers"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
 DEFAULT_LEVELS = ["d020", "d022", "d025", "d028", "d030", "d100", "d200"]
+DEFAULT_TRANSFORMS = [
+    "identity",
+    "shadow_recovery_luma_p12",
+    "highlight_separation_luma_p88_p998",
+    "negative_density_hard_print",
+]
 DEFAULT_CASES = [
     "fuji_679_f_ii_1983|_DSC6980",
     "kodak_gold_200_5_1997|_DSC6735",
@@ -47,6 +53,7 @@ DEFAULT_CASES = [
 ]
 DEFAULT_CROP = (3182, 4782, 512, 512)
 DEFAULT_CROP_NAME = "manual-01"
+DEFAULT_OVERVIEW_MAX_DIM = 360
 
 
 def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
@@ -131,6 +138,88 @@ def save_display(path: Path, arr: np.ndarray, max_dim: int, *, force: bool) -> N
     if path.is_file() and not force:
         return
     to_display(arr, max_dim).save(path)
+
+
+def save_overview(
+    path: Path,
+    arr: np.ndarray,
+    crop_spec: tuple[int, int, int, int],
+    label: str,
+    crop_name: str,
+    max_dim: int,
+    *,
+    force: bool,
+) -> None:
+    if path.is_file() and not force:
+        return
+    height, width = arr.shape[:2]
+    image = to_display(arr, max_dim)
+    save_overview_image(path, image, (width, height), crop_spec, label, crop_name)
+
+
+def save_overview_image(
+    path: Path,
+    base_image: Image.Image,
+    source_size: tuple[int, int],
+    crop_spec: tuple[int, int, int, int],
+    label: str,
+    crop_name: str,
+) -> None:
+    width, height = source_size
+    image = base_image.copy()
+    scale_x = image.width / width
+    scale_y = image.height / height
+    x, y, crop_width, crop_height = crop_spec
+    rect = [
+        round(x * scale_x),
+        round(y * scale_y),
+        round((x + crop_width) * scale_x),
+        round((y + crop_height) * scale_y),
+    ]
+    draw = ImageDraw.Draw(image)
+    line_width = max(2, round(max(image.size) / 180))
+    for inset in range(line_width):
+        draw.rectangle(
+            [rect[0] - inset, rect[1] - inset, rect[2] + inset, rect[3] + inset],
+            outline=(255, 212, 0),
+        )
+    font = ImageFont.load_default()
+    text = f"{label} | {crop_name}"
+    bbox = draw.textbbox((8, 8), text, font=font)
+    draw.rectangle((4, 4, bbox[2] + 5, bbox[3] + 5), fill=(15, 18, 21))
+    draw.text((8, 8), text, fill=(255, 255, 255), font=font)
+    image.save(path)
+
+
+def run_decode_overview(djxl: str, source: Path, output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [djxl, str(source), str(output), "--bits_per_sample=8"],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+
+def overview_from_image_file(path: Path, max_dim: int) -> Image.Image:
+    with Image.open(path) as source:
+        image = source.convert("RGB")
+        image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+        return ImageOps.autocontrast(image, cutoff=0.5)
+
+
+def save_existing_context(source: Path, output: Path, max_dim: int, *, force: bool) -> bool:
+    if not source.is_file():
+        return False
+    if output.is_file() and not force:
+        return True
+    with Image.open(source) as context:
+        image = context.convert("RGB")
+        image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+        image.save(output)
+    return True
 
 
 def html_page(title: str, image_names: dict[str, str], metadata: dict[str, object]) -> str:
@@ -229,11 +318,108 @@ document.addEventListener('keydown', (event) => {{ if (event.target.matches('inp
 '''
 
 
+def make_case_overviews(
+    scan_set: str,
+    set_id: str,
+    crop_specs: list[tuple[str, tuple[int, int, int, int]]],
+    levels: list[str],
+    args: argparse.Namespace,
+    djxl: str,
+) -> None:
+    ref_path = ps16_path(args.renders_root, scan_set, set_id)
+    raw_path = raw61_path(args.registered_root, scan_set, set_id)
+    if not ref_path.is_file() or not raw_path.is_file():
+        return
+    case_dir = args.output_dir / local_study.slugify(scan_set) / set_id
+    context_dir = args.output_dir.parent / "review-contexts" / local_study.slugify(scan_set) / set_id
+    reference_size: tuple[int, int] | None = None
+    missing_reference: list[tuple[str, tuple[int, int, int, int], Path]] = []
+    missing_raw: list[tuple[str, tuple[int, int, int, int], Path]] = []
+    for crop_name, crop_spec in crop_specs:
+        output_dir = case_dir / crop_name
+        output_dir.mkdir(parents=True, exist_ok=True)
+        reference_output = output_dir / "overview_reference.png"
+        raw_output = output_dir / "overview_raw61.png"
+        if not save_existing_context(
+            context_dir / f"ps16_reference_{crop_name}.png",
+            reference_output,
+            args.overview_max_dim,
+            force=args.force,
+        ):
+            missing_reference.append((crop_name, crop_spec, reference_output))
+        if not save_existing_context(
+            context_dir / f"raw61_registered_{crop_name}.png",
+            raw_output,
+            args.overview_max_dim,
+            force=args.force,
+        ):
+            missing_raw.append((crop_name, crop_spec, raw_output))
+    if missing_reference:
+        reference_full = read_rgb_image(ref_path)
+        reference_overview = to_display(reference_full, args.overview_max_dim)
+        reference_size = (reference_full.shape[1], reference_full.shape[0])
+        for crop_name, crop_spec, output in missing_reference:
+            save_overview_image(
+                output,
+                reference_overview,
+                reference_size,
+                crop_spec,
+                "PS16 reference",
+                crop_name,
+            )
+        del reference_full, reference_overview
+    if missing_raw:
+        raw_full = read_rgb_image(raw_path)
+        raw_overview = to_display(raw_full, args.overview_max_dim)
+        raw_size = (raw_full.shape[1], raw_full.shape[0])
+        for crop_name, crop_spec, output in missing_raw:
+            save_overview_image(
+                output,
+                raw_overview,
+                raw_size,
+                crop_spec,
+                "RAW61 registered",
+                crop_name,
+            )
+        del raw_full, raw_overview
+    if reference_size is None:
+        with Image.open(ref_path) as reference_image:
+            reference_size = reference_image.size
+
+    with tempfile.TemporaryDirectory(prefix="break-even-overview-") as temp_dir:
+        temp_root = Path(temp_dir)
+        for level in levels:
+            source = jxl_path(args.rendered_jxl_root, scan_set, set_id, level)
+            if not source.is_file():
+                continue
+            pending = [
+                (crop_name, crop_spec, case_dir / crop_name / f"overview_jxl_{level}.png")
+                for crop_name, crop_spec in crop_specs
+                if args.force or not (case_dir / crop_name / f"overview_jxl_{level}.png").is_file()
+            ]
+            if not pending:
+                continue
+            decoded = temp_root / level / "ps16_candidate.ppm"
+            run_decode_overview(djxl, source, decoded)
+            candidate_overview = overview_from_image_file(decoded, args.overview_max_dim)
+            candidate_size = reference_size
+            for crop_name, crop_spec, output in pending:
+                save_overview_image(
+                    output,
+                    candidate_overview,
+                    candidate_size,
+                    crop_spec,
+                    f"PS16 JXL {level}",
+                    crop_name,
+                )
+            del candidate_overview
+
+
 def make_viewer(
     scan_set: str,
     set_id: str,
     levels: list[str],
-    transform_name: str,
+    transform_names: list[str],
     crop_name: str,
     crop_spec: tuple[int, int, int, int],
     args: argparse.Namespace,
@@ -250,10 +436,24 @@ def make_viewer(
     raw_crop = crop(raw_full, crop_text)
     aligned_raw, alignment = local_align_raw61(ref_crop, raw_crop, args.max_local_shift)
     transforms = {transform.name: transform for transform in build_transforms(ref_crop)}
-    if transform_name not in transforms:
-        raise SystemExit(f"Unknown transform: {transform_name}")
-    transform = transforms[transform_name]
-    images: dict[str, str] = {"reference": "reference.png", "ps16_lossless": "reference.png", "raw61": "raw61.png"}
+    selected_transforms = []
+    for transform_name in transform_names:
+        if transform_name not in transforms:
+            raise SystemExit(f"Unknown transform: {transform_name}")
+        if transform_name not in selected_transforms:
+            selected_transforms.append(transform_name)
+    images_by_transform: dict[str, dict[str, str]] = {}
+    for transform_name in selected_transforms:
+        images_by_transform[transform_name] = {
+            "reference": f"reference_{transform_name}.png",
+            "ps16_lossless": f"reference_{transform_name}.png",
+            "raw61": f"raw61_{transform_name}.png",
+        }
+    overviews: dict[str, str] = {
+        "reference": "overview_reference.png",
+        "ps16_lossless": "overview_reference.png",
+        "raw61": "overview_raw61.png",
+    }
     labels: dict[str, str] = {
         "reference": "PS16 reference",
         "ps16_lossless": "PS16 lossless / reference",
@@ -261,31 +461,81 @@ def make_viewer(
     }
     output_dir = args.output_dir / local_study.slugify(scan_set) / set_id / crop_name
     output_dir.mkdir(parents=True, exist_ok=True)
-    save_display(output_dir / images["reference"], transform.apply(ref_crop), args.max_dim, force=args.force)
-    save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=args.force)
+    for transform_name in selected_transforms:
+        transform = transforms[transform_name]
+        images = images_by_transform[transform_name]
+        save_display(output_dir / images["reference"], transform.apply(ref_crop), args.max_dim, force=args.force)
+        save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=args.force)
+    save_overview(
+        output_dir / overviews["reference"],
+        reference_full,
+        crop_spec,
+        labels["reference"],
+        crop_name,
+        args.overview_max_dim,
+        force=args.force,
+    )
+    save_overview(
+        output_dir / overviews["raw61"],
+        raw_full,
+        crop_spec,
+        labels["raw61"],
+        crop_name,
+        args.overview_max_dim,
+        force=args.force,
+    )
     with tempfile.TemporaryDirectory(prefix="break-even-viewer-") as temp_dir:
         temp_root = Path(temp_dir)
         for level in levels:
             source = jxl_path(args.rendered_jxl_root, scan_set, set_id, level)
             if not source.is_file():
                 continue
-            images[f"jxl_{level}"] = f"jxl_{level}.png"
+            for transform_name in selected_transforms:
+                images_by_transform[transform_name][f"jxl_{level}"] = f"jxl_{level}_{transform_name}.png"
+            overviews[f"jxl_{level}"] = f"overview_jxl_{level}.png"
             labels[f"jxl_{level}"] = f"PS16 JXL {level}"
-            output = output_dir / images[f"jxl_{level}"]
-            if output.is_file() and not args.force:
+            overview_output = output_dir / overviews[f"jxl_{level}"]
+            image_outputs = [
+                output_dir / images_by_transform[transform_name][f"jxl_{level}"]
+                for transform_name in selected_transforms
+            ]
+            if all(path.is_file() for path in image_outputs) and overview_output.is_file() and not args.force:
                 continue
             decoded = temp_root / level / "ps16_candidate.ppm"
             run_decode(djxl, source, decoded)
-            candidate = crop(read_rgb_image(decoded), crop_text)
-            save_display(output, transform.apply(candidate), args.max_dim, force=args.force)
-    if len(images) < 3:
+            candidate_full = read_rgb_image(decoded)
+            candidate = crop(candidate_full, crop_text)
+            for transform_name in selected_transforms:
+                output = output_dir / images_by_transform[transform_name][f"jxl_{level}"]
+                save_display(output, transforms[transform_name].apply(candidate), args.max_dim, force=args.force)
+            save_overview(
+                overview_output,
+                candidate_full,
+                crop_spec,
+                labels[f"jxl_{level}"],
+                crop_name,
+                args.overview_max_dim,
+                force=args.force,
+            )
+    if not selected_transforms or len(images_by_transform[selected_transforms[0]]) < 3:
         return None
+    view_modes = [
+        {
+            "key": transform_name,
+            "label": transforms[transform_name].label or transform_name,
+            "description": transforms[transform_name].description,
+        }
+        for transform_name in selected_transforms
+    ]
     metadata = {
         "labels": labels,
         "scan_set": scan_set,
         "set_id": set_id,
         "crop_name": crop_name,
-        "transform": transform_name,
+        "overviews": overviews,
+        "default_transform": selected_transforms[0],
+        "view_modes": view_modes,
+        "images_by_transform": images_by_transform,
         "crop": list(crop_spec),
         "local_raw61_alignment": {
             "shift_x_px": alignment.shift_x_px,
@@ -295,8 +545,10 @@ def make_viewer(
         },
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    title = f"{scan_set} / {set_id} / {crop_name} / {transform_name}"
-    (output_dir / "index.html").write_text(html_page(title, images, metadata), encoding="utf-8")
+    title = f"{scan_set} / {set_id} / {crop_name}"
+    (output_dir / "index.html").write_text(
+        html_page(title, images_by_transform[selected_transforms[0]], metadata), encoding="utf-8"
+    )
     return output_dir / "index.html"
 
 
@@ -312,16 +564,19 @@ def main() -> int:
     parser.add_argument("--all-complete", action="store_true", help="make viewers for all complete cases in the matrix")
     parser.add_argument("--case-limit", type=int, default=999)
     parser.add_argument("--level", action="append", default=None)
-    parser.add_argument("--transform", default="identity")
+    parser.add_argument("--transform", action="append", default=None, help="Stress view to render; may be repeated.")
     parser.add_argument("--crop", type=parse_crop, default=DEFAULT_CROP)
     parser.add_argument("--crop-plan", type=Path, help="JSON crop plan produced by read_crop_selection_guides.py or serve_crop_selection.py.")
     parser.add_argument("--max-dim", type=int, default=1024)
+    parser.add_argument("--overview-max-dim", type=int, default=DEFAULT_OVERVIEW_MAX_DIM)
     parser.add_argument("--max-local-shift", type=float, default=32.0)
     parser.add_argument("--jobs", type=int, default=1, help="number of crop viewers to build in parallel")
     parser.add_argument("--force", action="store_true", help="rewrite existing viewer images")
     args = parser.parse_args()
     if args.max_dim <= 0:
         raise SystemExit("--max-dim must be positive")
+    if args.overview_max_dim <= 0:
+        raise SystemExit("--overview-max-dim must be positive")
     if args.jobs <= 0:
         raise SystemExit("--jobs must be positive")
     if args.case:
@@ -331,6 +586,7 @@ def main() -> int:
     else:
         cases = [parse_case(value) for value in DEFAULT_CASES]
     levels = args.level or DEFAULT_LEVELS
+    transforms = args.transform or DEFAULT_TRANSFORMS
     crop_plan = read_crop_plan(args.crop_plan)
     djxl = find_tool("djxl", DEFAULT_DJXL, args.djxl)
     tasks = []
@@ -340,16 +596,21 @@ def main() -> int:
             crop_specs = [(DEFAULT_CROP_NAME, args.crop)]
         for crop_name, crop_spec in crop_specs or []:
             tasks.append((scan_set, set_id, crop_name, crop_spec))
+    overview_jobs: dict[tuple[str, str], list[tuple[str, tuple[int, int, int, int]]]] = {}
+    for scan_set, set_id, crop_name, crop_spec in tasks:
+        overview_jobs.setdefault((scan_set, set_id), []).append((crop_name, crop_spec))
+    for (scan_set, set_id), crop_specs in overview_jobs.items():
+        make_case_overviews(scan_set, set_id, crop_specs, levels, args, djxl)
     written = []
     if args.jobs == 1 or len(tasks) <= 1:
         for scan_set, set_id, crop_name, crop_spec in tasks:
-            result = make_viewer(scan_set, set_id, levels, args.transform, crop_name, crop_spec, args, djxl)
+            result = make_viewer(scan_set, set_id, levels, transforms, crop_name, crop_spec, args, djxl)
             if result:
                 written.append(str(result))
     else:
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as executor:
             futures = [
-                executor.submit(make_viewer, scan_set, set_id, levels, args.transform, crop_name, crop_spec, args, djxl)
+                executor.submit(make_viewer, scan_set, set_id, levels, transforms, crop_name, crop_spec, args, djxl)
                 for scan_set, set_id, crop_name, crop_spec in tasks
             ]
             for future in concurrent.futures.as_completed(futures):
