@@ -283,6 +283,13 @@ fixed RawTherapee-rendered PS16 master, without depending on whether downstream
 raw applications can read ADC DNG/JXL. It is the current practical path for the
 RAW61-vs-PS16 break-even question.
 
+The standalone encoder preserves the rendered TIFF's ICC profile inside the JXL
+codestream and writes a JXL container with curated capture Exif (camera, lens,
+focal length, exposure, timestamp, orientation and optional authorship fields).
+It deliberately does not copy DNG-only raw tags such as white level, crop
+geometry or opcode lists. `exiftool` must be available on `PATH`, or pass its
+path with `--exiftool`.
+
 The matrix runner is incremental by default. It stores one fingerprint per
 scan/set/level in
 `results/rendered_ps16_jxl_matrix/artifact_cache.json`, covering source TIFF,

@@ -310,6 +310,23 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("d100", review_viewers.DEFAULT_LEVELS)
             self.assertIn("d200", review_viewers.DEFAULT_LEVELS)
 
+    def test_review_viewer_overview_is_small_and_marks_selected_crop(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir) / "overview.png"
+            source = np.zeros((120, 180, 3), dtype=np.uint16)
+            review_viewers.save_overview(
+                output,
+                source,
+                (60, 40, 30, 30),
+                "PS16 reference",
+                "manual-01",
+                90,
+                force=True,
+            )
+            image = np.asarray(Image.open(output).convert("RGB"))
+            self.assertLessEqual(max(image.shape[:2]), 90)
+            self.assertTrue(np.any(np.all(image == np.array([255, 212, 0]), axis=2)))
+
     def test_context_crop_label_is_placed_outside_crop_box(self) -> None:
         image = Image.new("RGB", (900, 600), "white")
         draw = ImageDraw.Draw(image)
@@ -516,7 +533,16 @@ class BreakEvenPipelineTests(unittest.TestCase):
             viewer_dir.mkdir(parents=True)
             viewer_index = viewer_dir / "index.html"
             viewer_index.write_text("<html></html>", encoding="utf-8")
-            for name in ["reference.png", "raw61.png", "jxl_d020.png", "jxl_d200.png"]:
+            for name in [
+                "reference.png",
+                "raw61.png",
+                "jxl_d020.png",
+                "jxl_d200.png",
+                "overview_reference.png",
+                "overview_raw61.png",
+                "overview_jxl_d020.png",
+                "overview_jxl_d200.png",
+            ]:
                 write_png(viewer_dir / name, textured_rgb(12, 12))
             (viewer_dir / "metadata.json").write_text(
                 """{
@@ -524,6 +550,13 @@ class BreakEvenPipelineTests(unittest.TestCase):
                     "raw61": "RAW61 local aligned",
                     "jxl_d020": "PS16 JXL d020",
                     "jxl_d200": "PS16 JXL d200"
+                  },
+                  "overviews": {
+                    "reference": "overview_reference.png",
+                    "ps16_lossless": "overview_reference.png",
+                    "raw61": "overview_raw61.png",
+                    "jxl_d020": "overview_jxl_d020.png",
+                    "jxl_d200": "overview_jxl_d200.png"
                   },
                   "scan_set": "Synthetic Scan",
                   "set_id": "frame001",
@@ -549,10 +582,26 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertNotIn('data-open-crop-viewer', html)
             self.assertIn('"key": "ps16_lossless"', html)
             self.assertIn('"key": "jxl_d200"', html)
+            self.assertIn('"referenceOverview": "assets/review-viewers/synthetic_scan/frame001/overview_reference.png"', html)
+            self.assertIn('"overview": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png"', html)
+            self.assertIn("drawOverview(state.referenceOverviewImage", html)
             self.assertIn("hard visual check", html)
             self.assertIn('let activeChoiceList = "film";', html)
+            self.assertIn('let workspaceActive = false;', html)
+            self.assertIn('workspaceActive = workspace.contains(event.target);', html)
+            self.assertIn('if (!workspaceActive && !workspace.contains(document.activeElement)) return;', html)
             self.assertIn('button.addEventListener("focus", () => { activeChoiceList = "quality"; });', html)
-            self.assertIn('["ArrowDown", "ArrowRight"]', html)
+            self.assertIn('if (event.key === "ArrowRight")', html)
+            self.assertIn("moveViewer(1, true)", html)
+            self.assertIn('if (event.key === "ArrowDown")', html)
+            self.assertIn(
+                'function setCandidate(key) {\n      state.candidateKey = key;\n      renderQualityList();',
+                html,
+            )
+            self.assertNotIn(
+                'function setCandidate(key) {\n      state.candidateKey = key;\n      resetView();',
+                html,
+            )
 
     def test_report_site_replaces_visual_review_items_with_inline_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -717,6 +766,29 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 {"scan_set": "a", "set_id": "one", "level": "d020", "value": "new"},
             ],
         )
+
+    def test_rendered_matrix_encodes_a_container_with_the_source_icc(self) -> None:
+        command = rendered_matrix.encode_command(
+            "cjxl",
+            Path("reference.ppm"),
+            Path("candidate.jxl"),
+            Path("reference.icc"),
+            "d030",
+            7,
+        )
+
+        self.assertIn("--container=1", command)
+        self.assertIn("icc_pathname=reference.icc", command)
+
+    def test_rendered_matrix_metadata_copy_is_curated_from_the_rendered_tiff(self) -> None:
+        command = rendered_matrix.metadata_copy_command(
+            "exiftool", Path("master.tif"), Path("candidate.jxl")
+        )
+
+        self.assertEqual(command[:5], ["exiftool", "-m", "-overwrite_original", "-TagsFromFile", "master.tif"])
+        self.assertIn("-LensModel", command)
+        self.assertIn("-DateTimeOriginal", command)
+        self.assertNotIn("-all:all", command)
 
     def test_structure_metrics_merge_replaces_matching_rows(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
