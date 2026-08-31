@@ -1,4 +1,6 @@
-# Publication Summary
+# Film Information Retention Under a Fixed Storage Budget: Comparing Lower-Resolution Bayer Raw with High-Resolution Pixel-Shift JPEG XL
+
+## Publication Summary
 
 This repository is a work-in-progress public research package about JPEG XL,
 PixelShift, and camera scanning of film.
