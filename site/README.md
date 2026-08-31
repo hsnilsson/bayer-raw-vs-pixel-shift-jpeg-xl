@@ -1,7 +1,7 @@
 # Report Site
 
-This folder is the publishable static site artifact for the JPEG XL vs
-PixelShift DNG investigation.
+This folder is the publishable static site artifact for the Bayer Raw vs
+Pixel-Shift JPEG XL investigation.
 
 Recommended local publication build:
 

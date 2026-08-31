@@ -18,7 +18,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / "testdata/download_manifest.json"
 DEFAULT_LOCK = ROOT / "testdata/downloaded_manifest.json"
-USER_AGENT = "jpegxl-vs-dngpixelshift-testdata/0.1"
+USER_AGENT = "bayer-raw-vs-pixelshift-jxl-testdata/0.1"
 GITHUB_REGULAR_GIT_HARD_LIMIT = 100 * 1024 * 1024
 RETRYABLE_ERRORS = (
     TimeoutError,
@@ -376,7 +376,7 @@ def download_loc_entries(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Download public test data for the JPEG XL vs DNG/PixelShift project."
+        description="Download public test data for the Bayer Raw vs Pixel-Shift JPEG XL project."
     )
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--out-dir", type=Path, default=ROOT)
