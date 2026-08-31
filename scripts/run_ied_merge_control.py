@@ -157,7 +157,7 @@ def locally_register_crop(reference: Any, candidate: Any) -> tuple[Any, dict[str
             choices.add((dx, dy))
 
     best_candidate = candidate
-    best_shift = (0, 0)
+    best_shift = (0.0, 0.0)
     best_score = structure_metrics(reference, candidate, radius=2).detail_correlation
     for dx, dy in sorted(choices):
         if (dx, dy) == (0, 0):
@@ -166,15 +166,35 @@ def locally_register_crop(reference: Any, candidate: Any) -> tuple[Any, dict[str
         score = structure_metrics(reference, trial, radius=2).detail_correlation
         if score > best_score:
             best_candidate = trial
-            best_shift = (dx, dy)
+            best_shift = (float(dx), float(dy))
+            best_score = score
+
+    # Grain and resolved film detail decorrelate sharply from subpixel offsets.
+    # After the inexpensive integer search, refine around the best position at
+    # quarter-pixel resolution so a small registration error is not reported as
+    # a merge difference.
+    refine_offsets = (-0.5, -0.25, 0.0, 0.25, 0.5)
+    refine_choices = {
+        (best_shift[0] + offset_x, best_shift[1] + offset_y)
+        for offset_x in refine_offsets
+        for offset_y in refine_offsets
+    }
+    for dx, dy in sorted(refine_choices):
+        if dx == 0.0 and dy == 0.0:
+            continue
+        trial = shift_rgb(candidate, dx, dy)
+        score = structure_metrics(reference, trial, radius=2).detail_correlation
+        if score > best_score:
+            best_candidate = trial
+            best_shift = (float(dx), float(dy))
             best_score = score
     return (
         best_candidate,
         {
             "phase_shift_x_px": float(shift_x),
             "phase_shift_y_px": float(shift_y),
-            "applied_shift_x_px": float(best_shift[0]),
-            "applied_shift_y_px": float(best_shift[1]),
+            "applied_shift_x_px": best_shift[0],
+            "applied_shift_y_px": best_shift[1],
             "phase_peak": float(peak),
             "phase_peak_to_median": float(confidence),
             "selected_detail_correlation": float(best_score),
