@@ -455,6 +455,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertEqual(html.count("<summary>Answer so far</summary>"), 4)
         self.assertIn("small color or tone losses hidden inside the orange mask", html)
         self.assertIn("Current complete rows favor PS16 JXL", html)
+        self.assertIn("Candidate Comparisons", html)
+        self.assertIn("one film material &times; frame &times; JXL distance", html)
+        self.assertIn("Fully Measured Comparisons", html)
+        self.assertIn("Median-size Budget Levels", html)
+        self.assertIn("this is a size result, not a quality verdict", html)
 
     def test_report_site_documents_adc_dng_jxl_caveats(self) -> None:
         html = report_site.render_html(

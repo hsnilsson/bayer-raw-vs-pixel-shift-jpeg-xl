@@ -1559,10 +1559,10 @@ def render_html(
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Candidate Rows</h3><div class="metric">{len(rows)}</div><p class="muted">one material/frame/JXL-level comparison per row</p></div>
-      <div class="card"><h3>Complete Rows</h3><div class="metric">{len(complete)}</div><p class="muted">rows with size, color and structure data</p></div>
-      <div class="card"><h3>PS16 JXL Wins</h3><div class="metric">{promising}</div><p class="muted">complete rows where current metrics favor PS16 JXL</p></div>
-      <div class="card"><h3>Under-Budget Levels</h3><div class="metric">{esc(zone_text)}</div><p class="muted">levels whose median size is at or below RAW61</p></div>
+      <div class="card"><h3>Candidate Comparisons</h3><div class="metric">{len(rows)}</div><p class="muted">each comparison is one film material &times; frame &times; JXL distance</p></div>
+      <div class="card"><h3>Fully Measured Comparisons</h3><div class="metric">{len(complete)}</div><p class="muted">comparisons with all three required measurements: file size, color and structure</p></div>
+      <div class="card"><h3>PS16 JXL Favorable Comparisons</h3><div class="metric">{promising}</div><p class="muted">fully measured comparisons that pass the current size, color and structure gates</p></div>
+      <div class="card"><h3>Median-size Budget Levels</h3><div class="metric">{esc(zone_text)}</div><p class="muted">JXL levels whose median file size is no larger than paired RAW61; this is a size result, not a quality verdict</p></div>
     </section>
 
     <h2>Current Reading</h2>
@@ -1594,7 +1594,7 @@ def render_html(
         <p>At what JXL distance does PS16 JXL stop carrying more useful film information than RAW61 at the same storage budget?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>{current_conclusion} The current under-budget candidates are {esc(zone_text)}. The boundary still needs more film material and visual review before it should be treated as a general recommendation.</p>
+          <p>{current_conclusion} The levels currently below the RAW61 median-size budget are {esc(zone_text)}. This size result is not a quality verdict; the boundary still needs more film material and visual review before it should be treated as a general recommendation.</p>
         </details>
       </div>
       <div class="card question-card">
