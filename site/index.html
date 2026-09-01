@@ -231,8 +231,8 @@
   </header>
   <main>
     <section class="grid">
-      <div class="card"><h3>Candidate Comparisons</h3><div class="metric">133</div><p class="muted">each comparison is one film material &times; frame &times; JXL distance</p></div>
-      <div class="card"><h3>Fully Measured Comparisons</h3><div class="metric">98</div><p class="muted">comparisons with all three required measurements: file size, color and structure</p></div>
+      <div class="card"><h3>Candidate Comparisons</h3><div class="metric">190</div><p class="muted">each comparison is one film material &times; frame &times; JXL distance</p></div>
+      <div class="card"><h3>Fully Measured Comparisons</h3><div class="metric">140</div><p class="muted">comparisons with all three required measurements: file size, color and structure</p></div>
       <div class="card"><h3>PS16 JXL Favorable Comparisons</h3><div class="metric">79</div><p class="muted">fully measured comparisons that pass the current size, color and structure gates</p></div>
       <div class="card"><h3>Median-size Budget Levels</h3><div class="metric">d025, d028, d030, d100, d200</div><p class="muted">JXL levels whose median file size is no larger than paired RAW61; this is a size result, not a quality verdict</p></div>
     </section>
@@ -258,7 +258,7 @@
         <p><strong>PS16 JXL vs RAW61.</strong> This is intentionally a workflow tradeoff: more sampling plus lossy coding versus less sampling plus raw preservation.</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Current complete rows favor PS16 JXL in 79 of 98 comparisons, but RAW61 still has raw-edit latitude and fewer workflow assumptions. This is why the report separates codec damage from the broader archive-value verdict.</p>
+          <p>Current complete rows favor PS16 JXL in 79 of 140 comparisons, but RAW61 still has raw-edit latitude and fewer workflow assumptions. This is why the report separates codec damage from the broader archive-value verdict.</p>
         </details>
       </div>
       <div class="card question-card">
@@ -483,11 +483,44 @@
       </thead>
       <tbody>
         <tr class="reference-row"><td><strong>lossless</strong></td><td class="unknown">Reference only<br><span class="subtle">not counted as a break-even candidate</span></td><td>not in current matrix<br><span class="subtle">complete standalone lossless sizes still need a separate run</span></td><td>-<br><span class="subtle">shown to anchor the codec scale</span></td><td>-</td><td class="good"><strong>0.00 &Delta;E00</strong><br><span class="subtle">by definition against the PS16 reference</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec color loss</span></td><td><strong>0.000 loss</strong><br><span class="subtle">zero high-pass codec loss</span></td><td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec structure loss</span></td><td>baseline; excluded from break-even counts</td></tr><tr>
+              <td><strong>d003</strong></td>
+              <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
+              <td class="bad"><strong>563.0 % of RAW61</strong><br><span class="subtle">larger than RAW61</span></td>
+              <td><strong>379.5 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>293.5% - 591.4 % of RAW61</strong><br><span class="subtle">360.1 MiB - 392.5 MiB</span></td>
+              <td class="good"><strong>0.10 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.159 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.16x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 14</td>
+            </tr><tr>
+              <td><strong>d005</strong></td>
+              <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
+              <td class="bad"><strong>448.5 % of RAW61</strong><br><span class="subtle">larger than RAW61</span></td>
+              <td><strong>303.4 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>233.6% - 470.4 % of RAW61</strong><br><span class="subtle">282.0 MiB - 316.2 MiB</span></td>
+              <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.163 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.16x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 14</td>
+            </tr><tr>
+              <td><strong>d010</strong></td>
+              <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
+              <td class="bad"><strong>282.8 % of RAW61</strong><br><span class="subtle">larger than RAW61</span></td>
+              <td><strong>197.1 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>154.3% - 303.9 % of RAW61</strong><br><span class="subtle">171.7 MiB - 204.6 MiB</span></td>
+              <td class="good"><strong>0.17 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td><strong>0.167 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
+              <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
+              <td class="warn">uncertain_over_budget: 14</td>
+            </tr><tr>
               <td><strong>d020</strong></td>
               <td class="bad">Too large<br><span class="subtle">image metrics may still be strong, but median size is above RAW61</span></td>
               <td class="bad"><strong>120.7 % of RAW61</strong><br><span class="subtle">larger than RAW61</span></td>
-              <td><strong>85.2 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>66.6% - 134.9 % of RAW61</strong><br><span class="subtle">69.2 MiB - 92.6 MiB</span></td>
+              <td><strong>84.9 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>60.2% - 134.9 % of RAW61</strong><br><span class="subtle">69.2 MiB - 92.6 MiB</span></td>
               <td class="good"><strong>0.14 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.170 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -497,8 +530,8 @@
               <td><strong>d022</strong></td>
               <td class="warn">Review zone<br><span class="subtle">near the storage or image-quality boundary; needs visual review</span></td>
               <td class="warn"><strong>104.7 % of RAW61</strong><br><span class="subtle">near RAW61 budget</span></td>
-              <td><strong>74.5 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>58.2% - 121.4 % of RAW61</strong><br><span class="subtle">58.2 MiB - 83.6 MiB</span></td>
+              <td><strong>73.8 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>54.6% - 121.4 % of RAW61</strong><br><span class="subtle">58.2 MiB - 83.6 MiB</span></td>
               <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.170 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -508,8 +541,8 @@
               <td><strong>d025</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>84.6 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
-              <td><strong>61.1 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>47.8% - 104.4 % of RAW61</strong><br><span class="subtle">47.0 MiB - 71.2 MiB</span></td>
+              <td><strong>61.4 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>48.3% - 104.4 % of RAW61</strong><br><span class="subtle">47.0 MiB - 71.2 MiB</span></td>
               <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.171 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -519,8 +552,8 @@
               <td><strong>d028</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>70.2 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
-              <td><strong>51.3 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>40.0% - 88.7 % of RAW61</strong><br><span class="subtle">40.1 MiB - 60.2 MiB</span></td>
+              <td><strong>53.5 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>43.5% - 88.7 % of RAW61</strong><br><span class="subtle">40.1 MiB - 60.2 MiB</span></td>
               <td class="good"><strong>0.12 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
               <td class="good"><strong>0.01x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.172 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -529,10 +562,10 @@
             </tr><tr>
               <td><strong>d030</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
-              <td class="good"><strong>63.4 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
-              <td><strong>46.5 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>36.2% - 79.2 % of RAW61</strong><br><span class="subtle">36.6 MiB - 53.9 MiB</span></td>
-              <td class="good"><strong>0.15 &Delta;E00</strong><br><span class="subtle">very small codec color shift</span></td>
+              <td class="good"><strong>67.5 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
+              <td><strong>48.5 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>38.9% - 79.2 % of RAW61</strong><br><span class="subtle">36.6 MiB - 53.9 MiB</span></td>
+              <td class="good"><strong>0.31 &Delta;E00</strong><br><span class="subtle">small codec color shift</span></td>
               <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.173 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
               <td class="good"><strong>0.17x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
@@ -541,8 +574,8 @@
               <td><strong>d100</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>17.7 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
-              <td><strong>12.2 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>9.5% - 20.9 % of RAW61</strong><br><span class="subtle">8.7 MiB - 14.7 MiB</span></td>
+              <td><strong>12.6 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>10.4% - 20.9 % of RAW61</strong><br><span class="subtle">8.7 MiB - 14.7 MiB</span></td>
               <td class="good"><strong>0.37 &Delta;E00</strong><br><span class="subtle">small codec color shift</span></td>
               <td class="good"><strong>0.02x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.186 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -552,8 +585,8 @@
               <td><strong>d200</strong></td>
               <td class="good">Passes current gates<br><span class="subtle">median size is under RAW61 and current diagnostics favor PS16 JXL</span></td>
               <td class="good"><strong>10.1 % of RAW61</strong><br><span class="subtle">within RAW61 budget</span></td>
-              <td><strong>7.0 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
-              <td><strong>5.4% - 12.0 % of RAW61</strong><br><span class="subtle">4.9 MiB - 8.5 MiB</span></td>
+              <td><strong>7.2 MiB</strong><br><span class="subtle">JXL median; RAW61 median 67.4 MiB</span></td>
+              <td><strong>5.7% - 12.0 % of RAW61</strong><br><span class="subtle">4.9 MiB - 8.5 MiB</span></td>
               <td class="good"><strong>0.66 &Delta;E00</strong><br><span class="subtle">small codec color shift</span></td>
               <td class="good"><strong>0.03x RAW61</strong><br><span class="subtle">well below RAW61 baseline</span></td>
               <td><strong>0.209 loss</strong><br><span class="subtle">unitless high-pass loss; lower is closer to PS16</span></td>
@@ -568,21 +601,21 @@
     <section class="trend-charts" aria-label="Level trends"><figure class="trend-chart"><figcaption><strong>Storage vs RAW61</strong><span>lower is better; dashed line = 100% RAW61 gate</span></figcaption>
             <svg viewBox="0 0 320 150" role="img" aria-label="Storage vs RAW61 by JPEG XL distance">
               <line x1="34" y1="116" x2="286" y2="116" class="chart-axis"/><line x1="34" y1="30" x2="34" y2="116" class="chart-axis"/>
-              <line x1="34" y1="52.4" x2="286" y2="52.4" class="chart-gate"/>
-              <text x="4" y="56.4">100%</text>
-              <polyline points="34.0,39.2 76.0,49.4 118.0,62.2 160.0,71.3 202.0,75.6 244.0,104.7 286.0,109.6" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d020</text><text x="76.0" y="136" text-anchor="middle">d022</text><text x="118.0" y="136" text-anchor="middle">d025</text><text x="160.0" y="136" text-anchor="middle">d028</text><text x="202.0" y="136" text-anchor="middle">d030</text><text x="244.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
+              <line x1="34" y1="102.4" x2="286" y2="102.4" class="chart-gate"/>
+              <text x="4" y="106.4">100%</text>
+              <polyline points="34.0,39.2 62.0,54.8 90.0,77.4 118.0,99.5 146.0,101.7 174.0,104.5 202.0,106.4 230.0,106.8 258.0,113.6 286.0,114.6" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d003</text><text x="62.0" y="136" text-anchor="middle">d005</text><text x="90.0" y="136" text-anchor="middle">d010</text><text x="118.0" y="136" text-anchor="middle">d020</text><text x="146.0" y="136" text-anchor="middle">d022</text><text x="174.0" y="136" text-anchor="middle">d025</text><text x="202.0" y="136" text-anchor="middle">d028</text><text x="230.0" y="136" text-anchor="middle">d030</text><text x="258.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
             </svg></figure><figure class="trend-chart"><figcaption><strong>Color loss vs RAW61</strong><span>lower is better; dashed line = 1x RAW61 gate</span></figcaption>
             <svg viewBox="0 0 320 150" role="img" aria-label="Color loss vs RAW61 by JPEG XL distance">
               <line x1="34" y1="116" x2="286" y2="116" class="chart-axis"/><line x1="34" y1="30" x2="34" y2="116" class="chart-axis"/>
               <line x1="34" y1="39.2" x2="286" y2="39.2" class="chart-gate"/>
               <text x="4" y="43.2">1x</text>
-              <polyline points="34.0,115.1 76.0,114.9 118.0,114.9 160.0,115.0 202.0,114.8 244.0,114.1 286.0,113.5" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d020</text><text x="76.0" y="136" text-anchor="middle">d022</text><text x="118.0" y="136" text-anchor="middle">d025</text><text x="160.0" y="136" text-anchor="middle">d028</text><text x="202.0" y="136" text-anchor="middle">d030</text><text x="244.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
+              <polyline points="34.0,115.7 62.0,115.6 90.0,115.6 118.0,115.1 146.0,114.9 174.0,114.9 202.0,115.0 230.0,114.8 258.0,114.1 286.0,113.5" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d003</text><text x="62.0" y="136" text-anchor="middle">d005</text><text x="90.0" y="136" text-anchor="middle">d010</text><text x="118.0" y="136" text-anchor="middle">d020</text><text x="146.0" y="136" text-anchor="middle">d022</text><text x="174.0" y="136" text-anchor="middle">d025</text><text x="202.0" y="136" text-anchor="middle">d028</text><text x="230.0" y="136" text-anchor="middle">d030</text><text x="258.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
             </svg></figure><figure class="trend-chart"><figcaption><strong>Structure loss vs RAW61</strong><span>lower is better; dashed line = 1x RAW61 gate</span></figcaption>
             <svg viewBox="0 0 320 150" role="img" aria-label="Structure loss vs RAW61 by JPEG XL distance">
               <line x1="34" y1="116" x2="286" y2="116" class="chart-axis"/><line x1="34" y1="30" x2="34" y2="116" class="chart-axis"/>
               <line x1="34" y1="39.2" x2="286" y2="39.2" class="chart-gate"/>
               <text x="4" y="43.2">1x</text>
-              <polyline points="34.0,103.1 76.0,103.1 118.0,103.0 160.0,102.9 202.0,102.9 244.0,102.0 286.0,100.6" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d020</text><text x="76.0" y="136" text-anchor="middle">d022</text><text x="118.0" y="136" text-anchor="middle">d025</text><text x="160.0" y="136" text-anchor="middle">d028</text><text x="202.0" y="136" text-anchor="middle">d030</text><text x="244.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
+              <polyline points="34.0,104.0 62.0,103.7 90.0,103.3 118.0,103.1 146.0,103.1 174.0,103.0 202.0,102.9 230.0,102.9 258.0,102.0 286.0,100.6" class="chart-line"/><text x="34.0" y="136" text-anchor="middle">d003</text><text x="62.0" y="136" text-anchor="middle">d005</text><text x="90.0" y="136" text-anchor="middle">d010</text><text x="118.0" y="136" text-anchor="middle">d020</text><text x="146.0" y="136" text-anchor="middle">d022</text><text x="174.0" y="136" text-anchor="middle">d025</text><text x="202.0" y="136" text-anchor="middle">d028</text><text x="230.0" y="136" text-anchor="middle">d030</text><text x="258.0" y="136" text-anchor="middle">d100</text><text x="286.0" y="136" text-anchor="middle">d200</text>
             </svg></figure></section>
 
     <h2>Color Legend And Units</h2>
@@ -675,7 +708,7 @@
               <td>0.96</td>
               <td class="bad">3.71</td>
               <td>0.993</td>
-              <td>0.09</td>
+              <td>0.10</td>
               <td>0.133</td>
             </tr><tr>
               <td>Kodak5035 H190-1983</td>
@@ -699,7 +732,7 @@
               <td>1.02</td>
               <td class="bad">3.83</td>
               <td>1.113</td>
-              <td>0.24</td>
+              <td>0.61</td>
               <td>0.223</td>
             </tr><tr>
               <td>konica_vx100_probable_1995</td>
