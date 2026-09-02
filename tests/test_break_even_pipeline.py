@@ -657,6 +657,15 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('id="cropWorkspace"', html)
             self.assertIn('id="cropFullscreen"', html)
             self.assertIn('workspace.requestFullscreen()', html)
+            self.assertIn(
+                'else {\n        resetView();\n        await workspace.requestFullscreen();',
+                html,
+            )
+            self.assertIn(
+                'if (document.fullscreenElement === workspace) resetView();',
+                html,
+            )
+            self.assertIn('window.requestAnimationFrame(() => {', html)
             self.assertIn('aria-labelledby="cropViewerTitle"', html)
             self.assertNotIn('id="cropModal"', html)
             self.assertNotIn('data-open-crop-viewer', html)
