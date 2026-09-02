@@ -3,5 +3,10 @@
     "material_label": "Adox high-resolution black-and-white test target",
     "sample_role": "Vlad resolution target",
     "notes": "Vlad resolution target. Select the lp/mm area manually for target-specific structure review."
+  },
+  "kodak5035_h190_1983|_DSC6598": {
+    "material_label": "Kodak5035 H190-1983 (FFC)",
+    "sample_role": "Flat-field correction (FFC), captured without film",
+    "notes": "Flat-field correction frame captured without film. The percentile-normalized review display deliberately exaggerates small illumination and colour differences; it is not a literal rendering of the camera JPEG."
   }
 }
