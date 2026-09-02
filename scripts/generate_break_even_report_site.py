@@ -29,6 +29,16 @@ DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_in
 DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
+DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
+
+PUBLIC_LATITUDE_CAPTIONS = {
+    "fadgi-negative35mm2-d005-density-hard-print.png": "FADGI Negative 35mm 2, JXL d=0.05, hard density-inversion stress",
+    "fadgi-negative35mm2-d010-density-hard-print.png": "FADGI Negative 35mm 2, JXL d=0.10, hard density-inversion stress",
+    "loc-golden-gate-d005-density-hard-print.png": "LOC Golden Gate, JXL d=0.05, hard density-inversion stress",
+    "loc-golden-gate-d010-density-hard-print.png": "LOC Golden Gate, JXL d=0.10, hard density-inversion stress",
+    "loc-wildflowers-d005-density-hard-print.png": "LOC wildflowers, JXL d=0.05, hard density-inversion stress",
+    "loc-wildflowers-d010-density-hard-print.png": "LOC wildflowers, JXL d=0.10, hard density-inversion stress",
+}
 
 
 @dataclass(frozen=True)
@@ -825,6 +835,24 @@ def copy_context_assets(contexts: list[Path], context_root: Path, target_root: P
     return copied
 
 
+def public_figure_paths(root: Path) -> list[Path]:
+    return [root / name for name in PUBLIC_LATITUDE_CAPTIONS if (root / name).is_file()]
+
+
+def render_public_reproducibility(figures: list[Path], output: Path) -> str:
+    cards = []
+    for path in figures:
+        caption = PUBLIC_LATITUDE_CAPTIONS.get(path.name, path.stem.replace("-", " "))
+        src = relpath(path, output)
+        cards.append(
+            f'<figure class="public-figure"><a href="{esc(src)}"><img src="{esc(src)}" '
+            f'alt="{esc(caption)}" loading="lazy"></a><figcaption>{esc(caption)}</figcaption></figure>'
+        )
+    if not cards:
+        return '<p class="muted">Public comparison figures are not present in this build.</p>'
+    return f'<div class="public-figure-grid">{"".join(cards)}</div>'
+
+
 def relpath(path: Path, output_file: Path) -> str:
     return Path(os.path.relpath(path.resolve(), output_file.parent.resolve())).as_posix()
 
@@ -1303,6 +1331,7 @@ def render_html(
     output: Path,
     viewers: list[Path] | None = None,
     annotations: dict[tuple[str, str], dict[str, str]] | None = None,
+    public_figures: list[Path] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -1329,6 +1358,7 @@ def render_html(
     zone_text = ", ".join(best_zone[:5]) + ("..." if len(best_zone) > 5 else "") if best_zone else "none yet"
     current_conclusion = conclusion_text(summaries)
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
+    public_reproducibility_html = render_public_reproducibility(public_figures or [], output)
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -1509,6 +1539,11 @@ def render_html(
     .question-card details {{ margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }}
     .question-card summary {{ cursor: pointer; font-weight: 700; color: #075985; }}
     .question-card details p {{ margin: 8px 0 0; color: var(--muted); font-size: 13px; }}
+    .public-figure-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }}
+    .public-figure {{ margin: 0; min-width: 0; }}
+    .public-figure a {{ display: block; border: 1px solid var(--line); background: #101316; }}
+    .public-figure img {{ display: block; width: 100%; height: auto; }}
+    .public-figure figcaption {{ padding: 7px 1px 0; color: var(--muted); font-size: 12px; }}
     .flow {{ display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); gap: 10px; align-items: stretch; }}
     .flow-col {{ display: grid; gap: 8px; }}
     .flow-box {{ background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-height: 82px; }}
@@ -1676,7 +1711,7 @@ def render_html(
       .crop-actions {{ width: 100%; justify-content: flex-start; }}
     }}
     @media (max-width: 900px) {{
-      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts {{ grid-template-columns: 1fr; }}
+      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
@@ -2039,6 +2074,15 @@ def render_html(
     </div>
     {visual_review_html}
 
+    <h2>Public Reproducibility Check</h2>
+    <div class="note">
+      <p><strong>What this adds:</strong> the same JPEG XL and post-codec density-inversion stress pipeline was run on six public images: three FADGI/OpenDICE transmissive targets and three Library of Congress photographs. This makes the codec behavior reproducible without publishing the private full-resolution film scans.</p>
+      <p><strong>Result:</strong> across the six 2048-pixel test crops, <code>d=0.03</code> was cleanest, <code>d=0.05</code> remained the conservative lossy candidate, and <code>d=0.10</code> produced larger errors. The hard density transform amplified errors that were less prominent in the unchanged image. Each panel shows reference, decoded JXL, amplified absolute difference, and amplified signed difference.</p>
+      <p><strong>Boundary:</strong> these TIFFs test codec and stress-transform behavior. They do not contain paired RAW61 and PS16 camera captures, so they do not contribute rows to the storage break-even verdict.</p>
+      <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/public-latitude-v2.md">Method, metrics, provenance, and complete public-test interpretation</a></p>
+    </div>
+    {public_reproducibility_html}
+
     <h2>FADGI Context</h2>
     <div class="card">
       <p>Useful established metrics include CIEDE2000 color accuracy, tone response, white balance error, color-channel misregistration, SFR/sampling efficiency, sharpening, and noise. The relevant lesson for this project is not that our film-crop rows can claim FADGI stars, but that a credible imaging study should separate color, tone, registration, detail, sharpening, and noise instead of relying on PSNR or a single diff image.</p>
@@ -2048,6 +2092,7 @@ def render_html(
         <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
       </ul>
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
+      <p><strong>OpenDICE measurement status:</strong> not yet run. The official OpenDICE 3.00 command-line application and invocation have been verified, but it requires MATLAB Runtime 9.13. Until its exported workbook exists, the panels above remain codec stress evidence rather than formal OpenDICE target results.</p>
     </div>
   </main>
 </body>
@@ -2089,6 +2134,17 @@ def main() -> int:
         help="Optional JSON annotations for correcting presentation labels without changing source metrics.",
     )
     parser.add_argument(
+        "--public-figures",
+        type=Path,
+        default=DEFAULT_PUBLIC_FIGURES,
+        help="Directory containing selected public latitude-stress figures.",
+    )
+    parser.add_argument(
+        "--copy-public-figures-to",
+        type=Path,
+        help="Copy selected public figures into the report artifact before linking them.",
+    )
+    parser.add_argument(
         "--exclude-cases-file",
         type=Path,
         default=DEFAULT_EXCLUDE_CASES,
@@ -2111,12 +2167,18 @@ def main() -> int:
     panels = filter_case_paths(panel_paths(args.panels, args.output), excludes) if args.include_panels else []
     contexts = filter_case_paths(context_paths(args.contexts), excludes)
     viewers = filter_case_paths(viewer_paths(args.viewers), excludes) if args.viewers else []
+    public_figures = public_figure_paths(args.public_figures)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
         contexts = copy_context_assets(contexts, args.contexts, args.copy_contexts_to)
+    if args.copy_public_figures_to:
+        public_figures = copy_panel_assets(public_figures, args.public_figures, args.copy_public_figures_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(render_html(rows, summaries, panels, contexts, args.output, viewers, annotations), encoding="utf-8")
+    args.output.write_text(
+        render_html(rows, summaries, panels, contexts, args.output, viewers, annotations, public_figures),
+        encoding="utf-8",
+    )
     print(f"Wrote {args.output}")
     return 0
 

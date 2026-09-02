@@ -14,6 +14,7 @@ python scripts\make_break_even_context_images.py `
 python scripts\generate_break_even_report_site.py `
   --output site\index.html `
   --copy-contexts-to site\assets\review-contexts `
+  --copy-public-figures-to site\assets\public-latitude-v2 `
   --viewers site\assets\review-viewers
 ```
 

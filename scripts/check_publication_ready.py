@@ -32,6 +32,7 @@ REQUIRED_FILES = [
     "METHODOLOGY.md",
     "LIMITATIONS.md",
     "TESTDATA.md",
+    "docs/opendice-target-measurement.md",
     "scripts/audit_publication_safety.py",
     "scripts/download_testdata.py",
     "scripts/inspect_dng_jxl_color_path.py",
@@ -39,6 +40,7 @@ REQUIRED_FILES = [
     "scripts/run_public_latitude_stress.py",
     "scripts/make_public_crop_panels.py",
     "scripts/run_public_latitude_v2.py",
+    "scripts/run_opendice_sample.py",
     "scripts/create_scan_manifest.py",
     "scripts/run_adobe_dng_jxl_batch.py",
     "scripts/run_dng_jxl_verification.py",
@@ -64,6 +66,8 @@ REQUIRED_FILES = [
     "site/README.md",
     ".github/workflows/report-site.yml",
     "tests/test_review_fixes.py",
+    "tests/test_run_opendice_sample.py",
+    "testdata/fadgi_opendice/Config_materials2023.txt",
 ]
 PYTHON_FILES = [
     "scripts/audit_publication_safety.py",
@@ -73,6 +77,7 @@ PYTHON_FILES = [
     "scripts/run_public_latitude_stress.py",
     "scripts/make_public_crop_panels.py",
     "scripts/run_public_latitude_v2.py",
+    "scripts/run_opendice_sample.py",
     "scripts/create_scan_manifest.py",
     "scripts/run_adobe_dng_jxl_batch.py",
     "scripts/run_dng_jxl_verification.py",
@@ -96,6 +101,7 @@ PYTHON_FILES = [
     "src/jxl_archive_test.py",
     "tests/test_break_even_pipeline.py",
     "tests/test_review_fixes.py",
+    "tests/test_run_opendice_sample.py",
 ]
 
 

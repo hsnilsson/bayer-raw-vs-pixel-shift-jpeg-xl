@@ -111,6 +111,8 @@ These results are not yet a universal archival recommendation.
 - [RESULTS.md](RESULTS.md): current result summary and interpretation
 - [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public
   latitude stress test with density-based negative-print transforms
+- [docs/opendice-target-measurement.md](docs/opendice-target-measurement.md):
+  official OpenDICE sample-target measurement scope and reproducible command
 - [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md):
   smoke test for rewriting PixelShift2DNG files as DNG 1.7 JPEG XL
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove

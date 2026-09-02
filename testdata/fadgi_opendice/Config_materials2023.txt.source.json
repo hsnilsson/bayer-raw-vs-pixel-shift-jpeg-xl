@@ -1,0 +1,10 @@
+{
+  "downloaded_at_utc": "2026-09-02T11:33:12.7445376Z",
+  "file": "testdata\\fadgi_opendice\\Config_materials2023.txt",
+  "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Config_materials2023.txt",
+  "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+  "rights": "FADGI/OpenDICE configuration data from digitizationguidelines.gov. Verify source terms before redistribution.",
+  "role": "FADGI 2023 conformance thresholds for OpenDICE analysis",
+  "bytes": 5206,
+  "sha256": "1c2576818b64d5882ea565042fba76402ad412d0d37d135c529fee7accc9cf83"
+}
