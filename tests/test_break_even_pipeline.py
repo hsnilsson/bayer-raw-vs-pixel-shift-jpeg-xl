@@ -436,7 +436,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("54.0 MiB", html)
         self.assertIn("0.16 &Delta;E00", html)
         self.assertIn("0.03x RAW61", html)
-        self.assertIn("unitless high-pass loss", html)
+        self.assertIn("error is 24.0% of PS16 high-frequency RMS", html)
+        self.assertIn('class="chart-bar chart-bar-pass"', html)
+        self.assertNotIn("<polyline", html)
+        self.assertIn('class="table-scroll"', html)
+        self.assertIn("@media (max-width: 700px)", html)
 
     def test_report_site_baseline_table_has_permanent_column_explanations(self) -> None:
         html = report_site.render_html(
@@ -451,7 +455,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn('class="column-help-row"', baseline_table)
         self.assertIn("Scan collection or material label.", baseline_table)
         self.assertIn("this is not JXL codec loss", baseline_table)
-        self.assertIn("confirm important cases in the crop viewer", baseline_table)
+        self.assertIn("not a direct percentage of lost information", baseline_table)
+        self.assertIn("256 x 256-pixel patches", baseline_table)
         self.assertNotIn('data-full=', baseline_table)
 
     def test_report_site_level_table_has_help_row_and_lossless_reference(self) -> None:
@@ -633,7 +638,15 @@ class BreakEvenPipelineTests(unittest.TestCase):
             )
 
             html = report_site.render_html(
-                rows=[],
+                rows=[
+                    {
+                        "scan_set": "Synthetic Scan",
+                        "set_id": "frame001",
+                        "level": "d020",
+                        "raw61_size_mib": "68.25",
+                        "retained_size_mib": "54.5",
+                    }
+                ],
                 summaries=[],
                 panels=[],
                 contexts=[],
@@ -649,6 +662,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertNotIn('data-open-crop-viewer', html)
             self.assertIn('"key": "ps16_lossless"', html)
             self.assertIn('"key": "jxl_d200"', html)
+            self.assertIn('"storageMib": 68.25', html)
+            self.assertIn('"storageKind": "source ARW"', html)
+            self.assertIn('"storageMib": 54.5', html)
+            self.assertIn('"storageKind": "encoded JXL"', html)
             self.assertIn('"referenceOverview": "assets/review-viewers/synthetic_scan/frame001/overview_reference.png"', html)
             self.assertIn('"overview": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png"', html)
             self.assertIn("drawOverview(state.referenceOverviewImage", html)
@@ -658,6 +675,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('workspaceActive = workspace.contains(event.target);', html)
             self.assertIn('if (!workspaceActive && !workspace.contains(document.activeElement)) return;', html)
             self.assertIn('button.addEventListener("focus", () => { activeChoiceList = "quality"; });', html)
+            self.assertIn('role.textContent = [roleLabel, sizeLabel].filter(Boolean).join(" | ");', html)
             self.assertIn('if (event.key === "ArrowRight")', html)
             self.assertIn("moveViewer(1, true)", html)
             self.assertIn('if (event.key === "ArrowDown")', html)

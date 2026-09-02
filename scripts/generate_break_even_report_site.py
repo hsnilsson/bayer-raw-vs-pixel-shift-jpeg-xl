@@ -455,7 +455,7 @@ def ratio_reading(value: float | None) -> str:
 def structure_reading(value: float | None) -> str:
     if value is None:
         return "missing"
-    return "unitless high-pass loss; lower is closer to PS16"
+    return f"error is {value * 100:.1f}% of PS16 high-frequency RMS"
 
 
 def status_reading(status: str) -> str:
@@ -485,7 +485,7 @@ def lossless_reference_row() -> str:
 
 
 def level_chart(summaries: list[LevelSummary]) -> str:
-    """Compact, separately scaled trends; ratios and storage do not share a unit."""
+    """Compact categorical bars; JXL distances are sampled levels, not an even numeric axis."""
     items = [item for item in summaries if item.median_size_pct is not None]
     if not items:
         return ""
@@ -500,14 +500,22 @@ def level_chart(summaries: list[LevelSummary]) -> str:
         if not numeric:
             continue
         maximum = max(max(numeric), gate) * 1.12
-        points = []
+        bars = []
         labels = []
+        slot_width = 252 / max(1, len(items))
+        bar_width = min(18.0, slot_width * 0.62)
         for index, (item, value) in enumerate(zip(items, values)):
             if value is None:
                 continue
-            x = 34 + index * (252 / max(1, len(items) - 1))
+            x = 34 + slot_width * (index + 0.5)
             y = 116 - float(value) / maximum * 86
-            points.append(f"{x:.1f},{y:.1f}")
+            height = max(0.75, 116 - y)
+            value_text = f"{float(value):.1f}{unit}" if unit == "%" else f"{float(value):.2f}{unit}"
+            bar_class = "chart-bar chart-bar-pass" if float(value) <= gate else "chart-bar chart-bar-over"
+            bars.append(
+                f'<rect x="{x - bar_width / 2:.1f}" y="{y:.1f}" width="{bar_width:.1f}" '
+                f'height="{height:.1f}" class="{bar_class}"><title>{esc(item.level)}: {esc(value_text)}</title></rect>'
+            )
             labels.append(f'<text x="{x:.1f}" y="136" text-anchor="middle">{esc(item.level)}</text>')
         gate_y = 116 - gate / maximum * 86
         rendered.append(
@@ -516,7 +524,7 @@ def level_chart(summaries: list[LevelSummary]) -> str:
               <line x1="34" y1="116" x2="286" y2="116" class="chart-axis"/><line x1="34" y1="30" x2="34" y2="116" class="chart-axis"/>
               <line x1="34" y1="{gate_y:.1f}" x2="286" y2="{gate_y:.1f}" class="chart-gate"/>
               <text x="4" y="{gate_y + 4:.1f}">{gate:g}{esc(unit)}</text>
-              <polyline points="{' '.join(points)}" class="chart-line"/>{''.join(labels)}
+              {''.join(bars)}{''.join(labels)}
             </svg></figure>'''
         )
     return f'<section class="trend-charts" aria-label="Level trends">{"".join(rendered)}</section>'
@@ -648,7 +656,19 @@ def viewer_records(
     viewers: list[Path],
     output: Path,
     annotations: dict[tuple[str, str], dict[str, str]],
+    rows: list[dict[str, str]] | None = None,
 ) -> tuple[list[dict[str, object]], dict[str, int]]:
+    size_lookup: dict[tuple[str, str, str], float] = {}
+    for row in rows or []:
+        scan_slug = local_study.slugify(row.get("scan_set", ""))
+        set_id = row.get("set_id", "")
+        level = row.get("level", "")
+        raw_size = parse_float(row.get("raw61_size_mib"))
+        retained_size = parse_float(row.get("retained_size_mib"))
+        if raw_size is not None:
+            size_lookup[(scan_slug, set_id, "raw61")] = raw_size
+        if retained_size is not None and level:
+            size_lookup[(scan_slug, set_id, level)] = retained_size
     records: list[dict[str, object]] = []
     index_by_path: dict[str, int] = {}
     for index_path in viewers:
@@ -670,8 +690,9 @@ def viewer_records(
             default_mode = str(view_modes[0].get("key"))
         scan_set = str(metadata.get("scan_set") or directory.parent.name)
         set_id = str(metadata.get("set_id") or directory.name)
+        scan_slug = local_study.slugify(scan_set)
         crop_name = str(metadata.get("crop_name") or "")
-        candidates: list[dict[str, str]] = []
+        candidates: list[dict[str, object]] = []
         reference_sources = {
             str(mode.get("key")): relpath(directory / str(image_sets[str(mode.get("key"))].get("reference", "")), output)
             for mode in view_modes
@@ -705,6 +726,8 @@ def viewer_records(
                     "src": raw_sources.get(default_mode, relpath(raw61_path, output)),
                     "sources": raw_sources,
                     "role": "raw61",
+                    "storageMib": size_lookup.get((scan_slug, set_id, "raw61")),
+                    "storageKind": "source ARW",
                     "overview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 }
             )
@@ -730,6 +753,8 @@ def viewer_records(
                     "src": sources[default_mode],
                     "sources": sources,
                     "role": "jxl",
+                    "storageMib": size_lookup.get((scan_slug, set_id, key.removeprefix("jxl_"))),
+                    "storageKind": "encoded JXL",
                     "overview": (
                         relpath(directory / str(overviews.get(key, "")), output)
                         if (directory / str(overviews.get(key, ""))).is_file()
@@ -1083,7 +1108,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         name.textContent = candidate.label;
         button.appendChild(name);
         const role = document.createElement("span");
-        role.textContent = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
+        const roleLabel = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
+        const sizeLabel = Number.isFinite(candidate.storageMib)
+          ? `~${candidate.storageMib.toFixed(1)} MiB ${candidate.storageKind || "stored file"}`
+          : "";
+        role.textContent = [roleLabel, sizeLabel].filter(Boolean).join(" | ");
         button.appendChild(role);
         button.addEventListener("click", () => {
           activeChoiceList = "quality";
@@ -1275,12 +1304,25 @@ def render_html(
     blocked = len(rows) - len(complete)
     by_verdict = Counter(row.get("verdict", "") for row in rows)
     baselines = summarize_baselines(rows)
+    identity_color_values = [item.raw_delta_e_identity for item in baselines if item.raw_delta_e_identity is not None]
+    stress_color_values = [item.raw_delta_e_stress for item in baselines if item.raw_delta_e_stress is not None]
+    if identity_color_values and stress_color_values:
+        stress_review_count = sum(value > 3.0 for value in stress_color_values)
+        stress_result = (
+            f"In the current {len(stress_color_values)}-frame baseline, normal per-frame patch p95 values span "
+            f"{min(identity_color_values):.2f}-{max(identity_color_values):.2f} DeltaE00; after stress they span "
+            f"{min(stress_color_values):.2f}-{max(stress_color_values):.2f}, with {stress_review_count} above the "
+            "project's DeltaE00 3 review threshold. This says the hard inversion amplifies RAW61-versus-PS16 "
+            "workflow differences; it is not JPEG XL codec loss."
+        )
+    else:
+        stress_result = "No complete RAW61 stress-color baseline is available in this build."
     profile = read_profile_flags(DEFAULT_PROFILE)
     raw61_renders, ps16_renders = render_pair_count(DEFAULT_RENDER_INDEX)
     best_zone = [item.level for item in summaries if item.status == "Passes current gates"]
     zone_text = ", ".join(best_zone[:5]) + ("..." if len(best_zone) > 5 else "") if best_zone else "none yet"
     current_conclusion = conclusion_text(summaries)
-    viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations)
+    viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -1487,6 +1529,9 @@ def render_html(
     .adc-item dl {{ margin: 0; }}
     .adc-item dt {{ margin-top: 10px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }}
     .adc-item dd {{ margin: 3px 0 0; }}
+    .table-scroll {{ width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; border: 1px solid var(--line); background: var(--panel); }}
+    .table-scroll table {{ min-width: 1080px; border: 0; }}
+    .table-scroll .small-table {{ min-width: 900px; }}
     table {{ width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }}
     th, td {{ text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }}
     th {{ font-size: 12px; color: var(--muted); background: #f0f2f4; position: sticky; top: 0; }}
@@ -1530,7 +1575,9 @@ def render_html(
     .trend-chart text {{ fill: var(--muted); font-size: 10px; }}
     .chart-axis {{ stroke: #aab4be; stroke-width: 1; }}
     .chart-gate {{ stroke: #b45309; stroke-width: 1.5; stroke-dasharray: 4 3; }}
-    .chart-line {{ fill: none; stroke: #047857; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }}
+    .chart-bar {{ stroke-width: 1; }}
+    .chart-bar-pass {{ fill: #16a36a; stroke: #047857; }}
+    .chart-bar-over {{ fill: #f0a23b; stroke: #b45309; }}
     .crop-workspace {{
       display: grid;
       grid-template-columns: minmax(190px, 250px) minmax(0, 1fr) minmax(180px, 220px);
@@ -1618,6 +1665,10 @@ def render_html(
     .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
     .crop-workspace:fullscreen {{ width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }}
     ul {{ margin-top: 8px; }}
+    @media (max-width: 1150px) {{
+      .crop-toolbar {{ align-items: flex-start; flex-direction: column; }}
+      .crop-actions {{ width: 100%; justify-content: flex-start; }}
+    }}
     @media (max-width: 900px) {{
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
@@ -1628,7 +1679,33 @@ def render_html(
       .crop-sidebar {{ max-height: 220px; }}
       .crop-sidebar-left, .crop-sidebar-right {{ border: 0; border-bottom: 1px solid #2b333b; }}
       .crop-sidebar-right {{ border-top: 1px solid #2b333b; }}
-      .crop-toolbar {{ align-items: flex-start; flex-direction: column; }}
+    }}
+    @media (max-width: 700px) {{
+      header, main {{ padding: 12px; }}
+      h1 {{ font-size: 25px; }}
+      .table-scroll {{ border-left: 0; border-right: 0; }}
+      .table-scroll th:first-child, .table-scroll td:first-child {{
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: var(--panel);
+        box-shadow: 1px 0 0 var(--line);
+      }}
+      .table-scroll thead th:first-child {{ z-index: 4; background: #f0f2f4; }}
+      .table-scroll .column-help-row th:first-child {{ background: #f8fafc; }}
+      .crop-workspace {{ grid-template-rows: auto minmax(68vh, 600px) auto; border-radius: 8px; }}
+      .crop-sidebar {{ max-height: 178px; padding: 10px; }}
+      .crop-choice-list {{ display: flex; gap: 8px; overflow-x: auto; padding-bottom: 3px; }}
+      .crop-choice {{ flex: 0 0 min(76vw, 260px); }}
+      .crop-toolbar {{ padding: 10px; }}
+      .crop-actions {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }}
+      .crop-mode-label {{ grid-column: 1 / -1; width: 100%; }}
+      .crop-mode-label select {{ display: block; width: 100%; min-width: 0; margin-top: 3px; }}
+      .crop-actions button {{ min-width: 0; padding: 8px 5px; white-space: nowrap; }}
+      #cropOverlayToggle, #cropFullscreen {{ min-width: 0; grid-column: span 2; }}
+      #cropReset {{ grid-column: span 2; }}
+      #cropCanvas {{ min-height: 420px; }}
+      .crop-workspace:fullscreen {{ overflow-y: auto; grid-template-rows: auto minmax(58vh, 1fr) auto; }}
     }}
   </style>
 </head>
@@ -1859,11 +1936,11 @@ def render_html(
     </div>
     <section class="questions">
       <div class="card"><h3>Size</h3><p>Answers whether the retained PS16 JXL candidate fits inside the paired RAW61 storage budget. Values over 100% are larger than RAW61.</p></div>
-      <div class="card"><h3>JXL color p95</h3><p>Patch-based &Delta;E00 after a post-codec, negative-density inversion proxy. Below 1 is small; current values around 0.15-0.16 are very small codec color movement.</p></div>
+      <div class="card"><h3>JXL color p95</h3><p>The reference and candidate receive the same deterministic hard inversion. The image is then divided into 256-pixel patches at the analysis resolution. Each patch is averaged in linear ProPhoto RGB before conversion to Lab. Each frame reports patch p95; this level table reports p95 again across those frame values. Below 1 is small; this tests mean color and tone under stress, not grain shape.</p></div>
       <div class="card"><h3>Color ratio</h3><p>JXL color movement divided by RAW61-vs-PS16 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is for this metric.</p></div>
-      <div class="card"><h3>Structure ratio</h3><p>High-pass detail loss divided by the RAW61 structure baseline. Below 1 means the PS16 JXL candidate remains structurally closer to PS16 than RAW61.</p></div>
+      <div class="card"><h3>Structure ratio</h3><p>Luminance minus a 5&times;5 local blur isolates fine-scale variation. The RMS difference between candidate and PS16 high-pass images is divided by the PS16 high-pass RMS. The ratio column then divides this result by RAW61's result. Below 1 means JXL is closer to PS16 for this diagnostic. It reacts to grain, edges, acutance, noise and residual alignment, so it is not a literal percentage of detail destroyed.</p></div>
     </section>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="JPEG XL level summary; scroll horizontally on small screens"><table>
       <thead>
         <tr>
           <th>{abbr("JXL level", "JPEG XL distance label. d030 means distance 0.30.")}</th>
@@ -1873,7 +1950,7 @@ def render_html(
           <th>{abbr("Size range (% RAW61 / MiB)", "Smallest to largest size-vs-RAW61 and encoded MiB across complete frame pairs.")}</th>
           <th>{abbr("JXL color p95 (DeltaE00)", "95th percentile across frame-level JXL patch p95 DeltaE00 after a post-codec negative-density inversion proxy. Measures codec color/tone movement under stress.")}</th>
           <th>{abbr("Color loss ratio (x RAW61)", "Median JXL color loss divided by RAW61 color baseline. Below 1 means JXL is closer to PS16 than RAW61 is.")}</th>
-          <th>{abbr("JXL structure loss (unitless)", "Median high-pass structure loss for JXL versus PS16. Lower means closer to PS16. Use the structure ratio and visual viewer for interpretation.")}</th>
+          <th>{abbr("JXL structure error (fraction of PS16 detail RMS)", "Median normalized high-pass error for JXL versus PS16. 0 is exact; 0.20 means the error RMS equals 20% of the PS16 high-frequency RMS, not that 20% of detail was destroyed.")}</th>
           <th>{abbr("Structure ratio (x RAW61)", "Median JXL structure loss divided by RAW61 structure baseline. Below 1 means JXL is structurally closer to PS16 than RAW61 is.")}</th>
           <th>{abbr("Verdicts", "Counts of conservative matrix verdicts for this level.")}</th>
         </tr>
@@ -1883,9 +1960,9 @@ def render_html(
           {column_help("Storage budget", "Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.")}
           {column_help("Actual size", "Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.")}
           {column_help("Spread", "Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content.")}
-          {column_help("Color stress", "95th percentile CIEDE2000 color difference for PS16 JXL versus the PS16 reference after the current negative-density inversion proxy. Unit is DeltaE00; lower is better.")}
+          {column_help("Color stress", "Both images receive one fixed, reference-derived density inversion. At the analysis scale, 256 x 256-pixel patches are averaged in linear ProPhoto RGB, converted to Lab, and compared with CIEDE2000. This value is the 95th percentile across frames of each frame's patch p95: 95% of sampled areas in a typical frame are no worse. Lower is better; it measures mean color/tone movement, not grain.")}
           {column_help("Color vs RAW61", "Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic.")}
-          {column_help("Detail loss", "Median unitless high-pass detail loss for PS16 JXL versus PS16. This absolute number is mainly diagnostic; interpret it with the structure ratio and visual crop viewer.")}
+          {column_help("Normalized detail error", "For each image, luminance minus a 5 x 5 local blur isolates fine structure. We take the RMS of candidate-minus-reference high-pass values and divide by the RMS of the PS16 high-pass reference. Thus 0 is exact and 0.20 means error RMS is 20% of the reference's fine-structure RMS. It can reflect grain, edges, acutance or noise and must be checked visually.")}
           {column_help("Detail vs RAW61", "Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61.")}
           {column_help("Row verdicts", "Counts of per-frame verdict labels at this JXL level. These counts explain whether the summary is broad or driven by a few frames.")}
         </tr>
@@ -1893,10 +1970,10 @@ def render_html(
       <tbody>
         {''.join(row.strip() for row in level_rows)}
       </tbody>
-    </table>
+    </table></div>
 
     <h3>How The Tested Levels Move</h3>
-    <p class="muted">Each chart has its own vertical scale. The dashed line is the RAW61 comparison gate: 100% for storage and 1.0x for the two relative-error measures.</p>
+    <p class="muted">The bars treat each tested JXL setting as a discrete category because the sampled distance values are unevenly spaced. Each chart has its own vertical scale. The dashed line is the RAW61 comparison gate: 100% for storage and 1.0x for the two relative-error measures.</p>
     {level_chart_html}
 
     <h2>Color Legend And Units</h2>
@@ -1905,39 +1982,41 @@ def render_html(
       <div class="card"><h3>Size cells</h3><p>Unit: percent of paired RAW61 size, plus encoded MiB. <span class="pill good">green</span> is at or below 100% RAW61. <span class="pill warn">yellow</span> is up to 115%. <span class="pill bad">red</span> is clearly over the RAW61 storage budget.</p></div>
       <div class="card"><h3>&Delta;E00 cells</h3><p>Unit: CIEDE2000 color difference. The table uses patch p95 after the current negative-density stress transform. <span class="pill good">green</span> is below 1. <span class="pill warn">yellow</span> is 1-2. <span class="pill risk">orange</span> is 2-3. <span class="pill bad">red</span> is above 3.</p></div>
       <div class="card"><h3>Ratio cells</h3><p>Unit: multiple of the RAW61-vs-PS16 baseline. Example: 0.25x RAW61 means one quarter of the RAW61 baseline error. Values below 1 favor PS16 JXL for that metric.</p></div>
-      <div class="card"><h3>Structure cells</h3><p>Absolute structure loss is a unitless high-pass diagnostic, so it is not color coded by itself. The color-coded structure ratio compares that loss to RAW61; below 1 means closer to PS16 than RAW61.</p></div>
+      <div class="card"><h3>Structure cells</h3><p>The value is normalized high-pass error: error RMS divided by PS16 high-frequency RMS. <code>0.000</code> is exact; <code>0.200</code> means the mismatch RMS is 20% of the reference's fine-structure RMS. It does not mean 20% of real detail vanished. The color-coded ratio compares like-for-like against RAW61; below 1 favors JXL.</p></div>
       <div class="card"><h3>FADGI note</h3><p>These colors are interpretation aids, not formal FADGI conformance. The useful FADGI lesson here is to keep color, tone, registration, sharpening, noise and structure separate instead of collapsing everything into one score.</p></div>
     </section>
 
     <h2>RAW61 Baseline By Frame</h2>
     <div class="note">
       <p><strong>What this table is for:</strong> show the apples-to-oranges part explicitly. RAW61 values are frame baselines: they are expected to repeat across JXL levels and should be reviewed for alignment, acutance, color profile and tone differences.</p>
+      <p><strong>How to read stress color:</strong> RAW61 and PS16 are first registered and rendered through the declared neutral pipeline. The same PS16-derived normalization, logarithmic transmission-to-density conversion, clipping, fixed channel balance and steep contrast curve are then applied to both. Patch means are compared as &Delta;E00. A much larger stress value than normal color means differences that look modest in the negative become prominent after this deliberately severe inversion. It is a reproducible sensitivity test, not a FilmLab simulation or a claim that PS16 is ground truth.</p>
+      <p><strong>Current result:</strong> {esc(stress_result)}</p>
     </div>
-    <table class="small-table">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="RAW61 baseline by frame; scroll horizontally on small screens"><table class="small-table">
       <thead>
         <tr>
           <th>{abbr("Scan set", "Local scan folder / material label.")}</th>
           <th>{abbr("Frame", "Capture set id.")}</th>
           <th>{abbr("RAW61 color", "RAW61 vs PS16 patch p95 DeltaE00 before stress.")}</th>
           <th>{abbr("RAW61 stress color", "RAW61 vs PS16 patch p95 DeltaE00 after hard negative-density transform.")}</th>
-          <th>{abbr("RAW61 structure", "RAW61 high-pass structure loss against PS16 after registration.")}</th>
+          <th>{abbr("RAW61 structure", "RAW61 normalized high-pass error against PS16 after registration: error RMS divided by PS16 high-frequency RMS.")}</th>
           <th>{abbr("Worst JXL color", "Worst JXL stress DeltaE00 across levels currently in the matrix.")}</th>
-          <th>{abbr("Worst JXL structure", "Worst JXL structure loss across levels currently in the matrix.")}</th>
+          <th>{abbr("Worst JXL structure", "Largest normalized JXL high-pass error across levels currently in the matrix.")}</th>
         </tr>
         <tr class="column-help-row">
           {column_help("Material group", "Scan collection or material label. Rows with the same name belong to the same film, target, or source batch, but each frame is evaluated separately.")}
           {column_help("Capture id", "Specific frame or capture-set identifier used to join the paired RAW61, PS16 reference, and JXL evidence for this row.")}
           {column_help("Baseline color", "95th-percentile patch CIEDE2000 difference for RAW61 versus the PS16 reference before the negative-density stress transform. Lower means the RAW61 render is closer to PS16; this is not JXL codec loss.")}
-          {column_help("Baseline under stress", "The same RAW61-versus-PS16 patch color comparison after the negative-density inversion proxy. It shows how capture, profile, and tone differences can become larger after film-style inversion.")}
-          {column_help("Baseline detail", "Unitless high-pass detail loss for RAW61 versus PS16 after registration. Lower means structurally closer to PS16; the value can include capture, demosaic, acutance, and alignment differences, not codec loss.")}
+          {column_help("Baseline under stress", "After registration, both RAW61 and PS16 receive the same reference-derived density mapping: normalize transmission, convert with -log(), clip the outer range, apply one fixed channel balance, then a steep contrast curve. We average 256 x 256-pixel patches in linear ProPhoto RGB, convert means to Lab, and report patch p95 DeltaE00. Higher than baseline color means inversion amplifies workflow differences; it does not isolate the codec or emulate a specific film scanner.")}
+          {column_help("Baseline detail", "Normalized high-pass error for RAW61 versus PS16 after registration. Luminance minus a 5 x 5 blur isolates fine variation; difference RMS is divided by PS16 high-pass RMS. 0 is exact and 1 means mismatch RMS equals the reference fine-structure RMS. Capture, demosaic, acutance, noise and residual alignment all contribute; this is not codec loss.")}
           {column_help("Worst codec color", "Largest PS16 JXL-versus-PS16 stress DeltaE00 found across the JXL levels currently included for this frame. It identifies the most color-disruptive tested level; lower is better.")}
-          {column_help("Worst codec detail", "Largest unitless PS16 JXL-versus-PS16 high-pass structure loss across the JXL levels currently included for this frame. Higher means more detail movement; confirm important cases in the crop viewer.")}
+          {column_help("Worst codec detail", "Largest normalized PS16 JXL-versus-PS16 high-pass error across included JXL levels. 0 is exact; 0.20 means error RMS is 20% of the PS16 fine-structure RMS. It can expose altered grain, edges or noise but is not a direct percentage of lost information; inspect important crops in the viewer.")}
         </tr>
       </thead>
       <tbody>
         {''.join(row.strip() for row in baseline_rows)}
       </tbody>
-    </table>
+    </table></div>
 
     <h2>Render/Profile Audit</h2>
     <section class="questions">
