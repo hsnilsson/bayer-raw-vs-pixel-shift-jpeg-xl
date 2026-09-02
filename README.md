@@ -162,6 +162,10 @@ These results are not yet a universal archival recommendation.
 - [scripts/make_break_even_review_viewers.py](scripts/make_break_even_review_viewers.py):
   create small static viewers with side-by-side, candidate-on-reference overlay,
   zoom, and pan
+- [scripts/audit_review_viewer_raw61.py](scripts/audit_review_viewer_raw61.py):
+  verify that every published RAW61 crop traces to a separate ARW render and is
+  pixel-reproducible from its registered RAW61 TIFF; `--repair` rebuilds stale
+  RAW61 viewer images from those declared sources
 - [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
   generate a local HTML report with color-coded break-even tables and review
   context plus fullscreen crop-viewer navigation

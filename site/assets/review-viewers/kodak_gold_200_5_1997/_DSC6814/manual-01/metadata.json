@@ -202,9 +202,9 @@
     768
   ],
   "local_raw61_alignment": {
-    "shift_x_px": 0.0,
+    "shift_x_px": -1.0,
     "shift_y_px": -1.0,
-    "confidence": 86.1906979524219,
+    "confidence": 78.67232456780461,
     "applied": true
   }
 }
