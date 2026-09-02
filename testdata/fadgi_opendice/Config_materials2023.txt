@@ -1,0 +1,191 @@
+FADGI Criteria	****	***	**	*
+
+Bound Volumes: General Collections
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.03	0.05
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Bound Volumes: Rare and Special Materials
+Hi_freq Low	0.9	0.8	0.7
+Hi_freq Up	0.2	0.3	0.4
+Mid_freq Low	0.45	0.4	0.35
+Mid_freq Up	0.65	0.75	0.85
+Sharpening	1.02	1.05	1.1
+Reproduction Scale	0.01	0.02	0.03
+OECF band	1.5	3	4.5
+White Balance	2	4	6
+Uniformity	0.01	0.03	0.05
+Noise	1	2	3
+Mean DeltaE	2	3.5	5
+Color Regis	0.33	0.5	0.8
+90th DeltaE	4	7	10
+
+Documents (Unbound): General Collections
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.03	0.05
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Documents (Unbound): Manuscripts and Other Rare and Special Materials
+Hi_freq Low	0.9	0.8	0.7
+Hi_freq Up	0.2	0.3	0.4
+Mid_freq Low	0.45	0.4	0.35
+Mid_freq Up	0.65	0.75	0.85
+Sharpening	1.02	1.05	1.1
+Reproduction Scale	0.01	0.02	0.03
+OECF band	1.5	3	4.5
+White Balance	2	4	6
+Uniformity	0.01	0.03	0.05
+Noise	1	2	3
+Mean DeltaE	2	3.5	5
+Color Regis	0.33	0.5	0.8
+90th DeltaE	4	7	10
+
+Oversize Items: Maps, Posters, and Other Materials
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.03	0.05
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Newspapers
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.03	0.05
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Prints and Photographs
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Paintings and Other Two-Dimensional Art (other than prints)
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	3	4.5	6
+White Balance	2	4	6	8
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+Mean DeltaE	2	3.5	5	6.5
+Color Regis	0.33	0.5	0.8	1.2
+90th DeltaE	4	7	10	13
+
+Photographic Transparencies: 35mm to 4"x5"
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+Color Regis	0.33	0.5	0.8	1.2
+
+Photographic Transparencies: >4"x5"
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+Color Regis	0.33	0.5	0.8	1.2
+
+Photographic Negatives: 35mm to 4"x5"
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+Color Regis	0.33	0.5	0.8	1.2
+
+Photographic Negatives: >4"x5"
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+Color Regis	0.33	0.5	0.8	1.2
+
+X-ray Film: (Radiographs)
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+Sharpening	1.02	1.05	1.1	1.15
+Reproduction Scale	0.01	0.02	0.025	0.03
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+Noise	1	2	3	4
+
+Printed Matter
+Hi_freq Low	0.9	0.8	0.7	0.6
+Hi_freq Up	0.2	0.3	0.4	0.5
+Mid_freq Low	0.45	0.4	0.35	0.3
+Mid_freq Up	0.65	0.75	0.85	0.95
+OECF band	1.5	2.75	4	5.25
+White Balance	1.5	2.75	4	5.25
+Uniformity	0.01	0.03	0.05	0.08
+White Balance	1.5	2.75	4	5.25

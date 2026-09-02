@@ -596,6 +596,28 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("ps16_reference_manual-01.png", html)
             self.assertLess(html.index("ps16_reference_manual-01.png"), html.index("d025_manual-01_identity.png"))
 
+    def test_report_site_includes_public_reproducibility_figures(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            figures = root / "figures"
+            figures.mkdir()
+            public_figure = figures / "fadgi-negative35mm2-d005-density-hard-print.png"
+            write_png(public_figure, textured_rgb(12, 12))
+
+            html = report_site.render_html(
+                rows=[],
+                summaries=[],
+                panels=[],
+                contexts=[],
+                output=root / "site" / "index.html",
+                public_figures=[public_figure],
+            )
+
+            self.assertIn("Public Reproducibility Check", html)
+            self.assertIn("do not contribute rows to the storage break-even verdict", html)
+            self.assertIn("fadgi-negative35mm2-d005-density-hard-print.png", html)
+            self.assertIn("OpenDICE measurement status:</strong> not yet run", html)
+
     def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

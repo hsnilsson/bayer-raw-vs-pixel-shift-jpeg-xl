@@ -6,6 +6,15 @@
   ],
   "direct_downloads": [
     {
+      "id": "fadgi-opendice-materials-config-2023",
+      "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Config_materials2023.txt",
+      "path": "testdata/fadgi_opendice/Config_materials2023.txt",
+      "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+      "rights": "FADGI/OpenDICE configuration data from digitizationguidelines.gov. Verify source terms before redistribution.",
+      "role": "FADGI 2023 conformance thresholds for OpenDICE analysis",
+      "sha256": null
+    },
+    {
       "id": "fadgi-opendice-negative-35mm-1-target",
       "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative_35mm_ICC.tif",
       "path": "testdata/fadgi_opendice/negative_35mm_1/Negative_35mm_ICC.tif",
