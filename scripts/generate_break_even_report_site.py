@@ -1217,11 +1217,17 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
     fullscreenToggle.addEventListener("click", async () => {
       if (document.fullscreenElement === workspace) await document.exitFullscreen();
-      else await workspace.requestFullscreen();
+      else {
+        resetView();
+        await workspace.requestFullscreen();
+      }
     });
     document.addEventListener("fullscreenchange", () => {
       updateFullscreenButton();
-      window.setTimeout(() => { resizeCanvas(); draw(); }, 0);
+      if (document.fullscreenElement === workspace) resetView();
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => { resizeCanvas(); draw(); });
+      });
     });
     canvas.addEventListener("wheel", (event) => {
       event.preventDefault();
