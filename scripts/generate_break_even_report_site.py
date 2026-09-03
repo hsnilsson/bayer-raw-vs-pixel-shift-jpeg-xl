@@ -30,6 +30,7 @@ DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
+VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
 
 PUBLIC_LATITUDE_CAPTIONS = {
     "fadgi-negative35mm2-d005-density-hard-print.png": "FADGI Negative 35mm 2, JXL d=0.05, hard density-inversion stress",
@@ -254,6 +255,8 @@ def classify_verdict(verdicts: Counter[str]) -> str:
 
 
 def status_for(summary: LevelSummary) -> str:
+    if summary.level in VISUAL_STRESS_LEVELS:
+        return "Visual stress only"
     size = classify_size(summary.median_size_pct)
     color = classify_delta_e(summary.p95_jxl_delta_e)
     color_ratio = classify_ratio(summary.median_color_ratio)
@@ -423,6 +426,7 @@ def level_status_class(status: str) -> str:
         "Review zone": "warn",
         "Too large": "bad",
         "Image risk": "bad",
+        "Visual stress only": "unknown",
     }.get(status, "unknown")
 
 
@@ -474,6 +478,7 @@ def status_reading(status: str) -> str:
         "Review zone": "near the storage or image-quality boundary; needs visual review",
         "Passes current gates": "median size is under RAW61 and current diagnostics favor PS16 JXL",
         "Image risk": "one or more current image diagnostics fails conservative thresholds",
+        "Visual stress only": "deliberately aggressive reference; excluded from archive-candidate verdicts",
     }.get(status, "incomplete evidence")
 
 
@@ -1335,7 +1340,11 @@ def render_html(
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
-    promising = sum(1 for row in complete if row.get("verdict") == "ps16_jxl_likely_wins")
+    promising = sum(
+        1
+        for row in complete
+        if row.get("verdict") == "ps16_jxl_likely_wins" and row.get("level") not in VISUAL_STRESS_LEVELS
+    )
     blocked = len(rows) - len(complete)
     by_verdict = Counter(row.get("verdict", "") for row in rows)
     baselines = summarize_baselines(rows)
@@ -1366,7 +1375,12 @@ def render_html(
         color_class = classify_delta_e(item.p95_jxl_delta_e)
         color_ratio_class = classify_ratio(item.median_color_ratio)
         structure_ratio_class = classify_ratio(item.median_structure_ratio)
-        verdict_class = classify_verdict(item.verdicts)
+        verdict_class = "unknown" if item.level in VISUAL_STRESS_LEVELS else classify_verdict(item.verdicts)
+        verdict_html = (
+            "excluded from decision; visual stress reference"
+            if item.level in VISUAL_STRESS_LEVELS
+            else verdict_text(item.verdicts)
+        )
         status_class = level_status_class(item.status)
         level_rows.append(
             f"""
@@ -1380,7 +1394,7 @@ def render_html(
               <td class="{color_ratio_class}"><strong>{fmt_raw61_ratio(item.median_color_ratio)}</strong><br><span class="subtle">{esc(ratio_reading(item.median_color_ratio))}</span></td>
               <td><strong>{fmt_with_unit(item.median_jxl_structure_loss, 3, "loss")}</strong><br><span class="subtle">{esc(structure_reading(item.median_jxl_structure_loss))}</span></td>
               <td class="{structure_ratio_class}"><strong>{fmt_raw61_ratio(item.median_structure_ratio)}</strong><br><span class="subtle">{esc(ratio_reading(item.median_structure_ratio))}</span></td>
-              <td class="{verdict_class}">{verdict_text(item.verdicts)}</td>
+              <td class="{verdict_class}">{verdict_html}</td>
             </tr>
             """
         )
@@ -1760,7 +1774,7 @@ def render_html(
     <section class="grid">
       <div class="card"><h3>Candidate Comparisons</h3><div class="metric">{len(rows)}</div><p class="muted">each comparison is one film material &times; frame &times; JXL distance</p></div>
       <div class="card"><h3>Fully Measured Comparisons</h3><div class="metric">{len(complete)}</div><p class="muted">comparisons with all three required measurements: file size, color and structure</p></div>
-      <div class="card"><h3>PS16 JXL Favorable Comparisons</h3><div class="metric">{promising}</div><p class="muted">fully measured comparisons that pass the current size, color and structure gates</p></div>
+      <div class="card"><h3>Decision-grade Favorable Comparisons</h3><div class="metric">{promising}</div><p class="muted">fully measured candidate comparisons favoring PS16 JXL; deliberately aggressive visual-stress levels are excluded</p></div>
       <div class="card"><h3>Median-size Budget Levels</h3><div class="metric">{esc(zone_text)}</div><p class="muted">JXL levels whose median file size is no larger than paired RAW61; this is a size result, not a quality verdict</p></div>
     </section>
 
@@ -1801,7 +1815,7 @@ def render_html(
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL is testable now. ADC DNG/JXL remains an experimental branch because current local tests found metadata and geometry changes that cannot yet be proven harmless.</p>
+          <p>Standalone rendered PS16 JXL is the active archive candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. ADC DNG/JXL is excluded from the core verdict because current local tests found incompatible rendering plus metadata and geometry rewrites.</p>
         </details>
       </div>
     </section>
@@ -1819,7 +1833,7 @@ def render_html(
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
-        <div class="flow-box"><strong>ADC DNG/JXL</strong><p>Experimental branch. Useful but blocked for now by app support and DNG metadata/geometry concerns.</p></div>
+        <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
@@ -1834,18 +1848,18 @@ def render_html(
 
     <h2>ADC DNG/JXL</h2>
     <div class="note">
-      <p><strong>Current conclusion:</strong> Adobe DNG Converter 18.5 can create DNG 1.7 files with internal JPEG XL, and the tested lossless low-level crops were exact. Lossy ADC rewrites the image state and cannot yet be validated end to end in the reference workflow, so it remains experimental rather than a sole-master recommendation.</p>
+      <p><strong>Current conclusion:</strong> Adobe DNG Converter 18.5 can create DNG 1.7 files with internal JPEG XL, and the tested lossless low-level crops were exact. Lossy ADC rewrites the image state and is not usable in the project's reference renderer, so this path is excluded from the core break-even verdict. The active candidate is standalone JXL from a fixed 16-bit PS16 render.</p>
     </div>
     <details class="adc-disclosure">
       <summary>
         <span>
-          <span class="adc-disclosure-title">Technical caveats and validation gaps</span>
-          <span class="adc-disclosure-subtitle">Nine documented items covering geometry, sample interpretation, application support, visual validation, and storage.</span>
+          <span class="adc-disclosure-title">Why ADC DNG/JXL Was Excluded</span>
+          <span class="adc-disclosure-subtitle">Nine documented findings covering geometry, sample interpretation, application support, visual validation, and storage.</span>
         </span>
         <span class="adc-disclosure-action" aria-hidden="true"></span>
       </summary>
       <div class="adc-disclosure-body">
-        <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” means that no defect has been proved, but the evidence needed for a sole-master claim is still missing.</p>
+        <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” identifies evidence that would be required before reconsidering this path; it is not part of the current work queue.</p>
         <section class="adc-grid">
       <div class="adc-item">
         <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
@@ -1854,7 +1868,7 @@ def render_html(
           <dd>In the active PixelShift 16 batches, lossy ADC changed the main raster from <code>19200&times;12752</code> to <code>19120&times;12736</code>. The small earlier smoke-test files showed the same pattern at <code>9600&times;6376</code> to <code>9552&times;6360</code>. Lossless ADC kept the source shape.</dd>
           <dt>Actual problem</dt>
           <dd>The lossy file no longer has the source file's stored pixel grid. This may be a valid flattening of the active area, but direct pixel indexing and geometry metadata from the source are no longer interchangeable.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Compare the same active image area through a crop-aware renderer, confirm that no useful edge pixels or placement information are lost, and keep the source DNG until that result is reproducible.</dd>
         </dl>
       </div>
@@ -1865,7 +1879,7 @@ def render_html(
           <dd>The active crop origin changed from <code>[8, 8]</code> in the source to <code>[0, 0]</code> in every checked lossy candidate. This is consistent with ADC writing the active area as the new stored raster.</dd>
           <dt>Actual problem</dt>
           <dd>The coordinate system changed. Copying the old crop tag back would shift the image or trim a second time; comparing the two rasters without applying their own crop metadata would compare different locations.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Verify placement in at least two independent full DNG render paths and compare registered active areas rather than raw array coordinates.</dd>
         </dl>
       </div>
@@ -1876,7 +1890,7 @@ def render_html(
           <dd>Lossy ADC changed all three channel values from <code>14848</code> to <code>65535</code>. Lossless ADC retained <code>14848</code>.</dd>
           <dt>Actual problem</dt>
           <dd>The stored sample domain was rescaled. Restoring the old tag or dividing both files by one assumed scale can produce false tone, clipping, or highlight-recovery differences.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Use each file's declared scale, apply its required opcodes, then test clipping and recoverable latitude through the same trusted renderer. The current low-level normalization is diagnostic evidence, not a restoration of the original raw-scale semantics.</dd>
         </dl>
       </div>
@@ -1887,7 +1901,7 @@ def render_html(
           <dd>The checked lossy files added three channel-specific <code>MapPolynomial</code> operations where the source had no <code>OpcodeList2</code>. Applying those maps removed the large false domain mismatch in the first raster comparison.</dd>
           <dt>Actual problem</dt>
           <dd>A decoder that extracts the JXL pixels but ignores the DNG opcodes does not recover the intended linear values. Correct rendering now depends on complete support for this processing step.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Confirm the same result in independent DNG renderers and record which archive applications apply the opcode correctly. Copying or deleting the opcode is not a safe repair.</dd>
         </dl>
       </div>
@@ -1898,7 +1912,7 @@ def render_html(
           <dd>Representative main-image tiles from two local files used the JPEG XL XYB path for lossy <code>d=0.05</code>; lossless main-image tiles used the original-profile, non-XYB path. The outer DNG still labels the image <code>LinearRaw</code>.</dd>
           <dt>Actual problem</dt>
           <dd>The lossy path is not a direct preservation of camera-native linear channel samples. A perceptual transform may behave well for normal viewing yet respond differently to negative inversion, channel balancing, or future extreme edits.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Inspect representative tiles across the corpus and run the actual ADC output through the same post-inversion and grading tests used for the archive decision.</dd>
         </dl>
       </div>
@@ -1909,7 +1923,7 @@ def render_html(
           <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
           <dt>Actual problem</dt>
           <dd>The project cannot feed source and ADC candidate into its one fixed RawTherapee render pipeline. This is a concrete workflow incompatibility, not evidence that the embedded JXL pixels are corrupt.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>A RawTherapee version that opens and correctly processes DNG 1.7/JXL, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
         </dl>
       </div>
@@ -1920,7 +1934,7 @@ def render_html(
           <dd>The project can extract main-image JXL tiles, decode matched crop windows, normalize by the declared white level, and apply the observed <code>MapPolynomial</code> opcodes. Lossless crops are exact through that path.</dd>
           <dt>Actual missing evidence</dt>
           <dd>This custom low-level check is not a second complete DNG implementation. It does not prove that crop, color matrices, opcodes, previews, and metadata are interpreted consistently by independent archive applications.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Matching color-managed renders from at least one independent DNG/JXL-capable application, followed by an application matrix for the tools expected in the real workflow.</dd>
         </dl>
       </div>
@@ -1931,7 +1945,7 @@ def render_html(
           <dd>Low-level crop metrics already show the expected ordering: lossless is exact, <code>d=0.03</code> is cleaner than <code>d=0.05</code>, and <code>d=0.10</code> develops a much worse error tail after negative-like stress.</dd>
           <dt>Actual missing evidence</dt>
           <dd>There is no blinded, end-to-end comparison of source and ADC DNG/JXL after a real color-managed inversion and grading workflow. Low average patch color error does not rule out objectionable grain, texture, or local-density changes.</dd>
-          <dt>What closes it</dt>
+          <dt>Required before reconsideration</dt>
           <dd>Registered same-render outputs, clipping and latitude checks, and blinded visual review on representative real negatives.</dd>
         </dl>
       </div>
@@ -1941,30 +1955,12 @@ def render_html(
           <dt>Observed</dt>
           <dd>Lossless ADC retained roughly <code>85-97%</code> of the source PS16 DNG size in complete local rows. Even the tested lossy <code>d=0.10</code> files were about <code>161-888%</code> of their paired 61 MP raw files.</dd>
           <dt>Actual problem</dt>
-          <dd>The tested conservative ADC levels do not yet answer the project's same-storage question. They reduce PS16 storage substantially but remain larger than the RAW61 budget.</dd>
-          <dt>What closes it</dt>
+          <dd>The tested conservative ADC levels do not answer the project's same-storage question. They reduce PS16 storage substantially but remain larger than the RAW61 budget.</dd>
+          <dt>Required before reconsideration</dt>
           <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
         </dl>
       </div>
         </section>
-      </div>
-    </details>
-
-    <details class="adc-disclosure">
-      <summary>
-        <span>
-          <span class="adc-disclosure-title">Why Negative-aware Preconditioning Is Not the Archive Recommendation</span>
-          <span class="adc-disclosure-subtitle">The investigated idea, its estimated upside, and why the archive workflow rejected it.</span>
-        </span>
-        <span class="adc-disclosure-action" aria-hidden="true"></span>
-      </summary>
-      <div class="adc-disclosure-body">
-        <div class="note">
-          <p><strong>Idea considered:</strong> transform the linear negative into a positive-looking, density-aware intermediate before lossy JPEG XL encoding, then apply the exact inverse transform after decoding and before FilmLab or another film inversion workflow. In principle this could steer JPEG XL's perceptual bit allocation toward differences that become visible in the final positive image.</p>
-          <p><strong>Why it was stopped:</strong> a useful transform would need channel-specific film-base correction, a strictly invertible density curve, no clipping, a declared wide-gamut color space, preserved parameters, and a custom restore step. A simple <code>1 - RGB</code> inversion does not remove the orange mask or model film density. Inside DNG/JXL, the approach is more fragile still because lossy Adobe output already changes the sample scale and geometry, uses the XYB path, and depends on channel-specific <code>MapPolynomial</code> operations.</p>
-          <p><strong>Estimated upside, not a measured result:</strong> the likely additional saving at comparable post-inversion quality is roughly <code>5-10%</code>; an optimistic upper range is about <code>10-20%</code>. More than <code>20%</code> appears unlikely without visible loss or reduced future editing latitude. The optimistic bound is illustrated by the Kodak Gold batch, where moving from <code>d=0.03</code> (2.42 GiB) to <code>d=0.05</code> (1.98 GiB) saved about 18%. Preconditioning would have to make the latter survive like the former to realize that full gain, which has not been demonstrated.</p>
-          <p><strong>Archive decision:</strong> that speculative saving does not justify a bespoke representation whose long-term interpretation depends on custom code and metadata. Prefer a lower JPEG XL distance or lossless storage and accept the lower compression ratio. Negative-aware preconditioning may remain an interesting codec experiment, but it is not recommended for the sole archive master.</p>
-        </div>
       </div>
     </details>
 
@@ -2092,7 +2088,6 @@ def render_html(
         <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
       </ul>
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
-      <p><strong>OpenDICE measurement status:</strong> attempted, but not produced. With MATLAB Runtime 9.13 installed, the official Command Line 3.00 release reaches photographic-negative material <code>11</code> and then exits with its internal <code>handles.material</code> variable undefined. Control probes confirm that command parsing and target detection work. GUI 3.01 remains the bounded fallback. Until an OpenDICE export exists, the panels above remain codec stress evidence rather than formal OpenDICE target results.</p>
     </div>
   </main>
 </body>

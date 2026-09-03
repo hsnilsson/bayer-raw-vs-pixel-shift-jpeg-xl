@@ -1,7 +1,7 @@
 # Limitations
 
 This project is intentionally cautious. The current evidence is useful, but it
-does not yet prove a universal archival rule.
+does not prove a universal archival rule.
 
 ## Current Limitations
 
@@ -52,14 +52,6 @@ FADGI/OpenDICE and Library of Congress figures, results, and a link to its full
 method documentation. It remains explicitly separate from paired RAW61-versus-
 PS16 evidence.
 
-### Selected Next Step
-
-1. **Turn the OpenDICE target from codec imagery into a target measurement.**
-   Use its supplied reference/profile data with an appropriate target-analysis
-   workflow to report color, tone response, noise, registration, and resolution
-   where supported. Keep this separate from the break-even verdict: measuring
-   the downloaded TIFF validates the analysis path, while photographing a
-   physical target would validate the camera-scanning system.
 ### Lower-Priority Extensions
 
 - Repeat an application-specific inversion/export test when a stable,

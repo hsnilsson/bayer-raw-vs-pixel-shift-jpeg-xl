@@ -528,10 +528,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
         )
 
         self.assertIn("<h2>ADC DNG/JXL</h2>", html)
-        self.assertEqual(2, html.count('<details class="adc-disclosure">'))
+        self.assertEqual(1, html.count('<details class="adc-disclosure">'))
         self.assertNotIn('<details class="adc-disclosure" open>', html)
-        self.assertIn("Technical caveats and validation gaps", html)
-        self.assertIn("Nine documented items", html)
+        self.assertIn("Why ADC DNG/JXL Was Excluded", html)
+        self.assertIn("Nine documented findings", html)
         self.assertIn("Stored image shape", html)
         self.assertIn("Crop origin / active placement", html)
         self.assertIn("<code>WhiteLevel</code>", html)
@@ -542,10 +542,9 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("Storage-budget coverage", html)
         self.assertIn("19200&times;12752", html)
         self.assertIn("Error loading file", html)
-        self.assertIn("Why Negative-aware Preconditioning Is Not the Archive Recommendation", html)
-        self.assertIn("likely additional saving", html)
-        self.assertIn("roughly <code>5-10%</code>", html)
-        self.assertIn("not recommended for the sole archive master", html)
+        self.assertNotIn("Why Negative-aware Preconditioning", html)
+        self.assertNotIn("likely additional saving", html)
+        self.assertNotIn("roughly <code>5-10%</code>", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -616,8 +615,6 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("Public Reproducibility Check", html)
             self.assertIn("do not contribute rows to the storage break-even verdict", html)
             self.assertIn("fadgi-negative35mm2-d005-density-hard-print.png", html)
-            self.assertIn("OpenDICE measurement status:</strong> attempted, but not produced", html)
-            self.assertIn("handles.material", html)
 
     def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -860,6 +857,30 @@ class BreakEvenPipelineTests(unittest.TestCase):
         )
 
         self.assertEqual(report_site.status_for(summary), "Passes current gates")
+
+    def test_report_site_excludes_aggressive_visual_stress_levels_from_gate(self) -> None:
+        summary = report_site.LevelSummary(
+            level="d200",
+            rows=3,
+            median_retained_mib=8.0,
+            min_retained_mib=7.0,
+            max_retained_mib=9.0,
+            median_raw61_mib=68.0,
+            median_size_pct=12.0,
+            min_size_pct=10.0,
+            max_size_pct=14.0,
+            median_jxl_delta_e=0.5,
+            p95_jxl_delta_e=0.7,
+            median_raw_delta_e=5.0,
+            median_color_ratio=0.14,
+            median_jxl_structure_loss=0.2,
+            median_raw_structure_loss=1.0,
+            median_structure_ratio=0.2,
+            verdicts={"ps16_jxl_likely_wins": 3},
+            status="",
+        )
+
+        self.assertEqual(report_site.status_for(summary), "Visual stress only")
 
     def test_rendered_matrix_merge_replaces_matching_rows(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

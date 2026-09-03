@@ -167,8 +167,9 @@ it is not a perceptual standard.
 The default comparison RGB space is `srgb`. This is a declared analysis space
 for comparing the reference and candidate inside the same controlled pipeline,
 not a claim that the DNG raster is an absolute sRGB rendering of the film.
-Future renderer-based tests should use the actual exported ICC/profile space
-when interpreting `DeltaE00`.
+Renderer-based tests use the declared exported ICC/profile space when
+interpreting `DeltaE00`; the fallback `srgb` comparison remains a diagnostic
+analysis space only.
 
 Full patch JSON can be written with `--patch-json`, but CSV is the default to
 avoid duplicating large patch tables.
@@ -248,18 +249,20 @@ compared directly as raw sensor code values; it must go through the same
 declared render path before comparison.
 
 The current PS16 reference is produced from PixelShift2DNG output. Sony Imaging
-Edge Desktop/Viewer has not yet been run as a parallel merge control in this
-repo. That control is useful because it separates three questions that otherwise
-get conflated: Sony's reference merge behavior, PixelShift2DNG merge/render
-behavior, and JPEG XL codec damage after a fixed render.
+Edge Desktop was considered as a parallel merge control, but merge-software
+comparison is outside the present break-even claim: both codec reference and
+candidate begin from the same PixelShift2DNG PS16 render. The project therefore
+does not claim that Sony and PixelShift2DNG merge identically; it measures JPEG
+XL loss after one declared and repeatable merge path.
 
-### 6. Target-Based Capture Measurement
+### 6. Optional Target-Based Capture Measurement
 
-Purpose: decide whether PixelShift 16 actually captures more useful film
+Purpose: independently check whether PixelShift 16 captures more useful film
 structure than a 61 MP single-shot baseline before JPEG XL enters the argument.
+This would strengthen the case but is not claimed by the current release.
 
-This track should be run on a physical target capture when one is available. It
-is separate from the public FADGI/OpenDICE TIFF stress files already in
+This extension requires a physical target capture made with the tested camera
+setup. It is separate from the public FADGI/OpenDICE TIFF stress files already in
 `testdata/`: those public files exercise the JPEG XL stress pipeline, while a
 new local target capture exercises this specific camera, lens, holder, light
 source, magnification, focus, aperture, and PixelShift workflow.
@@ -274,9 +277,10 @@ Minimum record for each target run:
 - retained-master file size for each candidate
 - output scale used for visual/SFR comparison
 
-Preferred measurements:
+Suitable measurements include:
 
-- OpenDICE or equivalent conformance checks when the target supports it
+- OpenDICE, AutoSFR, or equivalent checks when a compatible physical target and
+  reference profile are available
 - AutoSFR or equivalent spatial-frequency measurements on slanted edges
 - uniformity/vignetting measurement from a blank frame or target flat field
 - visual crops from target detail areas, registered to a declared common scale

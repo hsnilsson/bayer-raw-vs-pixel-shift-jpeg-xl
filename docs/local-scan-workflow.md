@@ -3,6 +3,11 @@
 This is the private/local workflow for adding real camera-scanned film material
 without committing private scans or generated results to Git.
 
+The active break-even path is the fixed RawTherapee render followed by
+standalone JPEG XL. The ADC sections below remain only for reproducing the
+excluded DNG/JXL compatibility findings; they are not the recommended retained
+master workflow.
+
 It does not run the public FADGI/OpenDICE test data under `testdata/`. Those
 files belong to the reproducible public latitude-stress track:
 
@@ -42,42 +47,7 @@ The manifest records capture groups, PixelShift sequences, ADC levels already
 present, privacy status, and local archive triage. Use `--hash` only when you
 need strong file identity checks; it can be slow for large scan folders.
 
-## Quick PS16 Intake Trial (Windows)
-
-For a small same-day scanning trial, put the camera files directly in one new
-scan-set folder. Configure PixelShift2DNG once to:
-
-- process ARW files;
-- save DNG files in the input folder;
-- name output from the first filename, a dash, and the last filename;
-- skip conversion when the destination already exists.
-
-Then close PixelShift2DNG and preview what the intake runner detects:
-
-```powershell
-python scripts\run_ps16_intake.py "input\trial-roll" --dry-run
-```
-
-Run the merge, conservative Adobe JPEG XL DNG conversion at distance `0.05`,
-and structural validation:
-
-```powershell
-python scripts\run_ps16_intake.py "input\trial-roll" --level d005 --hash
-```
-
-The runner uses ExifTool's PixelShift group and shot metadata, invokes
-PixelShift2DNG's **Analyze + Convert All** button through Windows UI Automation,
-waits for stable DNG output, creates `adc_jxl_dng/d005/`, and writes
-`ps16_intake_manifest.json`. It deliberately never deletes or moves an ARW or
-intermediate DNG. Keep the PixelShift2DNG window visible during this first trial
-so warnings can be reviewed.
-
-This is a trial intake path, not yet a continuous production watcher. A future
-standalone intake tool should add archive-copy verification, disk-pressure
-backoff, quarantine, recovery, and unattended-operation tests before gaining
-any deletion capability.
-
-## Adobe DNG Converter Candidates
+## Adobe DNG Converter Control Candidates
 
 If ADC DNG/JXL candidates are missing, generate them:
 
@@ -209,36 +179,6 @@ The script deliberately refuses to invent a neutral `.pp3`. Create
 fixed render state for the study. That profile becomes part of the method
 because it controls demosaicing, white balance, camera profile, tone response,
 and sharpening.
-
-## Sony Imaging Edge Merge Control
-
-This optional private control asks a narrower question than the break-even
-matrix: does Sony Imaging Edge's Pixel Shift merge retain comparable structure
-to PixelShift2DNG when both start from the same 16 ARW files?
-
-Create the `.ARQ` in Imaging Edge from one complete PS16 sequence. Then render
-both the ARQ and its matching PixelShift2DNG DNG with the *same* fixed
-RawTherapee profile. Do not use an ad-hoc sRGB TIFF export as the comparison
-source: that would mix merge behavior with a different output profile, tone
-state, or sharpening state.
-
-For the two neutral TIFFs, run the local control:
-
-```powershell
-$env:JXL_PYDEPS = "$PWD\.deps\jxl_pydeps" # local optional TIFF dependency bundle
-python scripts\run_ied_merge_control.py `
-  --reference outputs\ied_merge_control\<scan-set>\<set>\pixelshift2dng_ps16_neutral.tif `
-  --candidate outputs\ied_merge_control\<scan-set>\<set>\ied_ps16_neutral.tif `
-  --output outputs\ied_merge_control\<scan-set>\<set>\merge_control.json `
-  --scan-set "<scan-set-name>" `
-  --set-id "<paired-single-shot-id>"
-```
-
-The result records global scale/translation, a downsampled full-frame structure
-diagnostic, and the manually selected native-detail crops. Its RGB error fields
-are diagnostics only, not color-accuracy or DeltaE claims: camera-profile
-interpretation can differ between the ARQ and DNG paths. It does not create
-public review assets and does not alter a JXL break-even verdict.
 
 Register the rendered 61 MP raw baseline to the rendered PS16 reference:
 
@@ -426,7 +366,7 @@ Static review panels stay in `results/break_even_review_panels/` by default
 because they are large regenerated artifacts. Add `--include-panels` only for a
 private/local report where those links are explicitly needed.
 
-## What To Add Next
+## Adding More Film Material
 
 For each future film stock or representative frame, try to include:
 
@@ -434,9 +374,8 @@ For each future film stock or representative frame, try to include:
 - PixelShift 4 where practical
 - PixelShift 16 where practical
 - the PixelShift2DNG outputs used in the real archive workflow
-- ADC DNG/JXL candidates at `lossless`, `d003`, `d005`, and `d010`
+- standalone JXL candidates spanning the current break-even levels
 
-The current runner can already process the JXL/DNG verification layer. The next
-major method layer is a fully color-managed renderer/export comparison that
-produces the RAW61-vs-PS16 and structure/target CSVs consumed by
-`scripts/run_archival_break_even.py`.
+Follow the maintained sequence in [NEXT_STEPS.md](../NEXT_STEPS.md). ADC DNG/JXL
+files are optional control artifacts only; the current break-even verdict uses
+standalone JPEG XL made from the fixed PS16 render.

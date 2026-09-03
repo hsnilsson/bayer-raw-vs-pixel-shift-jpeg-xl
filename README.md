@@ -1,13 +1,7 @@
 # Film Information Retention Under a Fixed Storage Budget: Comparing Lower-Resolution Bayer Raw with High-Resolution Pixel-Shift JPEG XL
 
-The restartable Windows intake, FilmLab staging, and quarantine workflow is a
-self-contained subtree in
-[`ps16-film-scan-pipeline/`](ps16-film-scan-pipeline/README.md), ready to be
-maintained here and exported as its own repository.
-
-Work in progress: a reproducible investigation into whether conservative JPEG XL
-compression can be a practical archive strategy for high-resolution camera scans
-of film.
+A reproducible investigation into whether conservative JPEG XL compression can
+be a practical archive strategy for high-resolution camera scans of film.
 
 The central question is not simply "is JPEG XL identical to DNG?" It is:
 
@@ -74,8 +68,8 @@ current pattern:
 - Public FADGI/OpenDICE and LOC tests make the stress pipeline reproducible,
   but they do not answer the PixelShift sampling question by themselves.
 - The standalone rendered-PS16 JPEG XL matrix now crosses the 61 MP RAW storage
-  budget in the current local real-negative material; the first tested
-  under-budget area is around `d022`.
+  budget in the current local real-negative material; `d022` is still slightly
+  over budget on median and `d025` is the first tested under-budget level.
 - In one FilmLab-based ProPhoto test, JPEG XL distance `0.05` reduced one DNG to
   about half its size while producing a much smaller post-inversion error than
   more aggressive settings.
@@ -83,7 +77,7 @@ current pattern:
   profiles, so measured FilmLab tests used `djxl` decoding followed by an
   ICC-preserved PNG bridge.
 
-These results are not yet a universal archival recommendation.
+These results do not establish a universal archival recommendation.
 
 ## Repository Map
 
@@ -111,8 +105,6 @@ These results are not yet a universal archival recommendation.
 - [RESULTS.md](RESULTS.md): current result summary and interpretation
 - [docs/public-latitude-v2.md](docs/public-latitude-v2.md): expanded public
   latitude stress test with density-based negative-print transforms
-- [docs/opendice-target-measurement.md](docs/opendice-target-measurement.md):
-  official OpenDICE sample-target measurement scope and reproducible command
 - [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md):
   smoke test for rewriting PixelShift2DNG files as DNG 1.7 JPEG XL
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
@@ -276,11 +268,11 @@ question.
 
 ## Status
 
-This repo is close to a public-review state, but it is still a research project,
-not an archival recommendation. Full-size local scans and generated outputs are
-intentionally ignored by Git unless deliberately promoted. Public samples should
-be downloaded or stored under `testdata/` with source sidecars and SHA-256
-hashes.
+This repository is ready for provisional public review, but it remains a
+research project rather than an archival recommendation. Full-size local scans
+and generated outputs are intentionally ignored by Git unless deliberately
+promoted. Public samples belong under `testdata/` with source sidecars and
+SHA-256 hashes.
 
 For the shortest current interpretation, start with
 [CONCLUSIONS.md](CONCLUSIONS.md).

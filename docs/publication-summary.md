@@ -2,8 +2,9 @@
 
 ## Publication Summary
 
-This repository is a work-in-progress public research package about JPEG XL,
-PixelShift, and camera scanning of film.
+This repository is a public research package about JPEG XL, PixelShift, and
+camera scanning of film. Its conclusions remain provisional where the evidence
+is limited; that is a scientific boundary, not an unfinished implementation.
 
 ## The Question
 
@@ -43,9 +44,9 @@ The current practical result is:
   exactly, but the tested storage savings were modest.
 - The current local storage-budget matrix crosses the paired 61 MP RAW budget
   between `d022` and `d025`; this is promising but still preliminary.
-- JPEG XL `d=0.05` remains an interesting conservative lossy candidate in the
-  older ADC/stress tracks, while the newer standalone-JXL break-even sweep uses
-  finer `d020` through `d030` levels.
+- JPEG XL `d=0.05` remains a high-quality reference point in the older
+  ADC/stress tracks, while the fixed-budget standalone-JXL sweep crosses the
+  paired RAW61 size between `d022` and `d025`.
 - JPEG XL `d=0.10` looks too aggressive for an archival claim without stronger
   evidence.
 
@@ -60,8 +61,8 @@ The easiest public reading order is:
 - use the FADGI/OpenDICE negative target as the reproducibility anchor
 - use the LOC Wildflowers figures as the fine-texture stress case
 
-For the fastest overview of how public FADGI/OpenDICE tests, private scan tests,
-and pending storage-budget claims relate to each other, see:
+For the fastest overview of how public FADGI/OpenDICE tests, local scan tests,
+and the current storage-budget claim relate to each other, see:
 
 - [FINDINGS.md](../FINDINGS.md)
 
@@ -71,9 +72,9 @@ This does not prove that lossy JPEG XL should replace raw/DNG masters.
 
 It does not prove that `d=0.05` survives all real film-negative workflows.
 
-It does not yet turn the core sampling result into an archival recommendation,
-because the RAW61-vs-PS16 render/profile baseline still needs cleanup and the
-visual review set is small.
+It does not turn the core sampling result into a universal archival
+recommendation because the present film corpus is limited, visual review is not
+blinded, and no independent reproduction has been recorded.
 
 ## How To Check The Repo
 

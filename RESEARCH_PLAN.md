@@ -302,26 +302,18 @@ Operational gate:
 - failures are reported per application and version, rather than generalized to
   the JPEG XL or DNG formats
 
-Additional sole-master gate for lossy Adobe DNG Converter JXL DNG:
+Closed ADC branch:
 
-- the original PixelShift2DNG and ADC output are rendered through the same
-  trusted pipeline and compared over the same registered crop
-- the observed changes in stored dimensions, crop, and `WhiteLevel` are
-  explained and tested for clipping, rescaling, and loss of editable latitude
-- representative main-image tiles are inspected across files; the inferred
-  original-profile/XYB path is recorded and the actual ADC result is subjected
-  to the same post-inversion stress tests as standalone JXL
-- ADC JXL DNG is compared directly with standalone JXL from the same 16-bit
-  reference state at matched quality settings and near-matched retained size
-- metadata, ICC/color interpretation, named-application behavior, and at least
-  one independent decode/render path pass the operational gate
-- blinded review of real negatives finds no objectionable difference after the
-  declared inversion and grading workflow
+- lossy Adobe DNG Converter JXL DNG changed stored dimensions, crop origin,
+  `WhiteLevel`, and opcode-dependent sample interpretation in the tested files
+- RawTherapee 5.12 could not load the generated DNG/JXL files for a controlled
+  same-render comparison
+- the study therefore excludes ADC DNG/JXL from its archive-value verdict and
+  uses standalone JXL made from one declared PS16 render state
 
-Until every item in this additional gate passes, lossy ADC JXL DNG remains an
-experimental candidate and must not be recommended as the sole retained master.
-Successful conversion, plausible tags, or successful opening in one application
-are not sufficient.
+Reopening that branch would require a compatible independent render path and a
+new operational case for keeping the DNG wrapper. It is not part of the current
+release queue.
 
 Publication gate:
 
@@ -331,27 +323,16 @@ Publication gate:
 - selected figures explain the result without relying on private files
 - limitations remain visible in README, conclusions, and publication summary
 
-## Near-Term Execution Order
+## Execution Status
 
-1. [x] Finish and review the related-work and research-plan documentation
-   (completed 2026-08-15).
-2. [ ] Add anonymous real-negative test material under ignored local input
-   folders.
-3. [ ] Create source sidecars for each new image set.
-4. [ ] Run the existing lossless and lossy JPEG XL tests on the new material.
-5. [ ] Run latitude-stress tests on the new material.
-6. [ ] Add metadata/ICC diff output.
-7. [ ] Test Adobe DNG Converter DNG 1.7 JPEG XL output through the same render and
-   metadata gates.
-8. [ ] Run the storage-budget comparison: 61 MP raw versus 240 MP PixelShift 16
-   JXL.
-9. [ ] Add target-based capture-quality measurements if a suitable target
-   capture is available.
-10. [ ] Update `RESULTS.md`, `CONCLUSIONS.md`, and public figures.
-11. [ ] Ask for outside critique only after the real-negative and storage-budget
-    tracks are represented.
+The original execution plan has been completed through the first local
+storage-budget result: public stress data, owner-approved real-negative crops,
+fixed rendering, registration, metadata diagnostics, standalone JXL levels,
+size/color/structure metrics, and the generated report are present. The
+maintained release queue is [NEXT_STEPS.md](NEXT_STEPS.md); this document defines
+the method and should not be read as a second checklist.
 
-## What To Add Next
+## Adding New Material
 
 When new images are ready, add them locally but do not commit them immediately.
 Use ignored folders first, for example:
@@ -372,28 +353,12 @@ For each image set, add a small sidecar note with:
 - whether the source may be committed through Git LFS
 - complete retained-master size and the separately reported source-sequence size
 
-The first new set should prioritize the direct storage-budget comparison. That
-is the test most likely to make the project genuinely useful to other camera
-scanners.
+New sets should broaden the present corpus rather than repeat an easy frame.
 
 ## Current Storage-Budget Reality Check
 
-The local helper `scripts/run_storage_budget_index.py` now checks whether the
-ignored local scan folders contain paired single-shot raw and PixelShift 16 ADC
-JXL DNG candidates that are size-comparable.
-
-On the current private Kodak Gold 200-5 and Kodak Safety Film 5035 scan sets,
-the ADC DNG/JXL candidates at `lossless`, `d=0.03`, `d=0.05`, and `d=0.10`
-remain larger than the paired single-shot ARW files. That does not invalidate
-the sampling hypothesis, but it means the current ADC JXL DNG settings do not
-yet produce a true same-storage comparison against 61 MP ARW on these files.
-
-The next storage-budget step is therefore either:
-
-- bracket the 61 MP raw budget with a more aggressive candidate and report that
-  it is outside the current conservative range, or
-- compare against a different retained-master baseline, such as PixelShift 4
-  DNG or a rendered 16-bit master, and label that policy explicitly.
-
-Any such comparison must still pass the sampling, color, inversion-stress, and
-operational gates before it can support an archive recommendation.
+The standalone rendered-PS16 matrix now performs the intended paired
+comparison. Its current median retained size crosses the RAW61 budget between
+`d022` (106.4%) and `d025` (86.3%). The result remains provisional because the
+film corpus is limited, the visual review is not blinded, and no independent
+reproduction has been recorded.

@@ -27,10 +27,11 @@ The current practical answer is:
   mean-color stability than the raw pixel-error numbers alone suggested, but
   they do not remove the sole-master risk.
 - The newest standalone rendered-PS16 JXL matrix crosses the paired 61 MP RAW
-  storage budget around `d022` on the current local material. `d025` and
-  stronger compression are under budget in the current metrics, but require
-  more visual review and render-profile cleanup before becoming a practical
-  recommendation.
+  storage budget between `d022` and `d025` on the current local material.
+  `d025` through `d030` are under budget in the current metrics, but require
+  broader material, blinded visual review and independent reproduction before
+  becoming a practical recommendation. `d100` and `d200` are visual stress
+  references, not archive candidates.
 
 The deeper hypothesis remains alive: a very high-resolution PixelShift scan
 stored as conservative JPEG XL may be a better practical representation of a
@@ -111,8 +112,8 @@ lose its advantage through movement, registration errors, lens limits,
 diffraction, lighting issues, or unstable film holders.
 
 They also do not prove that the public test images fully represent real
-camera-scanned negatives. The public data is useful and reproducible, but the
-project still needs anonymous real negative scans.
+camera-scanned negatives. The public data is useful and reproducible, while the
+owner-approved real-negative corpus remains too limited for a general claim.
 
 ## Practical Recommendation Today
 
@@ -121,8 +122,10 @@ For irreplaceable work:
 - Keep original raw/DNG files when possible.
 - Use JPEG XL lossless when exact preservation of a chosen rendered state is
   needed and modest savings are still useful.
-- Treat JPEG XL `d=0.03`/`d=0.05` as compact experimental masters or working
-  masters, not as the only archive copy.
+- Treat JPEG XL `d=0.03`/`d=0.05` as high-quality secondary or evaluation
+  masters when their larger size is acceptable, not as the fixed-budget answer.
+- Treat the current under-budget boundary around `d025` as a research result
+  requiring visual review, not yet as a sole-master recommendation.
 - Be very cautious with `d=0.10` for archival use.
 - Test after the edits that matter: inversion, color balancing, curves, shadow
   lifting, highlight recovery, and wide-gamut export.
