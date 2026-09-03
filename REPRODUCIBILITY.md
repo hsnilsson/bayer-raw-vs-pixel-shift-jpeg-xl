@@ -91,9 +91,9 @@ Before publishing:
 python scripts\check_publication_ready.py
 ```
 
-Expected current warnings are large public TIFF files that are marked for Git
-LFS. Blocking findings should be fixed before release. The lower-level audit can
-also be run directly:
+Large public TIFF files correctly marked for Git LFS are reported as
+informational findings. Blocking findings or warnings should be fixed before
+release. The lower-level audit can also be run directly:
 
 ```powershell
 python scripts\audit_publication_safety.py

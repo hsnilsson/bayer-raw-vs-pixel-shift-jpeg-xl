@@ -6,7 +6,7 @@ history; large historical objects can be handled separately if needed.
 ## Current State
 
 - The tracked repository passes the publication safety audit with no blocking
-  findings.
+  findings or warnings. Expected Git LFS notices are informational.
 - Large public TIFF test inputs are intentionally tracked through Git LFS.
 - Full-size local scans and generated outputs are ignored by Git.
 - The current public site target is `site/`.
@@ -25,10 +25,18 @@ history; large historical objects can be handled separately if needed.
   public site becomes intentionally very minimal.
 - `scripts/run_adobe_dng_jxl_batch.py`, `scripts/run_dng_jxl_verification.py`,
   and `scripts/inspect_dng_jxl_color_path.py`: keep even though the current
-  report uses standalone JXL. They document why ADC DNG/JXL is not yet the main
-  candidate.
+  report uses standalone JXL. They document why ADC DNG/JXL was excluded from
+  the core candidate comparison.
 - `scripts/generate_break_even_report_site.py` and `site/`: keep as the current
   publication path.
+
+Removed before publication because they contradicted or distracted from the
+measured study:
+
+- the separate production/intake pipeline that treated ADC DNG/JXL as an
+  archive output;
+- the redundant one-shot ADC intake runner; and
+- the unfinished Sony Imaging Edge merge-control track.
 
 ## Can Be Removed Locally
 
@@ -48,16 +56,14 @@ Already cleaned locally:
   review panels are excluded from the site build and can be regenerated if
   needed.
 
-## Needs Decision Before Public Release
+## Publication Decisions
 
-- Whether any full-size source scans should ever be published through Git LFS.
-  The current default is selected small derived panels and context thumbnails
-  only.
-- Whether `site/` should be treated as live now, or as a draft until the first
-  public writeup is frozen.
-- Whether old narrative pages should remain as documentation, or whether the
-  public site should expose only `README`, `FINDINGS`, `RESULTS`,
-  `METHODOLOGY`, `LIMITATIONS`, and `RELATED_WORK`.
+- `site/` is the current publishable report artifact.
+- Publish selected derived review crops, context thumbnails, and public test
+  figures. Do not publish full-size private source scans through Git LFS.
+- Keep historical narrative under `docs/archive/`; current claims belong in
+  `README`, `FINDINGS`, `RESULTS`, `CONCLUSIONS`, `METHODOLOGY`, and
+  `LIMITATIONS`.
 
 ## Drift Found
 

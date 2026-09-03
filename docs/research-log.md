@@ -26,9 +26,11 @@ The deeper question became:
   negative-inversion-like edits.
 - FilmLab direct JXL import showed color-management problems in one test, so
   controlled tests should decode JXL externally with `djxl`.
-- Conservative lossy JPEG XL remains plausible as a secondary/compact master
-  candidate; current local results frame `d=0.03` as cleaner and `d=0.05` as the
-  stronger storage compromise.
+- The older conservative-codec track frames `d=0.03` as cleaner and `d=0.05` as
+  the stronger compression compromise, but both remain well above the paired
+  RAW61 budget in the new 240 MP comparison.
+- The current standalone-JXL matrix crosses the median RAW61 storage budget
+  between `d022` and `d025`; this is the relevant fixed-budget result.
 
 ## Working Hypothesis
 
@@ -36,17 +38,15 @@ For camera-scanned film, a better-sampled PixelShift image stored as conservativ
 JPEG XL may preserve more relevant film information than a lower-resolution raw
 capture at similar storage cost.
 
-This is not yet proven.
+This remains a testable hypothesis rather than a proven general rule.
 
-## Next Research Steps
+## Current Queue
 
-- Add public or anonymized real negative scans.
-- Add FADGI/OpenDICE capture-quality tests.
-- Extend the automated FilmLab-independent latitude stress test to those scans.
-- Add metadata/ICC comparison output.
-- Run the paired 61 MP raw versus 240 MP PixelShift 16 storage-budget test.
-- Repeat results and publish selected crops and diff panels across image types.
-- Invite critique from scanning, archival, and JPEG XL communities.
+The original research queue has largely been completed: the repository now has
+real-negative comparisons, FilmLab-independent stress transforms, metadata/ICC
+diagnostics, a paired storage-budget matrix, and selected public review crops.
+The maintained remaining-work list is [NEXT_STEPS.md](../NEXT_STEPS.md); this
+file remains a chronological record rather than a second roadmap.
 
 ## Related Work And Research Plan Review
 

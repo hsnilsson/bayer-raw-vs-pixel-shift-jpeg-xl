@@ -21,7 +21,7 @@ every numeric value from a smaller capture.
 | Local DNG/JXL scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | How Adobe DNG Converter DNG/JXL behaves on real color-negative camera scans | Full public reproducibility unless selected source data or review panels are published |
 | Patch-color diagnostics | Local DNG/JXL verification crops | Whether lossy JXL changes local mean color or mostly changes pixel texture/noise | Absolute scene color accuracy or a full color-managed film-rendering result |
 | Local scan-study runner | Ignored `input/` scan folders | Repeatable intake and verification for future private/anonymized scans | New scientific evidence by itself |
-| Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary until the RAW61-vs-PS16 baseline is visually reviewed and any render/profile mismatch is resolved |
+| Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary because the film corpus is limited and the visual review is neither blinded nor independently reproduced |
 
 ## What Happened To FADGI/OpenDICE
 
@@ -44,7 +44,7 @@ the local film scans develop the real workflow.
 
 ## Current Pattern
 
-Across the current public and local evidence, the ordering is stable:
+Across the older conservative-codec track, the ordering is stable:
 
 - lossless JPEG XL can preserve the chosen image state exactly
 - `d=0.03` is the cleaner conservative lossy candidate
@@ -65,33 +65,30 @@ master.
 
 The standalone rendered-PS16 JXL path now produces candidates that cross below
 the paired 61 MP raw storage budget on the current local material. The current
-median size break-even is between `d020` and `d022`; `d025` and stronger
+median size break-even is between `d022` and `d025`; `d025` through `d030`
 compression are under budget in the automatic overview while still ranking as
 PS16 JXL likely wins for the complete non-flagged pairs. This is useful local
-evidence, not a final archival recommendation: the RAW61-vs-PS16 rendered
-color/tone baseline is currently much larger than expected and may include
-pipeline mismatch rather than only true sampling loss.
+evidence, not a final archival recommendation. Deliberately aggressive `d100`
+and `d200` files remain available only as visual stress references and are not
+counted as archive candidates.
 
 ## Best Current Recommendation
 
 For irreplaceable work, keep original raw/DNG/lossless masters when possible.
 
 Treat conservative JPEG XL, especially `d=0.03` and `d=0.05`, as promising
-experimental or secondary master candidates until the storage-budget and
-color-managed render tracks are complete.
+secondary or evaluation-master candidates, not as the only archive copy.
 
-## What Would Make This Strong
+## What Would Make This Stronger
 
-The project becomes much more useful when these pieces are all represented:
+The repository already includes public stress inputs, owner-approved
+real-negative crops, fixed color-managed rendering, metadata diagnostics, and a
+direct 61 MP RAW versus 240 MP PS16 JXL storage comparison. The main remaining
+ways to strengthen the claim are a broader film corpus, structured or blinded
+visual review, independent reproduction, and a physical resolution-target
+capture made with the same camera-scanning setup.
 
-- public/reproducible FADGI/OpenDICE stress results
-- owner-approved or anonymized real negative examples
-- fully color-managed render/export comparison
-- metadata and ICC preservation checks
-- direct 61 MP raw versus 240 MP PixelShift 16 JXL storage-budget comparison
-- selected crops showing where PixelShift preserves more real film structure
-
-The existing local runner is meant to make the next real-negative additions
-routine: add scan folder, generate/refresh manifest, create ADC candidates, run
-the local study queue, then update the public-facing summary only with safe or
-anonymized material.
+The local pipeline makes additional sets routine: add a scan folder, generate
+or refresh its manifest, render the declared RAW61 and PS16 states, encode the
+standalone JXL matrix, run the metrics, and publish only approved derived review
+assets.

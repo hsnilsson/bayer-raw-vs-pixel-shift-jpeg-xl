@@ -19,7 +19,7 @@ Before publishing or pushing a release branch:
   a deliberate Git LFS/release strategy.
 - If committing public test images, confirm `git lfs version` works and
   `.gitattributes` marks the image paths as LFS.
-- Current non-blocking `audit_publication_safety.py` warnings are expected for
+- Current informational `audit_publication_safety.py` findings are expected for
   large public TIFF test images in `testdata/`. They are acceptable only because
   the files are documented public sources and the relevant paths are covered by
   Git LFS.

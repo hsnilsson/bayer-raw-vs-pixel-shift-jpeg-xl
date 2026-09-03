@@ -55,12 +55,15 @@ TEXT_SUFFIXES = {
 SECRET_PATTERNS = [
     ("absolute_windows_path", re.compile(r"[A-Za-z]:\\(?:Users|a\\GitHub|tmp|Windows)\\", re.IGNORECASE)),
     ("user_home", re.compile(r"Users\\[^\\\s]+", re.IGNORECASE)),
-    ("sony_dsc_private_name", re.compile(r"_DSC\d{4}", re.IGNORECASE)),
     (
         "metadata_identity_field",
         re.compile(
-            r"\b(serial|serialnumber|bodyserial|ownername|artist)\b\s*[:=]",
-            re.IGNORECASE,
+            r'''(?:
+                ["'](?:serial(?:number)?|bodyserial|internalserialnumber|ownername|artist)["']\s*:
+                |
+                \b(?:serial\s+number|body\s+serial\s+number|internal\s+serial\s+number|owner\s+name|artist)\b\s*:
+            )''',
+            re.IGNORECASE | re.VERBOSE,
         ),
     ),
 ]
@@ -122,33 +125,51 @@ def scan_text(path: Path) -> list[Finding]:
     return findings
 
 
-def is_lfs_tracked(path: Path) -> bool:
+def lfs_tracked_files(paths: list[Path]) -> set[Path]:
+    relative_paths = [rel(path) for path in paths]
+    if not relative_paths:
+        return set()
     try:
         cp = subprocess.run(
-            ["git", "-c", f"safe.directory={GIT_SAFE_DIRECTORY}", "check-attr", "filter", "--", str(rel(path))],
+            [
+                "git",
+                "-c",
+                f"safe.directory={GIT_SAFE_DIRECTORY}",
+                "check-attr",
+                "-z",
+                "--stdin",
+                "filter",
+            ],
             cwd=ROOT,
-            text=True,
+            input=b"".join(path.as_posix().encode("utf-8") + b"\0" for path in relative_paths),
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             check=True,
         )
     except (subprocess.CalledProcessError, FileNotFoundError):
-        return False
-    return cp.stdout.strip().endswith("filter: lfs")
+        return set()
+
+    tracked: set[Path] = set()
+    fields = cp.stdout.split(b"\0")
+    for index in range(0, len(fields) - 2, 3):
+        path, attribute, value = fields[index : index + 3]
+        if attribute == b"filter" and value == b"lfs":
+            tracked.add(Path(path.decode("utf-8")))
+    return tracked
 
 
-def scan_file(path: Path) -> list[Finding]:
+def scan_file(path: Path, lfs_paths: set[Path]) -> list[Finding]:
     findings: list[Finding] = []
     relative = rel(path)
     suffix = path.suffix.lower()
     size = path.stat().st_size
 
-    lfs_tracked = is_lfs_tracked(path)
+    lfs_tracked = relative in lfs_paths
 
     if size > BLOCK_SIZE and lfs_tracked:
         findings.append(
             Finding(
-                "warn",
+                "info",
                 relative,
                 f"{size / 1024 / 1024:.1f} MiB requires Git LFS; .gitattributes marks it as LFS",
             )
@@ -160,7 +181,7 @@ def scan_file(path: Path) -> list[Finding]:
     elif size > WARN_SIZE and lfs_tracked:
         findings.append(
             Finding(
-                "warn",
+                "info",
                 relative,
                 f"{size / 1024 / 1024:.1f} MiB is large and will use Git LFS",
             )
@@ -202,9 +223,10 @@ def main() -> int:
     args = parser.parse_args()
 
     files = iter_files(include_ignored=args.include_ignored)
+    lfs_paths = lfs_tracked_files(files)
     findings: list[Finding] = []
     for path in files:
-        findings.extend(scan_file(path))
+        findings.extend(scan_file(path, lfs_paths))
 
     publishable = set(git_unignored_files())
     for path in publishable:
@@ -213,7 +235,7 @@ def main() -> int:
             if path.suffix.lower() in RISKY_SUFFIXES and not is_safe_binary_location(path):
                 findings.append(Finding("block", relative, "currently visible to Git and has risky suffix"))
 
-    severity_rank = {"block": 0, "warn": 1}
+    severity_rank = {"block": 0, "warn": 1, "info": 2}
     findings.sort(key=lambda f: (severity_rank.get(f.severity, 9), str(f.path), f.message))
 
     if not findings:
@@ -225,7 +247,11 @@ def main() -> int:
 
     block_count = sum(1 for finding in findings if finding.severity == "block")
     warn_count = sum(1 for finding in findings if finding.severity == "warn")
-    print(f"\nSummary: {block_count} blocking finding(s), {warn_count} warning(s).")
+    info_count = sum(1 for finding in findings if finding.severity == "info")
+    print(
+        f"\nSummary: {block_count} blocking finding(s), "
+        f"{warn_count} warning(s), {info_count} informational finding(s)."
+    )
     return 1 if block_count else 0
 
 

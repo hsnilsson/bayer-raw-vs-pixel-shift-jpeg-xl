@@ -27,7 +27,8 @@ result, not a general archival recommendation.
 - public FADGI/OpenDICE and Library of Congress latitude-stress results
 - source sidecars and rights notes for public test images
 - JPEG XL lossless/exactness results for chosen rendered states
-- evidence that `d=0.03` and `d=0.05` are more plausible than `d=0.10`
+- the standalone-JXL storage crossing between `d022` and `d025` on the current
+  local material
 - the local workflow code, without automatically publishing full-size scan files
 - selected owner-approved real-negative review panels and small context
   thumbnails with crop boxes
@@ -39,7 +40,7 @@ result, not a general archival recommendation.
 
 - that lossy JPEG XL can replace DNG/RAW masters generally
 - that Adobe DNG Converter lossy JXL DNG is safe as a sole master
-- that `d=0.05` survives all negative inversion workflows
+- that any tested lossy level survives all negative inversion workflows
 - that PixelShift 16 JXL generally beats 61 MP raw at the same storage budget
 - that public FADGI/OpenDICE TIFF tests prove real camera-scanned film behavior
 
@@ -63,14 +64,12 @@ Use a short GitHub-first post:
 - GitHub README/issues for reproducibility feedback
 - JPEG XL community for codec and encoder-setting critique
 - camera-scanning or film-digitization forums for workflow critique
-- preservation/digitization communities only after the storage-budget and target
-  measurement tracks are represented more strongly
+- preservation/digitization communities with the current limitations stated
+  prominently
 
-## What Would Make It Stronger
+## Remaining Qualification
 
-- more owner-approved or anonymized real-negative examples
-- one full 61 MP raw versus 240 MP PixelShift 16 JXL storage-budget comparison
-- a target capture with OpenDICE, AutoSFR, or similar measurement
-- a FilmLab-independent renderer/inversion stress test
-- direct comparison of ADC JXL DNG and standalone JXL from the same reference
-  image state
+The report is publishable as a provisional study. Broader material, blinded
+review, and independent reproduction would strengthen the claim but are not
+missing implementation. See [NEXT_STEPS.md](../NEXT_STEPS.md) for the maintained
+queue and [LIMITATIONS.md](../LIMITATIONS.md) for the scientific boundaries.

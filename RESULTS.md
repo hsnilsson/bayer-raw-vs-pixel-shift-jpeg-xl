@@ -52,8 +52,8 @@ controlled render and latitude-stress comparison.
 A codestream-header check of the first two embedded tiles in one private file
 pair also found that the lossless output used the original-profile/non-XYB path,
 whereas the lossy `d=0.05` output used XYB. This makes post-inversion testing
-relevant to the ADC path as well as external `.jxl`, but it is not yet a
-multi-file or exhaustive tile result.
+relevant to the ADC path as well as external `.jxl`. The result is deliberately
+limited to representative tiles and is not generalized to every ADC file.
 
 See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md).
 
@@ -181,15 +181,20 @@ PixelShift2DNG PS16 -> RawTherapee neutral 16-bit TIFF -> cjxl -> djxl -> metric
 ```
 
 On the current local color-negative material, the median retained-size
-break-even versus the paired 61 MP RAW baseline is between `d020` and `d022`.
+break-even versus the paired 61 MP RAW baseline is between `d022` and `d025`.
 
 | JXL level | Median size vs RAW61 | Current interpretation |
 |---|---:|---|
-| `d020` | 114.1% | still larger than RAW61 on median |
-| `d022` | 98.6% | first tested median level within RAW61 budget |
-| `d025` | 79.6% | under budget with current color/structure metrics still favoring PS16 JXL |
-| `d028` | 66.4% | under budget, needs visual review |
-| `d030` | 60.1% | under budget, needs visual review |
+| `d020` | 121.7% | still larger than RAW61 on median |
+| `d022` | 106.4% | near the storage boundary but still larger on median |
+| `d025` | 86.3% | first tested median level under budget; current diagnostics favor PS16 JXL |
+| `d028` | 72.1% | under budget, needs visual review |
+| `d030` | 69.7% | under budget, needs visual review |
+
+`d100` and `d200` are deliberately aggressive visual stress references. They
+are useful for showing what obvious codec damage looks like, but are excluded
+from archive-candidate verdicts even when simple aggregate metrics look
+favorable.
 
 The current numeric summary is encouraging for the main hypothesis: the PS16 JXL
 candidate remains much closer to the PS16 reference than the registered RAW61
@@ -252,8 +257,9 @@ Working model:
 The more interesting hypothesis is that a better-sampled PixelShift image stored
 as conservative JPEG XL can preserve more relevant film information than a
 lower-resolution raw capture at the same storage cost. The current local
-standalone-PS16 JXL matrix has started that test, but target measurements and
-more visual review are still needed before making an archival recommendation.
+standalone-PS16 JXL matrix directly tests that tradeoff, but broader visual
+review, more material, and independent reproduction are still needed before
+making an archival recommendation.
 
 ## Public Latitude Stress v2
 

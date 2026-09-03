@@ -7,7 +7,9 @@ files as DNG 1.7 files with internal JPEG XL compression.
 
 This is a smoke test, not a full archival validation. It verifies that the files
 are written, that the DNG/JXL tags look right, and that key metadata survives.
-It does not yet prove pixel identity or post-inversion safety.
+This smoke test by itself does not prove pixel identity or post-inversion
+safety; those questions are handled by the later verification and stress-test
+tracks.
 
 ## Tool
 
@@ -96,9 +98,9 @@ This matters because the outer DNG still identifies the image as camera-native
 `LinearRaw`: the DNG container does not imply that its lossy JXL tiles avoid
 perceptual XYB coding. The signaled Rec.2100/sRGB encoding describes the embedded
 JXL conversion path; it does not by itself prove that the rendered DNG is
-Rec.2100/sRGB or that Adobe's decoding is colorimetrically wrong. It does mean
-that the mapping from camera-native channel values through XYB needs the planned
-same-render and post-inversion tests.
+Rec.2100/sRGB or that Adobe's decoding is colorimetrically wrong. It means that
+a same-render and post-inversion comparison is required before this
+representation can be treated as a preservation candidate.
 
 This was a header check of two tiles in one private file pair, not a corpus or
 exhaustive tile result. Repeat it across files and representative tiles before
@@ -197,28 +199,15 @@ source-versus-ADC same-render comparison required by this project.
 
 ## What This Changes
 
-This removes one major blocker from the project. There is now a practical
-off-the-shelf path to:
+This established a practical off-the-shelf conversion path:
 
 ```text
 PixelShift2DNG DNG -> Adobe DNG Converter -> DNG 1.7 with internal JPEG XL
 ```
 
-The best current candidate tracks become:
-
-- DNG 1.7 lossless JXL as a more compatible exact-container experiment.
-- DNG 1.7 lossy JXL `d=0.05` as a storage-budget candidate, pending render and
-  inversion stress tests.
-- External `.jxl` remains useful as a codec control, but no longer has to be the
-  only JXL path.
-
-## Still Required
-
-- Verify lossless ADC JXL DNG with an independent DNG/JXL-compatible decoder.
-- Render original PixelShift2DNG and ADC JXL DNG through the same trusted
-  pipeline and compare pixels.
-- Repeat the metadata diff on public/anonymized test material.
-- Re-test RawTherapee when DNG 1.7/JXL support changes; test whether Adobe tools,
-  FilmLab, and other relevant software can open and color-manage the ADC JXL DNG
-  files correctly.
-- Re-run latitude-stress tests on ADC-generated JXL DNG output.
+The later verification work did not promote it to the primary candidate. Lossy
+ADC output changed geometry, `WhiteLevel`, and opcode-dependent sample
+interpretation, while RawTherapee 5.12 could not load the generated DNG/JXL
+files. The current break-even study therefore uses standalone `.jxl` made from
+one declared PS16 rendered state. These ADC findings are retained as a closed
+compatibility investigation, not as an unfinished release task.
