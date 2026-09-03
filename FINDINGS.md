@@ -19,6 +19,7 @@ every numeric value from a smaller capture.
 | --- | --- | --- | --- |
 | Public latitude stress | FADGI/OpenDICE TIFFs and Library of Congress TIFFs | Whether JPEG XL distance settings behave predictably under reproducible tone/negative-like stress | Whether PixelShift 16 beats 61 MP raw on real camera-scanned film |
 | Local DNG/JXL scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | How Adobe DNG Converter DNG/JXL behaves on real color-negative camera scans | Full public reproducibility unless selected source data or review panels are published |
+| Direct muimg DNG/JXL probe | One Adox resolution-target PS16 DNG and paired RAW61 | Whether a direct DNG/JXL rewrite can preserve checked DNG semantics while reaching the RAW61 size budget | A corpus-wide break-even verdict or same-render application comparison |
 | Patch-color diagnostics | Local DNG/JXL verification crops | Whether lossy JXL changes local mean color or mostly changes pixel texture/noise | Absolute scene color accuracy or a full color-managed film-rendering result |
 | Local scan-study runner | Ignored `input/` scan folders | Repeatable intake and verification for future private/anonymized scans | New scientific evidence by itself |
 | Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary because the film corpus is limited and the visual review is neither blinded nor independently reproduced |
@@ -54,6 +55,10 @@ Across the older conservative-codec track, the ordering is stable:
   changes in the active PixelShift 16 local runs after rational DNG tag
   normalization; lossy ADC JXL DNG still changed stored shape, active crop
   origin, `WhiteLevel`, and `OpcodeList2`
+- one direct muimg test avoided those ADC geometry/sample-domain rewrites and
+  crossed below RAW61 size at `d007`, but remains a one-frame, camera-linear
+  feasibility result with limited application support; sampled lossy d007 tiles
+  still used JPEG XL's perceptual XYB path
 
 The new patch-color tests add an important nuance: `d=0.03` and `d=0.05` can
 show very low local mean-color `DeltaE00` while still showing larger pixel-level

@@ -1,0 +1,109 @@
+{
+  "status": "completed one-frame feasibility probe",
+  "tool": {
+    "name": "muimg",
+    "version": "0.1.20260718.1648",
+    "effort": 7
+  },
+  "source": {
+    "material": "Adox high-resolution black-and-white test target",
+    "ps16_id": "_DSC6582-_DSC6597",
+    "raw61_id": "_DSC6577",
+    "ps16_source_mib": 669.8321,
+    "raw61_mib": 66.7188,
+    "main_shape": [19200, 12752, 3],
+    "active_crop": [19120, 12736]
+  },
+  "levels": [
+    {"level": "lossless", "distance": 0.0, "mib": 574.4275, "pct_raw61": 860.97, "stress_p95_delta_e00": 0.0, "mean_structure_loss": 0.0, "worst_structure_loss": 0.0},
+    {"level": "d003", "distance": 0.03, "mib": 87.5998, "pct_raw61": 131.3, "stress_p95_delta_e00": 0.08161, "mean_structure_loss": 0.23097, "worst_structure_loss": 0.37461},
+    {"level": "d005", "distance": 0.05, "mib": 87.5998, "pct_raw61": 131.3, "stress_p95_delta_e00": 0.08161, "mean_structure_loss": 0.23097, "worst_structure_loss": 0.37461},
+    {"level": "d006", "distance": 0.06, "mib": 73.4595, "pct_raw61": 110.1, "stress_p95_delta_e00": 0.09121, "mean_structure_loss": 0.26882, "worst_structure_loss": 0.43684},
+    {"level": "d007", "distance": 0.07, "mib": 61.5787, "pct_raw61": 92.3, "stress_p95_delta_e00": 0.10196, "mean_structure_loss": 0.3103, "worst_structure_loss": 0.49796},
+    {"level": "d007 + preview", "distance": 0.07, "mib": 63.0919, "pct_raw61": 94.56, "stress_p95_delta_e00": 0.10196, "mean_structure_loss": 0.3103, "worst_structure_loss": 0.49796},
+    {"level": "d010", "distance": 0.1, "mib": 42.4569, "pct_raw61": 63.64, "stress_p95_delta_e00": 0.12194, "mean_structure_loss": 0.39571, "worst_structure_loss": 0.65445},
+    {"level": "d022", "distance": 0.22, "mib": 21.7851, "pct_raw61": 32.65, "stress_p95_delta_e00": 0.20654, "mean_structure_loss": 0.49309, "worst_structure_loss": 0.80753},
+    {"level": "d025", "distance": 0.25, "mib": 19.8011, "pct_raw61": 29.68, "stress_p95_delta_e00": 0.22724, "mean_structure_loss": 0.50325, "worst_structure_loss": 0.81758}
+  ],
+  "lossless": {
+    "samples_compared": 734515200,
+    "different_samples": 0,
+    "max_absolute_error": 0,
+    "mae": 0.0,
+    "source_pixel_sha256": "6ba1ce4dddc6ae39d8e7ff74e999400b8921684718b3cf57f27466826de163ec",
+    "candidate_pixel_sha256": "6ba1ce4dddc6ae39d8e7ff74e999400b8921684718b3cf57f27466826de163ec"
+  },
+  "measurement": {
+    "crop_plan": "results/break_even_crop_guides/crop_plan.json",
+    "crop_case": "adox_vlad_resolution_target|_DSC6577",
+    "crop_count": 4,
+    "crop_size": [768, 768],
+    "patch_size": [64, 64],
+    "patches_per_transform": 576,
+    "comparison_domain": "decoded camera-linear RGB samples from the PS16 DNG",
+    "structure_definition": "RMS candidate-minus-reference high-pass error divided by reference high-pass RMS, radius 2",
+    "stress_transform": "negative_density_hard_print"
+  },
+  "preview": {
+    "candidate": "d007 + preview",
+    "preview_shape": [2390, 1592],
+    "main_segments": 3750,
+    "main_encoded_bytes": 64374181,
+    "main_codestream_sha256": "1490f4a899df95c7dd6a62e483a453c93260580d86a87ca74174da2117af729a",
+    "matches_no_preview_d007": true
+  },
+  "color_path": {
+    "lossless": "original-profile/non-XYB",
+    "d007": "XYB",
+    "d007_segments_checked": [0, 1, 1875, 3749],
+    "segment_count": 3750,
+    "declared_codestream_color": "RGB, D65, sRGB primaries, linear transfer",
+    "interpretation": "lossy muimg remains a perceptually transformed JPEG XL path and must be tested under negative-like tone and color stress"
+  },
+  "metadata": {
+    "preserved": [
+      "stored main-image shape",
+      "ActiveArea",
+      "DefaultCropOrigin",
+      "DefaultCropSize",
+      "WhiteLevel",
+      "ColorMatrix1",
+      "ColorMatrix2",
+      "AsShotNeutral",
+      "Make",
+      "Model",
+      "UniqueCameraModel",
+      "LensModel",
+      "exposure settings and capture time"
+    ],
+    "expected_changes": [
+      "DNGVersion and DNGBackwardVersion",
+      "compression and tiling fields",
+      "Software",
+      "JXLDistance and JXLEffort",
+      "preview layout"
+    ],
+    "missing_semantic_tags": [
+      "ExifVersion",
+      "NewRawImageDigest",
+      "NoiseReductionApplied",
+      "RawDataUniqueID"
+    ],
+    "preview_only_tags_replaced": [
+      "YCbCrCoefficients",
+      "YCbCrPositioning"
+    ]
+  },
+  "compatibility": [
+    {"application": "Adobe DNG Converter 18.5", "result": "accepted and rewrote d007", "status": "partial pass"},
+    {"application": "RawTherapee 5.12", "result": "Error loading file", "status": "fail"},
+    {"application": "darktable local build", "result": "rawspeed reported no RAW chunks", "status": "fail"}
+  ],
+  "conclusion": {
+    "storage_crossing": "between d006 and d007 on this frame",
+    "preferred_probe_file": "d007 + preview",
+    "preferred_probe_pct_raw61": 94.56,
+    "claim": "muimg can produce a DNG/JXL candidate below the paired RAW61 size while preserving the checked DNG geometry and color metadata and introducing small codec-only errors on the selected crops",
+    "not_proven": "this one-frame camera-linear probe is not a corpus-wide archive-value break-even result, and current RawTherapee/darktable support prevents the same-render end-to-end comparison"
+  }
+}

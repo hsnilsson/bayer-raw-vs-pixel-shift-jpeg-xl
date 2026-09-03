@@ -32,6 +32,11 @@ The current practical answer is:
   broader material, blinded visual review and independent reproduction before
   becoming a practical recommendation. `d100` and `d200` are visual stress
   references, not archive candidates.
+- A new one-frame muimg feasibility probe crossed the paired RAW61 budget
+  between `d006` and `d007` while preserving the checked DNG geometry, white
+  level, and color metadata. This materially improves the direct-DNG outlook,
+  but current application support and the one-frame scope keep it outside the
+  decision-grade verdict.
 
 The deeper hypothesis remains alive: a very high-resolution PixelShift scan
 stored as conservative JPEG XL may be a better practical representation of a
@@ -83,6 +88,11 @@ The local exploratory tests support these points:
   changes in the active PixelShift 16 local runs after rational DNG tag
   normalization, while lossy candidates rewrote stored raster shape, active crop
   origin, `WhiteLevel`, and `OpcodeList2`.
+- On one Adox resolution-target frame, muimg lossless DNG/JXL was pixel-exact;
+  its preview-bearing `d007` output was 94.6% of paired RAW61 size and kept the
+  checked image geometry and color metadata. RawTherapee and darktable could not
+  open it, and sampled lossy tiles used XYB, so an equivalent negative-aware
+  end-to-end render comparison is still unavailable.
 - A local FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.

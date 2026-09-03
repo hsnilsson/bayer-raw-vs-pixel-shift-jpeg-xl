@@ -546,6 +546,27 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertNotIn("likely additional saving", html)
         self.assertNotIn("roughly <code>5-10%</code>", html)
 
+    def test_report_site_includes_bounded_muimg_probe(self) -> None:
+        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
+
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+            muimg_probe=probe,
+        )
+
+        self.assertIn("<h2>muimg Direct DNG/JXL Probe</h2>", html)
+        self.assertIn("between d006 and d007 on this frame", html)
+        self.assertIn("94.6% of its paired RAW61 size", html)
+        self.assertIn("0 changed samples", html)
+        self.assertIn("RawDataUniqueID", html)
+        self.assertIn("all four sampled d007 main-image tiles used <strong>XYB</strong>", html)
+        self.assertIn("not directly comparable with the report's post-RawTherapee RAW61 baselines", html)
+        self.assertIn("RawTherapee 5.12", html)
+
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

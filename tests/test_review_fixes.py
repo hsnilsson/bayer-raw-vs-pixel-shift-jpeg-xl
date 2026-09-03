@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import struct
 import tempfile
@@ -324,6 +325,52 @@ class DngJxlVerificationTests(unittest.TestCase):
             (root / "imagecodecs" / "__init__.py").write_text("", encoding="utf-8")
 
             self.assertTrue(run_dng_jxl_verification.optional_deps_usable(root))
+
+    def test_crop_plan_windows_load_named_rectangles(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "crops.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "cases": {
+                            "scan|frame": {
+                                "crops": [
+                                    {"name": "detail", "crop": [10, 20, 30, 40]},
+                                    {"name": "grain", "crop": [50, 60, 20, 20]},
+                                ]
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            windows = run_dng_jxl_verification.load_crop_plan_windows(
+                path, "scan|frame", (100, 100)
+            )
+
+        self.assertEqual(
+            windows,
+            [
+                run_dng_jxl_verification.CropWindow("detail", 10, 20, 30, 40),
+                run_dng_jxl_verification.CropWindow("grain", 50, 60, 20, 20),
+            ],
+        )
+
+    def test_crop_plan_windows_reject_out_of_bounds_crop(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "crops.json"
+            path.write_text(
+                json.dumps(
+                    {"cases": {"scan|frame": {"crops": [{"crop": [90, 90, 20, 20]}]}}}
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "exceeds active image"):
+                run_dng_jxl_verification.load_crop_plan_windows(
+                    path, "scan|frame", (100, 100)
+                )
 
 
 if __name__ == "__main__":

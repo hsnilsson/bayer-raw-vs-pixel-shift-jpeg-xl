@@ -16,6 +16,7 @@ For a clearer map of public, local, and still-pending claims, see
 |---|---|---|---|
 | Public latitude stress | FADGI/OpenDICE and Library of Congress TIFFs | Reproducible codec/stress evidence and public figures | active public track |
 | Local scan tests | Kodak Gold 200-5 and Kodak Safety Film 5035 PixelShift2DNG scans | Real workflow evidence for ADC DNG/JXL behavior on color-negative scans | selected derived panels are publishable with owner approval |
+| Direct muimg DNG/JXL probe | One Adox resolution-target PixelShift2DNG plus paired RAW61 | Tests whether DNG/JXL can retain source geometry/metadata and cross the RAW61 storage budget | completed one-frame feasibility probe; not decision-grade |
 | Patch-color diagnostics | Matched DNG/JXL crop patches | Separates local mean-color bias from pixel texture/noise changes | implemented for local DNG/JXL verification |
 | Storage-budget comparison | 61 MP raw versus 240 MP PixelShift 16 JXL | Direct test of the main hypothesis | active preliminary local result |
 
@@ -56,6 +57,34 @@ relevant to the ADC path as well as external `.jxl`. The result is deliberately
 limited to representative tiles and is not generalized to every ADC file.
 
 See [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md).
+
+### Direct muimg DNG/JXL Feasibility Probe
+
+A bounded test used `muimg 0.1.20260718.1648` on the Adox resolution-target
+PixelShift 16 DNG. Lossless output was exact across 734,515,200 decoded 16-bit
+channel samples and retained 85.8% of the 669.83 MiB source DNG size.
+
+The paired 61 MP RAW was 66.72 MiB. At effort 7, `d006` remained above that
+budget at 73.46 MiB, while `d007` was 61.58 MiB. Adding a generated preview
+produced a 63.09 MiB DNG, or 94.6% of RAW61 size, without changing any encoded
+main-image segment. On the four declared 768 px crops, d007 hard-density patch
+p95 was 0.1020 DeltaE00 and mean/worst normalized high-pass mismatch was
+0.3103/0.4980 against the source PS16 samples.
+
+Unlike the checked lossy ADC files, the muimg candidate retained stored shape,
+active crop, `WhiteLevel`, color matrices, `AsShotNeutral`, camera/lens identity,
+and exposure metadata. It omitted `ExifVersion`, `NoiseReductionApplied`,
+`RawDataUniqueID`, and `NewRawImageDigest`; the latter two require output-aware
+regeneration rather than blind copying.
+
+This is promising but not a new main break-even verdict. The codec values were
+measured in camera-linear DNG sample space, while RAW61 baselines in the report
+are measured after RawTherapee rendering and registration. RawTherapee 5.12 and
+the local darktable build could not open the muimg DNG/JXL; Adobe DNG Converter
+18.5 accepted it. Codestream inspection found lossless on the original-profile
+path and all four sampled d007 main-image tiles on the XYB path, so lossy muimg
+still requires negative-aware stress testing. See
+[docs/muimg-dng-jxl-probe.md](docs/muimg-dng-jxl-probe.md).
 
 ### Kodak Gold 200-5 ADC DNG/JXL Batch
 

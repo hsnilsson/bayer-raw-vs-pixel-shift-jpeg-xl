@@ -30,6 +30,7 @@ from color_patch_metrics import (  # noqa: E402
     patch_metric_rows,
     summarize_patch_metric_rows,
 )
+from break_even_image_tools import structure_metrics  # noqa: E402
 from jxl_levels import DEFAULT_LEVELS, require_level  # noqa: E402
 from run_public_latitude_stress import build_transforms, metrics  # noqa: E402
 
@@ -615,6 +616,51 @@ def choose_windows(active_size: tuple[int, int], crop_size: int) -> list[CropWin
     return windows
 
 
+def load_crop_plan_windows(
+    path: Path,
+    case_key: str,
+    active_size: tuple[int, int],
+) -> list[CropWindow]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"could not read crop plan {path}: {exc}") from exc
+
+    case = payload.get("cases", {}).get(case_key)
+    if not isinstance(case, dict):
+        raise ValueError(f"crop plan case not found: {case_key}")
+
+    active_width, active_height = active_size
+    windows: list[CropWindow] = []
+    names: set[str] = set()
+    for index, item in enumerate(case.get("crops", []), start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"crop {index} in {case_key} is not an object")
+        name = str(item.get("name") or f"manual-{index:02d}")
+        crop = item.get("crop")
+        if not isinstance(crop, list) or len(crop) != 4:
+            raise ValueError(f"crop {name} in {case_key} must contain [x, y, width, height]")
+        try:
+            x, y, width, height = (int(value) for value in crop)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"crop {name} in {case_key} contains a non-integer value") from exc
+        if name in names:
+            raise ValueError(f"duplicate crop name in {case_key}: {name}")
+        if x < 0 or y < 0 or width <= 0 or height <= 0:
+            raise ValueError(f"crop {name} in {case_key} has invalid bounds: {crop}")
+        if x + width > active_width or y + height > active_height:
+            raise ValueError(
+                f"crop {name} in {case_key} exceeds active image "
+                f"{active_width}x{active_height}: {crop}"
+            )
+        names.add(name)
+        windows.append(CropWindow(name=name, x=x, y=y, width=width, height=height))
+
+    if not windows:
+        raise ValueError(f"crop plan case has no crops: {case_key}")
+    return windows
+
+
 def raster_rect(main: MainImage, window: CropWindow) -> tuple[int, int, int, int]:
     return (
         main.crop_origin[0] + window.x,
@@ -902,6 +948,21 @@ def summarize(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         groups.setdefault(key, []).append(row)
     summary: list[dict[str, Any]] = []
     for (level, transform), group in sorted(groups.items()):
+        structure_losses = [
+            float(row["structure_loss"])
+            for row in group
+            if isinstance(row.get("structure_loss"), (int, float, np.integer, np.floating))
+        ]
+        detail_correlations = [
+            float(row["detail_correlation"])
+            for row in group
+            if isinstance(row.get("detail_correlation"), (int, float, np.integer, np.floating))
+        ]
+        detail_energy_ratios = [
+            float(row["detail_energy_ratio"])
+            for row in group
+            if isinstance(row.get("detail_energy_ratio"), (int, float, np.integer, np.floating))
+        ]
         summary.append(
             {
                 "level": level,
@@ -916,6 +977,14 @@ def summarize(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "mean_psnr_db": float(np.mean([float(row["psnr_db"]) for row in group if not math.isinf(float(row["psnr_db"]))]))
                 if any(not math.isinf(float(row["psnr_db"])) for row in group)
                 else float("inf"),
+                "mean_structure_loss": float(np.mean(structure_losses)) if structure_losses else "",
+                "worst_structure_loss": float(max(structure_losses)) if structure_losses else "",
+                "mean_detail_correlation": float(np.mean(detail_correlations))
+                if detail_correlations
+                else "",
+                "mean_detail_energy_ratio": float(np.mean(detail_energy_ratios))
+                if detail_energy_ratios
+                else "",
             }
         )
     return summary
@@ -954,7 +1023,7 @@ def write_markdown_summary(
     ]
     for frame in frames:
         lines.append(f"- `{frame.stem}`: {frame.label}")
-    lines.extend(["", "## ADC Levels", ""])
+    lines.extend(["", "## DNG/JXL Candidate Levels", ""])
     for level in levels:
         lines.append(f"- `{level}`")
     lines.extend(["", "## Size Ratios", ""])
@@ -967,21 +1036,28 @@ def write_markdown_summary(
             f"{float(row['candidate_percent']):.1f}% |"
         )
     lines.extend(["", "## Metric Summary", ""])
-    lines.append("| Level | Transform | Rows | Mean MAE | Worst MAE | Worst max error | Worst p99 pixel max | Mean PSNR |")
-    lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |")
+    lines.append(
+        "| Level | Transform | Rows | Mean MAE | Worst MAE | Worst max error | "
+        "Worst p99 pixel max | Mean PSNR | Mean structure loss | Worst structure loss |"
+    )
+    lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
     for row in summary_rows:
         psnr = "inf" if math.isinf(float(row["mean_psnr_db"])) else f"{float(row['mean_psnr_db']):.2f}"
+        mean_structure = row.get("mean_structure_loss")
+        worst_structure = row.get("worst_structure_loss")
+        mean_structure_text = f"{float(mean_structure):.4f}" if mean_structure != "" else "-"
+        worst_structure_text = f"{float(worst_structure):.4f}" if worst_structure != "" else "-"
         lines.append(
             f"| `{row['level']}` | `{row['transform']}` | {row['rows']} | "
             f"{float(row['mean_mae_16bit']):.2f} | {float(row['worst_mae_16bit']):.2f} | "
             f"{int(row['worst_max_error_16bit'])} | {float(row['worst_p99_pixel_max_error_16bit']):.1f} | "
-            f"{psnr} |"
+            f"{psnr} | {mean_structure_text} | {worst_structure_text} |"
         )
     if metadata_diff_summary_rows:
         lines.extend(["", "## Metadata Diff Summary", ""])
         lines.append(
             "This table lists changed DNG/container/color fields between each source "
-            "PixelShift2DNG file and each Adobe DNG Converter candidate. "
+            "PixelShift2DNG file and each DNG/JXL candidate. "
             "`expected_encoder_change` rows are normal container or JPEG XL rewrite "
             "changes. `review_preservation_change` rows may affect archive "
             "interpretation and should be checked before treating a candidate as a "
@@ -1059,7 +1135,13 @@ def analyze(args: argparse.Namespace) -> int:
         source_meta = dng_metadata(frame.source)
         metadata_by_path[frame.source] = source_meta
         active_size = tuple(int(v) for v in source_meta["active_crop_size"])
-        windows = choose_windows(active_size, args.crop_size)
+        if args.crop_plan:
+            try:
+                windows = load_crop_plan_windows(args.crop_plan, args.crop_case, active_size)
+            except ValueError as exc:
+                raise SystemExit(str(exc)) from exc
+        else:
+            windows = choose_windows(active_size, args.crop_size)
         source_crops, source_extract_meta = extract_windows(frame.source, windows, args.maxworkers)
         source_white = tuple(float(v) for v in source_extract_meta["white_level"])
         source_origin = tuple(int(v) for v in source_extract_meta["active_crop_origin"])
@@ -1159,6 +1241,27 @@ def analyze(args: argparse.Namespace) -> int:
                     }
                     row.update(raw_compare)
                     row.update(metrics(ref_t, cand_t))
+                    structure_values: dict[str, Any] = {
+                        "highpass_rmse": "",
+                        "highpass_reference_rms": "",
+                        "structure_loss": "",
+                        "detail_correlation": "",
+                        "detail_energy_ratio": "",
+                    }
+                    if transform.name == "identity":
+                        detail = structure_metrics(
+                            ref_t,
+                            cand_t,
+                            radius=args.highpass_radius,
+                        )
+                        structure_values = {
+                            "highpass_rmse": detail.highpass_rmse,
+                            "highpass_reference_rms": detail.highpass_reference_rms,
+                            "structure_loss": detail.structure_loss,
+                            "detail_correlation": detail.detail_correlation,
+                            "detail_energy_ratio": detail.detail_energy_ratio,
+                        }
+                    row.update(structure_values)
                     all_rows.append(row)
 
                     if args.patch_metrics:
@@ -1261,6 +1364,9 @@ def analyze(args: argparse.Namespace) -> int:
                     "parameters": {
                         "levels": levels,
                         "crop_size": args.crop_size,
+                        "crop_plan": str(args.crop_plan) if args.crop_plan else None,
+                        "crop_case": args.crop_case,
+                        "highpass_radius": args.highpass_radius,
                         "maxworkers": args.maxworkers,
                         "panels": args.panels,
                         "panel_levels": args.panel_level,
@@ -1296,7 +1402,7 @@ def analyze(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Compare source DNG files with Adobe DNG Converter DNG/JXL variants "
+            "Compare source DNG files with DNG/JXL variants "
             "through matched active-crop windows."
         )
     )
@@ -1312,16 +1418,31 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         help=(
             "Source stem, DNG filename/path, or STEM=label. Repeatable. "
-            "Defaults to source stems discovered from the first selected ADC level."
+            "Defaults to source stems discovered from the first selected DNG/JXL level."
         ),
     )
     parser.add_argument(
         "--level",
         action="append",
-        help="ADC level to analyze; repeatable. Defaults to project default levels.",
+        help="DNG/JXL level to analyze; repeatable. Defaults to project default levels.",
     )
     parser.add_argument("--crop-size", type=int, default=1536)
+    parser.add_argument(
+        "--crop-plan",
+        type=Path,
+        help="JSON crop plan whose named windows replace the generic center/corner windows.",
+    )
+    parser.add_argument(
+        "--crop-case",
+        help="Case key inside --crop-plan, for example adox_vlad_resolution_target|_DSC6577.",
+    )
     parser.add_argument("--maxworkers", type=int, default=4)
+    parser.add_argument(
+        "--highpass-radius",
+        type=int,
+        default=2,
+        help="Box-blur radius used by the identity-view high-pass structure diagnostic.",
+    )
     parser.add_argument(
         "--no-patch-metrics",
         dest="patch_metrics",
@@ -1348,12 +1469,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--panel-level",
         action="append",
-        help="ADC level to render panels for; repeatable. Defaults to all analyzed levels.",
+        help="DNG/JXL level to render panels for; repeatable. Defaults to all analyzed levels.",
     )
     parser.add_argument(
         "--panel-crop",
         action="append",
-        choices=["center", "upper-left", "upper-right", "lower-left", "lower-right"],
         help="Crop window to render panels for; repeatable. Defaults to a small selected set.",
     )
     parser.add_argument(
@@ -1370,8 +1490,12 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.crop_size <= 0:
         raise SystemExit("--crop-size must be positive")
+    if bool(args.crop_plan) != bool(args.crop_case):
+        raise SystemExit("--crop-plan and --crop-case must be provided together")
     if args.maxworkers <= 0:
         raise SystemExit("--maxworkers must be positive")
+    if args.highpass_radius <= 0:
+        raise SystemExit("--highpass-radius must be positive")
     if args.patch_size <= 0:
         raise SystemExit("--patch-size must be positive")
     return analyze(args)
