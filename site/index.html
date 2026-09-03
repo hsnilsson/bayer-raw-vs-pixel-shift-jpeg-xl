@@ -314,7 +314,7 @@
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL is the active archive candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. ADC DNG/JXL is excluded from the core verdict because current local tests found incompatible rendering plus metadata and geometry rewrites.</p>
+          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable builds cannot open it. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
         </details>
       </div>
     </section>
@@ -332,6 +332,7 @@
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
+        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics, but lacks current workflow support.</p></div>
         <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
@@ -344,6 +345,29 @@
         <div class="flow-box"><strong>Break-even verdict</strong><p>Size, color/tone, structure, visual review and operational risk are combined.</p></div>
       </div>
     </section>
+
+    <h2>muimg Direct DNG/JXL Probe</h2>
+    <div class="note">
+      <p><strong>Why this probe exists:</strong> test whether JPEG XL can remain inside a DNG while avoiding the stored-shape, crop-origin, <code>WhiteLevel</code>, and opcode rewrites seen in the lossy Adobe DNG Converter path.</p>
+      <p class="muted">Tool: muimg 0.1.20260718.1648, effort 7. Test material: Adox high-resolution black-and-white test target, PS16 _DSC6582-_DSC6597 paired with RAW61 _DSC6577.</p>
+      <p><strong>Result on one resolution-target frame:</strong> between d006 and d007 on this frame. The preview-bearing d007 candidate is 94.6% of its paired RAW61 size. The checked geometry, white level, color matrices, camera/lens identity, and exposure metadata remained intact.</p>
+      <p><strong>Evidence boundary:</strong> this one-frame camera-linear probe is not a corpus-wide archive-value break-even result, and current RawTherapee/darktable support prevents the same-render end-to-end comparison</p>
+    </div>
+    <section class="questions">
+      <div class="card"><h3>Lossless identity</h3><p><strong>0 changed samples</strong> out of 734,515,200; maximum error 0. Decoded pixel hashes matched.</p></div>
+      <div class="card"><h3>Preview-safe candidate</h3><p>The generated preview adds about 1.51 MiB. Its 3,750 encoded main-image segments have the same SHA-256 as d007 without a preview.</p></div>
+      <div class="card"><h3>Preserved in the checked file</h3><p>stored main-image shape, ActiveArea, DefaultCropOrigin, DefaultCropSize, WhiteLevel, ColorMatrix1, ColorMatrix2, AsShotNeutral, Make, Model, UniqueCameraModel, LensModel, exposure settings and capture time.</p></div>
+      <div class="card"><h3>Still missing</h3><p><code>ExifVersion</code>, <code>NewRawImageDigest</code>, <code>NoiseReductionApplied</code>, <code>RawDataUniqueID</code>. Raw-data IDs and digests must be recalculated for lossy output, not blindly copied from the source.</p></div>
+      <div class="card"><h3>Lossy color path</h3><p>Lossless used original-profile/non-XYB; all four sampled d007 main-image tiles used <strong>XYB</strong>. The lossy path is therefore still perceptually transformed and needs the negative-like stress checks shown here.</p></div>
+    </section>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL one-frame probe results; scroll horizontally on small screens"><table class="small-table">
+      <thead><tr><th>Candidate</th><th>Stored size</th><th>Size vs RAW61</th><th>Hard-density color p95 (&Delta;E00)</th><th>Mean / worst normalized structure error</th></tr></thead>
+      <tbody><tr><td><strong>lossless</strong></td><td>574.43 MiB</td><td>861.0%</td><td>0.0000</td><td>0.0000 / 0.0000</td></tr><tr><td><strong>d003</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d005</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d006</strong></td><td>73.46 MiB</td><td>110.1%</td><td>0.0912</td><td>0.2688 / 0.4368</td></tr><tr><td><strong>d007</strong></td><td>61.58 MiB</td><td>92.3%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d007 + preview</strong></td><td>63.09 MiB</td><td>94.6%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d010</strong></td><td>42.46 MiB</td><td>63.6%</td><td>0.1219</td><td>0.3957 / 0.6544</td></tr><tr><td><strong>d022</strong></td><td>21.79 MiB</td><td>32.6%</td><td>0.2065</td><td>0.4931 / 0.8075</td></tr><tr><td><strong>d025</strong></td><td>19.80 MiB</td><td>29.7%</td><td>0.2272</td><td>0.5032 / 0.8176</td></tr></tbody>
+    </table></div>
+    <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They are codec diagnostics, not directly comparable with the report's post-RawTherapee RAW61 baselines. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, but the value is not a percentage of real detail lost.</p>
+    <h3>Application Check</h3>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody><tr><td><strong>Adobe DNG Converter 18.5</strong></td><td class="warn">partial pass</td><td>accepted and rewrote d007</td></tr><tr><td><strong>RawTherapee 5.12</strong></td><td class="bad">fail</td><td>Error loading file</td></tr><tr><td><strong>darktable local build</strong></td><td class="bad">fail</td><td>rawspeed reported no RAW chunks</td></tr></tbody></table></div>
+    <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
 
     <h2>ADC DNG/JXL</h2>
     <div class="note">

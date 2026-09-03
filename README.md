@@ -107,6 +107,9 @@ These results do not establish a universal archival recommendation.
   latitude stress test with density-based negative-print transforms
 - [docs/adobe-dng-converter-jxl-dng-smoke-test.md](docs/adobe-dng-converter-jxl-dng-smoke-test.md):
   smoke test for rewriting PixelShift2DNG files as DNG 1.7 JPEG XL
+- [docs/muimg-dng-jxl-probe.md](docs/muimg-dng-jxl-probe.md): bounded one-frame
+  probe of direct DNG/JXL encoding, metadata retention, storage crossing, and
+  current application support
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
 - [TESTDATA.md](TESTDATA.md): public test data sources and rights notes
 - [docs/research-log.md](docs/research-log.md): project history and decisions
@@ -176,8 +179,9 @@ These results do not establish a universal archival recommendation.
   inspect embedded DNG/JXL headers and distinguish XYB from original-profile
   coding
 - [scripts/run_dng_jxl_verification.py](scripts/run_dng_jxl_verification.py):
-  compare source DNG files with Adobe DNG Converter DNG/JXL variants on matched
-  active-crop windows, including DNG `OpcodeList2` handling
+  compare source DNG files with DNG/JXL variants on matched active-crop windows,
+  including named crop plans, structure diagnostics, and DNG `OpcodeList2`
+  handling
 - [scripts/make_public_crop_panels.py](scripts/make_public_crop_panels.py):
   create reference/candidate/diff panels from public stress-test output
 - [src/jxl_archive_test.py](src/jxl_archive_test.py): helper CLI for comparing

@@ -29,6 +29,7 @@ DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_in
 DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
+DEFAULT_MUIMG_PROBE = ROOT / "metadata/muimg_dng_jxl_probe.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
 VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
 
@@ -81,6 +82,15 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return []
     with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def read_json_object(path: Path | None) -> dict[str, object]:
+    if path is None or not path.is_file():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError(f"expected a JSON object in {path}")
+    return payload
 
 
 def read_exclude_cases(path: Path | None, explicit: list[str] | None = None) -> set[tuple[str, str]]:
@@ -866,6 +876,95 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
+def render_muimg_probe(probe: dict[str, object]) -> str:
+    if not probe:
+        return ""
+
+    source = probe.get("source", {})
+    tool = probe.get("tool", {})
+    conclusion = probe.get("conclusion", {})
+    lossless = probe.get("lossless", {})
+    preview = probe.get("preview", {})
+    color_path = probe.get("color_path", {})
+    metadata = probe.get("metadata", {})
+    levels = probe.get("levels", [])
+    compatibility = probe.get("compatibility", [])
+    if not all(
+        isinstance(value, dict)
+        for value in (source, tool, conclusion, lossless, preview, color_path, metadata)
+    ):
+        raise ValueError("muimg probe sections must be JSON objects")
+    if not isinstance(levels, list) or not isinstance(compatibility, list):
+        raise ValueError("muimg probe levels and compatibility must be JSON arrays")
+
+    level_rows = []
+    for item in levels:
+        if not isinstance(item, dict):
+            continue
+        stress = item.get("stress_p95_delta_e00")
+        structure = item.get("mean_structure_loss")
+        worst_structure = item.get("worst_structure_loss")
+        stress_text = f"{float(stress):.4f}" if isinstance(stress, (int, float)) else "not measured"
+        structure_text = (
+            f"{float(structure):.4f} / {float(worst_structure):.4f}"
+            if isinstance(structure, (int, float)) and isinstance(worst_structure, (int, float))
+            else "not measured"
+        )
+        level_rows.append(
+            "<tr>"
+            f"<td><strong>{esc(item.get('level', ''))}</strong></td>"
+            f"<td>{float(item.get('mib', 0)):.2f} MiB</td>"
+            f"<td>{float(item.get('pct_raw61', 0)):.1f}%</td>"
+            f"<td>{stress_text}</td>"
+            f"<td>{structure_text}</td>"
+            "</tr>"
+        )
+
+    compatibility_rows = []
+    for item in compatibility:
+        if not isinstance(item, dict):
+            continue
+        status = str(item.get("status", ""))
+        status_class = "good" if status == "pass" else "warn" if "partial" in status else "bad"
+        compatibility_rows.append(
+            "<tr>"
+            f"<td><strong>{esc(item.get('application', ''))}</strong></td>"
+            f"<td class=\"{status_class}\">{esc(status)}</td>"
+            f"<td>{esc(item.get('result', ''))}</td>"
+            "</tr>"
+        )
+
+    preserved = metadata.get("preserved", [])
+    missing = metadata.get("missing_semantic_tags", [])
+    preserved_text = ", ".join(esc(value) for value in preserved) if isinstance(preserved, list) else "-"
+    missing_text = ", ".join(f"<code>{esc(value)}</code>" for value in missing) if isinstance(missing, list) else "-"
+
+    return f"""
+    <h2>muimg Direct DNG/JXL Probe</h2>
+    <div class="note">
+      <p><strong>Why this probe exists:</strong> test whether JPEG XL can remain inside a DNG while avoiding the stored-shape, crop-origin, <code>WhiteLevel</code>, and opcode rewrites seen in the lossy Adobe DNG Converter path.</p>
+      <p class="muted">Tool: {esc(tool.get('name', 'muimg'))} {esc(tool.get('version', 'unknown version'))}, effort {esc(tool.get('effort', '-'))}. Test material: {esc(source.get('material', 'one local frame'))}, PS16 {esc(source.get('ps16_id', ''))} paired with RAW61 {esc(source.get('raw61_id', ''))}.</p>
+      <p><strong>Result on one resolution-target frame:</strong> {esc(conclusion.get('storage_crossing', 'not available'))}. The preview-bearing d007 candidate is {float(conclusion.get('preferred_probe_pct_raw61', 0)):.1f}% of its paired RAW61 size. The checked geometry, white level, color matrices, camera/lens identity, and exposure metadata remained intact.</p>
+      <p><strong>Evidence boundary:</strong> {esc(conclusion.get('not_proven', 'This is not a corpus-wide result.'))}</p>
+    </div>
+    <section class="questions">
+      <div class="card"><h3>Lossless identity</h3><p><strong>{int(lossless.get('different_samples', 0))} changed samples</strong> out of {int(lossless.get('samples_compared', 0)):,}; maximum error {int(lossless.get('max_absolute_error', 0))}. Decoded pixel hashes matched.</p></div>
+      <div class="card"><h3>Preview-safe candidate</h3><p>The generated preview adds about {float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'd007 + preview'), 0)) - float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'd007'), 0)):.2f} MiB. Its {int(preview.get('main_segments', 0)):,} encoded main-image segments have the same SHA-256 as d007 without a preview.</p></div>
+      <div class="card"><h3>Preserved in the checked file</h3><p>{preserved_text}.</p></div>
+      <div class="card"><h3>Still missing</h3><p>{missing_text}. Raw-data IDs and digests must be recalculated for lossy output, not blindly copied from the source.</p></div>
+      <div class="card"><h3>Lossy color path</h3><p>Lossless used {esc(color_path.get('lossless', 'not checked'))}; all four sampled d007 main-image tiles used <strong>{esc(color_path.get('d007', 'not checked'))}</strong>. The lossy path is therefore still perceptually transformed and needs the negative-like stress checks shown here.</p></div>
+    </section>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL one-frame probe results; scroll horizontally on small screens"><table class="small-table">
+      <thead><tr><th>Candidate</th><th>Stored size</th><th>Size vs RAW61</th><th>Hard-density color p95 (&Delta;E00)</th><th>Mean / worst normalized structure error</th></tr></thead>
+      <tbody>{''.join(level_rows)}</tbody>
+    </table></div>
+    <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They are codec diagnostics, not directly comparable with the report's post-RawTherapee RAW61 baselines. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, but the value is not a percentage of real detail lost.</p>
+    <h3>Application Check</h3>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody>{''.join(compatibility_rows)}</tbody></table></div>
+    <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
+    """.strip()
+
+
 def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     if not records:
         return '<p class="muted">No interactive visual review artifacts found yet.</p>'
@@ -1337,6 +1436,7 @@ def render_html(
     viewers: list[Path] | None = None,
     annotations: dict[tuple[str, str], dict[str, str]] | None = None,
     public_figures: list[Path] | None = None,
+    muimg_probe: dict[str, object] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -1368,6 +1468,7 @@ def render_html(
     current_conclusion = conclusion_text(summaries)
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
     public_reproducibility_html = render_public_reproducibility(public_figures or [], output)
+    muimg_probe_html = render_muimg_probe(muimg_probe or {})
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -1815,7 +1916,7 @@ def render_html(
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL is the active archive candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. ADC DNG/JXL is excluded from the core verdict because current local tests found incompatible rendering plus metadata and geometry rewrites.</p>
+          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable builds cannot open it. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
         </details>
       </div>
     </section>
@@ -1833,6 +1934,7 @@ def render_html(
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
+        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics, but lacks current workflow support.</p></div>
         <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
@@ -1845,6 +1947,8 @@ def render_html(
         <div class="flow-box"><strong>Break-even verdict</strong><p>Size, color/tone, structure, visual review and operational risk are combined.</p></div>
       </div>
     </section>
+
+    {muimg_probe_html}
 
     <h2>ADC DNG/JXL</h2>
     <div class="note">
@@ -2135,6 +2239,12 @@ def main() -> int:
         help="Directory containing selected public latitude-stress figures.",
     )
     parser.add_argument(
+        "--muimg-probe",
+        type=Path,
+        default=DEFAULT_MUIMG_PROBE,
+        help="Optional image-free JSON summary of the direct muimg DNG/JXL probe.",
+    )
+    parser.add_argument(
         "--copy-public-figures-to",
         type=Path,
         help="Copy selected public figures into the report artifact before linking them.",
@@ -2163,6 +2273,7 @@ def main() -> int:
     contexts = filter_case_paths(context_paths(args.contexts), excludes)
     viewers = filter_case_paths(viewer_paths(args.viewers), excludes) if args.viewers else []
     public_figures = public_figure_paths(args.public_figures)
+    muimg_probe = read_json_object(args.muimg_probe)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
@@ -2171,7 +2282,17 @@ def main() -> int:
         public_figures = copy_panel_assets(public_figures, args.public_figures, args.copy_public_figures_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
-        render_html(rows, summaries, panels, contexts, args.output, viewers, annotations, public_figures),
+        render_html(
+            rows,
+            summaries,
+            panels,
+            contexts,
+            args.output,
+            viewers,
+            annotations,
+            public_figures,
+            muimg_probe,
+        ),
         encoding="utf-8",
     )
     print(f"Wrote {args.output}")
