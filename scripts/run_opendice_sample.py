@@ -14,6 +14,7 @@ DEFAULT_CONFIG = ROOT / "testdata/fadgi_opendice/Config_materials2023.txt"
 DEFAULT_IMAGE = ROOT / "testdata/fadgi_opendice/negative_35mm_2/Negative 35mm_2.tif"
 DEFAULT_PROFILE = ROOT / "testdata/fadgi_opendice/negative_35mm_2/Profile_35mm_Negative2.txt"
 DEFAULT_OUTPUT = ROOT / "results/opendice_sample_measurement"
+MATERIAL_11_FAILURE = "Unable to resolve the name 'handles.material'."
 
 
 def sha256_file(path: Path) -> str:
@@ -142,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
         and before.get(path.resolve()) != file_state(path)
     )
     runtime_missing = "mclmcrrt9_13.dll" in combined_output or "MATLAB Runtime" in combined_output
+    material_11_cli_bug = args.material == 11 and MATERIAL_11_FAILURE in combined_output
     manifest = {
         "schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -157,6 +159,7 @@ def main(argv: list[str] | None = None) -> int:
         "tool": manifest_file(executable),
         "returncode": completed.returncode,
         "matlab_runtime_9_13_missing": runtime_missing,
+        "opendice_3_00_material_11_failure": material_11_cli_bug,
         "outputs": [manifest_file(path) for path in generated],
         "log": str(log_path),
     }
@@ -167,6 +170,13 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit(
                 "OpenDICE could not start because MATLAB Runtime 9.13 (R2022b) is missing. "
                 f"See {log_path}."
+            )
+        if material_11_cli_bug:
+            raise SystemExit(
+                "OpenDICE Command Line 3.00 reached the photographic-negative branch but "
+                "failed internally because 'handles.material' is undefined. This was also "
+                "reproduced with the official Windows XLSX inputs; use OpenDICE GUI 3.01 or "
+                f"report the upstream issue. See {log_path}."
             )
         raise SystemExit(f"OpenDICE failed with exit code {completed.returncode}; see {log_path}.")
     if not generated:
