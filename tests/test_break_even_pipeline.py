@@ -616,7 +616,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("Public Reproducibility Check", html)
             self.assertIn("do not contribute rows to the storage break-even verdict", html)
             self.assertIn("fadgi-negative35mm2-d005-density-hard-print.png", html)
-            self.assertIn("OpenDICE measurement status:</strong> not yet run", html)
+            self.assertIn("OpenDICE measurement status:</strong> attempted, but not produced", html)
+            self.assertIn("handles.material", html)
 
     def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

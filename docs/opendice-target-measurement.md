@@ -27,6 +27,26 @@ Official downloads and manuals are on the
 MATLAB Runtime is free but is a separate, large installation. It is deliberately
 not downloaded or installed by this repository.
 
+## Current Execution Status
+
+The official Windows command-line release was run locally on 2026-09-03 with
+MATLAB Runtime 9.13 installed. Both the bundled text inputs and the official
+Windows XLSX configuration/profile reached OpenDICE, but material `11` exited
+with code `249` and this internal error:
+
+```text
+Unable to resolve the name 'handles.material'.
+Error in OpenDICECommand (line 435)
+```
+
+Control probes show that argument parsing and target identification work:
+material `1` reports that the image requires material `11`, while material `10`
+reports that the selected target is unsupported. Material `11`, which target
+`12` requires, is the branch that fails. This is therefore recorded as a
+reproducible OpenDICE Command Line 3.00 limitation, not a target measurement.
+The official GUI 3.01 is the bounded fallback; no exported OpenDICE result has
+yet been produced.
+
 ## Reproducible Command
 
 The wrapper selects material `11` (photographic negatives, 35mm to 4x5), FADGI
@@ -42,6 +62,10 @@ python scripts\run_opendice_sample.py `
 Use `--dry-run` to inspect the exact OpenDICE command without executing it. A
 real run writes the OpenDICE export, `opendice.log`, and a hash-bound
 `run_manifest.json` under `results/opendice_sample_measurement/`.
+
+When the known material-11 failure occurs, the manifest records
+`opendice_3_00_material_11_failure: true` and the wrapper exits with a specific
+diagnosis instead of presenting the failure as a missing runtime.
 
 ## Publication Rule
 

@@ -2092,7 +2092,7 @@ def render_html(
         <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
       </ul>
       <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
-      <p><strong>OpenDICE measurement status:</strong> not yet run. The official OpenDICE 3.00 command-line application and invocation have been verified, but it requires MATLAB Runtime 9.13. Until its exported workbook exists, the panels above remain codec stress evidence rather than formal OpenDICE target results.</p>
+      <p><strong>OpenDICE measurement status:</strong> attempted, but not produced. With MATLAB Runtime 9.13 installed, the official Command Line 3.00 release reaches photographic-negative material <code>11</code> and then exits with its internal <code>handles.material</code> variable undefined. Control probes confirm that command parsing and target detection work. GUI 3.01 remains the bounded fallback. Until an OpenDICE export exists, the panels above remain codec stress evidence rather than formal OpenDICE target results.</p>
     </div>
   </main>
 </body>

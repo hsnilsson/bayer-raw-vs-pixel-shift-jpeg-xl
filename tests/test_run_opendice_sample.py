@@ -12,6 +12,12 @@ import run_opendice_sample as opendice  # noqa: E402
 
 
 class OpenDiceSampleTests(unittest.TestCase):
+    def test_material_11_failure_signature_is_exact(self) -> None:
+        self.assertEqual(
+            opendice.MATERIAL_11_FAILURE,
+            "Unable to resolve the name 'handles.material'.",
+        )
+
     def test_build_command_matches_official_parameter_order(self) -> None:
         command = opendice.build_command(
             Path("OpenDICECommand.exe"),
