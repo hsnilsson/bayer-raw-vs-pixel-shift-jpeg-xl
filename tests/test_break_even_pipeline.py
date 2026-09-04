@@ -454,8 +454,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
         baseline_table = html[html.index("<h2>RAW61 Baseline By Frame</h2>") :]
         self.assertIn('class="column-help-row"', baseline_table)
         self.assertIn("Scan collection or material label.", baseline_table)
-        self.assertIn("this is not JXL codec loss", baseline_table)
-        self.assertIn("not a direct percentage of lost information", baseline_table)
+        self.assertIn("JXL codec loss appears in the separate candidate columns", baseline_table)
+        self.assertIn("visual crop inspection supplies the information-value judgment", baseline_table)
         self.assertIn("256 x 256-pixel patches", baseline_table)
         self.assertNotIn('data-full=', baseline_table)
 
@@ -512,11 +512,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("one film material &times; frame &times; JXL distance", html)
         self.assertIn("Fully Measured Comparisons", html)
         self.assertIn("Median-size Budget Levels", html)
-        self.assertIn("this is a size result, not a quality verdict", html)
-        self.assertIn("This compares two archival workflows, not sensor resolution in isolation", html)
+        self.assertIn("image quality is evaluated by the separate color, structure, and visual checks", html)
+        self.assertIn("The scope is a comparison of two complete archival workflows", html)
         self.assertIn("registered crop comparisons provided below", html)
-        self.assertIn("patch color movement (small shifts in the measured average color of sampled image areas)", html)
-        self.assertIn("the trained eye can still see grain/texture changes", html)
+        self.assertIn("very small patch color movement against the PS16 reference", html)
+        self.assertIn("A trained eye can still see changes in grain and texture", html)
 
     def test_report_site_documents_adc_dng_jxl_caveats(self) -> None:
         html = report_site.render_html(
@@ -564,12 +564,12 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("0 changed samples", html)
         self.assertIn("RawDataUniqueID", html)
         self.assertIn("all four sampled d007 main-image tiles used <strong>XYB</strong>", html)
-        self.assertIn("not directly comparable with the report's post-RawTherapee RAW61 baselines", html)
+        self.assertIn("comparison with the report's post-RawTherapee RAW61 baselines requires the separate rendered pipeline", html)
         self.assertIn("RawTherapee 5.12", html)
         self.assertIn("JPEG XL-compressed image data inside DNG 1.7", html)
-        self.assertIn("does not establish a general lack of DNG 1.7 support", html)
+        self.assertIn("the application finding is specific to that embedded image-data path", html)
         self.assertIn("d001 main codestream is byte-identical to d003", html)
-        self.assertIn("200 MiB cannot be dialled in by interpolation", html)
+        self.assertIn("interpolation cannot target exactly 200 MiB", html)
         self.assertIn("compression type <code>52546</code>", html)
 
     def test_report_site_states_practical_muimg_conclusion_for_qualified_corpus(self) -> None:
@@ -589,9 +589,9 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("Practical Archival Reading", html)
         self.assertIn("credible PS16 preservation candidate", html)
         self.assertIn("decoder diversity is still narrow", html)
-        self.assertIn("If DNG 1.7/JPEG XL support becomes routine", html)
+        self.assertIn("Routine DNG 1.7/JPEG XL support across raw applications", html)
         self.assertIn("color-negative material is deliberately demanding here", html)
-        self.assertIn("a reason for optimism, not direct proof", html)
+        self.assertIn("This inference should next be tested", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -660,7 +660,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             )
 
             self.assertIn("Public Reproducibility Check", html)
-            self.assertIn("do not contribute rows to the storage break-even verdict", html)
+            self.assertIn("these public files contribute reproducibility evidence only", html)
             self.assertIn("fadgi-negative35mm2-d005-density-hard-print.png", html)
 
     def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
