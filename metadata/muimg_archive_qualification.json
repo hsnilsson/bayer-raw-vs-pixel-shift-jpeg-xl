@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-04T15:58:15.040727+00:00",
+  "gates": {
+    "maximum_candidate_mib": 200.0,
+    "stress_p95_delta_e00_review_threshold": 1.0,
+    "maximum_worst_structure_loss": 1.0,
+    "candidate_must_beat_paired_raw61_stress_color": true,
+    "candidate_must_beat_paired_raw61_structure": true,
+    "maximum_preservation_review_changes": 0,
+    "full_segment_decode_required": true,
+    "adobe_dng_converter_acceptance_required": true
+  },
+  "summary": {
+    "cases": 16,
+    "technical_master_passed": 16,
+    "archive_value_passed": 15,
+    "archive_value_review": 1
+  },
+  "records": [
+    {
+      "scan_set": "adox_vlad_resolution_target",
+      "set_id": "_DSC6577",
+      "candidate_mib": 89.113,
+      "candidate_pct_raw61": 133.57,
+      "candidate_sha256": "50ec46de9e91868d2f9ff2bcb2d0c089c26d106d63c7b50de0c467fe91236733",
+      "identity_p95_delta_e00": 0.009268408138624284,
+      "hard_inversion_p95_delta_e00": 0.0816082568058048,
+      "worst_structure_loss": 0.3746081234195752,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 2.253459934714719,
+        "candidate_to_raw61_stress_color_ratio": 0.036214647329035454,
+        "raw61_structure_loss": 0.7880655935510247,
+        "candidate_to_raw61_structure_ratio": 0.47535145105319276
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6938",
+      "candidate_mib": 108.7493,
+      "candidate_pct_raw61": 161.16,
+      "candidate_sha256": "6b238f26649659b660731ede3866215e1a1fe6140f4fc3ac5c40610b33dca38b",
+      "identity_p95_delta_e00": 0.008269157524583065,
+      "hard_inversion_p95_delta_e00": 0.5153992416152032,
+      "worst_structure_loss": 0.2877586769456734,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 7.898071256398426,
+        "candidate_to_raw61_stress_color_ratio": 0.06525634232505377,
+        "raw61_structure_loss": 1.1503428923411807,
+        "candidate_to_raw61_structure_ratio": 0.2501503498318021
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6959",
+      "candidate_mib": 115.7282,
+      "candidate_pct_raw61": 164.81,
+      "candidate_sha256": "4948c5a881a969d101293917e2d46853c7f738da0e36ada6626e28ec08058e84",
+      "identity_p95_delta_e00": 0.00846309097124217,
+      "hard_inversion_p95_delta_e00": 0.14855157752517378,
+      "worst_structure_loss": 0.23980925042202936,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 4.847458740955464,
+        "candidate_to_raw61_stress_color_ratio": 0.030645248461855575,
+        "raw61_structure_loss": 0.8410268106633942,
+        "candidate_to_raw61_structure_ratio": 0.28513865120764703
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6980",
+      "candidate_mib": 113.2564,
+      "candidate_pct_raw61": 164.32,
+      "candidate_sha256": "8fd35b188938372ba6dd424daa317b6b380f4cac89c94798b68725b8b50df358",
+      "identity_p95_delta_e00": 0.00884689637787267,
+      "hard_inversion_p95_delta_e00": 0.11387836198729957,
+      "worst_structure_loss": 0.38140690346336953,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 6.407994093609622,
+        "candidate_to_raw61_stress_color_ratio": 0.017771296340748016,
+        "raw61_structure_loss": 0.9700423734355178,
+        "candidate_to_raw61_structure_ratio": 0.39318581734999125
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6735",
+      "candidate_mib": 102.5164,
+      "candidate_pct_raw61": 151.93,
+      "candidate_sha256": "f43b3df380a248e57b50c6484b525d08eed373c490cbf7a50cb5203f9558ecb6",
+      "identity_p95_delta_e00": 0.009126775227427142,
+      "hard_inversion_p95_delta_e00": 0.13285432234570288,
+      "worst_structure_loss": 0.27690545091123336,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 7.377493342015783,
+        "candidate_to_raw61_stress_color_ratio": 0.018008057233895456,
+        "raw61_structure_loss": 1.5334797416848795,
+        "candidate_to_raw61_structure_ratio": 0.18057326965858
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6756",
+      "candidate_mib": 109.5159,
+      "candidate_pct_raw61": 162.62,
+      "candidate_sha256": "6db0b3ccd9a980e566ce97e47666723c3bc6eb1f6b54980772353a84e9488b65",
+      "identity_p95_delta_e00": 0.008536458541163762,
+      "hard_inversion_p95_delta_e00": 0.5404780126031823,
+      "worst_structure_loss": 0.3440421943870986,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 4.630289771948585,
+        "candidate_to_raw61_stress_color_ratio": 0.11672660658897176,
+        "raw61_structure_loss": 1.0247042981776875,
+        "candidate_to_raw61_structure_ratio": 0.33574778109054093
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6793",
+      "candidate_mib": 112.4845,
+      "candidate_pct_raw61": 88.21,
+      "candidate_sha256": "1a7e603c27b4457f39c0ae8865cdc9b8fd7b5670980a11a397ae028aae50988b",
+      "identity_p95_delta_e00": 0.007126045380216377,
+      "hard_inversion_p95_delta_e00": 0.11188328371288296,
+      "worst_structure_loss": 0.27571072719313705,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 6.017691192036238,
+        "candidate_to_raw61_stress_color_ratio": 0.018592393684300112,
+        "raw61_structure_loss": 0.9745523779826992,
+        "candidate_to_raw61_structure_ratio": 0.28291011691321494
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6814",
+      "candidate_mib": 101.4189,
+      "candidate_pct_raw61": 80.63,
+      "candidate_sha256": "7dfb6278ab8e8acd4782695e755760f0ca93c0e1c609aa0e9aab878f274d3a43",
+      "identity_p95_delta_e00": 0.009200037840746727,
+      "hard_inversion_p95_delta_e00": 0.23354829695232499,
+      "worst_structure_loss": 0.3437533568808721,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 2.8907574339894198,
+        "candidate_to_raw61_stress_color_ratio": 0.08079138505578942,
+        "raw61_structure_loss": 0.9930942920722635,
+        "candidate_to_raw61_structure_ratio": 0.34614372434219826
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6598",
+      "candidate_mib": 65.9489,
+      "candidate_pct_raw61": 110.14,
+      "candidate_sha256": "dae7eee8e4fde9ee1acbf0bc882ffcff0a8b9ff48bb717adb981f31eea1106e8",
+      "identity_p95_delta_e00": 0.003966310891730927,
+      "hard_inversion_p95_delta_e00": 10.560337587837033,
+      "worst_structure_loss": 0.5093991034075674,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 93.17447045007478,
+        "candidate_to_raw61_stress_color_ratio": 0.11333938939310127,
+        "raw61_structure_loss": 1.4149317637248957,
+        "candidate_to_raw61_structure_ratio": 0.3600167276381885
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": [
+        "hard-inversion color p95 exceeds 1 DeltaE00; visual review required"
+      ]
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6619",
+      "candidate_mib": 104.5236,
+      "candidate_pct_raw61": 154.7,
+      "candidate_sha256": "3b1d4cb67b05678824a148efdff9e865bc5cbcfcff88444f7801c3646aa3f119",
+      "identity_p95_delta_e00": 0.007031867171187533,
+      "hard_inversion_p95_delta_e00": 0.2870767708009255,
+      "worst_structure_loss": 0.27973534053859345,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 5.89803611670862,
+        "candidate_to_raw61_stress_color_ratio": 0.04867328126181902,
+        "raw61_structure_loss": 1.041402930392317,
+        "candidate_to_raw61_structure_ratio": 0.26861393642632797
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6661",
+      "candidate_mib": 103.8703,
+      "candidate_pct_raw61": 156.29,
+      "candidate_sha256": "29f1326974b0c656106e36c3075a9014b07587893a22893b1f4c95492918fa66",
+      "identity_p95_delta_e00": 0.006095580055507405,
+      "hard_inversion_p95_delta_e00": 0.13888731961709486,
+      "worst_structure_loss": 0.2918288656865663,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 4.532506589718316,
+        "candidate_to_raw61_stress_color_ratio": 0.03064249700864227,
+        "raw61_structure_loss": 1.1029445984763142,
+        "candidate_to_raw61_structure_ratio": 0.26459068396519586
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6682",
+      "candidate_mib": 99.6577,
+      "candidate_pct_raw61": 149.99,
+      "candidate_sha256": "bb07c7955b79e20346fdbd8b8d79246fd69f6aca77c13cb1846ac8cb9485f728",
+      "identity_p95_delta_e00": 0.010251194069015618,
+      "hard_inversion_p95_delta_e00": 0.45669689541895,
+      "worst_structure_loss": 0.40994473337098697,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 4.290267387883931,
+        "candidate_to_raw61_stress_color_ratio": 0.10644951797379801,
+        "raw61_structure_loss": 1.1132131603265627,
+        "candidate_to_raw61_structure_ratio": 0.3682535815968337
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": []
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6836",
+      "candidate_mib": 99.7628,
+      "candidate_pct_raw61": 153.14,
+      "candidate_sha256": "bf1f11890068d12bf2e47368d84030f4dc7f6179a26a1e3db21b2846cb0bec56",
+      "identity_p95_delta_e00": 0.005994764339434471,
+      "hard_inversion_p95_delta_e00": 2.5708279334898565,
+      "worst_structure_loss": 0.35157208337237394,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 7.234571033828719,
+        "candidate_to_raw61_stress_color_ratio": 0.3553531952991702,
+        "raw61_structure_loss": 1.15140089075675,
+        "candidate_to_raw61_structure_ratio": 0.3053428968092128
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": [
+        "hard-inversion color p95 exceeds 1 DeltaE00; visual review required"
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6857",
+      "candidate_mib": 90.7421,
+      "candidate_pct_raw61": 141.08,
+      "candidate_sha256": "c4063768ef48c6ab276364aa7c853d328b8fe72c171734b3fbd8eb51847a9a2c",
+      "identity_p95_delta_e00": 0.009292585889147713,
+      "hard_inversion_p95_delta_e00": 3.3890888790112554,
+      "worst_structure_loss": 0.44160749689468987,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 4.140790757477329,
+        "candidate_to_raw61_stress_color_ratio": 0.8184641720645579,
+        "raw61_structure_loss": 1.1737035793776254,
+        "candidate_to_raw61_structure_ratio": 0.3762512994370002
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": [
+        "hard-inversion color p95 exceeds 1 DeltaE00; visual review required"
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6879",
+      "candidate_mib": 106.5757,
+      "candidate_pct_raw61": 159.9,
+      "candidate_sha256": "abd300249d8b58e132085b6d63ecd124d63c5e4ae0e685b6d8a209eb1e79cf2f",
+      "identity_p95_delta_e00": 0.009224631158247447,
+      "hard_inversion_p95_delta_e00": 2.5222297272948127,
+      "worst_structure_loss": 0.3006312425636407,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 3.878144333078678,
+        "candidate_to_raw61_stress_color_ratio": 0.6503702571823912,
+        "raw61_structure_loss": 1.153764605947112,
+        "candidate_to_raw61_structure_ratio": 0.26056549231448817
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": true,
+      "reasons": [],
+      "warnings": [
+        "hard-inversion color p95 exceeds 1 DeltaE00; visual review required"
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6917",
+      "candidate_mib": 99.2007,
+      "candidate_pct_raw61": 149.14,
+      "candidate_sha256": "7889229d952a9f4c2ae67749203be0273c101f3d14583a0c1070bf002f599875",
+      "identity_p95_delta_e00": 0.010909855359760032,
+      "hard_inversion_p95_delta_e00": 6.673449872332501,
+      "worst_structure_loss": 0.8367712773819773,
+      "preservation_review_changes": 0,
+      "decoded_segments": 3750,
+      "adobe_acceptance": "accepted",
+      "raw61_comparison": {
+        "raw61_stress_p95_delta_e00": 2.6744351593875044,
+        "candidate_to_raw61_stress_color_ratio": 2.495274506434789,
+        "raw61_structure_loss": 1.2218492559892753,
+        "candidate_to_raw61_structure_ratio": 0.6848400269348136
+      },
+      "technical_master_pass": true,
+      "archive_value_pass": false,
+      "reasons": [
+        "hard-inversion color error exceeds paired RAW61 baseline"
+      ],
+      "warnings": [
+        "hard-inversion color p95 exceeds 1 DeltaE00; visual review required"
+      ]
+    }
+  ]
+}

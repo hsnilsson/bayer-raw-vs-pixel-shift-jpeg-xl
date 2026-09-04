@@ -1314,7 +1314,7 @@ def analyze(args: argparse.Namespace) -> int:
                             ref_t,
                             cand_t,
                             title,
-                            f"ADC {level}",
+                            f"{args.candidate_label_prefix} {level}",
                             args.panel_size,
                             args.diff_gain,
                         )
@@ -1486,6 +1486,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--panel-size", type=int, default=512)
     parser.add_argument("--diff-gain", type=float, default=64.0)
+    parser.add_argument("--candidate-label-prefix", default="ADC")
     return parser
 
 

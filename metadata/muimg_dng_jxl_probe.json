@@ -104,7 +104,7 @@
     ]
   },
   "compatibility": [
-    {"application": "Adobe DNG Converter 18.5", "result": "accepted and rewrote d007", "status": "partial pass"},
+    {"application": "Adobe DNG Converter 18.5", "result": "accepted and rewrote all 16 clean d001 corpus candidates", "status": "pass"},
     {"application": "RawTherapee 5.12", "result": "JPEG XL-compressed DNG: Error loading file", "status": "fail"},
     {"application": "darktable local build", "result": "JPEG XL-compressed DNG: rawspeed reported no RAW chunks", "status": "fail"}
   ],

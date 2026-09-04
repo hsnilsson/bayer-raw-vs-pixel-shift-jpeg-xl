@@ -314,7 +314,7 @@
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable RAW-loading paths cannot decode JPEG XL-compressed image data inside its DNG 1.7 container. This is narrower than a general lack of DNG 1.7 support. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
+          <p>Standalone rendered PS16 JXL remains the broadly decodable candidate, but metadata must be carried in documented sidecars. Corpus-wide muimg testing now adds a DNG-contained option: all 16 candidates passed technical master checks and 15 also beat paired RAW61 for both stress color and structure. One frame remains under visual review. Current RawTherapee and darktable RAW-loading paths still cannot decode JPEG XL-compressed image data inside DNG 1.7; Adobe DNG Converter accepted all 16. ADC-generated DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
         </details>
       </div>
     </section>
@@ -332,7 +332,7 @@
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
-        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics; current RAW loaders still lack its DNG/JXL decode path.</p></div>
+        <div class="flow-box"><strong>muimg DNG/JXL (qualified candidate)</strong><p>Direct PS16 DNG rewrite; 16/16 passed technical checks and 15/16 beat paired RAW61 on both current archive-value diagnostics.</p></div>
         <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
@@ -366,8 +366,19 @@
       <tbody><tr><td><strong>lossless</strong></td><td>574.43 MiB</td><td>861.0%</td><td>0.0000</td><td>0.0000 / 0.0000</td></tr><tr><td><strong>d001 + preview</strong></td><td>89.11 MiB</td><td>133.6%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d003</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d005</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d006</strong></td><td>73.46 MiB</td><td>110.1%</td><td>0.0912</td><td>0.2688 / 0.4368</td></tr><tr><td><strong>d007</strong></td><td>61.58 MiB</td><td>92.3%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d007 + preview</strong></td><td>63.09 MiB</td><td>94.6%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d010</strong></td><td>42.46 MiB</td><td>63.6%</td><td>0.1219</td><td>0.3957 / 0.6544</td></tr><tr><td><strong>d022</strong></td><td>21.79 MiB</td><td>32.6%</td><td>0.2065</td><td>0.4931 / 0.8075</td></tr><tr><td><strong>d025</strong></td><td>19.80 MiB</td><td>29.7%</td><td>0.2272</td><td>0.5032 / 0.8176</td></tr></tbody>
     </table></div>
     <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They are codec diagnostics, not directly comparable with the report's post-RawTherapee RAW61 baselines. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, but the value is not a percentage of real detail lost.</p>
+    <h3>Corpus Qualification</h3>
+    <div class="note">
+      <p><strong>Technical result:</strong> 16 of 16 candidates stayed below 200 MiB, preserved every checked interpretation-relevant DNG field, decoded all main-image JXL segments, and were accepted and rewritten by Adobe DNG Converter. Stored sizes span 65.95-115.73 MiB.</p>
+      <p><strong>Archive-value result:</strong> 15 of 16 beat the paired RAW61 baseline for both hard-inversion patch color and normalized structure. The remaining row is a review case, not a container/decode failure.</p>
+      <p class="muted">The corpus files were generated through the repository wrapper that suppresses muimg/tifffile's erroneous preview-shape <code>ImageDescription</code>. A byte-level probe confirmed that this removes the warning without changing the main JPEG XL codestream.</p>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg rows requiring archive-value review"><table class="small-table">
+      <thead><tr><th>Review case</th><th>Normal color p95</th><th>Hard-inversion color p95</th><th>Stress color vs RAW61</th><th>Structure vs RAW61</th></tr></thead>
+      <tbody><tr><td>konica_vx100_probable_1995 / <strong>_DSC6917</strong></td><td>0.011 &Delta;E00</td><td>6.67 &Delta;E00</td><td>2.50&times; RAW61</td><td>0.68&times; RAW61</td></tr></tbody>
+    </table></div>
+    <p class="muted">Values below 1&times; RAW61 mean the muimg PS16 candidate is closer to the PS16 source than RAW61 is. The absolute 1 &Delta;E00 hard-inversion threshold remains a visual-review trigger; it is not allowed to override the actual RAW61 comparison by itself.</p>
     <h3>Application Check</h3>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody><tr><td><strong>Adobe DNG Converter 18.5</strong></td><td class="warn">partial pass</td><td>accepted and rewrote d007</td></tr><tr><td><strong>RawTherapee 5.12</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: Error loading file</td></tr><tr><td><strong>darktable local build</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: rawspeed reported no RAW chunks</td></tr></tbody></table></div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody><tr><td><strong>Adobe DNG Converter 18.5</strong></td><td class="good">pass</td><td>accepted and rewrote all 16 clean d001 corpus candidates</td></tr><tr><td><strong>RawTherapee 5.12</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: Error loading file</td></tr><tr><td><strong>darktable local build</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: rawspeed reported no RAW chunks</td></tr></tbody></table></div>
     <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures concern that embedded image-data decode path, not every DNG 1.7 feature. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
     <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
 

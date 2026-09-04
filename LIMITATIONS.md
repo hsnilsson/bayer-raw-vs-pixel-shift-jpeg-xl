@@ -21,12 +21,13 @@ does not prove a universal archival rule.
 - The current ADC color-path check inspected only representative embedded JXL
   tiles from a small local lossless/lossy file set; it must be broadened before
   claiming that all ADC-generated lossy `LinearRaw` DNGs use the same XYB path.
-- The direct muimg DNG/JXL result currently covers one resolution-target frame.
-  Its codec metrics are camera-linear DNG comparisons, not same-render RAW61
-  comparisons, current RawTherapee/darktable RAW-loading paths cannot decode the
-  JPEG XL-compressed image data inside the DNG 1.7 output, and the checked lossy
-  d007 tiles use JPEG XL's perceptual XYB path. This is not evidence that those
-  applications reject DNG 1.7 as a whole.
+- The direct muimg DNG/JXL qualification covers 16 paired frames across five
+  material groups. Current RawTherapee/darktable RAW-loading paths still cannot
+  decode the JPEG XL-compressed image data inside the DNG 1.7 output, and the
+  checked lossy path uses JPEG XL's perceptual XYB transform. Adobe DNG Converter
+  accepted and rewrote all 16 candidates. One Konica frame remains a visual-review
+  case because hard-inversion patch color error exceeded its paired RAW61 baseline,
+  despite lower structure error and very small normal-view color movement.
 - Standard image metrics do not directly measure archival value.
 - A public target test can measure capture quality but cannot fully represent
   organic film grain, dye clouds, or real negatives.
