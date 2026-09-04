@@ -30,6 +30,7 @@ DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
 DEFAULT_MUIMG_PROBE = ROOT / "metadata/muimg_dng_jxl_probe.json"
+DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/muimg_archive_qualification.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
 VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
 
@@ -876,7 +877,7 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
-def render_muimg_probe(probe: dict[str, object]) -> str:
+def render_muimg_probe(probe: dict[str, object], qualification: dict[str, object] | None = None) -> str:
     if not probe:
         return ""
 
@@ -939,6 +940,41 @@ def render_muimg_probe(probe: dict[str, object]) -> str:
     missing = metadata.get("missing_semantic_tags", [])
     preserved_text = ", ".join(esc(value) for value in preserved) if isinstance(preserved, list) else "-"
     missing_text = ", ".join(f"<code>{esc(value)}</code>" for value in missing) if isinstance(missing, list) else "-"
+    qualification = qualification or {}
+    qualification_summary = qualification.get("summary", {})
+    qualification_records = qualification.get("records", [])
+    if not isinstance(qualification_summary, dict) or not isinstance(qualification_records, list):
+        raise ValueError("muimg qualification summary/records have invalid types")
+    sizes = [float(item["candidate_mib"]) for item in qualification_records if isinstance(item, dict)]
+    review_rows = [
+        item for item in qualification_records
+        if isinstance(item, dict) and not item.get("archive_value_pass")
+    ]
+    review_html = "".join(
+        "<tr>"
+        f"<td>{esc(item.get('scan_set', ''))} / <strong>{esc(item.get('set_id', ''))}</strong></td>"
+        f"<td>{float(item.get('identity_p95_delta_e00', 0)):.3f} &Delta;E00</td>"
+        f"<td>{float(item.get('hard_inversion_p95_delta_e00', 0)):.2f} &Delta;E00</td>"
+        f"<td>{float((item.get('raw61_comparison') or {}).get('candidate_to_raw61_stress_color_ratio', 0)):.2f}&times; RAW61</td>"
+        f"<td>{float((item.get('raw61_comparison') or {}).get('candidate_to_raw61_structure_ratio', 0)):.2f}&times; RAW61</td>"
+        "</tr>"
+        for item in review_rows
+    )
+    corpus_html = ""
+    if qualification_records:
+        corpus_html = f"""
+    <h3>Corpus Qualification</h3>
+    <div class="note">
+      <p><strong>Technical result:</strong> {int(qualification_summary.get('technical_master_passed', 0))} of {int(qualification_summary.get('cases', 0))} candidates stayed below 200 MiB, preserved every checked interpretation-relevant DNG field, decoded all main-image JXL segments, and were accepted and rewritten by Adobe DNG Converter. Stored sizes span {min(sizes):.2f}-{max(sizes):.2f} MiB.</p>
+      <p><strong>Archive-value result:</strong> {int(qualification_summary.get('archive_value_passed', 0))} of {int(qualification_summary.get('cases', 0))} beat the paired RAW61 baseline for both hard-inversion patch color and normalized structure. The remaining row is a review case, not a container/decode failure.</p>
+      <p class="muted">The corpus files were generated through the repository wrapper that suppresses muimg/tifffile's erroneous preview-shape <code>ImageDescription</code>. A byte-level probe confirmed that this removes the warning without changing the main JPEG XL codestream.</p>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg rows requiring archive-value review"><table class="small-table">
+      <thead><tr><th>Review case</th><th>Normal color p95</th><th>Hard-inversion color p95</th><th>Stress color vs RAW61</th><th>Structure vs RAW61</th></tr></thead>
+      <tbody>{review_html or '<tr><td colspan="5">No review rows.</td></tr>'}</tbody>
+    </table></div>
+    <p class="muted">Values below 1&times; RAW61 mean the muimg PS16 candidate is closer to the PS16 source than RAW61 is. The absolute 1 &Delta;E00 hard-inversion threshold remains a visual-review trigger; it is not allowed to override the actual RAW61 comparison by itself.</p>
+        """.strip()
 
     return f"""
     <h2>muimg Direct DNG/JXL Probe</h2>
@@ -961,6 +997,7 @@ def render_muimg_probe(probe: dict[str, object]) -> str:
       <tbody>{''.join(level_rows)}</tbody>
     </table></div>
     <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They are codec diagnostics, not directly comparable with the report's post-RawTherapee RAW61 baselines. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, but the value is not a percentage of real detail lost.</p>
+    {corpus_html}
     <h3>Application Check</h3>
     <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody>{''.join(compatibility_rows)}</tbody></table></div>
     <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures concern that embedded image-data decode path, not every DNG 1.7 feature. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
@@ -1440,6 +1477,7 @@ def render_html(
     annotations: dict[tuple[str, str], dict[str, str]] | None = None,
     public_figures: list[Path] | None = None,
     muimg_probe: dict[str, object] | None = None,
+    muimg_qualification: dict[str, object] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -1471,7 +1509,7 @@ def render_html(
     current_conclusion = conclusion_text(summaries)
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
     public_reproducibility_html = render_public_reproducibility(public_figures or [], output)
-    muimg_probe_html = render_muimg_probe(muimg_probe or {})
+    muimg_probe_html = render_muimg_probe(muimg_probe or {}, muimg_qualification)
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -1919,7 +1957,7 @@ def render_html(
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable RAW-loading paths cannot decode JPEG XL-compressed image data inside its DNG 1.7 container. This is narrower than a general lack of DNG 1.7 support. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
+          <p>Standalone rendered PS16 JXL remains the broadly decodable candidate, but metadata must be carried in documented sidecars. Corpus-wide muimg testing now adds a DNG-contained option: all 16 candidates passed technical master checks and 15 also beat paired RAW61 for both stress color and structure. One frame remains under visual review. Current RawTherapee and darktable RAW-loading paths still cannot decode JPEG XL-compressed image data inside DNG 1.7; Adobe DNG Converter accepted all 16. ADC-generated DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
         </details>
       </div>
     </section>
@@ -1937,7 +1975,7 @@ def render_html(
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
-        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics; current RAW loaders still lack its DNG/JXL decode path.</p></div>
+        <div class="flow-box"><strong>muimg DNG/JXL (qualified candidate)</strong><p>Direct PS16 DNG rewrite; 16/16 passed technical checks and 15/16 beat paired RAW61 on both current archive-value diagnostics.</p></div>
         <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
@@ -2248,6 +2286,12 @@ def main() -> int:
         help="Optional image-free JSON summary of the direct muimg DNG/JXL probe.",
     )
     parser.add_argument(
+        "--muimg-qualification",
+        type=Path,
+        default=DEFAULT_MUIMG_QUALIFICATION,
+        help="Optional image-free JSON summary of corpus-wide muimg archive qualification.",
+    )
+    parser.add_argument(
         "--copy-public-figures-to",
         type=Path,
         help="Copy selected public figures into the report artifact before linking them.",
@@ -2277,6 +2321,7 @@ def main() -> int:
     viewers = filter_case_paths(viewer_paths(args.viewers), excludes) if args.viewers else []
     public_figures = public_figure_paths(args.public_figures)
     muimg_probe = read_json_object(args.muimg_probe)
+    muimg_qualification = read_json_object(args.muimg_qualification)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
@@ -2295,6 +2340,7 @@ def main() -> int:
             annotations,
             public_figures,
             muimg_probe,
+            muimg_qualification,
         ),
         encoding="utf-8",
     )

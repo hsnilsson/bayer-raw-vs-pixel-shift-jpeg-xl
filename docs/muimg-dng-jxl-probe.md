@@ -146,12 +146,29 @@ and RawTherapee's [LibRaw-backed loading path](https://github.com/RawTherapee/Ra
 
 ## Interpretation
 
+### Corpus qualification (2026-09-04)
+
+The d001-with-preview candidate was generated for 16 paired PS16/RAW61 frames
+across Adox, Fuji, Kodak Gold, Kodak 5035, and Konica material. Every candidate
+was 65.95-115.73 MiB, retained all checked preservation-relevant DNG fields,
+decoded all 3,750 main-image JXL segments, and was accepted and rewritten by
+Adobe DNG Converter. A repository wrapper suppresses an erroneous tifffile
+preview-shape `ImageDescription` emitted by this muimg release; a byte-level test
+confirmed that the fix leaves the main JXL codestream unchanged.
+
+Fifteen of 16 candidates were closer to PS16 than their paired RAW61 files for
+both hard-inversion patch color and normalized structure. Konica `_DSC6917` is
+the exception: normal-view patch p95 was only 0.011 DeltaE00 and structure error
+was 0.68x RAW61, but hard-inversion color error was 6.67 DeltaE00, or 2.50x the
+RAW61 baseline. It remains a visual-review/fallback case. The image-free record
+is `metadata/muimg_archive_qualification.json`.
+
 This probe materially improves the DNG/JXL outlook: unlike the tested lossy ADC
 path, muimg preserved the checked geometry, white level, and color metadata while
-crossing below the paired RAW61 storage budget on one frame. It therefore earns
-a documented candidate status.
+producing all 16 corpus candidates below the stated 200 MiB budget. It therefore
+earns a qualified candidate status.
 
-It does not replace the current standalone-rendered-JXL result or justify deleting
-source DNGs. A decision-grade claim still needs multiple film frames and a trusted
-DNG/JXL renderer that can process source and candidate through equivalent color,
-inversion, and grading stages.
+It does not justify indiscriminate deletion. The current result supports a
+controlled hybrid workflow: verify each generated file, retain checksums and two
+independent copies, and keep a RAW61 fallback for any frame that fails the
+relative stress-color or structure gate.
