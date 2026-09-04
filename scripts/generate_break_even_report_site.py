@@ -885,13 +885,14 @@ def render_muimg_probe(probe: dict[str, object]) -> str:
     conclusion = probe.get("conclusion", {})
     lossless = probe.get("lossless", {})
     preview = probe.get("preview", {})
+    low_distance = probe.get("low_distance_calibration", {})
     color_path = probe.get("color_path", {})
     metadata = probe.get("metadata", {})
     levels = probe.get("levels", [])
     compatibility = probe.get("compatibility", [])
     if not all(
         isinstance(value, dict)
-        for value in (source, tool, conclusion, lossless, preview, color_path, metadata)
+        for value in (source, tool, conclusion, lossless, preview, low_distance, color_path, metadata)
     ):
         raise ValueError("muimg probe sections must be JSON objects")
     if not isinstance(levels, list) or not isinstance(compatibility, list):
@@ -950,6 +951,7 @@ def render_muimg_probe(probe: dict[str, object]) -> str:
     <section class="questions">
       <div class="card"><h3>Lossless identity</h3><p><strong>{int(lossless.get('different_samples', 0))} changed samples</strong> out of {int(lossless.get('samples_compared', 0)):,}; maximum error {int(lossless.get('max_absolute_error', 0))}. Decoded pixel hashes matched.</p></div>
       <div class="card"><h3>Preview-safe candidate</h3><p>The generated preview adds about {float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'd007 + preview'), 0)) - float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'd007'), 0)):.2f} MiB. Its {int(preview.get('main_segments', 0)):,} encoded main-image segments have the same SHA-256 as d007 without a preview.</p></div>
+      <div class="card"><h3>Low-distance calibration</h3><p>The d001 main codestream is byte-identical to d003 on this frame. Lossless is {float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'lossless'), 0)):.2f} MiB; the first observed lossy plateau is about {float(next((item.get('mib', 0) for item in levels if isinstance(item, dict) and item.get('level') == 'd003'), 0)):.2f} MiB. Distance controls quality, not a requested file size, so 200 MiB cannot be dialled in by interpolation.</p></div>
       <div class="card"><h3>Preserved in the checked file</h3><p>{preserved_text}.</p></div>
       <div class="card"><h3>Still missing</h3><p>{missing_text}. Raw-data IDs and digests must be recalculated for lossy output, not blindly copied from the source.</p></div>
       <div class="card"><h3>Lossy color path</h3><p>Lossless used {esc(color_path.get('lossless', 'not checked'))}; all four sampled d007 main-image tiles used <strong>{esc(color_path.get('d007', 'not checked'))}</strong>. The lossy path is therefore still perceptually transformed and needs the negative-like stress checks shown here.</p></div>
@@ -961,6 +963,7 @@ def render_muimg_probe(probe: dict[str, object]) -> str:
     <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They are codec diagnostics, not directly comparable with the report's post-RawTherapee RAW61 baselines. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, but the value is not a percentage of real detail lost.</p>
     <h3>Application Check</h3>
     <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody>{''.join(compatibility_rows)}</tbody></table></div>
+    <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures concern that embedded image-data decode path, not every DNG 1.7 feature. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
     <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
     """.strip()
 
@@ -1916,7 +1919,7 @@ def render_html(
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable builds cannot open it. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
+          <p>Standalone rendered PS16 JXL remains the decision-grade candidate and is decodable with standard JPEG XL tools, but metadata must be carried in documented sidecars. A one-frame muimg probe preserved the checked DNG geometry and color metadata while reaching the RAW61 size budget; it remains experimental because the current RawTherapee and darktable RAW-loading paths cannot decode JPEG XL-compressed image data inside its DNG 1.7 container. This is narrower than a general lack of DNG 1.7 support. ADC DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
         </details>
       </div>
     </section>
@@ -1934,7 +1937,7 @@ def render_html(
       <div class="arrow">&rarr;</div>
       <div class="flow-col">
         <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Used so comparisons measure declared outputs, not random app defaults.</p></div>
-        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics, but lacks current workflow support.</p></div>
+        <div class="flow-box"><strong>muimg DNG/JXL (one-frame probe)</strong><p>Direct PS16 DNG rewrite that preserved checked image semantics; current RAW loaders still lack its DNG/JXL decode path.</p></div>
         <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
       </div>
       <div class="arrow">&rarr;</div>
@@ -2026,9 +2029,9 @@ def render_html(
           <dt>Observed</dt>
           <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
           <dt>Actual problem</dt>
-          <dd>The project cannot feed source and ADC candidate into its one fixed RawTherapee render pipeline. This is a concrete workflow incompatibility, not evidence that the embedded JXL pixels are corrupt.</dd>
+          <dd>The project cannot feed source and ADC candidate into its one fixed RawTherapee render pipeline. The observed gap is decoding JPEG XL-compressed image data inside DNG 1.7, not a demonstrated rejection of DNG 1.7 as a whole and not evidence that the embedded JXL pixels are corrupt.</dd>
           <dt>Required before reconsideration</dt>
-          <dd>A RawTherapee version that opens and correctly processes DNG 1.7/JXL, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
+          <dd>A RawTherapee version whose RAW-loading path opens and correctly processes JPEG XL-compressed DNG 1.7, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
         </dl>
       </div>
       <div class="adc-item">

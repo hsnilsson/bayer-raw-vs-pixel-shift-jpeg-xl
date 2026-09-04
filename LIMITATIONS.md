@@ -23,8 +23,10 @@ does not prove a universal archival rule.
   claiming that all ADC-generated lossy `LinearRaw` DNGs use the same XYB path.
 - The direct muimg DNG/JXL result currently covers one resolution-target frame.
   Its codec metrics are camera-linear DNG comparisons, not same-render RAW61
-  comparisons, current RawTherapee/darktable builds cannot open the output, and
-  the checked lossy d007 tiles use JPEG XL's perceptual XYB path.
+  comparisons, current RawTherapee/darktable RAW-loading paths cannot decode the
+  JPEG XL-compressed image data inside the DNG 1.7 output, and the checked lossy
+  d007 tiles use JPEG XL's perceptual XYB path. This is not evidence that those
+  applications reject DNG 1.7 as a whole.
 - Standard image metrics do not directly measure archival value.
 - A public target test can measure capture quality but cannot fully represent
   organic film grain, dye clouds, or real negatives.

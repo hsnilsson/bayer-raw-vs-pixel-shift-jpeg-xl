@@ -16,6 +16,7 @@
   },
   "levels": [
     {"level": "lossless", "distance": 0.0, "mib": 574.4275, "pct_raw61": 860.97, "stress_p95_delta_e00": 0.0, "mean_structure_loss": 0.0, "worst_structure_loss": 0.0},
+    {"level": "d001 + preview", "distance": 0.01, "mib": 89.1131, "pct_raw61": 133.57, "stress_p95_delta_e00": 0.08161, "mean_structure_loss": 0.23097, "worst_structure_loss": 0.37461},
     {"level": "d003", "distance": 0.03, "mib": 87.5998, "pct_raw61": 131.3, "stress_p95_delta_e00": 0.08161, "mean_structure_loss": 0.23097, "worst_structure_loss": 0.37461},
     {"level": "d005", "distance": 0.05, "mib": 87.5998, "pct_raw61": 131.3, "stress_p95_delta_e00": 0.08161, "mean_structure_loss": 0.23097, "worst_structure_loss": 0.37461},
     {"level": "d006", "distance": 0.06, "mib": 73.4595, "pct_raw61": 110.1, "stress_p95_delta_e00": 0.09121, "mean_structure_loss": 0.26882, "worst_structure_loss": 0.43684},
@@ -51,6 +52,14 @@
     "main_encoded_bytes": 64374181,
     "main_codestream_sha256": "1490f4a899df95c7dd6a62e483a453c93260580d86a87ca74174da2117af729a",
     "matches_no_preview_d007": true
+  },
+  "low_distance_calibration": {
+    "candidate": "d001 + preview",
+    "mib": 89.1131,
+    "main_encoded_bytes": 91659317,
+    "main_codestream_sha256": "6af53e776d8ae62aef1d65792c78525fdaedf77d55f5534957e27c544f941d07",
+    "matches_no_preview_d003": true,
+    "interpretation": "on this frame, positive distances 0.01 and 0.03 reached the same first lossy quantization result; distance is a quality control, not a direct file-size target"
   },
   "color_path": {
     "lossless": "original-profile/non-XYB",
@@ -96,14 +105,14 @@
   },
   "compatibility": [
     {"application": "Adobe DNG Converter 18.5", "result": "accepted and rewrote d007", "status": "partial pass"},
-    {"application": "RawTherapee 5.12", "result": "Error loading file", "status": "fail"},
-    {"application": "darktable local build", "result": "rawspeed reported no RAW chunks", "status": "fail"}
+    {"application": "RawTherapee 5.12", "result": "JPEG XL-compressed DNG: Error loading file", "status": "fail"},
+    {"application": "darktable local build", "result": "JPEG XL-compressed DNG: rawspeed reported no RAW chunks", "status": "fail"}
   ],
   "conclusion": {
     "storage_crossing": "between d006 and d007 on this frame",
     "preferred_probe_file": "d007 + preview",
     "preferred_probe_pct_raw61": 94.56,
     "claim": "muimg can produce a DNG/JXL candidate below the paired RAW61 size while preserving the checked DNG geometry and color metadata and introducing small codec-only errors on the selected crops",
-    "not_proven": "this one-frame camera-linear probe is not a corpus-wide archive-value break-even result, and current RawTherapee/darktable support prevents the same-render end-to-end comparison"
+    "not_proven": "this one-frame camera-linear probe is not a corpus-wide archive-value break-even result, and current RawTherapee/darktable RAW-loading paths cannot decode its JPEG XL-compressed image data inside DNG 1.7, preventing the same-render end-to-end comparison; this does not establish a general lack of DNG 1.7 support"
   }
 }
