@@ -964,6 +964,12 @@ def render_muimg_probe(probe: dict[str, object], qualification: dict[str, object
       <tbody>{review_html or '<tr><td colspan="5">No review rows.</td></tr>'}</tbody>
     </table></div>
     <p class="muted">Values below 1&times; RAW61 mean the muimg PS16 candidate is closer to the PS16 source than RAW61 is. The absolute 1 &Delta;E00 hard-inversion threshold remains a visual-review trigger; it is not allowed to override the actual RAW61 comparison by itself.</p>
+    <div class="note">
+      <h3>Practical Archival Reading</h3>
+      <p><strong>What the evidence supports now:</strong> for a storage-constrained workflow, a verified muimg d001 DNG/JXL is a credible PS16 preservation candidate. In this corpus, all 16 files passed the technical master checks and 15 also retained more measured color and structure value than their paired RAW61 capture. A defensible operational workflow is therefore to verify every output, keep two independent copies, and retain one source ARW only for rows that trigger review.</p>
+      <p><strong>What keeps this from being a universal sole-master recommendation:</strong> decoder diversity is still narrow. Adobe DNG Converter accepted every tested file, while the tested RawTherapee and darktable paths could not decode the JPEG XL-compressed DNG image data. If DNG 1.7/JPEG XL support becomes routine across raw applications, that portability objection can shrink without changing the preserved files themselves.</p>
+      <p><strong>Why the negative result is especially encouraging:</strong> color-negative material is deliberately demanding here. Removing the orange mask and applying a steep inversion can magnify small codec-induced color and tone changes that remain inconspicuous in the original negative. Passing these stress checks suggests useful headroom for material requiring gentler downstream transforms, including many positive or already-rendered archival images. That is a reason for optimism, not direct proof for every material class.</p>
+    </div>
         """.strip()
 
     return f"""
