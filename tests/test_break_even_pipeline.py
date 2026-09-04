@@ -572,6 +572,27 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("200 MiB cannot be dialled in by interpolation", html)
         self.assertIn("compression type <code>52546</code>", html)
 
+    def test_report_site_states_practical_muimg_conclusion_for_qualified_corpus(self) -> None:
+        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
+        qualification = report_site.read_json_object(ROOT / "metadata/muimg_archive_qualification.json")
+
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+            muimg_probe=probe,
+            muimg_qualification=qualification,
+        )
+
+        self.assertIn("Practical Archival Reading", html)
+        self.assertIn("credible PS16 preservation candidate", html)
+        self.assertIn("decoder diversity is still narrow", html)
+        self.assertIn("If DNG 1.7/JPEG XL support becomes routine", html)
+        self.assertIn("color-negative material is deliberately demanding here", html)
+        self.assertIn("a reason for optimism, not direct proof", html)
+
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
