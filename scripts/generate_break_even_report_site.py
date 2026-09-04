@@ -733,7 +733,8 @@ def viewer_records(
                     "label": "PS16 lossless / reference",
                     "src": reference_sources.get(default_mode, relpath(reference_path, output)),
                     "sources": reference_sources,
-                    "role": "baseline",
+                    "role": "ps16",
+                    "storageKind": "lossless PS16 render",
                     "overview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
                 }
             )
@@ -744,19 +745,6 @@ def viewer_records(
         }
         raw61_path = directory / str(image_sets[default_mode].get("raw61", ""))
         raw61_overview_path = directory / str(overviews.get("raw61", ""))
-        if raw61_path.is_file():
-            candidates.append(
-                {
-                    "key": "raw61",
-                    "label": str(labels.get("raw61", "RAW61 local aligned")),
-                    "src": raw_sources.get(default_mode, relpath(raw61_path, output)),
-                    "sources": raw_sources,
-                    "role": "raw61",
-                    "storageMib": size_lookup.get((scan_slug, set_id, "raw61")),
-                    "storageKind": "source ARW",
-                    "overview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
-                }
-            )
         keys = sorted(
             {key for image_set in image_sets.values() if isinstance(image_set, dict) for key in image_set if key.startswith("jxl_")},
             key=viewer_level_key,
@@ -788,7 +776,7 @@ def viewer_records(
                     ),
                 }
             )
-        if not reference_path.is_file() or not candidates:
+        if not reference_path.is_file() or not raw61_path.is_file() or not candidates:
             continue
         annotation = annotation_for(scan_set, set_id, annotations)
         label = viewer_display_label(scan_set, set_id, annotations)
@@ -804,9 +792,11 @@ def viewer_records(
                 "sampleRole": annotation.get("sample_role", ""),
                 "setId": set_id,
                 "scanSet": scan_set,
-                "reference": reference_sources.get(default_mode, relpath(reference_path, output)),
-                "references": reference_sources,
-                "referenceOverview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
+                "reference": raw_sources.get(default_mode, relpath(raw61_path, output)),
+                "references": raw_sources,
+                "referenceLabel": str(labels.get("raw61", "RAW61 local aligned")),
+                "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
+                "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 "candidates": candidates,
                 "metadata": {
                     "transform": default_mode,
@@ -1206,7 +1196,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.stroke();
       ctx.restore();
       const candidate = currentCandidate();
-      drawPaneLabel(state.overlay ? `${candidate.label} over PS16` : "PS16 reference", 0, 0);
+      const referenceLabel = currentViewer().referenceLabel || "RAW61 local aligned";
+      drawPaneLabel(state.overlay ? `${candidate.label} over RAW61` : referenceLabel, 0, 0);
       drawPaneLabel(candidate.label, half, 0);
     }
 
@@ -1280,7 +1271,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         name.textContent = candidate.label;
         button.appendChild(name);
         const role = document.createElement("span");
-        const roleLabel = candidate.role === "baseline" ? "zero-difference baseline" : candidate.role;
+        const roleLabel = candidate.role === "ps16" ? "lossless PS16 render" : candidate.role;
         const sizeLabel = Number.isFinite(candidate.storageMib)
           ? `~${candidate.storageMib.toFixed(1)} MiB ${candidate.storageKind || "stored file"}`
           : "";
@@ -2210,8 +2201,8 @@ def render_html(
 
     <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> inspect the actual image differences behind the numeric table in one shared comparison workspace.</p>
-      <p>Select a film crop on the left and a quality candidate on the right. The viewer supports side-by-side comparison, overlay, zoom, pan, and keyboard navigation without leaving the report.</p>
+      <p><strong>What this section is for:</strong> inspect the archive-value comparison behind the numeric table in one shared workspace.</p>
+      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Zoom, pan, stress views, and keyboard navigation stay available without leaving the report.</p>
     </div>
     {visual_review_html}
 
