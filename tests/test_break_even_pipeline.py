@@ -566,6 +566,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("all four sampled d007 main-image tiles used <strong>XYB</strong>", html)
         self.assertIn("not directly comparable with the report's post-RawTherapee RAW61 baselines", html)
         self.assertIn("RawTherapee 5.12", html)
+        self.assertIn("JPEG XL-compressed image data inside DNG 1.7", html)
+        self.assertIn("does not establish a general lack of DNG 1.7 support", html)
+        self.assertIn("d001 main codestream is byte-identical to d003", html)
+        self.assertIn("200 MiB cannot be dialled in by interpolation", html)
+        self.assertIn("compression type <code>52546</code>", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -63,6 +63,7 @@ budget.
 
 | Candidate | MiB | % of RAW61 | Hard-density patch p95 DeltaE00 | Mean / worst normalized structure error |
 | --- | ---: | ---: | ---: | ---: |
+| d001 plus generated preview | 89.11 | 133.6% | 0.0816 | 0.2310 / 0.3746 |
 | d003 | 87.60 | 131.3% | 0.0816 | 0.2310 / 0.3746 |
 | d005 | 87.60 | 131.3% | 0.0816 | 0.2310 / 0.3746 |
 | d006 | 73.46 | 110.1% | 0.0912 | 0.2688 / 0.4368 |
@@ -72,9 +73,13 @@ budget.
 | d022 | 21.79 | 32.6% | 0.2065 | 0.4931 / 0.8075 |
 | d025 | 19.80 | 29.7% | 0.2272 | 0.5032 / 0.8176 |
 
-On this input, d003 and d005 produced different container bytes but the same
-encoded size and measured crop values, indicating the same effective
-quantization result for the sampled content.
+On this input, the d001 candidate's 91,659,317-byte main codestream was
+byte-identical to d003; its extra 1.51 MiB is the generated preview. D003 and
+d005 also produced the same encoded size and measured crop values. The current
+muimg/libjxl path therefore jumps from 574.43 MiB lossless to a first lossy
+plateau around 87.60 MiB for this frame. `distance` controls quality rather than
+target file size, so a requested 200 MiB output cannot be inferred or dialled in
+by interpolation here.
 
 For this frame, the storage crossing is between d006 and d007. The d007 file
 with a generated 2390 x 1592 preview is the more practical probe artifact. Its
@@ -124,9 +129,20 @@ preview. The generated preview has its own valid layout.
 
 Adobe acceptance confirms that at least one independent DNG implementation can
 parse the file. It does not prove equivalent rendering throughout Adobe software.
-The RawTherapee and darktable failures are operational blockers for this
-project's current same-render pipeline, not evidence that the encoded pixels are
-damaged.
+The RawTherapee and darktable failures are specifically operational blockers for
+JPEG XL-compressed image data inside DNG 1.7, not evidence that either application
+rejects every DNG 1.7 feature and not evidence that the encoded pixels are
+damaged. RawTherapee's ability to open standalone JXL does not imply that its RAW
+loader can decode DNG compression type `52546`; darktable's RawSpeed path likewise
+reported no supported RAW chunks for this compression. This distinction matters:
+the compatibility gap is in the current DNG/JXL decode path, not the DNG container
+as a whole.
+
+Implementation references: Adobe's
+[DNG 1.7.1 specification and SDK page](https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html),
+RawSpeed's [DNG/JXL support issue](https://github.com/darktable-org/rawspeed/issues/516)
+and [current DNG decoder](https://github.com/darktable-org/rawspeed/blob/develop/src/librawspeed/decoders/DngDecoder.cpp),
+and RawTherapee's [LibRaw-backed loading path](https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc).
 
 ## Interpretation
 
