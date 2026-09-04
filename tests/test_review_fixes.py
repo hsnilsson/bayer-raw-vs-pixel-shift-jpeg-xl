@@ -326,6 +326,15 @@ class DngJxlVerificationTests(unittest.TestCase):
 
             self.assertTrue(run_dng_jxl_verification.optional_deps_usable(root))
 
+    def test_optional_deps_treats_inaccessible_path_as_unusable(self) -> None:
+        class InaccessiblePath:
+            def is_dir(self) -> bool:
+                raise PermissionError("blocked")
+
+        self.assertFalse(
+            run_dng_jxl_verification.optional_deps_usable(InaccessiblePath())
+        )
+
     def test_crop_plan_windows_load_named_rectangles(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             path = Path(temp_dir) / "crops.json"

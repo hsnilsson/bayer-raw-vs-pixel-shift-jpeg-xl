@@ -191,11 +191,14 @@ def add_local_optional_deps() -> None:
 
 
 def optional_deps_usable(path: Path) -> bool:
-    return (
-        path.is_dir()
-        and (path / "tifffile" / "__init__.py").is_file()
-        and (path / "imagecodecs" / "__init__.py").is_file()
-    )
+    try:
+        return (
+            path.is_dir()
+            and (path / "tifffile" / "__init__.py").is_file()
+            and (path / "imagecodecs" / "__init__.py").is_file()
+        )
+    except OSError:
+        return False
 
 
 def import_tifffile():
