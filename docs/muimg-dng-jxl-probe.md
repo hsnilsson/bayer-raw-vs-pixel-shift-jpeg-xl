@@ -156,19 +156,20 @@ Adobe DNG Converter. A repository wrapper suppresses an erroneous tifffile
 preview-shape `ImageDescription` emitted by this muimg release; a byte-level test
 confirmed that the fix leaves the main JXL codestream unchanged.
 
-Fifteen of 16 candidates were closer to PS16 than their paired RAW61 files for
-both hard-inversion patch color and normalized structure. Konica `_DSC6917` is
-the exception: normal-view patch p95 was only 0.011 DeltaE00 and structure error
-was 0.68x RAW61, but hard-inversion color error was 6.67 DeltaE00, or 2.50x the
-RAW61 baseline. It remains a visual-review/fallback case. The image-free record
-is `metadata/muimg_archive_qualification.json`.
+The historical 15/16 favorable count in
+`metadata/muimg_archive_qualification.json` divides camera-linear DNG errors by
+RAW61 errors measured after rendering, with different aggregation. It is an
+exploratory cross-pipeline screen and cannot establish a RAW61 quality advantage.
+The technical checks above remain valid. The corpus includes a flat-field control.
+Konica `_DSC6917` illustrates inversion sensitivity: patch p95 changes from
+0.011 DeltaE00 in the normal comparison to 6.67 under hard inversion.
 
 This probe materially improves the DNG/JXL outlook: unlike the tested lossy ADC
 path, muimg preserved the checked geometry, white level, and color metadata while
 producing all 16 corpus candidates below the stated 200 MiB budget. It therefore
 earns a qualified candidate status.
 
-It does not justify indiscriminate deletion. The current result supports a
-controlled hybrid workflow: verify each generated file, retain checksums and two
-independent copies, and keep a RAW61 fallback for any frame that fails the
-relative stress-color or structure gate.
+Before removing sources, verify each output, retain checksums and two independent
+copies, confirm the recovery path, and visually review the intended rendering and
+inversion workflow. The historical cross-pipeline ratios should not control source
+deletion.

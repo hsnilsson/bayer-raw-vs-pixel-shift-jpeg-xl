@@ -587,11 +587,29 @@ class BreakEvenPipelineTests(unittest.TestCase):
         )
 
         self.assertIn("Practical Archival Reading", html)
-        self.assertIn("credible PS16 preservation candidate", html)
+        self.assertIn("credible candidate for retaining PS16 within a 200 MiB allowance", html)
         self.assertIn("decoder diversity is still narrow", html)
         self.assertIn("Routine DNG 1.7/JPEG XL support across raw applications", html)
         self.assertIn("color-negative material is deliberately demanding here", html)
-        self.assertIn("This inference should next be tested", html)
+        self.assertIn("Those processing stages and aggregations differ", html)
+        self.assertNotIn("15 also retained more measured color", html)
+        self.assertNotIn("Stress color vs RAW61</th>", html)
+        self.assertIn("including the flat-field control", html)
+        sections = [
+            'id="findings"',
+            '<h2>Level Summary</h2>',
+            '<h2>Color Legend And Units</h2>',
+            '<h3>How The Tested Levels Move</h3>',
+            '<h2>Visual Review</h2>',
+            '<h2>muimg Direct DNG/JXL Probe</h2>',
+            '<h2>Public Reproducibility Check</h2>',
+            'id="measurement-details"',
+            '<h2>ADC DNG/JXL</h2>',
+            '<h2>Practical Takeaway</h2>',
+        ]
+        offsets = [html.index(section) for section in sections]
+        self.assertEqual(offsets, sorted(offsets))
+        self.assertIn("muimg DNG candidates are covered separately below", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
