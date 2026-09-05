@@ -1,7 +1,7 @@
 # Limitations
 
-This project is intentionally cautious. The current evidence is useful, but it
-does not prove a universal archival rule.
+The results describe the tested captures, processing settings and applications.
+The principal interpretation limits are listed below.
 
 ## Current Limitations
 
@@ -25,9 +25,10 @@ does not prove a universal archival rule.
   material groups. Current RawTherapee/darktable RAW-loading paths still cannot
   decode the JPEG XL-compressed image data inside the DNG 1.7 output, and the
   checked lossy path uses JPEG XL's perceptual XYB transform. Adobe DNG Converter
-  accepted and rewrote all 16 candidates. One Konica frame remains a visual-review
-  case because hard-inversion patch color error exceeded its paired RAW61 baseline,
-  despite lower structure error and very small normal-view color movement.
+  accepted and rewrote all 16 candidates, including a flat-field control. The
+  historical 15/16 favorable screen mixes camera-linear candidate errors with
+  rendered RAW61 errors and different aggregation. It cannot establish a RAW61
+  quality advantage or select which source files are safe to delete.
 - Standard image metrics do not directly measure archival value.
 - A public target test can measure capture quality but cannot fully represent
   organic film grain, dye clouds, or real negatives.

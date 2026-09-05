@@ -113,6 +113,6 @@
     "preferred_probe_file": "d007 + preview",
     "preferred_probe_pct_raw61": 94.56,
     "claim": "muimg can produce a DNG/JXL candidate below the paired RAW61 size while preserving the checked DNG geometry and color metadata and introducing small codec-only errors on the selected crops",
-    "not_proven": "this probe covers one frame in camera-linear space. Corpus-wide archive-value evidence appears in the qualification section. Current RawTherapee and darktable RAW-loading paths could not decode its JPEG XL-compressed image data inside DNG 1.7, preventing the same-render end-to-end comparison; the application finding is specific to that embedded image-data path"
+    "not_proven": "this initial probe covers one frame in camera-linear space. The corpus section extends technical validation to 16 capture sets. Its historical cross-pipeline quality ratios are excluded from the conclusion. The tested RawTherapee and darktable paths could not decode JPEG XL image data inside DNG, so the same-render end-to-end comparison remains unavailable"
   }
 }

@@ -273,17 +273,20 @@
     <section class="grid">
       <div class="card"><h3>Candidate Comparisons</h3><div class="metric">200</div><p class="muted">each comparison is one film material &times; frame &times; JXL distance</p></div>
       <div class="card"><h3>Fully Measured Comparisons</h3><div class="metric">150</div><p class="muted">comparisons with all three required measurements: file size, color and structure</p></div>
-      <div class="card"><h3>Decision-grade Favorable Comparisons</h3><div class="metric">54</div><p class="muted">fully measured candidate comparisons favoring PS16 JXL; deliberately aggressive visual-stress levels are excluded</p></div>
+      <div class="card"><h3>Favorable Diagnostic Comparisons</h3><div class="metric">54</div><p class="muted">fully measured candidate comparisons favoring PS16 JXL; deliberately aggressive visual-stress levels are excluded</p></div>
       <div class="card"><h3>Median-size Budget Levels</h3><div class="metric">d025, d028, d030</div><p class="muted">JXL levels whose median file size is no larger than paired RAW61; image quality is evaluated by the separate color, structure, and visual checks</p></div>
     </section>
 
-    <h2>Current Reading</h2>
+    <h2 id="findings">What We Have Learned</h2>
     <div class="note">
       <p><strong>The current local data puts the storage break-even between d022 (106.4%) and d025 (86.3%).</strong></p>
       <p>The current numeric result is provisional because the RAW61 baseline includes render-profile, demosaic/acutance and registration effects, while PS16 JXL is measured against the PS16 render. The scope is a comparison of two complete archival workflows. Codec damage and RAW61-vs-PS16 baseline differences are therefore reported separately, with registered crop comparisons provided below for visual inspection.</p>
     </div>
 
-    <h2>What Are We Asking?</h2>
+    <p><strong>The second storage option:</strong> direct muimg DNG/JXL produced 16 checked outputs of 66-116 MiB at d001. All passed metadata, full segment-decode and Adobe rewrite checks. That fits the separate budget of about 200 MiB per capture; most files remain larger than RAW61.</p>
+    <nav aria-label="Article sections"><p><a href="#rendered-results">Rendered results</a> &middot; <a href="#visual-review">Visual review</a> &middot; <a href="#muimg-results">DNG storage option</a> &middot; <a href="#public-evidence">Public examples</a> &middot; <a href="#measurement-details">Measurement details</a></p></nav>
+    <p>The counts above describe frame-and-quality combinations: the same frames recur at different compression settings. A favorable diagnostic comparison means that the size and error thresholds pass. Useful detail and acceptable grain still need visual interpretation.</p>
+    <h2>How To Read The Comparison</h2>
     <section class="questions">
       <div class="card question-card">
         <h3>1. Codec question</h3>
@@ -314,202 +317,24 @@
         <p>Can the retained files remain decodable, documented, color-managed, and practical as archive masters or secondary masters?</p>
         <details>
           <summary>Answer so far</summary>
-          <p>Standalone rendered PS16 JXL remains the broadly decodable candidate, but metadata must be carried in documented sidecars. Corpus-wide muimg testing now adds a DNG-contained option: all 16 candidates passed technical master checks and 15 also beat paired RAW61 for both stress color and structure. One frame remains under visual review. Current RawTherapee and darktable RAW-loading paths still cannot decode JPEG XL-compressed image data inside DNG 1.7; Adobe DNG Converter accepted all 16. ADC-generated DNG/JXL remains excluded because of metadata, geometry, and rendering changes.</p>
+          <p>The rendered route needs an explicit color profile and retained capture metadata. The muimg route keeps checked DNG interpretation fields and passed full decoding and Adobe rewrite checks on 16 outputs. The DNG section explains application compatibility and the scope of those measurements.</p>
         </details>
       </div>
     </section>
 
-    <h2>Workflow Being Tested</h2>
-    <section class="flow">
-      <div class="flow-col">
-        <div class="flow-box"><strong>Film frame</strong><p>Negative or positive original. The physical object remains the ultimate source.</p></div>
-      </div>
-      <div class="arrow">&rarr;</div>
-      <div class="flow-col">
-        <div class="flow-box"><strong>61 MP RAW</strong><p>Single-shot Bayer capture. Strong raw edit latitude, less spatial sampling.</p></div>
-        <div class="flow-box"><strong>240 MP PS16 DNG</strong><p>PixelShift2DNG output. More spatial sampling, very large retained files.</p></div>
-      </div>
-      <div class="arrow">&rarr;</div>
-      <div class="flow-col">
-        <div class="flow-box"><strong>Fixed render state</strong><p>RawTherapee neutral render. Declared settings keep outputs consistent across comparisons.</p></div>
-        <div class="flow-box"><strong>muimg DNG/JXL (qualified candidate)</strong><p>Direct PS16 DNG rewrite; 16/16 passed technical checks and 15/16 beat paired RAW61 on both current archive-value diagnostics.</p></div>
-        <div class="flow-box"><strong>ADC DNG/JXL (excluded)</strong><p>Measured side path, excluded from the core verdict because of application, metadata and geometry changes.</p></div>
-      </div>
-      <div class="arrow">&rarr;</div>
-      <div class="flow-col">
-        <div class="flow-box"><strong>Standalone PS16 JXL</strong><p>Main tested candidate now. Codec damage is measured against the PS16 render.</p></div>
-        <div class="flow-box"><strong>Keep original RAW/DNG</strong><p>Safest archive branch. Expensive in storage; remains the conservative recommendation.</p></div>
-      </div>
-      <div class="arrow">&rarr;</div>
-      <div class="flow-col">
-        <div class="flow-box"><strong>Break-even verdict</strong><p>Size, color/tone, structure, visual review and operational risk are combined.</p></div>
-      </div>
-    </section>
+    <h2>Two Storage Routes</h2>
+    <p>Every PS16 result begins with a merged 16-shot capture. RAW61 is the separate single-shot comparison. Compression is applied at one of two stages:</p>
+    <ol>
+      <li><strong>Rendered route:</strong> PS16 DNG &rarr; fixed RawTherapee render &rarr; standalone JPEG XL. A decoded JXL is compared with that same render to isolate compression changes. A registered RAW61 render supplies the alternative capture baseline.</li>
+      <li><strong>DNG route:</strong> PS16 DNG &rarr; muimg &rarr; DNG containing JPEG XL image data. This keeps checked camera interpretation metadata and delays rendering. Technical checks and camera-linear codec measurements appear separately below.</li>
+    </ol>
+    <p><code>d030</code> means distance 0.30 and <code>d001</code> means 0.01. Distance controls the encoder, while image content and processing stage determine size and error. Compare settings within their own route.</p>
 
-    <h2>muimg Direct DNG/JXL Probe</h2>
-    <div class="note">
-      <p><strong>Why this probe exists:</strong> test whether JPEG XL can remain inside a DNG while avoiding the stored-shape, crop-origin, <code>WhiteLevel</code>, and opcode rewrites seen in the lossy Adobe DNG Converter path.</p>
-      <p class="muted">Tool: muimg 0.1.20260718.1648, effort 7. Test material: Adox high-resolution black-and-white test target, PS16 _DSC6582-_DSC6597 paired with RAW61 _DSC6577.</p>
-      <p><strong>Result on one resolution-target frame:</strong> between d006 and d007 on this frame. The preview-bearing d007 candidate is 94.6% of its paired RAW61 size. The checked geometry, white level, color matrices, camera/lens identity, and exposure metadata remained intact.</p>
-      <p><strong>Evidence scope:</strong> this probe covers one frame in camera-linear space. Corpus-wide archive-value evidence appears in the qualification section. Current RawTherapee and darktable RAW-loading paths could not decode its JPEG XL-compressed image data inside DNG 1.7, preventing the same-render end-to-end comparison; the application finding is specific to that embedded image-data path</p>
-    </div>
-    <section class="questions">
-      <div class="card"><h3>Lossless identity</h3><p><strong>0 changed samples</strong> out of 734,515,200; maximum error 0. Decoded pixel hashes matched.</p></div>
-      <div class="card"><h3>Preview-safe candidate</h3><p>The generated preview adds about 1.51 MiB. Its 3,750 encoded main-image segments have the same SHA-256 as d007 without a preview.</p></div>
-      <div class="card"><h3>Low-distance calibration</h3><p>The d001 main codestream is byte-identical to d003 on this frame. Lossless is 574.43 MiB; the first observed lossy plateau is about 87.60 MiB. Distance controls quality, while output size varies with image content; interpolation cannot target exactly 200 MiB.</p></div>
-      <div class="card"><h3>Preserved in the checked file</h3><p>stored main-image shape, ActiveArea, DefaultCropOrigin, DefaultCropSize, WhiteLevel, ColorMatrix1, ColorMatrix2, AsShotNeutral, Make, Model, UniqueCameraModel, LensModel, exposure settings and capture time.</p></div>
-      <div class="card"><h3>Still missing</h3><p><code>ExifVersion</code>, <code>NewRawImageDigest</code>, <code>NoiseReductionApplied</code>, <code>RawDataUniqueID</code>. Lossy output requires recalculated raw-data IDs and digests.</p></div>
-      <div class="card"><h3>Lossy color path</h3><p>Lossless used original-profile/non-XYB; all four sampled d007 main-image tiles used <strong>XYB</strong>. The lossy path is therefore still perceptually transformed and needs the negative-like stress checks shown here.</p></div>
-    </section>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL one-frame probe results; scroll horizontally on small screens"><table class="small-table">
-      <thead><tr><th>Candidate</th><th>Stored size</th><th>Size vs RAW61</th><th>Hard-density color p95 (&Delta;E00)</th><th>Mean / worst normalized structure error</th></tr></thead>
-      <tbody><tr><td><strong>lossless</strong></td><td>574.43 MiB</td><td>861.0%</td><td>0.0000</td><td>0.0000 / 0.0000</td></tr><tr><td><strong>d001 + preview</strong></td><td>89.11 MiB</td><td>133.6%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d003</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d005</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d006</strong></td><td>73.46 MiB</td><td>110.1%</td><td>0.0912</td><td>0.2688 / 0.4368</td></tr><tr><td><strong>d007</strong></td><td>61.58 MiB</td><td>92.3%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d007 + preview</strong></td><td>63.09 MiB</td><td>94.6%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d010</strong></td><td>42.46 MiB</td><td>63.6%</td><td>0.1219</td><td>0.3957 / 0.6544</td></tr><tr><td><strong>d022</strong></td><td>21.79 MiB</td><td>32.6%</td><td>0.2065</td><td>0.4931 / 0.8075</td></tr><tr><td><strong>d025</strong></td><td>19.80 MiB</td><td>29.7%</td><td>0.2272</td><td>0.5032 / 0.8176</td></tr></tbody>
-    </table></div>
-    <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They isolate codec behavior; comparison with the report's post-RawTherapee RAW61 baselines requires the separate rendered pipeline. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, and the value describes signal mismatch rather than a percentage of real detail lost.</p>
-    <h3>Corpus Qualification</h3>
-    <div class="note">
-      <p><strong>Technical result:</strong> 16 of 16 candidates stayed below 200 MiB, preserved every checked interpretation-relevant DNG field, decoded all main-image JXL segments, and were accepted and rewritten by Adobe DNG Converter. Stored sizes span 65.95-115.73 MiB.</p>
-      <p><strong>Archive-value result:</strong> 15 of 16 beat the paired RAW61 baseline for both hard-inversion patch color and normalized structure. The remaining row requires archive-value review; its container and full decode passed the technical gates.</p>
-      <p class="muted">The corpus files were generated through the repository wrapper that suppresses muimg/tifffile's erroneous preview-shape <code>ImageDescription</code>. A byte-level probe confirmed that this removes the warning without changing the main JPEG XL codestream.</p>
-    </div>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg rows requiring archive-value review"><table class="small-table">
-      <thead><tr><th>Review case</th><th>Normal color p95</th><th>Hard-inversion color p95</th><th>Stress color vs RAW61</th><th>Structure vs RAW61</th></tr></thead>
-      <tbody><tr><td>konica_vx100_probable_1995 / <strong>_DSC6917</strong></td><td>0.011 &Delta;E00</td><td>6.67 &Delta;E00</td><td>2.50&times; RAW61</td><td>0.68&times; RAW61</td></tr></tbody>
-    </table></div>
-    <p class="muted">Values below 1&times; RAW61 mean the muimg PS16 candidate is closer to the PS16 source than RAW61 is. The absolute 1 &Delta;E00 hard-inversion threshold triggers visual review; the paired RAW61 comparison determines the relative result.</p>
-    <div class="note">
-      <h3>Practical Archival Reading</h3>
-      <p><strong>What the evidence supports now:</strong> for a storage-constrained workflow, a verified muimg d001 DNG/JXL is a credible PS16 preservation candidate. In this corpus, all 16 files passed the technical master checks and 15 also retained more measured color and structure value than their paired RAW61 capture. A defensible operational workflow is therefore to verify every output, keep two independent copies, and retain one source ARW only for rows that trigger review.</p>
-      <p><strong>Current portability constraint:</strong> decoder diversity is still narrow. Adobe DNG Converter accepted every tested file, while the tested RawTherapee and darktable paths could not decode the JPEG XL-compressed DNG image data. Routine DNG 1.7/JPEG XL support across raw applications would remove most of this portability concern without changing the preserved files themselves.</p>
-      <p><strong>Why the negative result is especially encouraging:</strong> color-negative material is deliberately demanding here. Removing the orange mask and applying a steep inversion can magnify small codec-induced color and tone changes that remain inconspicuous in the original negative. Passing these stress checks suggests useful headroom for material requiring gentler downstream transforms, including many positive or already-rendered archival images. This inference should next be tested on representative positive and rendered collections.</p>
-    </div>
-    <h3>Application Check</h3>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody><tr><td><strong>Adobe DNG Converter 18.5</strong></td><td class="good">pass</td><td>accepted and rewrote all 16 clean d001 corpus candidates</td></tr><tr><td><strong>RawTherapee 5.12</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: Error loading file</td></tr><tr><td><strong>darktable local build</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: rawspeed reported no RAW chunks</td></tr></tbody></table></div>
-    <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures are specific to decoding JPEG XL-compressed image data inside DNG; other DNG 1.7 features remain outside this application check. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
-    <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
-
-    <h2>ADC DNG/JXL</h2>
-    <div class="note">
-      <p><strong>Current conclusion:</strong> Adobe DNG Converter 18.5 can create DNG 1.7 files with internal JPEG XL, and the tested lossless low-level crops were exact. Lossy ADC rewrites the image state and is not usable in the project's reference renderer, so this path is excluded from the core break-even verdict. The active candidate is standalone JXL from a fixed 16-bit PS16 render.</p>
-    </div>
-    <details class="adc-disclosure">
-      <summary>
-        <span>
-          <span class="adc-disclosure-title">Why ADC DNG/JXL Was Excluded</span>
-          <span class="adc-disclosure-subtitle">Nine documented findings covering geometry, sample interpretation, application support, visual validation, and storage.</span>
-        </span>
-        <span class="adc-disclosure-action" aria-hidden="true"></span>
-      </summary>
-      <div class="adc-disclosure-body">
-        <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” identifies evidence that would be required before reconsidering this path and sits outside the current work queue.</p>
-        <section class="adc-grid">
-      <div class="adc-item">
-        <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>In the active PixelShift 16 batches, lossy ADC changed the main raster from <code>19200&times;12752</code> to <code>19120&times;12736</code>. The small earlier smoke-test files showed the same pattern at <code>9600&times;6376</code> to <code>9552&times;6360</code>. Lossless ADC kept the source shape.</dd>
-          <dt>Actual problem</dt>
-          <dd>The lossy file no longer has the source file's stored pixel grid. This may be a valid flattening of the active area, but direct pixel indexing and geometry metadata from the source are no longer interchangeable.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Compare the same active image area through a crop-aware renderer, confirm that no useful edge pixels or placement information are lost, and keep the source DNG until that result is reproducible.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>Crop origin / active placement <span class="pill risk">Confirmed rewrite</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>The active crop origin changed from <code>[8, 8]</code> in the source to <code>[0, 0]</code> in every checked lossy candidate. This is consistent with ADC writing the active area as the new stored raster.</dd>
-          <dt>Actual problem</dt>
-          <dd>The coordinate system changed. Copying the old crop tag back would shift the image or trim a second time; comparing the two rasters without applying their own crop metadata would compare different locations.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Verify placement in at least two independent full DNG render paths and compare registered active areas rather than raw array coordinates.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3><code>WhiteLevel</code> <span class="pill risk">Confirmed rewrite</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>Lossy ADC changed all three channel values from <code>14848</code> to <code>65535</code>. Lossless ADC retained <code>14848</code>.</dd>
-          <dt>Actual problem</dt>
-          <dd>The stored sample domain was rescaled. Restoring the old tag or dividing both files by one assumed scale can produce false tone, clipping, or highlight-recovery differences.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Use each file's declared scale, apply its required opcodes, then test clipping and recoverable latitude through the same trusted renderer. The current low-level normalization supports diagnostic comparison; restoration of the original raw-scale semantics requires the complete render path.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3><code>OpcodeList2</code> <span class="pill risk">Confirmed dependency</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>The checked lossy files added three channel-specific <code>MapPolynomial</code> operations where the source had no <code>OpcodeList2</code>. Applying those maps removed the large false domain mismatch in the first raster comparison.</dd>
-          <dt>Actual problem</dt>
-          <dd>A decoder that extracts the JXL pixels but ignores the DNG opcodes does not recover the intended linear values. Correct rendering now depends on complete support for this processing step.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Confirm the same result in independent DNG renderers and record which archive applications apply the opcode correctly. Copying or deleting the opcode is not a safe repair.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>Lossy embedded color path <span class="pill warn">Confirmed sample, limited scope</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>Representative main-image tiles from two local files used the JPEG XL XYB path for lossy <code>d=0.05</code>; lossless main-image tiles used the original-profile, non-XYB path. The outer DNG still labels the image <code>LinearRaw</code>.</dd>
-          <dt>Actual problem</dt>
-          <dd>The lossy path preserves the image through a perceptual transform rather than camera-native linear channel samples. Its response may differ under negative inversion, channel balancing, or future extreme edits.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Inspect representative tiles across the corpus and run the actual ADC output through the same post-inversion and grading tests used for the archive decision.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>RawTherapee compatibility <span class="pill bad">Confirmed incompatibility</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
-          <dt>Actual problem</dt>
-          <dd>The fixed RawTherapee pipeline currently stops at JPEG XL-compressed image data inside DNG 1.7. The embedded JXL pixels decode independently, and the application finding is limited to this raw-loading path.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>A RawTherapee version whose RAW-loading path opens and correctly processes JPEG XL-compressed DNG 1.7, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>Independent full-DNG decode <span class="pill unknown">Open validation</span></h3>
-        <dl>
-          <dt>What exists</dt>
-          <dd>The project can extract main-image JXL tiles, decode matched crop windows, normalize by the declared white level, and apply the observed <code>MapPolynomial</code> opcodes. Lossless crops are exact through that path.</dd>
-          <dt>Actual missing evidence</dt>
-          <dd>This custom low-level check covers tile extraction, pixel decoding, and selected metadata. Consistent interpretation of crops, color matrices, opcodes, previews, and metadata still requires an independent full DNG implementation.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Matching color-managed renders from at least one independent DNG/JXL-capable application, followed by an application matrix for the tools expected in the real workflow.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>Real edit and visual review <span class="pill unknown">Open validation</span></h3>
-        <dl>
-          <dt>What exists</dt>
-          <dd>Low-level crop metrics already show the expected ordering: lossless is exact, <code>d=0.03</code> is cleaner than <code>d=0.05</code>, and <code>d=0.10</code> develops a much worse error tail after negative-like stress.</dd>
-          <dt>Actual missing evidence</dt>
-          <dd>The missing evidence is a blinded, end-to-end comparison after a real color-managed inversion and grading workflow. That review would test whether low average patch error still permits objectionable grain, texture, or local-density changes.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Registered same-render outputs, clipping and latitude checks, and blinded visual review on representative real negatives.</dd>
-        </dl>
-      </div>
-      <div class="adc-item">
-        <h3>Storage-budget coverage <span class="pill bad">Not reached</span></h3>
-        <dl>
-          <dt>Observed</dt>
-          <dd>Lossless ADC retained roughly <code>85-97%</code> of the source PS16 DNG size in complete local rows. Even the tested lossy <code>d=0.10</code> files were about <code>161-888%</code> of their paired 61 MP raw files.</dd>
-          <dt>Actual problem</dt>
-          <dd>The tested conservative ADC levels reduce PS16 storage substantially but remain larger than the RAW61 budget, leaving the same-storage question open for this path.</dd>
-          <dt>Required before reconsideration</dt>
-          <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
-        </dl>
-      </div>
-        </section>
-      </div>
-    </details>
-
+    <span id="rendered-results"></span>
     <h2>Level Summary</h2>
     <div class="note">
-      <p><strong>What this table is for:</strong> compare JPEG XL distance levels. RAW61 baselines appear in the next table because each frame keeps the same baseline across JXL levels.</p>
-      <p><strong>Decision gate:</strong> a level is only treated as a current PS16 JXL win when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
+      <p><strong>What this table is for:</strong> compare JPEG XL distance levels. The baseline table in Measurement Details explains the RAW61 comparisons.</p>
+      <p><strong>Decision gate:</strong> a candidate passes the numeric screen when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
       <p><strong>Lossless row:</strong> shown as a zero-codec-loss reference. Break-even counting begins once complete standalone lossless size rows exist for the same material.</p>
       <p><strong>Important:</strong> the colors below are project-specific diagnostic labels. Formal FADGI conformance requires calibrated target captures and the prescribed measurement workflow; the present FADGI-style measurements serve as interpretation anchors for rendered film scans and compression candidates.</p>
     </div>
@@ -539,7 +364,7 @@
           <th><span class="column-help">Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.</span></th>
           <th><span class="column-help">Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.</span></th>
           <th><span class="column-help">Minimum and maximum retained JXL size across complete frame pairs, shown both as percent of RAW61 and as encoded MiB. Wide ranges mean the level depends strongly on image content.</span></th>
-          <th><span class="column-help">Both images receive one fixed, reference-derived density inversion. At the analysis scale, 256 x 256-pixel patches are averaged in linear ProPhoto RGB, converted to Lab, and compared with CIEDE2000. This value is the 95th percentile across frames of each frame&#x27;s patch p95: 95% of sampled areas in a typical frame are no worse. Lower is better; the metric covers mean color and tone movement, while structure analysis covers grain.</span></th>
+          <th><span class="column-help">Both images receive one fixed, reference-derived density inversion. At the analysis scale, 256 x 256-pixel patches are averaged in linear ProPhoto RGB, converted to Lab, and compared with CIEDE2000. This value is the 95th percentile across frames of each frame&#x27;s patch p95: this nested summary emphasizes higher-error frames and patches. Lower is better; the metric covers mean color and tone movement, while structure analysis covers grain.</span></th>
           <th><span class="column-help">Median JXL color movement divided by the RAW61-vs-PS16 color baseline. Below 1 means JXL stays closer to PS16 than RAW61 does for this diagnostic.</span></th>
           <th><span class="column-help">For each image, luminance minus a 5 x 5 local blur isolates fine structure. We take the RMS of candidate-minus-reference high-pass values and divide by the RMS of the PS16 high-pass reference. Thus 0 is exact and 0.20 means error RMS is 20% of the reference&#x27;s fine-structure RMS. It can reflect grain, edges, acutance or noise and must be checked visually.</span></th>
           <th><span class="column-help">Median JXL high-pass detail loss divided by RAW61 high-pass detail loss after registration. Below 1 means the JXL candidate remains structurally closer to PS16 than RAW61.</span></th>
@@ -661,6 +486,16 @@
       </tbody>
     </table></div>
 
+    <h2>Color Legend And Units</h2>
+    <section class="questions">
+      <div class="card"><h3>Current gate</h3><p><span class="pill good">green</span> means the level passes the current size, color and structure gates. <span class="pill warn">yellow</span> means review zone. <span class="pill bad">red</span> means too large or image risk. The colors summarize a decision state; units appear in the adjacent metric cells.</p></div>
+      <div class="card"><h3>Size cells</h3><p>Unit: percent of paired RAW61 size, plus encoded MiB. <span class="pill good">green</span> is at or below 100% RAW61. <span class="pill warn">yellow</span> is up to 115%. <span class="pill bad">red</span> is clearly over the RAW61 storage budget.</p></div>
+      <div class="card"><h3>&Delta;E00 cells</h3><p>Unit: CIEDE2000 color difference. The table uses patch p95 after the current negative-density stress transform. <span class="pill good">green</span> is below 1. <span class="pill warn">yellow</span> is 1-2. <span class="pill risk">orange</span> is 2-3. <span class="pill bad">red</span> is above 3.</p></div>
+      <div class="card"><h3>Ratio cells</h3><p>Unit: multiple of the RAW61-vs-PS16 baseline. Example: 0.25x RAW61 means one quarter of the RAW61 baseline error. Values below 1 favor PS16 JXL for that metric.</p></div>
+      <div class="card"><h3>Structure cells</h3><p>The value is normalized high-pass error: error RMS divided by PS16 high-frequency RMS. <code>0.000</code> is exact; <code>0.200</code> means the mismatch RMS is 20% of the reference's fine-structure RMS. This quantifies signal mismatch; the color-coded ratio then compares that mismatch directly with RAW61.</p></div>
+      <div class="card"><h3>FADGI note</h3><p>These colors are project-specific interpretation aids. Formal FADGI conformance requires its calibrated capture and assessment procedure. The relevant methodological lesson is to keep color, tone, registration, sharpening, noise, and structure separate.</p></div>
+    </section>
+
     <h3>How The Tested Levels Move</h3>
     <p class="muted">The bars treat each tested JXL setting as a discrete category because the sampled distance values are unevenly spaced. Each chart has its own vertical scale. The dashed line is the RAW61 comparison gate: 100% for storage and 1.0x for the two relative-error measures.</p>
     <section class="trend-charts" aria-label="Level trends"><figure class="trend-chart"><figcaption><strong>Storage vs RAW61</strong><span>lower is better; dashed line = 100% RAW61 gate</span></figcaption>
@@ -683,179 +518,10 @@
               <rect x="38.8" y="104.0" width="15.6" height="12.0" class="chart-bar chart-bar-pass"><title>d003: 0.16x</title></rect><rect x="64.0" y="103.7" width="15.6" height="12.3" class="chart-bar chart-bar-pass"><title>d005: 0.16x</title></rect><rect x="89.2" y="103.3" width="15.6" height="12.7" class="chart-bar chart-bar-pass"><title>d010: 0.17x</title></rect><rect x="114.4" y="103.1" width="15.6" height="12.9" class="chart-bar chart-bar-pass"><title>d020: 0.17x</title></rect><rect x="139.6" y="103.1" width="15.6" height="12.9" class="chart-bar chart-bar-pass"><title>d022: 0.17x</title></rect><rect x="164.8" y="103.0" width="15.6" height="13.0" class="chart-bar chart-bar-pass"><title>d025: 0.17x</title></rect><rect x="190.0" y="102.9" width="15.6" height="13.1" class="chart-bar chart-bar-pass"><title>d028: 0.17x</title></rect><rect x="215.2" y="102.9" width="15.6" height="13.1" class="chart-bar chart-bar-pass"><title>d030: 0.17x</title></rect><rect x="240.4" y="102.0" width="15.6" height="14.0" class="chart-bar chart-bar-pass"><title>d100: 0.18x</title></rect><rect x="265.6" y="100.7" width="15.6" height="15.3" class="chart-bar chart-bar-pass"><title>d200: 0.20x</title></rect><text x="46.6" y="136" text-anchor="middle">d003</text><text x="71.8" y="136" text-anchor="middle">d005</text><text x="97.0" y="136" text-anchor="middle">d010</text><text x="122.2" y="136" text-anchor="middle">d020</text><text x="147.4" y="136" text-anchor="middle">d022</text><text x="172.6" y="136" text-anchor="middle">d025</text><text x="197.8" y="136" text-anchor="middle">d028</text><text x="223.0" y="136" text-anchor="middle">d030</text><text x="248.2" y="136" text-anchor="middle">d100</text><text x="273.4" y="136" text-anchor="middle">d200</text>
             </svg></figure></section>
 
-    <h2>Color Legend And Units</h2>
-    <section class="questions">
-      <div class="card"><h3>Current gate</h3><p><span class="pill good">green</span> means the level passes the current size, color and structure gates. <span class="pill warn">yellow</span> means review zone. <span class="pill bad">red</span> means too large or image risk. The colors summarize a decision state; units appear in the adjacent metric cells.</p></div>
-      <div class="card"><h3>Size cells</h3><p>Unit: percent of paired RAW61 size, plus encoded MiB. <span class="pill good">green</span> is at or below 100% RAW61. <span class="pill warn">yellow</span> is up to 115%. <span class="pill bad">red</span> is clearly over the RAW61 storage budget.</p></div>
-      <div class="card"><h3>&Delta;E00 cells</h3><p>Unit: CIEDE2000 color difference. The table uses patch p95 after the current negative-density stress transform. <span class="pill good">green</span> is below 1. <span class="pill warn">yellow</span> is 1-2. <span class="pill risk">orange</span> is 2-3. <span class="pill bad">red</span> is above 3.</p></div>
-      <div class="card"><h3>Ratio cells</h3><p>Unit: multiple of the RAW61-vs-PS16 baseline. Example: 0.25x RAW61 means one quarter of the RAW61 baseline error. Values below 1 favor PS16 JXL for that metric.</p></div>
-      <div class="card"><h3>Structure cells</h3><p>The value is normalized high-pass error: error RMS divided by PS16 high-frequency RMS. <code>0.000</code> is exact; <code>0.200</code> means the mismatch RMS is 20% of the reference's fine-structure RMS. This quantifies signal mismatch; the color-coded ratio then compares that mismatch directly with RAW61.</p></div>
-      <div class="card"><h3>FADGI note</h3><p>These colors are project-specific interpretation aids. Formal FADGI conformance requires its calibrated capture and assessment procedure. The relevant methodological lesson is to keep color, tone, registration, sharpening, noise, and structure separate.</p></div>
-    </section>
-
-    <h2>RAW61 Baseline By Frame</h2>
-    <div class="note">
-      <p><strong>What this table is for:</strong> show the apples-to-oranges part explicitly. RAW61 values are frame baselines: they are expected to repeat across JXL levels and should be reviewed for alignment, acutance, color profile and tone differences.</p>
-      <p><strong>How to read stress color:</strong> RAW61 and PS16 are first registered and rendered through the declared neutral pipeline. The same PS16-derived normalization, logarithmic transmission-to-density conversion, clipping, fixed channel balance and steep contrast curve are then applied to both. Patch means are compared as &Delta;E00. A much larger stress value than normal color means differences that look modest in the negative become prominent after this deliberately severe inversion. Its scope is a reproducible sensitivity test with PS16 as the comparison reference; FilmLab-style rendering and absolute ground truth remain separate questions.</p>
-      <p><strong>Current result:</strong> In the current 15-frame baseline, normal per-frame patch p95 values span 0.73-1.32 DeltaE00; after stress they span 2.25-7.90, with 12 above the project&#x27;s DeltaE00 3 review threshold. The hard inversion therefore amplifies RAW61-versus-PS16 workflow differences. JPEG XL codec loss is measured separately against the PS16 reference.</p>
-    </div>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="RAW61 baseline by frame; scroll horizontally on small screens"><table class="small-table">
-      <thead>
-        <tr>
-          <th><abbr title="Local scan folder / material label.">Scan set</abbr></th>
-          <th><abbr title="Capture set id.">Frame</abbr></th>
-          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 before stress.">RAW61 color</abbr></th>
-          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 after hard negative-density transform.">RAW61 stress color</abbr></th>
-          <th><abbr title="RAW61 normalized high-pass error against PS16 after registration: error RMS divided by PS16 high-frequency RMS.">RAW61 structure</abbr></th>
-          <th><abbr title="Worst JXL stress DeltaE00 across levels currently in the matrix.">Worst JXL color</abbr></th>
-          <th><abbr title="Largest normalized JXL high-pass error across levels currently in the matrix.">Worst JXL structure</abbr></th>
-        </tr>
-        <tr class="column-help-row">
-          <th><span class="column-help">Scan collection or material label. Rows with the same name belong to the same film, target, or source batch, but each frame is evaluated separately.</span></th>
-          <th><span class="column-help">Specific frame or capture-set identifier used to join the paired RAW61, PS16 reference, and JXL evidence for this row.</span></th>
-          <th><span class="column-help">95th-percentile patch CIEDE2000 difference for RAW61 versus the PS16 reference before the negative-density stress transform. Lower means the RAW61 render is closer to PS16. JXL codec loss appears in the separate candidate columns.</span></th>
-          <th><span class="column-help">After registration, both RAW61 and PS16 receive the same reference-derived density mapping: normalize transmission, convert with -log(), clip the outer range, apply one fixed channel balance, then a steep contrast curve. We average 256 x 256-pixel patches in linear ProPhoto RGB, convert means to Lab, and report patch p95 DeltaE00. Higher than baseline color means inversion amplifies workflow differences. Codec isolation and film-scanner emulation require their respective separate tests.</span></th>
-          <th><span class="column-help">Normalized high-pass error for RAW61 versus PS16 after registration. Luminance minus a 5 x 5 blur isolates fine variation; difference RMS is divided by PS16 high-pass RMS. 0 is exact and 1 means mismatch RMS equals the reference fine-structure RMS. Capture, demosaic, acutance, noise and residual alignment all contribute; JXL codec loss appears in the separate candidate column.</span></th>
-          <th><span class="column-help">Largest PS16 JXL-versus-PS16 stress DeltaE00 found across the JXL levels currently included for this frame. It identifies the most color-disruptive tested level; lower is better.</span></th>
-          <th><span class="column-help">Largest normalized PS16 JXL-versus-PS16 high-pass error across included JXL levels. 0 is exact; 0.20 means error RMS is 20% of the PS16 fine-structure RMS. It can expose altered grain, edges, or noise; visual crop inspection supplies the information-value judgment.</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-              <td>Adox high-resolution black-and-white test target<br><span class="subtle">Vlad resolution target</span></td>
-              <td><strong>_DSC6577</strong></td>
-              <td>0.92</td>
-              <td class="risk">2.25</td>
-              <td>0.788</td>
-              <td>0.58</td>
-              <td>0.025</td>
-            </tr><tr>
-              <td>fuji_679_f_ii_1983</td>
-              <td><strong>_DSC6938</strong></td>
-              <td>0.86</td>
-              <td class="bad">7.90</td>
-              <td>1.150</td>
-              <td>0.16</td>
-              <td>0.308</td>
-            </tr><tr>
-              <td>fuji_679_f_ii_1983</td>
-              <td><strong>_DSC6959</strong></td>
-              <td>0.84</td>
-              <td class="bad">4.85</td>
-              <td>0.841</td>
-              <td>0.29</td>
-              <td>0.137</td>
-            </tr><tr>
-              <td>fuji_679_f_ii_1983</td>
-              <td><strong>_DSC6980</strong></td>
-              <td>0.85</td>
-              <td class="bad">6.41</td>
-              <td>0.970</td>
-              <td>0.88</td>
-              <td>0.199</td>
-            </tr><tr>
-              <td>Kodak Gold 200-5 1997</td>
-              <td><strong>_DSC6735</strong></td>
-              <td>1.32</td>
-              <td class="bad">7.38</td>
-              <td>1.533</td>
-              <td>0.47</td>
-              <td>0.165</td>
-            </tr><tr>
-              <td>Kodak Gold 200-5 1997</td>
-              <td><strong>_DSC6756</strong></td>
-              <td>0.91</td>
-              <td class="bad">4.63</td>
-              <td>1.025</td>
-              <td>0.19</td>
-              <td>0.190</td>
-            </tr><tr>
-              <td>Kodak Gold 200-5 1997</td>
-              <td><strong>_DSC6793</strong></td>
-              <td>0.81</td>
-              <td class="bad">6.02</td>
-              <td>0.975</td>
-              <td>0.15</td>
-              <td>0.191</td>
-            </tr><tr>
-              <td>Kodak Gold 200-5 1997</td>
-              <td><strong>_DSC6814</strong></td>
-              <td>1.07</td>
-              <td class="risk">2.89</td>
-              <td>0.993</td>
-              <td>0.10</td>
-              <td>0.133</td>
-            </tr><tr>
-              <td>Kodak5035 H190-1983</td>
-              <td><strong>_DSC6619</strong></td>
-              <td>0.85</td>
-              <td class="bad">5.90</td>
-              <td>1.041</td>
-              <td>0.37</td>
-              <td>0.208</td>
-            </tr><tr>
-              <td>Kodak5035 H190-1983</td>
-              <td><strong>_DSC6661</strong></td>
-              <td>0.77</td>
-              <td class="bad">4.53</td>
-              <td>1.103</td>
-              <td>0.14</td>
-              <td>0.277</td>
-            </tr><tr>
-              <td>Kodak5035 H190-1983</td>
-              <td><strong>_DSC6682</strong></td>
-              <td>0.99</td>
-              <td class="bad">4.29</td>
-              <td>1.113</td>
-              <td>0.61</td>
-              <td>0.223</td>
-            </tr><tr>
-              <td>konica_vx100_probable_1995</td>
-              <td><strong>_DSC6836</strong></td>
-              <td>0.73</td>
-              <td class="bad">7.23</td>
-              <td>1.151</td>
-              <td>0.55</td>
-              <td>0.365</td>
-            </tr><tr>
-              <td>konica_vx100_probable_1995</td>
-              <td><strong>_DSC6857</strong></td>
-              <td>0.98</td>
-              <td class="bad">4.14</td>
-              <td>1.174</td>
-              <td>0.10</td>
-              <td>0.341</td>
-            </tr><tr>
-              <td>konica_vx100_probable_1995</td>
-              <td><strong>_DSC6879</strong></td>
-              <td>0.94</td>
-              <td class="bad">3.88</td>
-              <td>1.154</td>
-              <td>0.12</td>
-              <td>0.249</td>
-            </tr><tr>
-              <td>konica_vx100_probable_1995</td>
-              <td><strong>_DSC6917</strong></td>
-              <td>1.04</td>
-              <td class="risk">2.67</td>
-              <td>1.222</td>
-              <td>0.07</td>
-              <td>0.210</td>
-            </tr>
-      </tbody>
-    </table></div>
-
-    <h2>Render/Profile Audit</h2>
-    <section class="questions">
-      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 18 RAW61 rows and 19 PS16 rows.</p></div>
-      <div class="card"><h3>Color management</h3><p>Input profile: <code>(camera)</code><br>Working profile: <code>ProPhoto</code><br>Output profile: <code>RTv4_Large</code></p></div>
-      <div class="card"><h3>White balance warning</h3><p>WB enabled: <code>true</code><br>WB setting: <code>Camera</code></p><p class="muted">Camera WB can differ between ARW and PixelShift2DNG metadata, so RAW61 may render less orange even with the same profile file.</p></div>
-      <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>amaze</code><br>Sharpening enabled: <code>false</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
-    </section>
-
+    <span id="visual-review"></span>
     <h2>Visual Review</h2>
     <div class="note">
-      <p><strong>What this section is for:</strong> inspect the archive-value comparison behind the numeric table in one shared workspace.</p>
+      <p><strong>What this section is for:</strong> judge whether the numeric advantage translates into useful visible detail. These are crops from the rendered route; muimg DNG candidates are covered separately below.</p>
       <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Zoom, pan, stress views, and keyboard navigation stay available without leaving the report.</p>
     </div>
       <section class="crop-workspace" id="cropWorkspace" tabindex="0" aria-labelledby="cropViewerTitle">
@@ -1316,6 +982,48 @@
   </script>
 
 
+    <span id="muimg-results"></span>
+    <h2>muimg Direct DNG/JXL Probe</h2>
+    <p>This route addresses the larger, approximately 200 MiB DNG budget. The main level table and viewer above cover standalone rendered JXL.</p>
+    <h3>Corpus Qualification</h3>
+    <div class="note">
+      <p><strong>Technical result:</strong> 16 of 16 candidates stayed below 200 MiB, preserved every checked interpretation-relevant DNG field, decoded all main-image JXL segments, and were accepted and rewritten by Adobe DNG Converter. Stored sizes span 65.95-115.73 MiB.</p>
+      <p><strong>Image-quality scope:</strong> these codec measurements compare decoded DNG samples with the source PS16 DNG. The earlier 15/16 favorable count divided camera-linear errors by RAW61 errors measured after rendering. Those processing stages and aggregations differ, so that count cannot establish a RAW61 quality advantage. It is retained in the machine-readable history as an exploratory screen and is excluded from the conclusion here.</p>
+      <p class="muted">The corpus files were generated through the repository wrapper that suppresses muimg/tifffile's erroneous preview-shape <code>ImageDescription</code>. A byte-level probe confirmed that this removes the warning without changing the main JPEG XL codestream.</p>
+    </div>
+    <div class="note">
+      <h3>Practical Archival Reading</h3>
+      <p><strong>What the evidence supports now:</strong> for a storage-constrained workflow, muimg d001 DNG/JXL is a credible candidate for retaining PS16 within a 200 MiB allowance. All 16 capture sets, including the flat-field control, passed the documented technical checks. The files retain checked DNG interpretation fields and can be recovered through the tested Adobe conversion path. Source removal should follow output verification, two independent copies and visual review in the intended rendering workflow.</p>
+      <p><strong>Current portability constraint:</strong> decoder diversity is still narrow. Adobe DNG Converter accepted every tested file, while the tested RawTherapee and darktable paths could not decode the JPEG XL-compressed DNG image data. Routine DNG 1.7/JPEG XL support across raw applications would make these files easier to use and reduce dependence on the Adobe conversion path.</p>
+      <p><strong>Why the negative result is especially encouraging:</strong> color-negative material is deliberately demanding here. Removing the orange mask and applying a steep inversion can magnify small codec-induced color and tone changes that remain inconspicuous in the original negative. That makes the measured codec behavior encouraging for uses with gentler downstream transforms. The public examples below show how this sensitivity changes across material; the benefit depends on the image and subsequent editing.</p>
+    </div>
+    <details><summary>Initial resolution-target experiment and codec measurements</summary>
+    <div class="note">
+      <p><strong>Why this probe exists:</strong> test whether JPEG XL can remain inside a DNG while avoiding the stored-shape, crop-origin, <code>WhiteLevel</code>, and opcode rewrites seen in the lossy Adobe DNG Converter path.</p>
+      <p class="muted">Tool: muimg 0.1.20260718.1648, effort 7. Test material: Adox high-resolution black-and-white test target, PS16 _DSC6582-_DSC6597 paired with RAW61 _DSC6577.</p>
+      <p><strong>Result on one resolution-target frame:</strong> between d006 and d007 on this frame. The preview-bearing d007 candidate is 94.6% of its paired RAW61 size. The checked geometry, white level, color matrices, camera/lens identity, and exposure metadata remained intact.</p>
+      <p><strong>Evidence scope:</strong> this initial probe covers one frame in camera-linear space. The corpus section extends technical validation to 16 capture sets. Its historical cross-pipeline quality ratios are excluded from the conclusion. The tested RawTherapee and darktable paths could not decode JPEG XL image data inside DNG, so the same-render end-to-end comparison remains unavailable</p>
+    </div>
+    <section class="questions">
+      <div class="card"><h3>Lossless identity</h3><p><strong>0 changed samples</strong> out of 734,515,200; maximum error 0. Decoded pixel hashes matched.</p></div>
+      <div class="card"><h3>Preview-safe candidate</h3><p>The generated preview adds about 1.51 MiB. Its 3,750 encoded main-image segments have the same SHA-256 as d007 without a preview.</p></div>
+      <div class="card"><h3>Low-distance calibration</h3><p>The d001 main codestream is byte-identical to d003 on this frame. Lossless is 574.43 MiB; the first observed lossy plateau is about 87.60 MiB. Distance controls quality, while output size varies with image content; interpolation cannot target exactly 200 MiB.</p></div>
+      <div class="card"><h3>Preserved in the checked file</h3><p>stored main-image shape, ActiveArea, DefaultCropOrigin, DefaultCropSize, WhiteLevel, ColorMatrix1, ColorMatrix2, AsShotNeutral, Make, Model, UniqueCameraModel, LensModel, exposure settings and capture time.</p></div>
+      <div class="card"><h3>Still missing</h3><p><code>ExifVersion</code>, <code>NewRawImageDigest</code>, <code>NoiseReductionApplied</code>, <code>RawDataUniqueID</code>. Lossy output requires recalculated raw-data IDs and digests.</p></div>
+      <div class="card"><h3>Lossy color path</h3><p>Lossless used original-profile/non-XYB; all four sampled d007 main-image tiles used <strong>XYB</strong>. The lossy path is therefore still perceptually transformed and needs the negative-like stress checks shown here.</p></div>
+    </section>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL one-frame probe results; scroll horizontally on small screens"><table class="small-table">
+      <thead><tr><th>Candidate</th><th>Stored size</th><th>Size vs RAW61</th><th>Hard-density color p95 (&Delta;E00)</th><th>Mean / worst normalized structure error</th></tr></thead>
+      <tbody><tr><td><strong>lossless</strong></td><td>574.43 MiB</td><td>861.0%</td><td>0.0000</td><td>0.0000 / 0.0000</td></tr><tr><td><strong>d001 + preview</strong></td><td>89.11 MiB</td><td>133.6%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d003</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d005</strong></td><td>87.60 MiB</td><td>131.3%</td><td>0.0816</td><td>0.2310 / 0.3746</td></tr><tr><td><strong>d006</strong></td><td>73.46 MiB</td><td>110.1%</td><td>0.0912</td><td>0.2688 / 0.4368</td></tr><tr><td><strong>d007</strong></td><td>61.58 MiB</td><td>92.3%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d007 + preview</strong></td><td>63.09 MiB</td><td>94.6%</td><td>0.1020</td><td>0.3103 / 0.4980</td></tr><tr><td><strong>d010</strong></td><td>42.46 MiB</td><td>63.6%</td><td>0.1219</td><td>0.3957 / 0.6544</td></tr><tr><td><strong>d022</strong></td><td>21.79 MiB</td><td>32.6%</td><td>0.2065</td><td>0.4931 / 0.8075</td></tr><tr><td><strong>d025</strong></td><td>19.80 MiB</td><td>29.7%</td><td>0.2272</td><td>0.5032 / 0.8176</td></tr></tbody>
+    </table></div>
+    <p class="muted">Color and structure values compare decoded muimg output with the source PS16 DNG in camera-linear sample space. They isolate codec behavior; comparison with the report's post-RawTherapee RAW61 baselines requires the separate rendered pipeline. &quot;Normalized structure error&quot; is high-pass mismatch RMS divided by source high-pass RMS; 0 is exact, and the value describes signal mismatch rather than a percentage of real detail lost.</p>
+    </details>
+    <h3>Application Check</h3>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody><tr><td><strong>Adobe DNG Converter 18.5</strong></td><td class="good">pass</td><td>accepted and rewrote all 16 clean d001 corpus candidates</td></tr><tr><td><strong>RawTherapee 5.12</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: Error loading file</td></tr><tr><td><strong>darktable local build</strong></td><td class="bad">fail</td><td>JPEG XL-compressed DNG: rawspeed reported no RAW chunks</td></tr></tbody></table></div>
+    <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures are specific to decoding JPEG XL-compressed image data inside DNG; other DNG 1.7 features remain outside this application check. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
+    <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
+
+    <span id="public-evidence"></span>
     <h2>Public Reproducibility Check</h2>
     <div class="note">
       <p><strong>What this adds:</strong> the same JPEG XL and post-codec density-inversion stress pipeline was run on six public images: three FADGI/OpenDICE transmissive targets and three Library of Congress photographs. This makes the codec behavior reproducible without publishing the private full-resolution film scans.</p>
@@ -1325,16 +1033,296 @@
     </div>
     <div class="public-figure-grid"><figure class="public-figure"><a href="assets/public-latitude-v2/fadgi-negative35mm2-d005-density-hard-print.png"><img src="assets/public-latitude-v2/fadgi-negative35mm2-d005-density-hard-print.png" alt="FADGI Negative 35mm 2, JXL d=0.05, hard density-inversion stress" loading="lazy"></a><figcaption>FADGI Negative 35mm 2, JXL d=0.05, hard density-inversion stress</figcaption></figure><figure class="public-figure"><a href="assets/public-latitude-v2/fadgi-negative35mm2-d010-density-hard-print.png"><img src="assets/public-latitude-v2/fadgi-negative35mm2-d010-density-hard-print.png" alt="FADGI Negative 35mm 2, JXL d=0.10, hard density-inversion stress" loading="lazy"></a><figcaption>FADGI Negative 35mm 2, JXL d=0.10, hard density-inversion stress</figcaption></figure><figure class="public-figure"><a href="assets/public-latitude-v2/loc-golden-gate-d005-density-hard-print.png"><img src="assets/public-latitude-v2/loc-golden-gate-d005-density-hard-print.png" alt="LOC Golden Gate, JXL d=0.05, hard density-inversion stress" loading="lazy"></a><figcaption>LOC Golden Gate, JXL d=0.05, hard density-inversion stress</figcaption></figure><figure class="public-figure"><a href="assets/public-latitude-v2/loc-golden-gate-d010-density-hard-print.png"><img src="assets/public-latitude-v2/loc-golden-gate-d010-density-hard-print.png" alt="LOC Golden Gate, JXL d=0.10, hard density-inversion stress" loading="lazy"></a><figcaption>LOC Golden Gate, JXL d=0.10, hard density-inversion stress</figcaption></figure><figure class="public-figure"><a href="assets/public-latitude-v2/loc-wildflowers-d005-density-hard-print.png"><img src="assets/public-latitude-v2/loc-wildflowers-d005-density-hard-print.png" alt="LOC wildflowers, JXL d=0.05, hard density-inversion stress" loading="lazy"></a><figcaption>LOC wildflowers, JXL d=0.05, hard density-inversion stress</figcaption></figure><figure class="public-figure"><a href="assets/public-latitude-v2/loc-wildflowers-d010-density-hard-print.png"><img src="assets/public-latitude-v2/loc-wildflowers-d010-density-hard-print.png" alt="LOC wildflowers, JXL d=0.10, hard density-inversion stress" loading="lazy"></a><figcaption>LOC wildflowers, JXL d=0.10, hard density-inversion stress</figcaption></figure></div>
 
-    <h2>FADGI Context</h2>
-    <div class="card">
-      <p>Useful established metrics include CIEDE2000 color accuracy, tone response, white balance error, color-channel misregistration, SFR/sampling efficiency, sharpening, and noise. This project adopts FADGI's separation of color, tone, registration, detail, sharpening, and noise. Star-level conformance remains tied to calibrated target captures and the prescribed assessment workflow.</p>
-      <ul>
-        <li>Official FADGI 2023 guidelines describe the still-image conformance system and its target/software basis.</li>
-        <li>FADGI/related practice commonly uses &Delta;E00 for color accuracy; strict published discussions cite average &Delta;E00 around 2 for highest-level color profiling, while older/practical references often discuss average 3 and maximum 6 as useful limits.</li>
-        <li>NARA permanent-record rules expose related concrete thresholds: average color accuracy &lt;3.5 &Delta;E00, 90th percentile &lt;8.75, color-channel misregistration &lt;0.5 px, sharpening max modulation &lt;1.1, and noise upper limit &lt;2 L* std dev for the listed record category.</li>
-      </ul>
-      <p class="muted">Sources: FADGI Technical Guidelines page, FADGI Resources page, NARA 36 CFR 1236.50, and Heritage Science discussion of FADGI color tolerances.</p>
+    <h2 id="measurement-details">Measurement Details</h2>
+    <p>These tables explain the baseline behind the ratios and the rendering choices that influence it. Use them when a crop looks surprising or a metric disagrees with your visual judgment.</p>
+    <details><summary>Frame baselines and rendering settings</summary>
+    <h2>RAW61 Baseline By Frame</h2>
+    <div class="note">
+      <p><strong>What this table is for:</strong> show the apples-to-oranges part explicitly. RAW61 values are frame baselines: they are expected to repeat across JXL levels and should be reviewed for alignment, acutance, color profile and tone differences.</p>
+      <p><strong>How to read stress color:</strong> RAW61 and PS16 are first registered and rendered through the declared neutral pipeline. The same PS16-derived normalization, logarithmic transmission-to-density conversion, clipping, fixed channel balance and steep contrast curve are then applied to both. Patch means are compared as &Delta;E00. A much larger stress value than normal color means differences that look modest in the negative become prominent after this deliberately severe inversion. Its scope is a reproducible sensitivity test with PS16 as the comparison reference; FilmLab-style rendering and absolute ground truth remain separate questions.</p>
+      <p><strong>Current result:</strong> In the current 15-frame baseline, normal per-frame patch p95 values span 0.73-1.32 DeltaE00; after stress they span 2.25-7.90, with 12 above the project&#x27;s DeltaE00 3 review threshold. The hard inversion therefore amplifies RAW61-versus-PS16 workflow differences. JPEG XL codec loss is measured separately against the PS16 reference.</p>
     </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="RAW61 baseline by frame; scroll horizontally on small screens"><table class="small-table">
+      <thead>
+        <tr>
+          <th><abbr title="Local scan folder / material label.">Scan set</abbr></th>
+          <th><abbr title="Capture set id.">Frame</abbr></th>
+          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 before stress.">RAW61 color</abbr></th>
+          <th><abbr title="RAW61 vs PS16 patch p95 DeltaE00 after hard negative-density transform.">RAW61 stress color</abbr></th>
+          <th><abbr title="RAW61 normalized high-pass error against PS16 after registration: error RMS divided by PS16 high-frequency RMS.">RAW61 structure</abbr></th>
+          <th><abbr title="Worst JXL stress DeltaE00 across levels currently in the matrix.">Worst JXL color</abbr></th>
+          <th><abbr title="Largest normalized JXL high-pass error across levels currently in the matrix.">Worst JXL structure</abbr></th>
+        </tr>
+        <tr class="column-help-row">
+          <th><span class="column-help">Scan collection or material label. Rows with the same name belong to the same film, target, or source batch, but each frame is evaluated separately.</span></th>
+          <th><span class="column-help">Specific frame or capture-set identifier used to join the paired RAW61, PS16 reference, and JXL evidence for this row.</span></th>
+          <th><span class="column-help">95th-percentile patch CIEDE2000 difference for RAW61 versus the PS16 reference before the negative-density stress transform. Lower means the RAW61 render is closer to PS16. JXL codec loss appears in the separate candidate columns.</span></th>
+          <th><span class="column-help">After registration, both RAW61 and PS16 receive the same reference-derived density mapping: normalize transmission, convert with -log(), clip the outer range, apply one fixed channel balance, then a steep contrast curve. We average 256 x 256-pixel patches in linear ProPhoto RGB, convert means to Lab, and report patch p95 DeltaE00. Higher than baseline color means inversion amplifies workflow differences. Codec isolation and film-scanner emulation require their respective separate tests.</span></th>
+          <th><span class="column-help">Normalized high-pass error for RAW61 versus PS16 after registration. Luminance minus a 5 x 5 blur isolates fine variation; difference RMS is divided by PS16 high-pass RMS. 0 is exact and 1 means mismatch RMS equals the reference fine-structure RMS. Capture, demosaic, acutance, noise and residual alignment all contribute; JXL codec loss appears in the separate candidate column.</span></th>
+          <th><span class="column-help">Largest PS16 JXL-versus-PS16 stress DeltaE00 found across the JXL levels currently included for this frame. It identifies the most color-disruptive tested level; lower is better.</span></th>
+          <th><span class="column-help">Largest normalized PS16 JXL-versus-PS16 high-pass error across included JXL levels. 0 is exact; 0.20 means error RMS is 20% of the PS16 fine-structure RMS. It can expose altered grain, edges, or noise; visual crop inspection supplies the information-value judgment.</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+              <td>Adox high-resolution black-and-white test target<br><span class="subtle">Vlad resolution target</span></td>
+              <td><strong>_DSC6577</strong></td>
+              <td>0.92</td>
+              <td class="risk">2.25</td>
+              <td>0.788</td>
+              <td>0.58</td>
+              <td>0.025</td>
+            </tr><tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6938</strong></td>
+              <td>0.86</td>
+              <td class="bad">7.90</td>
+              <td>1.150</td>
+              <td>0.16</td>
+              <td>0.308</td>
+            </tr><tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6959</strong></td>
+              <td>0.84</td>
+              <td class="bad">4.85</td>
+              <td>0.841</td>
+              <td>0.29</td>
+              <td>0.137</td>
+            </tr><tr>
+              <td>fuji_679_f_ii_1983</td>
+              <td><strong>_DSC6980</strong></td>
+              <td>0.85</td>
+              <td class="bad">6.41</td>
+              <td>0.970</td>
+              <td>0.88</td>
+              <td>0.199</td>
+            </tr><tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6735</strong></td>
+              <td>1.32</td>
+              <td class="bad">7.38</td>
+              <td>1.533</td>
+              <td>0.47</td>
+              <td>0.165</td>
+            </tr><tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6756</strong></td>
+              <td>0.91</td>
+              <td class="bad">4.63</td>
+              <td>1.025</td>
+              <td>0.19</td>
+              <td>0.190</td>
+            </tr><tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6793</strong></td>
+              <td>0.81</td>
+              <td class="bad">6.02</td>
+              <td>0.975</td>
+              <td>0.15</td>
+              <td>0.191</td>
+            </tr><tr>
+              <td>Kodak Gold 200-5 1997</td>
+              <td><strong>_DSC6814</strong></td>
+              <td>1.07</td>
+              <td class="risk">2.89</td>
+              <td>0.993</td>
+              <td>0.10</td>
+              <td>0.133</td>
+            </tr><tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6619</strong></td>
+              <td>0.85</td>
+              <td class="bad">5.90</td>
+              <td>1.041</td>
+              <td>0.37</td>
+              <td>0.208</td>
+            </tr><tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6661</strong></td>
+              <td>0.77</td>
+              <td class="bad">4.53</td>
+              <td>1.103</td>
+              <td>0.14</td>
+              <td>0.277</td>
+            </tr><tr>
+              <td>Kodak5035 H190-1983</td>
+              <td><strong>_DSC6682</strong></td>
+              <td>0.99</td>
+              <td class="bad">4.29</td>
+              <td>1.113</td>
+              <td>0.61</td>
+              <td>0.223</td>
+            </tr><tr>
+              <td>konica_vx100_probable_1995</td>
+              <td><strong>_DSC6836</strong></td>
+              <td>0.73</td>
+              <td class="bad">7.23</td>
+              <td>1.151</td>
+              <td>0.55</td>
+              <td>0.365</td>
+            </tr><tr>
+              <td>konica_vx100_probable_1995</td>
+              <td><strong>_DSC6857</strong></td>
+              <td>0.98</td>
+              <td class="bad">4.14</td>
+              <td>1.174</td>
+              <td>0.10</td>
+              <td>0.341</td>
+            </tr><tr>
+              <td>konica_vx100_probable_1995</td>
+              <td><strong>_DSC6879</strong></td>
+              <td>0.94</td>
+              <td class="bad">3.88</td>
+              <td>1.154</td>
+              <td>0.12</td>
+              <td>0.249</td>
+            </tr><tr>
+              <td>konica_vx100_probable_1995</td>
+              <td><strong>_DSC6917</strong></td>
+              <td>1.04</td>
+              <td class="risk">2.67</td>
+              <td>1.222</td>
+              <td>0.07</td>
+              <td>0.210</td>
+            </tr>
+      </tbody>
+    </table></div>
+
+    <h2>Render/Profile Audit</h2>
+    <section class="questions">
+      <div class="card"><h3>Current profile</h3><p><code>profiles\rawtherapee\neutral-render.pp3</code></p><p class="muted">Render index contains 18 RAW61 rows and 19 PS16 rows.</p></div>
+      <div class="card"><h3>Color management</h3><p>Input profile: <code>(camera)</code><br>Working profile: <code>ProPhoto</code><br>Output profile: <code>RTv4_Large</code></p></div>
+      <div class="card"><h3>White balance warning</h3><p>WB enabled: <code>true</code><br>WB setting: <code>Camera</code></p><p class="muted">Camera WB can differ between ARW and PixelShift2DNG metadata, so RAW61 may render less orange even with the same profile file.</p></div>
+      <div class="card"><h3>Detail handling</h3><p>RAW Bayer demosaic: <code>amaze</code><br>Sharpening enabled: <code>false</code></p><p class="muted">Apparent RAW61 sharpness can still come from demosaic/acutance, scaling and local alignment.</p></div>
+    </section>
+
+    </details>
+    <h3>What The Color Bands Mean</h3>
+    <p>CIEDE2000 (&Delta;E00) measures color difference. Here it compares patch averages after a shared stress transform, so a small value can coexist with visible grain changes. The color bands are project review thresholds that prioritize inspection. Acceptability depends on the intended image use.</p>
+    <p>FADGI separates color, tone, resolution and noise. Its star ratings require calibrated targets and the prescribed assessment procedure. The public FADGI/OpenDICE images above provide reproducible codec inputs. This report reports no OpenDICE conformance result.</p>
+    <details><summary>Alternative investigated: Adobe DNG Converter compression</summary>
+    <h2>ADC DNG/JXL</h2>
+    <div class="note">
+      <p><strong>Current conclusion:</strong> Adobe DNG Converter 18.5 can create DNG 1.7 files with internal JPEG XL, and the tested lossless low-level crops were exact. Lossy ADC rewrites the image state and is not usable in the project's reference renderer, so this path is excluded from the core break-even verdict. The active candidate is standalone JXL from a fixed 16-bit PS16 render.</p>
+    </div>
+    <details class="adc-disclosure">
+      <summary>
+        <span>
+          <span class="adc-disclosure-title">Why ADC DNG/JXL Was Excluded</span>
+          <span class="adc-disclosure-subtitle">Nine documented findings covering geometry, sample interpretation, application support, visual validation, and storage.</span>
+        </span>
+        <span class="adc-disclosure-action" aria-hidden="true"></span>
+      </summary>
+      <div class="adc-disclosure-body">
+        <p><strong>How to read the list:</strong> “confirmed” records something observed in the local files or application probe. “Open validation” identifies evidence that would be required before reconsidering this path and sits outside the current work queue.</p>
+        <section class="adc-grid">
+      <div class="adc-item">
+        <h3>Stored image shape <span class="pill risk">Confirmed rewrite</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>In the active PixelShift 16 batches, lossy ADC changed the main raster from <code>19200&times;12752</code> to <code>19120&times;12736</code>. The small earlier smoke-test files showed the same pattern at <code>9600&times;6376</code> to <code>9552&times;6360</code>. Lossless ADC kept the source shape.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy file no longer has the source file's stored pixel grid. This may be a valid flattening of the active area, but direct pixel indexing and geometry metadata from the source are no longer interchangeable.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Compare the same active image area through a crop-aware renderer, confirm that no useful edge pixels or placement information are lost, and keep the source DNG until that result is reproducible.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Crop origin / active placement <span class="pill risk">Confirmed rewrite</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>The active crop origin changed from <code>[8, 8]</code> in the source to <code>[0, 0]</code> in every checked lossy candidate. This is consistent with ADC writing the active area as the new stored raster.</dd>
+          <dt>Actual problem</dt>
+          <dd>The coordinate system changed. Copying the old crop tag back would shift the image or trim a second time; comparing the two rasters without applying their own crop metadata would compare different locations.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Verify placement in at least two independent full DNG render paths and compare registered active areas rather than raw array coordinates.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3><code>WhiteLevel</code> <span class="pill risk">Confirmed rewrite</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Lossy ADC changed all three channel values from <code>14848</code> to <code>65535</code>. Lossless ADC retained <code>14848</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The stored sample domain was rescaled. Restoring the old tag or dividing both files by one assumed scale can produce false tone, clipping, or highlight-recovery differences.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Use each file's declared scale, apply its required opcodes, then test clipping and recoverable latitude through the same trusted renderer. The current low-level normalization supports diagnostic comparison; restoration of the original raw-scale semantics requires the complete render path.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3><code>OpcodeList2</code> <span class="pill risk">Confirmed dependency</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>The checked lossy files added three channel-specific <code>MapPolynomial</code> operations where the source had no <code>OpcodeList2</code>. Applying those maps removed the large false domain mismatch in the first raster comparison.</dd>
+          <dt>Actual problem</dt>
+          <dd>A decoder that extracts the JXL pixels but ignores the DNG opcodes does not recover the intended linear values. Correct rendering now depends on complete support for this processing step.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Confirm the same result in independent DNG renderers and record which archive applications apply the opcode correctly. Copying or deleting the opcode is not a safe repair.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Lossy embedded color path <span class="pill warn">Confirmed sample, limited scope</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Representative main-image tiles from two local files used the JPEG XL XYB path for lossy <code>d=0.05</code>; lossless main-image tiles used the original-profile, non-XYB path. The outer DNG still labels the image <code>LinearRaw</code>.</dd>
+          <dt>Actual problem</dt>
+          <dd>The lossy path preserves the image through a perceptual transform rather than camera-native linear channel samples. Its response may differ under negative inversion, channel balancing, or future extreme edits.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Inspect representative tiles across the corpus and run the actual ADC output through the same post-inversion and grading tests used for the archive decision.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>RawTherapee compatibility <span class="pill bad">Confirmed incompatibility</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>A local RawTherapee 5.12 CLI probe returned <code>Error loading file</code> for both one lossless ADC DNG/JXL and its lossy <code>d=0.05</code> counterpart. The source PixelShift2DNG files are already rendered by the same workflow.</dd>
+          <dt>Actual problem</dt>
+          <dd>The fixed RawTherapee pipeline currently stops at JPEG XL-compressed image data inside DNG 1.7. The embedded JXL pixels decode independently, and the application finding is limited to this raw-loading path.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>A RawTherapee version whose RAW-loading path opens and correctly processes JPEG XL-compressed DNG 1.7, or another trusted renderer that can render both sides with equivalent settings and documented color handling.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Independent full-DNG decode <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>The project can extract main-image JXL tiles, decode matched crop windows, normalize by the declared white level, and apply the observed <code>MapPolynomial</code> opcodes. Lossless crops are exact through that path.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>This custom low-level check covers tile extraction, pixel decoding, and selected metadata. Consistent interpretation of crops, color matrices, opcodes, previews, and metadata still requires an independent full DNG implementation.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Matching color-managed renders from at least one independent DNG/JXL-capable application, followed by an application matrix for the tools expected in the real workflow.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Real edit and visual review <span class="pill unknown">Open validation</span></h3>
+        <dl>
+          <dt>What exists</dt>
+          <dd>Low-level crop metrics already show the expected ordering: lossless is exact, <code>d=0.03</code> is cleaner than <code>d=0.05</code>, and <code>d=0.10</code> develops a much worse error tail after negative-like stress.</dd>
+          <dt>Actual missing evidence</dt>
+          <dd>The missing evidence is a blinded, end-to-end comparison after a real color-managed inversion and grading workflow. That review would test whether low average patch error still permits objectionable grain, texture, or local-density changes.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Registered same-render outputs, clipping and latitude checks, and blinded visual review on representative real negatives.</dd>
+        </dl>
+      </div>
+      <div class="adc-item">
+        <h3>Storage-budget coverage <span class="pill bad">Not reached</span></h3>
+        <dl>
+          <dt>Observed</dt>
+          <dd>Lossless ADC retained roughly <code>85-97%</code> of the source PS16 DNG size in complete local rows. Even the tested lossy <code>d=0.10</code> files were about <code>161-888%</code> of their paired 61 MP raw files.</dd>
+          <dt>Actual problem</dt>
+          <dd>The tested conservative ADC levels reduce PS16 storage substantially but remain larger than the RAW61 budget, leaving the same-storage question open for this path.</dd>
+          <dt>Required before reconsideration</dt>
+          <dd>Generate and validate an ADC distance bracket that actually crosses the paired RAW61 size, or report ADC as a separate larger-budget candidate. The current main break-even result therefore uses standalone JXL from a fixed PS16 render.</dd>
+        </dl>
+      </div>
+        </section>
+      </div>
+    </details>
+
+    </details>
+    <h2>Practical Takeaway</h2>
+    <p>PS16 plus JPEG XL offers a useful storage tradeoff in the material tested. Use the rendered table to find settings near your budget, then inspect matching crops and stress views. Finer sampling can survive substantial compression; acceptable grain and color changes remain a visual decision.</p>
+    <p>For a roughly 200 MiB DNG budget, muimg d001 deserves attention: the tested files fit comfortably and passed the documented technical checks. Retain conversion settings, hashes, metadata audits and decode results. Before removing sources, verify two independent copies, a working recovery path and the candidate's appearance through your intended rendering and inversion workflow.</p>
   </main>
 </body>
 </html>
