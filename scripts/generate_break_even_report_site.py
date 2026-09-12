@@ -1048,7 +1048,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     </aside>
     <section class="crop-stage">
       <div class="crop-toolbar">
-        <div>
+        <div class="crop-toolbar-copy">
           <h3 id="cropViewerTitle">Crop Review</h3>
           <p id="cropViewerMeta"></p>
         </div>
@@ -1925,7 +1925,7 @@ def render_html(
     .crop-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
     .crop-toolbar {{
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
       min-width: 0;
@@ -1933,9 +1933,28 @@ def render_html(
       border-bottom: 1px solid #2b333b;
       background: #15191e;
     }}
-    .crop-toolbar h3 {{ margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }}
-    .crop-toolbar p {{ margin: 0; color: #a6b0ba; font-size: 12px; }}
-    .crop-actions {{ display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }}
+    .crop-toolbar-copy {{ min-width: 0; flex: 1 1 auto; }}
+    .crop-toolbar h3 {{
+      height: calc(1.45em * 2);
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #f4f7fa;
+      font-size: 18px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }}
+    .crop-toolbar p {{
+      height: calc(1.45em * 7);
+      margin: 0;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      color: #a6b0ba;
+      font-size: 12px;
+    }}
+    .crop-actions {{ width: 240px; flex: 0 0 auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }}
+    .crop-mode-label {{ display: block; width: 100%; }}
+    .crop-mode-label select {{ display: block; width: 100%; min-width: 0; margin-top: 3px; }}
     .crop-mode-label[data-navigation-active="true"] {{ outline: 2px solid #7dd3fc; outline-offset: 3px; border-radius: 4px; }}
     .crop-actions button {{
       border: 1px solid #3e4a56;
@@ -1964,6 +1983,7 @@ def render_html(
     @media (max-width: 1150px) {{
       .crop-toolbar {{ align-items: flex-start; flex-direction: column; }}
       .crop-actions {{ width: 100%; justify-content: flex-start; }}
+      .crop-toolbar p {{ height: calc(1.45em * 5); }}
     }}
     @media (max-width: 900px) {{
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid {{ grid-template-columns: 1fr; }}
@@ -1995,6 +2015,7 @@ def render_html(
       .crop-choice {{ flex: 0 0 min(68vw, 240px); padding: 7px 9px; }}
       .crop-toolbar {{ padding: 10px; }}
       .crop-toolbar p {{
+        height: calc(1.45em * 4);
         display: -webkit-box;
         overflow: hidden;
         -webkit-box-orient: vertical;
