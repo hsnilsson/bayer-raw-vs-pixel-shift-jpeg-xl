@@ -138,19 +138,19 @@
       height: clamp(560px, 72vh, 760px);
       margin-top: 14px;
       overflow: hidden;
-      border: 1px solid #2b333b;
+      border: 1px solid #c4ccd4;
       border-radius: 10px;
-      background: #0f1215;
-      color: #f4f7fa;
+      background: #3f454b;
+      color: #1d2329;
     }
     .crop-sidebar {
       overflow: auto;
-      border-color: #2b333b;
-      background: #171b20;
+      border-color: #c4ccd4;
+      background: #eef2f5;
       padding: 12px;
     }
-    .crop-sidebar-left { border-right: 1px solid #2b333b; }
-    .crop-sidebar-right { border-left: 1px solid #2b333b; }
+    .crop-sidebar-left { border-right: 1px solid #c4ccd4; }
+    .crop-sidebar-right { border-left: 1px solid #c4ccd4; }
     .crop-sidebar-header {
       position: sticky;
       top: 0;
@@ -159,10 +159,10 @@
       justify-content: space-between;
       gap: 10px;
       padding: 0 0 10px;
-      background: #171b20;
-      color: #f4f7fa;
+      background: #eef2f5;
+      color: #1d2329;
     }
-    .crop-sidebar-header span { color: #a6b0ba; }
+    .crop-sidebar-header span { color: #5f6b76; }
     .crop-choice-list { display: grid; gap: 8px; }
     .crop-choice {
       width: 100%;
@@ -170,17 +170,17 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 3px;
-      border: 1px solid #333d47;
+      border: 1px solid #c4ccd4;
       border-radius: 8px;
-      background: #20262d;
-      color: #f4f7fa;
+      background: #fff;
+      color: #1d2329;
       padding: 9px 10px;
       text-align: left;
       cursor: pointer;
     }
-    .crop-choice:hover, .crop-choice[aria-pressed="true"] { border-color: #7dd3fc; background: #0c4a6e; }
-    .crop-choice span { color: #a6b0ba; font-size: 12px; }
-    .crop-choice[aria-pressed="true"] span { color: #d8eefc; }
+    .crop-choice:hover, .crop-choice[aria-pressed="true"] { border-color: #0284c7; background: #e0f2fe; color: #0c4a6e; }
+    .crop-choice span { color: #5f6b76; font-size: 12px; }
+    .crop-choice[aria-pressed="true"] span { color: #075985; }
     .crop-stage { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
     .crop-toolbar {
       display: flex;
@@ -189,34 +189,34 @@
       gap: 12px;
       min-width: 0;
       padding: 12px 14px;
-      border-bottom: 1px solid #2b333b;
-      background: #15191e;
+      border-bottom: 1px solid #c4ccd4;
+      background: #f7f9fa;
     }
-    .crop-toolbar h3 { margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }
-    .crop-toolbar p { margin: 0; color: #a6b0ba; font-size: 12px; }
+    .crop-toolbar h3 { margin: 0 0 3px; color: #1d2329; font-size: 18px; }
+    .crop-toolbar p { margin: 0; color: #5f6b76; font-size: 12px; }
     .crop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
     .crop-actions button {
-      border: 1px solid #3e4a56;
+      border: 1px solid #aab4be;
       border-radius: 8px;
-      background: #20262d;
-      color: #f4f7fa;
+      background: #fff;
+      color: #1d2329;
       padding: 7px 10px;
       cursor: pointer;
     }
     #cropOverlayToggle { min-width: 116px; text-align: center; }
     #cropFullscreen { min-width: 116px; text-align: center; }
-    .crop-actions button[aria-pressed="true"] { background: #075985; border-color: #7dd3fc; }
+    .crop-actions button[aria-pressed="true"] { background: #075985; border-color: #0369a1; color: #fff; }
     #cropCanvas {
       display: block;
       width: 100%;
       height: 100%;
       min-height: 0;
-      background: #101316;
+      background: #3f454b;
       cursor: grab;
       touch-action: none;
     }
     #cropCanvas.dragging { cursor: grabbing; }
-    .crop-status { min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }
+    .crop-status { min-height: 28px; padding: 6px 14px; color: #5f6b76; background: #f7f9fa; }
     .crop-workspace:fullscreen { width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }
     ul { margin-top: 8px; }
     @media (max-width: 1150px) {
@@ -231,8 +231,8 @@
       .review-heading { align-items: flex-start; flex-direction: column; }
       .crop-workspace { height: auto; grid-template-columns: 1fr; grid-template-rows: auto minmax(58vh, 620px) auto; }
       .crop-sidebar { max-height: 220px; }
-      .crop-sidebar-left, .crop-sidebar-right { border: 0; border-bottom: 1px solid #2b333b; }
-      .crop-sidebar-right { border-top: 1px solid #2b333b; }
+      .crop-sidebar-left, .crop-sidebar-right { border: 0; border-bottom: 1px solid #c4ccd4; }
+      .crop-sidebar-right { border-top: 1px solid #c4ccd4; }
     }
     @media (max-width: 700px) {
       header, main { padding: 12px; }
@@ -247,18 +247,24 @@
       }
       .table-scroll thead th:first-child { z-index: 4; background: #f0f2f4; }
       .table-scroll .column-help-row th:first-child { background: #f8fafc; }
-      .crop-workspace { grid-template-rows: auto minmax(68vh, 600px) auto; border-radius: 8px; }
-      .crop-sidebar { max-height: 178px; padding: 10px; }
+      .crop-workspace { grid-template-rows: auto minmax(62vh, 540px) auto; border-radius: 8px; }
+      .crop-sidebar { max-height: 142px; padding: 10px; }
       .crop-choice-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 3px; }
-      .crop-choice { flex: 0 0 min(76vw, 260px); }
+      .crop-choice { flex: 0 0 min(68vw, 240px); padding: 7px 9px; }
       .crop-toolbar { padding: 10px; }
+      .crop-toolbar p {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+      }
       .crop-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
       .crop-mode-label { grid-column: 1 / -1; width: 100%; }
       .crop-mode-label select { display: block; width: 100%; min-width: 0; margin-top: 3px; }
       .crop-actions button { min-width: 0; padding: 8px 5px; white-space: nowrap; }
       #cropOverlayToggle, #cropFullscreen { min-width: 0; grid-column: span 2; }
       #cropReset { grid-column: span 2; }
-      #cropCanvas { min-height: 420px; }
+      #cropCanvas { min-height: 360px; }
       .crop-workspace:fullscreen { overflow-y: auto; grid-template-rows: auto minmax(58vh, 1fr) auto; }
     }
   </style>
@@ -711,7 +717,7 @@
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#101316";
+      ctx.fillStyle = "#3f454b";
       ctx.fillRect(0, 0, width, height);
       const half = width / 2;
       drawOverview(state.referenceOverviewImage, 0, half, height);
@@ -856,7 +862,7 @@
       const tailSummary = Number.isFinite(referenceValue) && Number.isFinite(candidateValue)
         ? `Tail occupancy: RAW61 ${referenceValue.toFixed(2)}% vs ${candidate.label} ${candidateValue.toFixed(2)}% ${tailField[1]}. Counts alone are not latitude; compare coherent scene structure.`
         : "";
-      const notes = [mode.description || "", tailSummary].filter(Boolean).join(" ");
+      const notes = [tailSummary, mode.description || ""].filter(Boolean).join(" ");
       meta.textContent = `${parts.join(" | ")}${notes ? ` - ${notes}` : ""}`;
     }
 
