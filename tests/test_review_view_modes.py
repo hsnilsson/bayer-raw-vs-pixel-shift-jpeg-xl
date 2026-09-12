@@ -14,6 +14,13 @@ from run_public_latitude_stress import build_transforms, estimate_linear_exposur
 
 
 class ReviewViewModesTests(unittest.TestCase):
+    def test_big_endian_16bit_input_keeps_its_full_sample_range(self) -> None:
+        reference = np.array([[[0, 32768, 65535]]], dtype=">u2")
+
+        identity = build_transforms(reference)[0].apply(reference)
+
+        self.assertTrue(np.allclose(identity, [[[0.0, 32768 / 65535, 1.0]]]))
+
     def test_extreme_edit_modes_are_available_and_preserve_array_shape(self) -> None:
         gradient = np.linspace(0, 65535, 48, dtype=np.uint16)
         reference = np.stack(

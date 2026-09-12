@@ -42,12 +42,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.078x (+0.11 EV), fitted outside the tested tails."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.075x (+0.10 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.078x (+0.11 EV), fitted outside the tested tails."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.075x (+0.10 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -291,11 +291,11 @@
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 21688,
-      "mtime_ns": 1789246334771311300
+      "size": 21723,
+      "mtime_ns": 1789255615815213800
     }
   },
-  "build_fingerprint": "b43773350969fbe0a627cb026c69f37d3896ec46f9523f9f40f502f814e9ca32",
+  "build_fingerprint": "6b970f69182ff2aa65a0f9758985cafe76de95f91acab5901ff458b15e1e5902",
   "crop": [
     12458,
     6098,
@@ -303,9 +303,9 @@
     768
   ],
   "local_raw61_alignment": {
-    "shift_x_px": -4.0,
+    "shift_x_px": -5.0,
     "shift_y_px": -3.0,
-    "confidence": 86.87387569041137,
+    "confidence": 76.9060753439239,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -320,9 +320,9 @@
     "process_mode": "B&W Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
     "raw61_alignment": {
-      "shift_x_px": -4.0,
+      "shift_x_px": -5.0,
       "shift_y_px": -3.0,
-      "confidence": 86.87387569041137,
+      "confidence": 76.9060753439239,
       "applied": true
     },
     "settings": {
@@ -346,7 +346,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/adox_vlad_resolution_target/_DSC6577/raw61_registered_to_ps16.tif",
-        "sha256": "70d85b138c312d082de5d81b905a59b09dc2078407af6015a32880c6c6dd0a95"
+        "sha256": "f60d6f920dc5a1fe10ec6275209534a620622a486224c4232b62359fecc3bcbd"
       },
       {
         "key": "jxl_d003",
@@ -589,19 +589,19 @@
       "raw61": {
         "source_negpy_file": "raw61_negpy_extreme_inversion.png",
         "statistics": {
-          "below_reference_shadow_cutoff_percent": 28.95897759331597,
-          "above_reference_highlight_cutoff_percent": 2.929857042100694,
+          "below_reference_shadow_cutoff_percent": 28.95541720920139,
+          "above_reference_highlight_cutoff_percent": 3.014119466145833,
           "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.909423828125
+          "all_channels_max_percent": 1.03912353515625
         },
         "outputs": {
           "negpy_deep_shadow_tail": {
             "file": "raw61_negpy_deep_shadow_tail.png",
-            "sha256": "d8074b0dd50f25aed6e9323ba3f55c0854acde404c6bdadbe76d8a66a390eb50"
+            "sha256": "bec4dfbb41e997ce36d74d2392b8d8ee4056ae7d5dd966ad73edc852236a78e7"
           },
           "negpy_bright_highlight_tail": {
             "file": "raw61_negpy_bright_highlight_tail.png",
-            "sha256": "8c12f3c4d64e28da4bb494f22a20a4bc249b2e6ad54f1ab5f1bf7eb813ad74dc"
+            "sha256": "b96530b9fd0e9f0fbac3f8190bec8b565489f3bb244947e01b5a3fe9c17fb8a3"
           }
         }
       },
@@ -799,8 +799,8 @@
   },
   "raw61_exposure_match": {
     "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
-    "linear_gain": 1.078165888786316,
-    "stops": 0.10857917114862788,
+    "linear_gain": 1.0754187107086182,
+    "stops": 0.10489847772258426,
     "applied_to_modes": [
       "shadow_recovery_luma_p12",
       "highlight_separation_luma_p88_p998"

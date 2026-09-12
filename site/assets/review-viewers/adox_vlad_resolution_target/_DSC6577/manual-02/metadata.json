@@ -42,12 +42,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.067x (+0.09 EV), fitted outside the tested tails."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.068x (+0.09 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.067x (+0.09 EV), fitted outside the tested tails."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.068x (+0.09 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -291,11 +291,11 @@
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 21688,
-      "mtime_ns": 1789246334771311300
+      "size": 21723,
+      "mtime_ns": 1789255615815213800
     }
   },
-  "build_fingerprint": "d8dfb4216cdd0957130d2531fcbdb8387e4a81d2b109e2e81e0d322494760661",
+  "build_fingerprint": "611764f1590feace07839c07bc9bd921f3b12cb981299ba6ad9d10721ae61f05",
   "crop": [
     13458,
     2273,
@@ -305,7 +305,7 @@
   "local_raw61_alignment": {
     "shift_x_px": -6.0,
     "shift_y_px": 3.0,
-    "confidence": 152.73016773478224,
+    "confidence": 138.33032683449468,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -322,7 +322,7 @@
     "raw61_alignment": {
       "shift_x_px": -6.0,
       "shift_y_px": 3.0,
-      "confidence": 152.73016773478224,
+      "confidence": 138.33032683449468,
       "applied": true
     },
     "settings": {
@@ -799,8 +799,8 @@
   },
   "raw61_exposure_match": {
     "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
-    "linear_gain": 1.0672980546951294,
-    "stops": 0.09396312085174173,
+    "linear_gain": 1.0675588846206665,
+    "stops": 0.09431564849425511,
     "applied_to_modes": [
       "shadow_recovery_luma_p12",
       "highlight_separation_luma_p88_p998"

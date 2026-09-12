@@ -291,11 +291,11 @@
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 21688,
-      "mtime_ns": 1789246334771311300
+      "size": 21723,
+      "mtime_ns": 1789255615815213800
     }
   },
-  "build_fingerprint": "87d8bfa8bd62578f82eae9051375ab4c008f2adb8395a50c64460f8699e193ec",
+  "build_fingerprint": "8dc4be7a2b1bf8fdb893800cdad78495d069861440dba0831b38a44f50e09c00",
   "crop": [
     15095,
     6247,
@@ -305,7 +305,7 @@
   "local_raw61_alignment": {
     "shift_x_px": -9.0,
     "shift_y_px": -3.0,
-    "confidence": 45.18239349295259,
+    "confidence": 38.41923333562122,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -322,7 +322,7 @@
     "raw61_alignment": {
       "shift_x_px": -9.0,
       "shift_y_px": -3.0,
-      "confidence": 45.18239349295259,
+      "confidence": 38.41923333562122,
       "applied": true
     },
     "settings": {
@@ -799,8 +799,8 @@
   },
   "raw61_exposure_match": {
     "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
-    "linear_gain": 1.066139578819275,
-    "stops": 0.09239632786084453,
+    "linear_gain": 1.0659502744674683,
+    "stops": 0.09214013936122122,
     "applied_to_modes": [
       "shadow_recovery_luma_p12",
       "highlight_separation_luma_p88_p998"

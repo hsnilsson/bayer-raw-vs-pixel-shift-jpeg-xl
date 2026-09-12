@@ -246,11 +246,11 @@
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 21688,
-      "mtime_ns": 1789246334771311300
+      "size": 21723,
+      "mtime_ns": 1789255615815213800
     }
   },
-  "build_fingerprint": "923c589dc1cc05e249bc25c9977f745e8f6e0ca1e4f45d0b1944d65ed74f992a",
+  "build_fingerprint": "1650b084bc34c51d91a2400389611c8d885ac7e1c7223bc31ae78af416053504",
   "crop": [
     12331,
     3675,
