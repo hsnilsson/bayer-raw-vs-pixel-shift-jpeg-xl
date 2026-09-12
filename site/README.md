@@ -33,6 +33,11 @@ python scripts\make_break_even_review_viewers.py `
   --level d200
 ```
 
+To add the real NegPy-based extreme inversion to those same crops, follow
+[`docs/negpy-extreme-inversions.md`](../docs/negpy-extreme-inversions.md). Run
+that generator after the normal review-viewer command and before rebuilding the
+report site.
+
 The viewer supports side-by-side viewing, a candidate-on-reference overlay
 toggle, zoom, and pan. It always includes the PS16 reference as the lossless
 baseline, and `d200` is included only as a deliberately heavy-compression visual
