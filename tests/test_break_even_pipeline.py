@@ -698,6 +698,14 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 "overview_raw61.png",
                 "overview_jxl_d020.png",
                 "overview_jxl_d200.png",
+                "reference_inverted.png",
+                "raw61_inverted.png",
+                "jxl_d020_inverted.png",
+                "jxl_d200_inverted.png",
+                "overview_reference_inverted.png",
+                "overview_raw61_inverted.png",
+                "overview_jxl_d020_inverted.png",
+                "overview_jxl_d200_inverted.png",
             ]:
                 write_png(viewer_dir / name, textured_rgb(12, 12))
             (viewer_dir / "metadata.json").write_text(
@@ -713,6 +721,43 @@ class BreakEvenPipelineTests(unittest.TestCase):
                     "raw61": "overview_raw61.png",
                     "jxl_d020": "overview_jxl_d020.png",
                     "jxl_d200": "overview_jxl_d200.png"
+                  },
+                  "overviews_by_transform": {
+                    "identity": {
+                      "reference": "overview_reference.png",
+                      "ps16_lossless": "overview_reference.png",
+                      "raw61": "overview_raw61.png",
+                      "jxl_d020": "overview_jxl_d020.png",
+                      "jxl_d200": "overview_jxl_d200.png"
+                    },
+                    "inverted": {
+                      "reference": "overview_reference_inverted.png",
+                      "ps16_lossless": "overview_reference_inverted.png",
+                      "raw61": "overview_raw61_inverted.png",
+                      "jxl_d020": "overview_jxl_d020_inverted.png",
+                      "jxl_d200": "overview_jxl_d200_inverted.png"
+                    }
+                  },
+                  "default_transform": "identity",
+                  "view_modes": [
+                    {"key": "identity", "label": "Normal", "description": "Normal"},
+                    {"key": "inverted", "label": "Inverted", "description": "Inverted"}
+                  ],
+                  "images_by_transform": {
+                    "identity": {
+                      "reference": "reference.png",
+                      "ps16_lossless": "reference.png",
+                      "raw61": "raw61.png",
+                      "jxl_d020": "jxl_d020.png",
+                      "jxl_d200": "jxl_d200.png"
+                    },
+                    "inverted": {
+                      "reference": "reference_inverted.png",
+                      "ps16_lossless": "reference_inverted.png",
+                      "raw61": "raw61_inverted.png",
+                      "jxl_d020": "jxl_d020_inverted.png",
+                      "jxl_d200": "jxl_d200_inverted.png"
+                    }
                   },
                   "scan_set": "Synthetic Scan",
                   "set_id": "frame001",
@@ -764,6 +809,18 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"storageKind": "encoded JXL"', html)
             self.assertIn('"referenceOverview": "assets/review-viewers/synthetic_scan/frame001/overview_raw61.png"', html)
             self.assertIn('"overview": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png"', html)
+            self.assertIn(
+                '"referenceOverviews": {"identity": "assets/review-viewers/synthetic_scan/frame001/overview_raw61.png", "inverted": "assets/review-viewers/synthetic_scan/frame001/overview_raw61_inverted.png"}',
+                html,
+            )
+            self.assertIn(
+                '"overviews": {"identity": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png", "inverted": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200_inverted.png"}',
+                html,
+            )
+            self.assertIn("function referenceOverviewSource(viewer)", html)
+            self.assertIn("function candidateOverviewSource(candidate)", html)
+            self.assertIn("referenceOverview ? loadImage(referenceOverview)", html)
+            self.assertIn("candidateOverview ? loadImage(candidateOverview)", html)
             self.assertIn("drawOverview(state.referenceOverviewImage", html)
             self.assertIn('`${candidate.label} over RAW61`', html)
             self.assertIn('currentViewer().referenceLabel || "RAW61 local aligned"', html)

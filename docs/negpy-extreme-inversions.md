@@ -54,19 +54,18 @@ wsl -d NegPy-Ubuntu -u negpy -- bash -lc '\
 The generator refuses a dirty NegPy worktree or a revision mismatch. It maps
 the large uncompressed TIFF sources instead of loading them into memory. JPEG XL
 is decoded one file at a time to a temporary PPM, which is also mapped; only each
-small crop enters NegPy. The tail diagnostics are derived from the resulting
-16-bit sRGB PNGs without reducing them to 8-bit first. The existing images and
-transform modes are not overwritten. Generation details and hashes are
-recorded in every viewer's `metadata.json`.
+small crop enters NegPy. The existing images and transform modes are not
+overwritten. Generation details and hashes are recorded in every viewer's
+`metadata.json`.
 
-If the NegPy PNGs already exist and only the two derived tail views need to be
-created or refreshed, the expensive inversion pass can be skipped:
+Once the NegPy crop renderings are present, create the dropdown-aware
+360-pixel context previews from the completed crop pairs:
 
 ```powershell
-wsl -d NegPy-Ubuntu -u negpy -- bash -lc '\
-  /opt/negpy-tools/bin/uv run --no-sync \
-  --directory /home/negpy/pr-update-0909 \
-  python /mnt/c/a/GitHub/jpegxl-vs-dngpixelshift/scripts/make_negpy_extreme_inversions.py \
-  --viewers /mnt/c/a/GitHub/jpegxl-vs-dngpixelshift/site/assets/review-viewers \
-  --tail-only'
+python scripts\make_mode_specific_overviews.py `
+  --viewers site\assets\review-viewers
 ```
+
+The NegPy preview is calibrated from the real NegPy result for the same layer.
+It is stored as a compact 8-bit navigation image; the 16-bit 768-pixel crop
+remains the source for visual inspection.
