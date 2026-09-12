@@ -57,6 +57,16 @@
       "key": "negpy_extreme_inversion",
       "label": "NegPy extreme inversion",
       "description": "Runs the real NegPy C-41 or B&W print pipeline on a 16-bit working crop. Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual density/grade make this a deliberately hard edit-resilience check."
+    },
+    {
+      "key": "negpy_deep_shadow_tail",
+      "label": "NegPy deepest-shadow tail",
+      "description": "Isolates the darkest 1% of the PS16-locked NegPy result on black and amplifies its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for every layer. This reveals spatial tail differences, not capture latitude."
+    },
+    {
+      "key": "negpy_bright_highlight_tail",
+      "label": "NegPy brightest-highlight tail",
+      "description": "Isolates the brightest 1% of the PS16-locked NegPy result on black and amplifies its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for every layer. This reveals spatial tail differences, not capture latitude."
     }
   ],
   "images_by_transform": {
@@ -131,6 +141,30 @@
       "jxl_d030": "jxl_d030_negpy_extreme_inversion.png",
       "jxl_d100": "jxl_d100_negpy_extreme_inversion.png",
       "jxl_d200": "jxl_d200_negpy_extreme_inversion.png"
+    },
+    "negpy_deep_shadow_tail": {
+      "reference": "reference_negpy_deep_shadow_tail.png",
+      "ps16_lossless": "reference_negpy_deep_shadow_tail.png",
+      "raw61": "raw61_negpy_deep_shadow_tail.png",
+      "jxl_d020": "jxl_d020_negpy_deep_shadow_tail.png",
+      "jxl_d022": "jxl_d022_negpy_deep_shadow_tail.png",
+      "jxl_d025": "jxl_d025_negpy_deep_shadow_tail.png",
+      "jxl_d028": "jxl_d028_negpy_deep_shadow_tail.png",
+      "jxl_d030": "jxl_d030_negpy_deep_shadow_tail.png",
+      "jxl_d100": "jxl_d100_negpy_deep_shadow_tail.png",
+      "jxl_d200": "jxl_d200_negpy_deep_shadow_tail.png"
+    },
+    "negpy_bright_highlight_tail": {
+      "reference": "reference_negpy_bright_highlight_tail.png",
+      "ps16_lossless": "reference_negpy_bright_highlight_tail.png",
+      "raw61": "raw61_negpy_bright_highlight_tail.png",
+      "jxl_d020": "jxl_d020_negpy_bright_highlight_tail.png",
+      "jxl_d022": "jxl_d022_negpy_bright_highlight_tail.png",
+      "jxl_d025": "jxl_d025_negpy_bright_highlight_tail.png",
+      "jxl_d028": "jxl_d028_negpy_bright_highlight_tail.png",
+      "jxl_d030": "jxl_d030_negpy_bright_highlight_tail.png",
+      "jxl_d100": "jxl_d100_negpy_bright_highlight_tail.png",
+      "jxl_d200": "jxl_d200_negpy_bright_highlight_tail.png"
     }
   },
   "build_inputs": {
@@ -300,5 +334,218 @@
         "sha256": "50a78e6993b1b16c9f6a4c6ae2fadd4eee510af123015443657766235930649b"
       }
     ]
+  },
+  "negpy_tail_diagnostics": {
+    "generator": "scripts/make_negpy_extreme_inversions.py",
+    "source_mode": "negpy_extreme_inversion",
+    "normalization": "PS16 reference tail bounds locked across RAW61 and JXL candidates",
+    "luminance": "linear-light sRGB with Rec.709 coefficients",
+    "percentiles": {
+      "deep_shadow_inner": 0.05,
+      "deep_shadow_cutoff": 1.0,
+      "bright_highlight_cutoff": 99.0,
+      "bright_highlight_inner": 99.95
+    },
+    "reference_linear_luminance_bounds": {
+      "shadow_inner": 0.04199968056194484,
+      "shadow_cutoff": 0.07428428821265698,
+      "highlight_cutoff": 0.7299184733629227,
+      "highlight_inner": 0.8387215754687787
+    },
+    "rendering": "Selected tail pixels are shown on black; brightness is distance into the tail and hue is linear-RGB chromaticity normalized to its strongest channel. Exact neutral black is marked white.",
+    "interpretation": "A post-inversion spatial tail diagnostic. Pixel occupancy is not a capture-latitude measurement; noise, clipping, rendering, resampling, and registration can all change it.",
+    "output": "16-bit sRGB PNG",
+    "layers": {
+      "reference": {
+        "source_negpy_file": "reference_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 1.000128851996528,
+          "above_reference_highlight_cutoff_percent": 1.000128851996528,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "reference_negpy_deep_shadow_tail.png",
+            "sha256": "efa4a78b3cd80b737e7eaca667def14e3f38a92926c42fe0b997d39441e83d23"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "reference_negpy_bright_highlight_tail.png",
+            "sha256": "d65fd1357913df3ce23d42ee7cb37e18d2c4344cb87b1a1a213496487f57a2ce"
+          }
+        }
+      },
+      "ps16_lossless": {
+        "source_negpy_file": "reference_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 1.000128851996528,
+          "above_reference_highlight_cutoff_percent": 1.000128851996528,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "reference_negpy_deep_shadow_tail.png",
+            "sha256": "efa4a78b3cd80b737e7eaca667def14e3f38a92926c42fe0b997d39441e83d23"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "reference_negpy_bright_highlight_tail.png",
+            "sha256": "d65fd1357913df3ce23d42ee7cb37e18d2c4344cb87b1a1a213496487f57a2ce"
+          }
+        }
+      },
+      "raw61": {
+        "source_negpy_file": "raw61_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 0.0,
+          "above_reference_highlight_cutoff_percent": 100.0,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.3928290473090278
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "raw61_negpy_deep_shadow_tail.png",
+            "sha256": "5683bab779f439bd8dc3ddfb015a7d4b930bde64ebec1da3f471f67f39752f14"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "raw61_negpy_bright_highlight_tail.png",
+            "sha256": "cfe2d84fc49c45cf8158b0cf03f7bfa18a89c033ec72d2e41f85f3ea5511e1b7"
+          }
+        }
+      },
+      "jxl_d020": {
+        "source_negpy_file": "jxl_d020_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 9.815300835503473,
+          "above_reference_highlight_cutoff_percent": 0.5742390950520833,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d020_negpy_deep_shadow_tail.png",
+            "sha256": "79d2f5df1eabeb0e836377724dc77df9566b132258e0751098fffa2a47216fa9"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d020_negpy_bright_highlight_tail.png",
+            "sha256": "0756aa66e05b99c9d27155aa501366f556bdf4643a12d7146b783261da7e281b"
+          }
+        }
+      },
+      "jxl_d022": {
+        "source_negpy_file": "jxl_d022_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 9.47146945529514,
+          "above_reference_highlight_cutoff_percent": 0.4423353407118056,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d022_negpy_deep_shadow_tail.png",
+            "sha256": "feea14f75ff1b50bb0b22b243e47780619d5e56095afaab68bc49a364adb8f51"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d022_negpy_bright_highlight_tail.png",
+            "sha256": "f84802f38287432013a488d752ab2601990d28f124465e9948647ffef9745fa7"
+          }
+        }
+      },
+      "jxl_d025": {
+        "source_negpy_file": "jxl_d025_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 9.119500054253473,
+          "above_reference_highlight_cutoff_percent": 0.2865261501736111,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d025_negpy_deep_shadow_tail.png",
+            "sha256": "b80a0df7c2ca8dd65c5cf49d0a51dcefa8a71d7aae4932749fd41a7f82478287"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d025_negpy_bright_highlight_tail.png",
+            "sha256": "6159893577d6c75e248d7c52658b03519ae7a3d5bc71dd13c9d1c46718a87404"
+          }
+        }
+      },
+      "jxl_d028": {
+        "source_negpy_file": "jxl_d028_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 8.712259928385418,
+          "above_reference_highlight_cutoff_percent": 0.20311143663194445,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d028_negpy_deep_shadow_tail.png",
+            "sha256": "d4015f0c36580b2c4b4c1b0a3ec63868e8526e0b04e3209c24728262b77f277a"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d028_negpy_bright_highlight_tail.png",
+            "sha256": "68b95fe6b8a95226b5234be59fb8d67aa875e70219f9642a293996deab03d940"
+          }
+        }
+      },
+      "jxl_d030": {
+        "source_negpy_file": "jxl_d030_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 8.51016574435764,
+          "above_reference_highlight_cutoff_percent": 0.16733805338541669,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d030_negpy_deep_shadow_tail.png",
+            "sha256": "d3136954e8f7301ca5b8ff722a636f5afe87cc671f886813cd0c0e916282bc93"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d030_negpy_bright_highlight_tail.png",
+            "sha256": "12960f45560aa4f7ae73d1c10f406acbbbe6461c57a2bc5e3cb0baabe3c840bd"
+          }
+        }
+      },
+      "jxl_d100": {
+        "source_negpy_file": "jxl_d100_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 4.601881239149305,
+          "above_reference_highlight_cutoff_percent": 0.0,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d100_negpy_deep_shadow_tail.png",
+            "sha256": "4059672873a5044f78797111eff2b116abc46121091e1ffbf9248b63bc43949d"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d100_negpy_bright_highlight_tail.png",
+            "sha256": "5683bab779f439bd8dc3ddfb015a7d4b930bde64ebec1da3f471f67f39752f14"
+          }
+        }
+      },
+      "jxl_d200": {
+        "source_negpy_file": "jxl_d200_negpy_extreme_inversion.png",
+        "statistics": {
+          "below_reference_shadow_cutoff_percent": 0.8802625868055556,
+          "above_reference_highlight_cutoff_percent": 0.0,
+          "all_channels_zero_percent": 0.0,
+          "all_channels_max_percent": 0.0
+        },
+        "outputs": {
+          "negpy_deep_shadow_tail": {
+            "file": "jxl_d200_negpy_deep_shadow_tail.png",
+            "sha256": "894a7dd915379e946b9babcc5aae5945c726d0e0051d0cbd27a819dc0267b3c0"
+          },
+          "negpy_bright_highlight_tail": {
+            "file": "jxl_d200_negpy_bright_highlight_tail.png",
+            "sha256": "5683bab779f439bd8dc3ddfb015a7d4b930bde64ebec1da3f471f67f39752f14"
+          }
+        }
+      }
+    }
   }
 }
