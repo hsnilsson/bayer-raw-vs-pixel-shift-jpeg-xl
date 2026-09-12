@@ -30,14 +30,17 @@ its actual occupancy is recorded. Brightness shows how far a pixel lies inside
 the selected tail; hue shows amplified linear-RGB chromaticity. Exact neutral
 black is marked white.
 
-These views answer a narrow question: **where do the compared post-inversion
-images place spatially coherent color or structure in their extreme output
-tails?** They do not measure capture latitude. A larger number of marked pixels
+These views are a **post-inversion latitude proxy**. They answer a narrow
+question: **where do the compared images place spatially coherent color or
+structure in their extreme output tails after the same inversion?** The report
+shows RAW61 and candidate occupancy against the same PS16-derived threshold.
+They do not measure absolute capture latitude. A larger number of marked pixels
 can also come from a tone or color offset, clipping, noise, demosaicing,
 resampling, or imperfect registration. Judge coherent detail that appears in
-the same scene location, not pixel count alone. The metadata records the shared
-bounds, per-layer tail occupancy, exact black/white occupancy, and output hashes
-so the comparison can be audited.
+the same scene location, not pixel count alone. An absolute latitude claim
+would need matched exposure brackets or an independent higher-dynamic-range
+reference. The metadata records the shared bounds, per-layer tail occupancy,
+exact black/white occupancy, and output hashes so the comparison can be audited.
 
 Run the generator after the normal review viewers have been generated:
 
@@ -57,6 +60,15 @@ is decoded one file at a time to a temporary PPM, which is also mapped; only eac
 small crop enters NegPy. The existing images and transform modes are not
 overwritten. Generation details and hashes are recorded in every viewer's
 `metadata.json`.
+
+If the NegPy crop renderings already exist, the two tail diagnostics can be
+regenerated without launching NegPy or decoding the source files:
+
+```powershell
+python scripts\make_negpy_extreme_inversions.py `
+  --viewers site\assets\review-viewers `
+  --tail-only
+```
 
 Once the NegPy crop renderings are present, create the dropdown-aware
 360-pixel context previews from the completed crop pairs:
