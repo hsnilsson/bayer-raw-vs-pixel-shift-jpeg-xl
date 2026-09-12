@@ -210,7 +210,7 @@ def paeth(left: int, up: int, upper_left: int) -> int:
 
 
 def to_unit(arr: np.ndarray) -> np.ndarray:
-    peak = 65535.0 if arr.dtype == np.uint16 else 255.0
+    peak = float(np.iinfo(arr.dtype).max) if np.issubdtype(arr.dtype, np.integer) else 1.0
     return arr.astype(np.float32) / peak
 
 
