@@ -38,6 +38,18 @@ To add the real NegPy-based extreme inversion to those same crops, follow
 that generator after the normal review-viewer command and before rebuilding the
 report site.
 
+After all crop modes exist, generate the compact dropdown-aware context
+previews:
+
+```powershell
+python scripts\make_mode_specific_overviews.py `
+  --viewers site\assets\review-viewers
+```
+
+These 8-bit previews use a per-image tone mapping fitted from each rendered
+identity/transformed crop pair. They are navigation aids only; inspection and
+measurement continue to use the full crop renderings.
+
 The viewer supports side-by-side viewing, a candidate-on-reference overlay
 toggle, zoom, and pan. It always includes the PS16 reference as the lossless
 baseline, and `d200` is included only as a deliberately heavy-compression visual

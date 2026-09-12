@@ -159,6 +159,9 @@ These results do not establish a universal archival recommendation.
 - [scripts/make_break_even_review_viewers.py](scripts/make_break_even_review_viewers.py):
   create small static viewers with side-by-side, candidate-on-reference overlay,
   zoom, and pan
+- [scripts/make_mode_specific_overviews.py](scripts/make_mode_specific_overviews.py):
+  create compact context previews that follow each review viewer's selected
+  transform, calibrated from the corresponding rendered crop pair
 - [scripts/audit_review_viewer_raw61.py](scripts/audit_review_viewer_raw61.py):
   verify that every published RAW61 crop traces to a separate ARW render and is
   pixel-reproducible from its registered RAW61 TIFF; `--repair` rebuilds stale
