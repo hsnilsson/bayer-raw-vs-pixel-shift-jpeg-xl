@@ -152,6 +152,7 @@
     }
     .crop-sidebar-left { border-right: 1px solid #2b333b; }
     .crop-sidebar-right { border-left: 1px solid #2b333b; }
+    .crop-sidebar[data-navigation-active="true"] { box-shadow: inset 0 0 0 2px #7dd3fc; }
     .crop-sidebar-header {
       position: sticky;
       top: 0;
@@ -196,6 +197,7 @@
     .crop-toolbar h3 { margin: 0 0 3px; color: #f4f7fa; font-size: 18px; }
     .crop-toolbar p { margin: 0; color: #a6b0ba; font-size: 12px; }
     .crop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .crop-mode-label[data-navigation-active="true"] { outline: 2px solid #7dd3fc; outline-offset: 3px; border-radius: 4px; }
     .crop-actions button {
       border: 1px solid #3e4a56;
       border-radius: 8px;
@@ -529,7 +531,7 @@
     <h2>Visual Review</h2>
     <div class="note">
       <p><strong>What this section is for:</strong> judge whether the numeric advantage translates into useful visible detail. These are crops from the rendered route; muimg DNG candidates are covered separately below.</p>
-      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Zoom, pan, stress views, and keyboard navigation stay available without leaving the report.</p>
+      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Use left and right arrow keys to move between Film candidates, View, and Candidate quality; use up and down to change the selection.</p>
     </div>
       <section class="crop-workspace" id="cropWorkspace" tabindex="0" aria-labelledby="cropViewerTitle">
     <aside class="crop-sidebar crop-sidebar-left">
@@ -574,6 +576,8 @@
     const ctx = canvas.getContext("2d");
     const filmList = document.getElementById("cropFilmList");
     const qualityList = document.getElementById("cropQualityList");
+    const filmSidebar = workspace.querySelector(".crop-sidebar-left");
+    const qualitySidebar = workspace.querySelector(".crop-sidebar-right");
     const filmCount = document.getElementById("cropFilmCount");
     const qualityCount = document.getElementById("cropQualityCount");
     const title = document.getElementById("cropViewerTitle");
@@ -584,7 +588,8 @@
     const modeSelect = document.getElementById("cropMode");
     const imageCache = new Map();
     let loadSerial = 0;
-    let activeChoiceList = "film";
+    const navigationZones = ["film", "view", "quality"];
+    let activeNavigationZone = "film";
     let workspaceActive = false;
     const state = {
       viewerIndex: 0,
@@ -608,6 +613,26 @@
     function pinWorkspaceViewport() {
       if (workspace.scrollTop) workspace.scrollTop = 0;
       if (workspace.scrollLeft) workspace.scrollLeft = 0;
+    }
+
+    function setNavigationZone(zone, focusControl = false) {
+      if (!navigationZones.includes(zone)) return;
+      activeNavigationZone = zone;
+      filmSidebar.dataset.navigationActive = String(zone === "film");
+      modeSelect.closest(".crop-mode-label").dataset.navigationActive = String(zone === "view");
+      qualitySidebar.dataset.navigationActive = String(zone === "quality");
+      if (!focusControl) return;
+      let control = modeSelect;
+      if (zone === "film") control = filmList.querySelector('[aria-pressed="true"]') || filmList.querySelector("button");
+      if (zone === "quality") control = qualityList.querySelector('[aria-pressed="true"]') || qualityList.querySelector("button");
+      if (control) control.focus();
+      pinWorkspaceViewport();
+    }
+
+    function moveNavigationZone(delta) {
+      const currentIndex = Math.max(0, navigationZones.indexOf(activeNavigationZone));
+      const nextIndex = Math.max(0, Math.min(navigationZones.length - 1, currentIndex + delta));
+      if (nextIndex !== currentIndex) setNavigationZone(navigationZones[nextIndex], true);
     }
 
     function updateFullscreenButton() {
@@ -797,10 +822,10 @@
           button.appendChild(role);
         }
         button.addEventListener("click", () => {
-          activeChoiceList = "film";
+          setNavigationZone("film");
           setViewer(index);
         });
-        button.addEventListener("focus", () => { activeChoiceList = "film"; });
+        button.addEventListener("focus", () => { setNavigationZone("film"); });
         filmList.appendChild(button);
       });
     }
@@ -825,10 +850,10 @@
         role.textContent = [roleLabel, sizeLabel].filter(Boolean).join(" | ");
         button.appendChild(role);
         button.addEventListener("click", () => {
-          activeChoiceList = "quality";
+          setNavigationZone("quality");
           setCandidate(candidate.key);
         });
-        button.addEventListener("focus", () => { activeChoiceList = "quality"; });
+        button.addEventListener("focus", () => { setNavigationZone("quality"); });
         qualityList.appendChild(button);
       });
     }
@@ -913,14 +938,12 @@
       draw();
     }
 
-    function moveViewer(delta, preserveActiveList = false) {
-      const previousActiveList = activeChoiceList;
+    function moveViewer(delta) {
       const nextIndex = Math.max(0, Math.min(viewers.length - 1, state.viewerIndex + delta));
       if (nextIndex === state.viewerIndex) return;
       setViewer(nextIndex);
       const button = filmList.querySelectorAll("button")[nextIndex];
       if (button) button.focus();
-      if (preserveActiveList) activeChoiceList = previousActiveList;
     }
 
     function moveCandidate(delta) {
@@ -933,8 +956,18 @@
       if (button) button.focus();
     }
 
+    function moveMode(delta) {
+      const modes = currentViewer().metadata.viewModes || [];
+      const currentIndex = Math.max(0, modes.findIndex((mode) => mode.key === state.modeKey));
+      const nextIndex = Math.max(0, Math.min(modes.length - 1, currentIndex + delta));
+      if (nextIndex === currentIndex || !modes[nextIndex]) return;
+      setMode(modes[nextIndex].key);
+      setNavigationZone("view", true);
+    }
+
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
+    modeSelect.addEventListener("focus", () => { setNavigationZone("view"); });
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
@@ -994,27 +1027,31 @@
       }
       if (event.key === "ArrowRight") {
         event.preventDefault();
-        moveViewer(1, true);
+        moveNavigationZone(1);
         return;
       }
       if (event.key === "ArrowLeft") {
         event.preventDefault();
-        moveViewer(-1, true);
+        moveNavigationZone(-1);
         return;
       }
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        if (activeChoiceList === "quality") moveCandidate(1);
-        else moveViewer(1);
+        if (activeNavigationZone === "film") moveViewer(1);
+        if (activeNavigationZone === "view") moveMode(1);
+        if (activeNavigationZone === "quality") moveCandidate(1);
+        return;
       }
       if (event.key === "ArrowUp") {
         event.preventDefault();
-        if (activeChoiceList === "quality") moveCandidate(-1);
-        else moveViewer(-1);
+        if (activeNavigationZone === "film") moveViewer(-1);
+        if (activeNavigationZone === "view") moveMode(-1);
+        if (activeNavigationZone === "quality") moveCandidate(-1);
       }
     });
     setOverlay(false);
     setViewer(0);
+    setNavigationZone("film");
   })();
   </script>
 
