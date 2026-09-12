@@ -36,12 +36,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.077x (+0.11 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.077x (+0.11 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -193,8 +193,8 @@
       },
       "raw61_registered": {
         "path": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6938/raw61_registered_to_ps16.tif",
-        "size": 732066956,
-        "mtime_ns": 1787952414587379700
+        "size": 1464133904,
+        "mtime_ns": 1788245414642841000
       },
       "jxl": {
         "d020": {
@@ -236,16 +236,21 @@
     },
     "renderer_code": {
       "path": "scripts/make_break_even_review_viewers.py",
-      "size": 32026,
-      "mtime_ns": 1788213316910110300
+      "size": 35273,
+      "mtime_ns": 1789255327708052100
+    },
+    "image_tools_code": {
+      "path": "src/break_even_image_tools.py",
+      "size": 14795,
+      "mtime_ns": 1789249718127967200
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 19095,
-      "mtime_ns": 1788206715122204500
+      "size": 21688,
+      "mtime_ns": 1789246334771311300
     }
   },
-  "build_fingerprint": "e601941e15fb6b8b89b7bab08d7a6e35dbaf0c6fdce8fe1a169eb2509a770946",
+  "build_fingerprint": "2a85fad6d8838517a49b0f144a7dd8e772d93c0b301b6845ebefb64389ce73c9",
   "crop": [
     11502,
     3527,
@@ -253,9 +258,9 @@
     768
   ],
   "local_raw61_alignment": {
-    "shift_x_px": -3.0,
+    "shift_x_px": -4.0,
     "shift_y_px": 0.0,
-    "confidence": 105.3393683231702,
+    "confidence": 115.28782701325379,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -270,9 +275,9 @@
     "process_mode": "Color Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
     "raw61_alignment": {
-      "shift_x_px": -3.0,
+      "shift_x_px": -4.0,
       "shift_y_px": 0.0,
-      "confidence": 105.3393683231702,
+      "confidence": 115.28782701325379,
       "applied": true
     },
     "settings": {
@@ -296,7 +301,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6938/raw61_registered_to_ps16.tif",
-        "sha256": "908d1fd4aebc630848655eda47ba2310bfdae848cb51e8c30e3012ee4eef3a6d"
+        "sha256": "c324e575fb829bfff8caed794ef9a762ab678a0788078cd30c6a70e2f90aea9f"
       },
       {
         "key": "jxl_d020",
@@ -501,18 +506,18 @@
         "source_negpy_file": "raw61_negpy_extreme_inversion.png",
         "statistics": {
           "below_reference_shadow_cutoff_percent": 0.10206434461805555,
-          "above_reference_highlight_cutoff_percent": 5.618964301215278,
+          "above_reference_highlight_cutoff_percent": 5.742899576822916,
           "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.390625
+          "all_channels_max_percent": 0.5208333333333333
         },
         "outputs": {
           "negpy_deep_shadow_tail": {
             "file": "raw61_negpy_deep_shadow_tail.png",
-            "sha256": "4beee7346bca780cb147e80b41b1f1904a2b4be586e9a6c628e6d76c1a59dfdf"
+            "sha256": "cf3410423347e84ce97ead5a1fb70940c6c9edcf07c4a41ec12e60333c3c1f3d"
           },
           "negpy_bright_highlight_tail": {
             "file": "raw61_negpy_bright_highlight_tail.png",
-            "sha256": "5cd97eef357433d2d28feb10152b7b4fe6de243db67a7ed9d3c3870a49226004"
+            "sha256": "5489c01c3c179fcb9b333917eb4a4cbe4487904f3bb343527490854e1f828a13"
           }
         }
       },
@@ -650,5 +655,14 @@
         }
       }
     }
+  },
+  "raw61_exposure_match": {
+    "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+    "linear_gain": 1.0769672393798828,
+    "stops": 0.10697436473538374,
+    "applied_to_modes": [
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998"
+    ]
   }
 }

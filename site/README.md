@@ -54,6 +54,14 @@ The viewer supports side-by-side viewing, a candidate-on-reference overlay
 toggle, zoom, and pan. It always includes the PS16 reference as the lossless
 baseline, and `d200` is included only as a deliberately heavy-compression visual
 anchor.
+
+`Highlight separation` and `Shadow recovery` are grayscale linear-luminance
+diagnostics. Their display bounds remain locked to PS16. For RAW61 only, one
+scalar exposure gain is robustly fitted from aligned midtones (PS16 reference
+percentiles 20-80) before the tail is expanded. This prevents a global rendered
+level mismatch from masquerading as lost latitude without hiding channel-balance
+differences in the normal or inversion views. PS16 JXL candidates receive no
+such adjustment because their absolute difference from PS16 is codec evidence.
 Keep these small derived crops limited to approved public cases.
 
 Do not commit locally generated scan panels or full-size renders automatically.

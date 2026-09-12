@@ -21,9 +21,9 @@
     "reference": "overview_reference.png",
     "ps16_lossless": "overview_reference.png",
     "raw61": "overview_raw61.png",
-    "jxl_d003": "overview_reference.png",
-    "jxl_d005": "overview_reference.png",
-    "jxl_d010": "overview_reference.png",
+    "jxl_d003": "overview_jxl_d003.png",
+    "jxl_d005": "overview_jxl_d005.png",
+    "jxl_d010": "overview_jxl_d010.png",
     "jxl_d020": "overview_jxl_d020.png",
     "jxl_d022": "overview_jxl_d022.png",
     "jxl_d025": "overview_jxl_d025.png",
@@ -42,12 +42,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.106x (+0.15 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.106x (+0.15 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -281,16 +281,21 @@
     },
     "renderer_code": {
       "path": "scripts/make_break_even_review_viewers.py",
-      "size": 32790,
-      "mtime_ns": 1788215031598270200
+      "size": 35273,
+      "mtime_ns": 1789255327708052100
+    },
+    "image_tools_code": {
+      "path": "src/break_even_image_tools.py",
+      "size": 14795,
+      "mtime_ns": 1789249718127967200
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 19095,
-      "mtime_ns": 1788206715122204500
+      "size": 21688,
+      "mtime_ns": 1789246334771311300
     }
   },
-  "build_fingerprint": "bf15996958f8e7a4481f050c80fbf0f1eb50c8d208f5934070798394d054f386",
+  "build_fingerprint": "627872064ebf4052c7f66fbd164b0e94e11256a14d52d3d21a870c4531646541",
   "crop": [
     11204,
     4589,
@@ -298,9 +303,9 @@
     768
   ],
   "local_raw61_alignment": {
-    "shift_x_px": -3.0,
+    "shift_x_px": -2.0,
     "shift_y_px": -1.0,
-    "confidence": 117.89276931098176,
+    "confidence": 127.4439529464268,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -315,9 +320,9 @@
     "process_mode": "B&W Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
     "raw61_alignment": {
-      "shift_x_px": -3.0,
+      "shift_x_px": -2.0,
       "shift_y_px": -1.0,
-      "confidence": 117.89276931098176,
+      "confidence": 127.4439529464268,
       "applied": true
     },
     "settings": {
@@ -341,7 +346,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/adox_vlad_resolution_target/_DSC6577/raw61_registered_to_ps16.tif",
-        "sha256": "87bcbd7e5fdc6520c5bf6e0b91dc65b17c0cc828e562a02930ee110db7425699"
+        "sha256": "fa22b2d96b080e7675a529cc3785655996645ecb5f78d59c04458c3200fcad48"
       },
       {
         "key": "jxl_d003",
@@ -400,9 +405,9 @@
       "reference": "overview_reference.png",
       "ps16_lossless": "overview_reference.png",
       "raw61": "overview_raw61.png",
-      "jxl_d003": "overview_reference.png",
-      "jxl_d005": "overview_reference.png",
-      "jxl_d010": "overview_reference.png",
+      "jxl_d003": "overview_jxl_d003.png",
+      "jxl_d005": "overview_jxl_d005.png",
+      "jxl_d010": "overview_jxl_d010.png",
       "jxl_d020": "overview_jxl_d020.png",
       "jxl_d022": "overview_jxl_d022.png",
       "jxl_d025": "overview_jxl_d025.png",
@@ -585,18 +590,18 @@
         "source_negpy_file": "raw61_negpy_extreme_inversion.png",
         "statistics": {
           "below_reference_shadow_cutoff_percent": 7.57904052734375,
-          "above_reference_highlight_cutoff_percent": 2.409532335069444,
+          "above_reference_highlight_cutoff_percent": 2.2796630859375,
           "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.5208333333333333
+          "all_channels_max_percent": 0.390625
         },
         "outputs": {
           "negpy_deep_shadow_tail": {
             "file": "raw61_negpy_deep_shadow_tail.png",
-            "sha256": "e3b40fb25460cc1ce4e72a355d5103c4ed1798b3305c443c7f8c2dac0e0a6ce1"
+            "sha256": "4836db83ee1fea4618332452fa45eda294c409eb7faa370fb1cca03b403366c3"
           },
           "negpy_bright_highlight_tail": {
             "file": "raw61_negpy_bright_highlight_tail.png",
-            "sha256": "cbc8cf61190d606fe2a9f27c759bfb4dabf1be0049d90b07f308463a2cf48d35"
+            "sha256": "7934fa9950f90c990f4a1720255f86728c206f47496ec06637833f556cf1d79e"
           }
         }
       },
@@ -791,5 +796,14 @@
         }
       }
     }
+  },
+  "raw61_exposure_match": {
+    "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+    "linear_gain": 1.1063729524612427,
+    "stops": 0.14583779241539063,
+    "applied_to_modes": [
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998"
+    ]
   }
 }

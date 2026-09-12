@@ -36,12 +36,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.072x (+0.10 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.072x (+0.10 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -193,8 +193,8 @@
       },
       "raw61_registered": {
         "path": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6959/raw61_registered_to_ps16.tif",
-        "size": 732066956,
-        "mtime_ns": 1787952449882292600
+        "size": 1464133904,
+        "mtime_ns": 1788245460049398800
       },
       "jxl": {
         "d020": {
@@ -236,16 +236,21 @@
     },
     "renderer_code": {
       "path": "scripts/make_break_even_review_viewers.py",
-      "size": 31832,
-      "mtime_ns": 1788209586120168600
+      "size": 35273,
+      "mtime_ns": 1789255327708052100
+    },
+    "image_tools_code": {
+      "path": "src/break_even_image_tools.py",
+      "size": 14795,
+      "mtime_ns": 1789249718127967200
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 19095,
-      "mtime_ns": 1788206715122204500
+      "size": 21688,
+      "mtime_ns": 1789246334771311300
     }
   },
-  "build_fingerprint": "22c747dd94f69a4d500ea28350fd48e293f4587df4dcfad9598167757c28b020",
+  "build_fingerprint": "31cb82ed04d5f1fcebbdb9f7970b811d5b590501067968316067d3e534576ac6",
   "crop": [
     12224,
     466,
@@ -255,7 +260,7 @@
   "local_raw61_alignment": {
     "shift_x_px": -5.0,
     "shift_y_px": 6.0,
-    "confidence": 110.5552220937735,
+    "confidence": 129.07804770836998,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -272,7 +277,7 @@
     "raw61_alignment": {
       "shift_x_px": -5.0,
       "shift_y_px": 6.0,
-      "confidence": 110.5552220937735,
+      "confidence": 129.07804770836998,
       "applied": true
     },
     "settings": {
@@ -650,5 +655,14 @@
         }
       }
     }
+  },
+  "raw61_exposure_match": {
+    "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+    "linear_gain": 1.0724049806594849,
+    "stops": 0.10084982487702533,
+    "applied_to_modes": [
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998"
+    ]
   }
 }

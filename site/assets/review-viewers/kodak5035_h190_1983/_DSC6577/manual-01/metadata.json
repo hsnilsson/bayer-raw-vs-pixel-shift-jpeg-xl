@@ -36,12 +36,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.106x (+0.15 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.106x (+0.15 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -193,8 +193,8 @@
       },
       "raw61_registered": {
         "path": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
-        "size": 732066956,
-        "mtime_ns": 1787725443839470300
+        "size": 1464133904,
+        "mtime_ns": 1788245743537517900
       },
       "jxl": {
         "d020": {
@@ -236,16 +236,21 @@
     },
     "renderer_code": {
       "path": "scripts/make_break_even_review_viewers.py",
-      "size": 31832,
-      "mtime_ns": 1788209586120168600
+      "size": 35273,
+      "mtime_ns": 1789255327708052100
+    },
+    "image_tools_code": {
+      "path": "src/break_even_image_tools.py",
+      "size": 14795,
+      "mtime_ns": 1789249718127967200
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 19095,
-      "mtime_ns": 1788206715122204500
+      "size": 21688,
+      "mtime_ns": 1789246334771311300
     }
   },
-  "build_fingerprint": "9fe08747306fa3d4b0d984adcc5b97d5cb1da47f63c763fb0f5b91c2aa1081b2",
+  "build_fingerprint": "2010a15489fadbec60fc347333606b7b5c30a8289797a20301648b3ad5d9afb3",
   "crop": [
     11204,
     4589,
@@ -253,9 +258,9 @@
     768
   ],
   "local_raw61_alignment": {
-    "shift_x_px": -3.0,
+    "shift_x_px": -2.0,
     "shift_y_px": -1.0,
-    "confidence": 116.7404498624022,
+    "confidence": 127.4439529464268,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -270,9 +275,9 @@
     "process_mode": "Color Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
     "raw61_alignment": {
-      "shift_x_px": -3.0,
+      "shift_x_px": -2.0,
       "shift_y_px": -1.0,
-      "confidence": 116.7404498624022,
+      "confidence": 127.4439529464268,
       "applied": true
     },
     "settings": {
@@ -296,7 +301,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
-        "sha256": "f6348bdba3844108b6e14198d7bb826e9304f13a5a3ea00a35fcbb03c5ef49bc"
+        "sha256": "213e5e41fe457036d71da28ca80f8534f06de44f3fb4f69c0f07bf66062d32c4"
       },
       {
         "key": "jxl_d020",
@@ -501,18 +506,18 @@
         "source_negpy_file": "raw61_negpy_extreme_inversion.png",
         "statistics": {
           "below_reference_shadow_cutoff_percent": 7.012769911024305,
-          "above_reference_highlight_cutoff_percent": 3.67431640625,
+          "above_reference_highlight_cutoff_percent": 3.5456339518229165,
           "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.52032470703125
+          "all_channels_max_percent": 0.3902859157986111
         },
         "outputs": {
           "negpy_deep_shadow_tail": {
             "file": "raw61_negpy_deep_shadow_tail.png",
-            "sha256": "ed16c3ad49ac9e0c384c0b3f424f375abf8ff29057a912997be71caaa27fcd0f"
+            "sha256": "b884ca873a85ba5505536584baa9ea3aa78e24673f4b30b3f3c5c760ccceac5d"
           },
           "negpy_bright_highlight_tail": {
             "file": "raw61_negpy_bright_highlight_tail.png",
-            "sha256": "65d06c4b3155927f6e317937152e8d84e8e1b136ddd6556dfa753c1220970071"
+            "sha256": "7a55c301b91fd224d5b80b9f5348bd390a184bf0e9a7db0e57c0af78fcc3f730"
           }
         }
       },
@@ -650,5 +655,14 @@
         }
       }
     }
+  },
+  "raw61_exposure_match": {
+    "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+    "linear_gain": 1.1063729524612427,
+    "stops": 0.14583779241539063,
+    "applied_to_modes": [
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998"
+    ]
   }
 }

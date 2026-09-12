@@ -42,12 +42,12 @@
     {
       "key": "shadow_recovery_luma_p12",
       "label": "Shadow recovery",
-      "description": "Expands the reference crop's darkest 12% of linear luminance across the display range. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.066x (+0.09 EV), fitted outside the tested tails."
     },
     {
       "key": "highlight_separation_luma_p88_p998",
       "label": "Highlight separation",
-      "description": "Expands the reference crop's 88th to 99.8th percentile of linear luminance. A deliberately strong edit-resilience check, not a recommended grade."
+      "description": "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. A deliberately strong edit-resilience check, not a recommended grade. This crop's RAW61 match is 1.066x (+0.09 EV), fitted outside the tested tails."
     },
     {
       "key": "negative_density_hard_print",
@@ -281,16 +281,21 @@
     },
     "renderer_code": {
       "path": "scripts/make_break_even_review_viewers.py",
-      "size": 32790,
-      "mtime_ns": 1788215031598270200
+      "size": 35273,
+      "mtime_ns": 1789255327708052100
+    },
+    "image_tools_code": {
+      "path": "src/break_even_image_tools.py",
+      "size": 14795,
+      "mtime_ns": 1789249718127967200
     },
     "transform_code": {
       "path": "scripts/run_public_latitude_stress.py",
-      "size": 19095,
-      "mtime_ns": 1788206715122204500
+      "size": 21688,
+      "mtime_ns": 1789246334771311300
     }
   },
-  "build_fingerprint": "4a35d3ab1acc880e2273bf62da67d9b2c46108eb905be47b5c85a0861764a139",
+  "build_fingerprint": "87d8bfa8bd62578f82eae9051375ab4c008f2adb8395a50c64460f8699e193ec",
   "crop": [
     15095,
     6247,
@@ -300,7 +305,7 @@
   "local_raw61_alignment": {
     "shift_x_px": -9.0,
     "shift_y_px": -3.0,
-    "confidence": 38.41923333562122,
+    "confidence": 45.18239349295259,
     "applied": true
   },
   "negpy_extreme_inversion": {
@@ -317,7 +322,7 @@
     "raw61_alignment": {
       "shift_x_px": -9.0,
       "shift_y_px": -3.0,
-      "confidence": 38.41923333562122,
+      "confidence": 45.18239349295259,
       "applied": true
     },
     "settings": {
@@ -791,5 +796,14 @@
         }
       }
     }
+  },
+  "raw61_exposure_match": {
+    "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+    "linear_gain": 1.066139578819275,
+    "stops": 0.09239632786084453,
+    "applied_to_modes": [
+      "shadow_recovery_luma_p12",
+      "highlight_separation_luma_p88_p998"
+    ]
   }
 }

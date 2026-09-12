@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import jxl_archive_test  # noqa: E402
 import run_dng_jxl_verification  # noqa: E402
 import make_public_crop_panels  # noqa: E402
+import break_even_image_tools  # noqa: E402
 import run_public_latitude_v2  # noqa: E402
 
 
@@ -93,6 +94,32 @@ class PpmReaderTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "unexpected PPM raster length"):
                 make_public_crop_panels.read_ppm(path)
+
+    def test_shared_reader_preserves_16bit_ppm_precision(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "rgb16.ppm"
+            path.write_bytes(
+                b"P6\n1 1\n65535\n"
+                + struct.pack(">HHH", 1000, 30000, 65000)
+            )
+
+            image = break_even_image_tools.read_rgb_image(path)
+            try:
+                self.assertEqual(image.dtype, np.dtype(">u2"))
+                self.assertEqual(image.tolist(), [[[1000, 30000, 65000]]])
+            finally:
+                image._mmap.close()
+
+    def test_shared_reader_allows_whitespace_as_first_raster_byte(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "leading-whitespace.ppm"
+            path.write_bytes(b"P6\n1 1\n255\n" + bytes([10, 20, 30]))
+
+            image = break_even_image_tools.read_rgb_image(path)
+            try:
+                self.assertEqual(image.tolist(), [[[10, 20, 30]]])
+            finally:
+                image._mmap.close()
 
 
 class ReuseProvenanceTests(unittest.TestCase):
