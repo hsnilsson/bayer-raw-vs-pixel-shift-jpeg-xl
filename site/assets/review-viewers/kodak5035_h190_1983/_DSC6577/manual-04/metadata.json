@@ -335,217 +335,83 @@
       }
     ]
   },
-  "negpy_tail_diagnostics": {
-    "generator": "scripts/make_negpy_extreme_inversions.py",
-    "source_mode": "negpy_extreme_inversion",
-    "normalization": "PS16 reference tail bounds locked across RAW61 and JXL candidates",
-    "luminance": "linear-light sRGB with Rec.709 coefficients",
-    "percentiles": {
-      "deep_shadow_inner": 0.05,
-      "deep_shadow_cutoff": 1.0,
-      "bright_highlight_cutoff": 99.0,
-      "bright_highlight_inner": 99.95
+  "overviews_by_transform": {
+    "identity": {
+      "reference": "overview_reference.png",
+      "ps16_lossless": "overview_reference.png",
+      "raw61": "overview_raw61.png",
+      "jxl_d020": "overview_jxl_d020.png",
+      "jxl_d022": "overview_jxl_d022.png",
+      "jxl_d025": "overview_jxl_d025.png",
+      "jxl_d028": "overview_jxl_d028.png",
+      "jxl_d030": "overview_jxl_d030.png",
+      "jxl_d100": "overview_jxl_d100.png",
+      "jxl_d200": "overview_jxl_d200.png"
     },
-    "reference_linear_luminance_bounds": {
-      "shadow_inner": 1.1810387832156266e-06,
-      "shadow_cutoff": 1.1810387832156266e-06,
-      "highlight_cutoff": 0.9867756235599519,
-      "highlight_inner": 0.9910198144316675
+    "shadow_recovery_luma_p12": {
+      "reference": "overview_reference_shadow_recovery_luma_p12.png",
+      "ps16_lossless": "overview_reference_shadow_recovery_luma_p12.png",
+      "raw61": "overview_raw61_shadow_recovery_luma_p12.png",
+      "jxl_d020": "overview_jxl_d020_shadow_recovery_luma_p12.png",
+      "jxl_d022": "overview_jxl_d022_shadow_recovery_luma_p12.png",
+      "jxl_d025": "overview_jxl_d025_shadow_recovery_luma_p12.png",
+      "jxl_d028": "overview_jxl_d028_shadow_recovery_luma_p12.png",
+      "jxl_d030": "overview_jxl_d030_shadow_recovery_luma_p12.png",
+      "jxl_d100": "overview_jxl_d100_shadow_recovery_luma_p12.png",
+      "jxl_d200": "overview_jxl_d200_shadow_recovery_luma_p12.png"
     },
-    "rendering": "Selected tail pixels are shown on black; brightness is distance into the tail and hue is linear-RGB chromaticity normalized to its strongest channel. Exact neutral black is marked white.",
-    "interpretation": "A post-inversion spatial tail diagnostic. Pixel occupancy is not a capture-latitude measurement; noise, clipping, rendering, resampling, and registration can all change it.",
-    "output": "16-bit sRGB PNG",
-    "layers": {
-      "reference": {
-        "source_negpy_file": "reference_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.69744873046875,
-          "above_reference_highlight_cutoff_percent": 1.000128851996528,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "reference_negpy_deep_shadow_tail.png",
-            "sha256": "7ea9545b29859b59a9af1b4c76c5ddfd59dd455bb4a1c84767a18fc2c682f884"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "reference_negpy_bright_highlight_tail.png",
-            "sha256": "2e12008deff15bd63a6ea63f3094d02d11c78758cc0a154467336ce705951141"
-          }
-        }
-      },
-      "ps16_lossless": {
-        "source_negpy_file": "reference_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.69744873046875,
-          "above_reference_highlight_cutoff_percent": 1.000128851996528,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "reference_negpy_deep_shadow_tail.png",
-            "sha256": "7ea9545b29859b59a9af1b4c76c5ddfd59dd455bb4a1c84767a18fc2c682f884"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "reference_negpy_bright_highlight_tail.png",
-            "sha256": "2e12008deff15bd63a6ea63f3094d02d11c78758cc0a154467336ce705951141"
-          }
-        }
-      },
-      "raw61": {
-        "source_negpy_file": "raw61_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 71.82634141710069,
-          "above_reference_highlight_cutoff_percent": 5.13763427734375,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 1.4292399088541665
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "raw61_negpy_deep_shadow_tail.png",
-            "sha256": "008c2bd00ff6d7ee3880c3531103d7a41fe4a7f8253ae3be14bf8363c9a79774"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "raw61_negpy_bright_highlight_tail.png",
-            "sha256": "97617887ee6bc22cc07cae945a13c937254c708ddc8e49b0fe54165f2cacf962"
-          }
-        }
-      },
-      "jxl_d020": {
-        "source_negpy_file": "jxl_d020_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.69710964626736,
-          "above_reference_highlight_cutoff_percent": 1.5263875325520835,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d020_negpy_deep_shadow_tail.png",
-            "sha256": "085d4781ebbdea8d2ee440e4bcf04741433b46b36c606f0f4ac9eb73b72fb8f1"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d020_negpy_bright_highlight_tail.png",
-            "sha256": "eec14ab236f753b276a2bcaed084958e7e35ea3c318dbac41ec0844ce32dd358"
-          }
-        }
-      },
-      "jxl_d022": {
-        "source_negpy_file": "jxl_d022_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.69982231987846,
-          "above_reference_highlight_cutoff_percent": 1.493157280815972,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d022_negpy_deep_shadow_tail.png",
-            "sha256": "7f11f1aeccc1e2d7fe9bda68b5026d569baef05b913403ece65b62149397a96c"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d022_negpy_bright_highlight_tail.png",
-            "sha256": "55d46d2bcf203556f9a5791bf808d8cee41cb6c0146191af54a6ed2d41bb7311"
-          }
-        }
-      },
-      "jxl_d025": {
-        "source_negpy_file": "jxl_d025_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.70355224609375,
-          "above_reference_highlight_cutoff_percent": 1.4405992296006944,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d025_negpy_deep_shadow_tail.png",
-            "sha256": "9092d6ce5ff47fcdfd876b85d8828c4fc8f3a003c0950f92e64d6e8c422ce0fc"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d025_negpy_bright_highlight_tail.png",
-            "sha256": "46cc23410171fc836900a31fe28ff0ffe23645b5c7eb384221c490cd867df28a"
-          }
-        }
-      },
-      "jxl_d028": {
-        "source_negpy_file": "jxl_d028_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.70270453559029,
-          "above_reference_highlight_cutoff_percent": 1.404656304253472,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d028_negpy_deep_shadow_tail.png",
-            "sha256": "ef7e4ae90190b69c24bc047452bb85a09135f52a65d5b1a54bac7768b95290fd"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d028_negpy_bright_highlight_tail.png",
-            "sha256": "af888c1d6c22d0fce014e212ab988e05b1df6c31731ac9d4ae23c5c8f74d6025"
-          }
-        }
-      },
-      "jxl_d030": {
-        "source_negpy_file": "jxl_d030_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.70168728298611,
-          "above_reference_highlight_cutoff_percent": 1.3600667317708335,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d030_negpy_deep_shadow_tail.png",
-            "sha256": "e738c475da2dc0a576bb8f184a32d1ead98d034a441307c6edd504addfcc0cc6"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d030_negpy_bright_highlight_tail.png",
-            "sha256": "913db94a197470cb3afc6ab0b4889dbc0ab14e1a5ff8dad04a94e8013dc86a33"
-          }
-        }
-      },
-      "jxl_d100": {
-        "source_negpy_file": "jxl_d100_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.71847195095486,
-          "above_reference_highlight_cutoff_percent": 1.093207465277778,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d100_negpy_deep_shadow_tail.png",
-            "sha256": "568600934b1fd766b3b2c127eb61cf3506adeab1565918dc4a7a178056f6cb64"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d100_negpy_bright_highlight_tail.png",
-            "sha256": "c819bcf24e928f1572db5b66c9b414143177416bbc623fbdcdff0d74b5ade41e"
-          }
-        }
-      },
-      "jxl_d200": {
-        "source_negpy_file": "jxl_d200_negpy_extreme_inversion.png",
-        "statistics": {
-          "below_reference_shadow_cutoff_percent": 72.72474500868056,
-          "above_reference_highlight_cutoff_percent": 0.9858873155381944,
-          "all_channels_zero_percent": 0.0,
-          "all_channels_max_percent": 0.0
-        },
-        "outputs": {
-          "negpy_deep_shadow_tail": {
-            "file": "jxl_d200_negpy_deep_shadow_tail.png",
-            "sha256": "ef71d85c3dd41422762053ba36169aedf26a4b40e38d702b880ed5ee86754fa6"
-          },
-          "negpy_bright_highlight_tail": {
-            "file": "jxl_d200_negpy_bright_highlight_tail.png",
-            "sha256": "5f151c0db5400d95991c398bd07b2c5aa14bcef953d060a1b36facc25ac15b56"
-          }
-        }
-      }
+    "highlight_separation_luma_p88_p998": {
+      "reference": "overview_reference_highlight_separation_luma_p88_p998.png",
+      "ps16_lossless": "overview_reference_highlight_separation_luma_p88_p998.png",
+      "raw61": "overview_raw61_highlight_separation_luma_p88_p998.png",
+      "jxl_d020": "overview_jxl_d020_highlight_separation_luma_p88_p998.png",
+      "jxl_d022": "overview_jxl_d022_highlight_separation_luma_p88_p998.png",
+      "jxl_d025": "overview_jxl_d025_highlight_separation_luma_p88_p998.png",
+      "jxl_d028": "overview_jxl_d028_highlight_separation_luma_p88_p998.png",
+      "jxl_d030": "overview_jxl_d030_highlight_separation_luma_p88_p998.png",
+      "jxl_d100": "overview_jxl_d100_highlight_separation_luma_p88_p998.png",
+      "jxl_d200": "overview_jxl_d200_highlight_separation_luma_p88_p998.png"
+    },
+    "negative_density_hard_print": {
+      "reference": "overview_reference_negative_density_hard_print.png",
+      "ps16_lossless": "overview_reference_negative_density_hard_print.png",
+      "raw61": "overview_raw61_negative_density_hard_print.png",
+      "jxl_d020": "overview_jxl_d020_negative_density_hard_print.png",
+      "jxl_d022": "overview_jxl_d022_negative_density_hard_print.png",
+      "jxl_d025": "overview_jxl_d025_negative_density_hard_print.png",
+      "jxl_d028": "overview_jxl_d028_negative_density_hard_print.png",
+      "jxl_d030": "overview_jxl_d030_negative_density_hard_print.png",
+      "jxl_d100": "overview_jxl_d100_negative_density_hard_print.png",
+      "jxl_d200": "overview_jxl_d200_negative_density_hard_print.png"
+    },
+    "negative_density_hard_shadow_recovery": {
+      "reference": "overview_reference_negative_density_hard_shadow_recovery.png",
+      "ps16_lossless": "overview_reference_negative_density_hard_shadow_recovery.png",
+      "raw61": "overview_raw61_negative_density_hard_shadow_recovery.png",
+      "jxl_d020": "overview_jxl_d020_negative_density_hard_shadow_recovery.png",
+      "jxl_d022": "overview_jxl_d022_negative_density_hard_shadow_recovery.png",
+      "jxl_d025": "overview_jxl_d025_negative_density_hard_shadow_recovery.png",
+      "jxl_d028": "overview_jxl_d028_negative_density_hard_shadow_recovery.png",
+      "jxl_d030": "overview_jxl_d030_negative_density_hard_shadow_recovery.png",
+      "jxl_d100": "overview_jxl_d100_negative_density_hard_shadow_recovery.png",
+      "jxl_d200": "overview_jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "overview_reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "overview_reference_negpy_extreme_inversion.png",
+      "raw61": "overview_raw61_negpy_extreme_inversion.png",
+      "jxl_d020": "overview_jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "overview_jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "overview_jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "overview_jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "overview_jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "overview_jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "overview_jxl_d200_negpy_extreme_inversion.png"
     }
+  },
+  "overview_preview_generation": {
+    "generator": "scripts\\make_mode_specific_overviews.py",
+    "method": "per-channel 8-bit LUT fitted from each identity/transformed crop pair",
+    "purpose": "navigation context only; crop images remain the measurement and inspection source"
   }
 }
