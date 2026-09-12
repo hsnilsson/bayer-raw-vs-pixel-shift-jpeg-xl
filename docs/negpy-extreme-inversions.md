@@ -14,6 +14,9 @@ Print Density 1.0, Luma Range Clip 1%, Color Clip 5%, Toe -1, Shoulder -1,
 with Auto Density, Auto Grade, and Cast Removal disabled. Output is 16-bit sRGB
 PNG. This is an extreme edit-resilience diagnostic, not a recommended grade.
 
+RAW61 also receives the same saved per-crop `local_raw61_alignment` translation
+as the existing viewer modes before it enters NegPy.
+
 Run the generator after the normal review viewers have been generated:
 
 ```powershell
