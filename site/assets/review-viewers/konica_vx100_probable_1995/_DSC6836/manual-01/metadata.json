@@ -235,6 +235,12 @@
     ],
     "process_mode": "Color Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "raw61_alignment": {
+      "shift_x_px": -11.0,
+      "shift_y_px": -6.0,
+      "confidence": 77.07717938874012,
+      "applied": true
+    },
     "settings": {
       "iso_r_grade": 50.0,
       "print_density": 1.0,
@@ -256,7 +262,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6836/raw61_registered_to_ps16.tif",
-        "sha256": "de0ea44394e7dd06539acce40d23cabf8bbe09ea46a145a5ae6f82608dcbd12f"
+        "sha256": "bc0807df1b33212a90831fd3c1493c00329ad9d4fa5ee0c3dc08da98d90925e9"
       },
       {
         "key": "jxl_d020",

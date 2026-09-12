@@ -274,6 +274,12 @@
     ],
     "process_mode": "B&W Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "raw61_alignment": {
+      "shift_x_px": -9.0,
+      "shift_y_px": -3.0,
+      "confidence": 38.41923333562122,
+      "applied": true
+    },
     "settings": {
       "iso_r_grade": 50.0,
       "print_density": 1.0,
@@ -295,7 +301,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/adox_vlad_resolution_target/_DSC6577/raw61_registered_to_ps16.tif",
-        "sha256": "1570a84788c8d9ce3c9eb35badb993b58dddc2ff3bd1eb1e44bcc87116c096d6"
+        "sha256": "2a7fa34f018d406e6d1f430f7904e078133d04a935a9178abed91fe5a263a6cb"
       },
       {
         "key": "jxl_d003",

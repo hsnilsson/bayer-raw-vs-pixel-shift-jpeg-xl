@@ -235,6 +235,12 @@
     ],
     "process_mode": "Color Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "raw61_alignment": {
+      "shift_x_px": -10.0,
+      "shift_y_px": -2.0,
+      "confidence": 89.08129619538332,
+      "applied": true
+    },
     "settings": {
       "iso_r_grade": 50.0,
       "print_density": 1.0,
@@ -256,7 +262,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6682/raw61_registered_to_ps16.tif",
-        "sha256": "f38967da019abd3480f546caa7162befbbd410eaae10ebad0a7ddc63da9bd7c6"
+        "sha256": "9663a089d55cb1e0ae3e6ba00779657b1eeb5452896c796e9749e3922640e7bb"
       },
       {
         "key": "jxl_d020",

@@ -235,6 +235,12 @@
     ],
     "process_mode": "Color Negative",
     "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "raw61_alignment": {
+      "shift_x_px": -5.0,
+      "shift_y_px": 6.0,
+      "confidence": 110.5552220937735,
+      "applied": true
+    },
     "settings": {
       "iso_r_grade": 50.0,
       "print_density": 1.0,
@@ -256,7 +262,7 @@
       {
         "key": "raw61",
         "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6959/raw61_registered_to_ps16.tif",
-        "sha256": "27202f5dc53ed6c6b972868d54ceaf590334bff6f43678f53b252a9c9d2a92e0"
+        "sha256": "5772d04881a20b44c2a2e31f470ba2e607b8e733fea1c6e42b9e06e0ba2c54ae"
       },
       {
         "key": "jxl_d020",

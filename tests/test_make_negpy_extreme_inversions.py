@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from make_negpy_extreme_inversions import (  # noqa: E402
     MODE_KEY,
+    align_raw61_crop,
     crop_array,
     crop_to_uint16,
     merge_mode,
@@ -78,6 +79,28 @@ class NegPyExtremeInversionTests(unittest.TestCase):
         self.assertEqual(promoted.dtype, np.uint16)
         self.assertEqual(promoted.tolist(), [[[0, 257, 65535]]])
 
+    def test_raw61_crop_uses_saved_local_alignment(self) -> None:
+        crop = np.zeros((5, 5, 3), dtype=np.uint16)
+        crop[2, 2] = 65535
+        metadata = {
+            "local_raw61_alignment": {
+                "shift_x_px": 1.0,
+                "shift_y_px": -1.0,
+                "applied": True,
+            }
+        }
+
+        aligned = align_raw61_crop(crop, metadata)
+
+        np.testing.assert_array_equal(aligned[1, 3], [65535, 65535, 65535])
+        np.testing.assert_array_equal(aligned[2, 2], [0, 0, 0])
+
+    def test_raw61_crop_is_unchanged_when_alignment_was_not_applied(self) -> None:
+        crop = np.arange(27, dtype=np.uint16).reshape(3, 3, 3)
+        metadata = {"local_raw61_alignment": {"applied": False}}
+
+        self.assertIs(align_raw61_crop(crop, metadata), crop)
+
     def test_process_mode_uses_bw_only_for_the_adox_target(self) -> None:
         self.assertEqual(mode_for_scan("adox_vlad_resolution_target"), "B&W Negative")
         self.assertEqual(mode_for_scan("Kodak Gold 200-5 1997"), "Color Negative")
@@ -93,6 +116,11 @@ class NegPyExtremeInversionTests(unittest.TestCase):
             modes = [mode["key"] for mode in metadata["view_modes"]]
             self.assertEqual(modes.count(MODE_KEY), 1, metadata_path)
             self.assertTrue(old_modes.issubset(modes), metadata_path)
+            self.assertEqual(
+                metadata[MODE_KEY]["raw61_alignment"],
+                metadata["local_raw61_alignment"],
+                metadata_path,
+            )
             for relative in set(metadata["images_by_transform"][MODE_KEY].values()):
                 image_path = metadata_path.parent / relative
                 generated.add(image_path)

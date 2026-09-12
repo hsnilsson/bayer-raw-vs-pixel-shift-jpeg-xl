@@ -16,6 +16,12 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
+
+from break_even_image_tools import shift_rgb  # noqa: E402
+
+
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_DJXL = ROOT / "work/jxl-tools/bin/djxl.exe"
 MODE_KEY = "negpy_extreme_inversion"
@@ -131,6 +137,17 @@ def crop_to_uint16(crop: np.ndarray) -> np.ndarray:
     if crop.dtype.kind == "u" and crop.dtype.itemsize == 2:
         return crop.astype(np.uint16)
     raise ValueError(f"unsupported crop dtype: {crop.dtype}")
+
+
+def align_raw61_crop(crop: np.ndarray, metadata: dict[str, Any]) -> np.ndarray:
+    alignment = metadata.get("local_raw61_alignment")
+    if not isinstance(alignment, dict) or not alignment.get("applied"):
+        return crop
+    return shift_rgb(
+        crop,
+        float(alignment.get("shift_x_px", 0.0)),
+        float(alignment.get("shift_y_px", 0.0)),
+    )
 
 
 def tiff_icc(path: Path, tifffile: Any) -> bytes | None:
@@ -334,6 +351,11 @@ def main() -> int:
     parser.add_argument("--djxl", type=Path, default=DEFAULT_DJXL)
     parser.add_argument("--case", action="append", default=[], help='limit to "scan set|set id"')
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--force-raw61",
+        action="store_true",
+        help="regenerate only RAW61 outputs while reusing existing reference and JXL outputs",
+    )
     args = parser.parse_args()
 
     negpy_root = args.negpy_root.resolve()
@@ -396,8 +418,9 @@ def main() -> int:
 
             raw, raw_icc = tiff_memmap(raw_path, tifffile)
             raw_crop = crop_to_uint16(crop_array(raw, item["crop"]))
+            raw_crop = align_raw61_crop(raw_crop, item["metadata"])
             raw_output = item["directory"] / item["outputs"]["raw61"]
-            if args.force or not raw_output.is_file():
+            if args.force or args.force_raw61 or not raw_output.is_file():
                 render_crop(raw_crop, raw_icc, raw_output, locked[item["metadata_path"]], api, tifffile, work_dir)
             generated[item["metadata_path"]].append(
                 {"key": "raw61", "source": str(raw_path.relative_to(ROOT)), "sha256": sha256(raw_output)}
@@ -458,6 +481,7 @@ def main() -> int:
                 "crop_size": item["crop"][2:],
                 "process_mode": mode_for_scan(item["scan_set"]),
                 "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+                "raw61_alignment": item["metadata"].get("local_raw61_alignment"),
                 "settings": {
                     "iso_r_grade": 50.0,
                     "print_density": 1.0,
