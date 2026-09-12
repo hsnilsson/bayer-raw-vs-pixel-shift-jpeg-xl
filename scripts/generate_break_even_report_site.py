@@ -702,6 +702,11 @@ def viewer_records(
         metadata = read_viewer_metadata(index_path)
         labels = metadata.get("labels", {}) if isinstance(metadata.get("labels", {}), dict) else {}
         overviews = metadata.get("overviews", {}) if isinstance(metadata.get("overviews", {}), dict) else {}
+        overview_sets = (
+            metadata.get("overviews_by_transform", {})
+            if isinstance(metadata.get("overviews_by_transform", {}), dict)
+            else {}
+        )
         image_sets = metadata.get("images_by_transform", {}) if isinstance(metadata.get("images_by_transform", {}), dict) else {}
         mode_items = metadata.get("view_modes", []) if isinstance(metadata.get("view_modes", []), list) else []
         view_modes = [item for item in mode_items if isinstance(item, dict) and item.get("key") in image_sets]
@@ -719,6 +724,19 @@ def viewer_records(
         scan_slug = local_study.slugify(scan_set)
         crop_name = str(metadata.get("crop_name") or "")
         candidates: list[dict[str, object]] = []
+
+        def overview_sources(key: str) -> dict[str, str]:
+            sources: dict[str, str] = {}
+            for mode in view_modes:
+                mode_key = str(mode.get("key"))
+                mode_overviews = overview_sets.get(mode_key, overviews)
+                if not isinstance(mode_overviews, dict):
+                    continue
+                path = directory / str(mode_overviews.get(key, ""))
+                if path.is_file():
+                    sources[mode_key] = relpath(path, output)
+            return sources
+
         reference_sources = {
             str(mode.get("key")): relpath(directory / str(image_sets[str(mode.get("key"))].get("reference", "")), output)
             for mode in view_modes
@@ -726,6 +744,7 @@ def viewer_records(
         }
         reference_path = directory / str(image_sets[default_mode].get("reference", ""))
         reference_overview_path = directory / str(overviews.get("reference", ""))
+        ps16_overviews = overview_sources("ps16_lossless") or overview_sources("reference")
         if reference_path.is_file():
             candidates.append(
                 {
@@ -736,6 +755,7 @@ def viewer_records(
                     "role": "ps16",
                     "storageKind": "lossless PS16 render",
                     "overview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
+                    "overviews": ps16_overviews,
                 }
             )
         raw_sources = {
@@ -774,6 +794,7 @@ def viewer_records(
                         if (directory / str(overviews.get(key, ""))).is_file()
                         else ""
                     ),
+                    "overviews": overview_sources(key),
                 }
             )
         if not reference_path.is_file() or not raw61_path.is_file() or not candidates:
@@ -783,6 +804,7 @@ def viewer_records(
         if crop_name:
             label = f"{label} / {crop_name}"
         index_by_path[str(index_path.resolve())] = len(records)
+        raw61_overviews = overview_sources("raw61")
         records.append(
             {
                 "index": len(records),
@@ -797,6 +819,7 @@ def viewer_records(
                 "referenceLabel": str(labels.get("raw61", "RAW61 local aligned")),
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
+                "referenceOverviews": raw61_overviews,
                 "candidates": candidates,
                 "metadata": {
                     "transform": default_mode,
@@ -1092,6 +1115,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return (candidate.sources && candidate.sources[state.modeKey]) || candidate.src;
     }
 
+    function referenceOverviewSource(viewer) {
+      return (viewer.referenceOverviews && viewer.referenceOverviews[state.modeKey]) || viewer.referenceOverview;
+    }
+
+    function candidateOverviewSource(candidate) {
+      return (candidate.overviews && candidate.overviews[state.modeKey]) || candidate.overview;
+    }
+
     function loadImage(src) {
       if (imageCache.has(src)) return imageCache.get(src);
       const promise = new Promise((resolve, reject) => {
@@ -1195,13 +1226,15 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       const serial = ++loadSerial;
       const viewer = currentViewer();
       const candidate = currentCandidate();
+      const referenceOverview = referenceOverviewSource(viewer);
+      const candidateOverview = candidateOverviewSource(candidate);
       status.textContent = "Loading crop images...";
       try {
         const [referenceImage, candidateImage, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
           loadImage(referenceSource(viewer)),
           loadImage(candidateSource(candidate)),
-          viewer.referenceOverview ? loadImage(viewer.referenceOverview) : Promise.resolve(null),
-          candidate.overview ? loadImage(candidate.overview) : Promise.resolve(null)
+          referenceOverview ? loadImage(referenceOverview) : Promise.resolve(null),
+          candidateOverview ? loadImage(candidateOverview) : Promise.resolve(null)
         ]);
         if (serial !== loadSerial) return;
         state.referenceImage = referenceImage;

@@ -300,5 +300,84 @@
         "sha256": "05786527d9fb0072828eb73946abf5c027d66bac44b8f4e02d8f9fe2dee44c70"
       }
     ]
+  },
+  "overviews_by_transform": {
+    "identity": {
+      "reference": "overview_reference.png",
+      "ps16_lossless": "overview_reference.png",
+      "raw61": "overview_raw61.png",
+      "jxl_d020": "overview_jxl_d020.png",
+      "jxl_d022": "overview_jxl_d022.png",
+      "jxl_d025": "overview_jxl_d025.png",
+      "jxl_d028": "overview_jxl_d028.png",
+      "jxl_d030": "overview_jxl_d030.png",
+      "jxl_d100": "overview_jxl_d100.png",
+      "jxl_d200": "overview_jxl_d200.png"
+    },
+    "shadow_recovery_luma_p12": {
+      "reference": "overview_reference_shadow_recovery_luma_p12.png",
+      "ps16_lossless": "overview_reference_shadow_recovery_luma_p12.png",
+      "raw61": "overview_raw61_shadow_recovery_luma_p12.png",
+      "jxl_d020": "overview_jxl_d020_shadow_recovery_luma_p12.png",
+      "jxl_d022": "overview_jxl_d022_shadow_recovery_luma_p12.png",
+      "jxl_d025": "overview_jxl_d025_shadow_recovery_luma_p12.png",
+      "jxl_d028": "overview_jxl_d028_shadow_recovery_luma_p12.png",
+      "jxl_d030": "overview_jxl_d030_shadow_recovery_luma_p12.png",
+      "jxl_d100": "overview_jxl_d100_shadow_recovery_luma_p12.png",
+      "jxl_d200": "overview_jxl_d200_shadow_recovery_luma_p12.png"
+    },
+    "highlight_separation_luma_p88_p998": {
+      "reference": "overview_reference_highlight_separation_luma_p88_p998.png",
+      "ps16_lossless": "overview_reference_highlight_separation_luma_p88_p998.png",
+      "raw61": "overview_raw61_highlight_separation_luma_p88_p998.png",
+      "jxl_d020": "overview_jxl_d020_highlight_separation_luma_p88_p998.png",
+      "jxl_d022": "overview_jxl_d022_highlight_separation_luma_p88_p998.png",
+      "jxl_d025": "overview_jxl_d025_highlight_separation_luma_p88_p998.png",
+      "jxl_d028": "overview_jxl_d028_highlight_separation_luma_p88_p998.png",
+      "jxl_d030": "overview_jxl_d030_highlight_separation_luma_p88_p998.png",
+      "jxl_d100": "overview_jxl_d100_highlight_separation_luma_p88_p998.png",
+      "jxl_d200": "overview_jxl_d200_highlight_separation_luma_p88_p998.png"
+    },
+    "negative_density_hard_print": {
+      "reference": "overview_reference_negative_density_hard_print.png",
+      "ps16_lossless": "overview_reference_negative_density_hard_print.png",
+      "raw61": "overview_raw61_negative_density_hard_print.png",
+      "jxl_d020": "overview_jxl_d020_negative_density_hard_print.png",
+      "jxl_d022": "overview_jxl_d022_negative_density_hard_print.png",
+      "jxl_d025": "overview_jxl_d025_negative_density_hard_print.png",
+      "jxl_d028": "overview_jxl_d028_negative_density_hard_print.png",
+      "jxl_d030": "overview_jxl_d030_negative_density_hard_print.png",
+      "jxl_d100": "overview_jxl_d100_negative_density_hard_print.png",
+      "jxl_d200": "overview_jxl_d200_negative_density_hard_print.png"
+    },
+    "negative_density_hard_shadow_recovery": {
+      "reference": "overview_reference_negative_density_hard_shadow_recovery.png",
+      "ps16_lossless": "overview_reference_negative_density_hard_shadow_recovery.png",
+      "raw61": "overview_raw61_negative_density_hard_shadow_recovery.png",
+      "jxl_d020": "overview_jxl_d020_negative_density_hard_shadow_recovery.png",
+      "jxl_d022": "overview_jxl_d022_negative_density_hard_shadow_recovery.png",
+      "jxl_d025": "overview_jxl_d025_negative_density_hard_shadow_recovery.png",
+      "jxl_d028": "overview_jxl_d028_negative_density_hard_shadow_recovery.png",
+      "jxl_d030": "overview_jxl_d030_negative_density_hard_shadow_recovery.png",
+      "jxl_d100": "overview_jxl_d100_negative_density_hard_shadow_recovery.png",
+      "jxl_d200": "overview_jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "overview_reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "overview_reference_negpy_extreme_inversion.png",
+      "raw61": "overview_raw61_negpy_extreme_inversion.png",
+      "jxl_d020": "overview_jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "overview_jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "overview_jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "overview_jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "overview_jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "overview_jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "overview_jxl_d200_negpy_extreme_inversion.png"
+    }
+  },
+  "overview_preview_generation": {
+    "generator": "scripts\\make_mode_specific_overviews.py",
+    "method": "per-channel 8-bit LUT fitted from each identity/transformed crop pair",
+    "purpose": "navigation context only; crop images remain the measurement and inspection source"
   }
 }
