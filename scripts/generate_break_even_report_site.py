@@ -1526,7 +1526,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }, true);
     document.addEventListener("keydown", (event) => {
       if (!workspaceActive && !workspace.contains(document.activeElement)) return;
-      if (event.key.toLowerCase() === "o" && !event.target.matches("input,select,textarea")) {
+      if (event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')) {
+        event.preventDefault();
         setOverlay(!state.overlay);
         return;
       }
