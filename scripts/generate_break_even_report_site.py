@@ -1054,7 +1054,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         </div>
         <div class="crop-actions">
           <label class="crop-mode-label">View <select id="cropMode" title="Choose the normal or extreme-edit diagnostic view"></select></label>
-          <button type="button" id="cropOverlayToggle" aria-pressed="false" title="Toggle candidate overlay">Overlay</button>
+          <button type="button" id="cropOverlayToggle" aria-pressed="false" aria-keyshortcuts="O" title="Toggle candidate overlay (O)">Overlay (O)</button>
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
@@ -1439,7 +1439,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     function setOverlay(enabled) {
       state.overlay = enabled;
       overlayToggle.setAttribute("aria-pressed", String(enabled));
-      overlayToggle.textContent = enabled ? "Side-by-side" : "Overlay";
+      overlayToggle.textContent = enabled ? "Side-by-side (O)" : "Overlay (O)";
       draw();
     }
 
@@ -2142,7 +2142,7 @@ def render_html(
     <h2>Visual Review</h2>
     <div class="note">
       <p><strong>What this section is for:</strong> judge whether the numeric advantage translates into useful visible detail. These are crops from the rendered route; muimg DNG candidates are covered separately below.</p>
-      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Use left and right arrow keys to move between Film candidates, View, and Candidate quality; use up and down to change the selection.</p>
+      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Use left and right arrow keys to move between Film candidates, View, and Candidate quality; use up and down to change the selection, and press O to toggle the overlay.</p>
     </div>
     {visual_review_html}
 
