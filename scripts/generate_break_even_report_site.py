@@ -1112,6 +1112,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     if (!viewers.length || !workspace) return;
 
+    function pinWorkspaceViewport() {
+      if (workspace.scrollTop) workspace.scrollTop = 0;
+      if (workspace.scrollLeft) workspace.scrollLeft = 0;
+    }
+
     function updateFullscreenButton() {
       const active = document.fullscreenElement === workspace;
       fullscreenToggle.textContent = active ? "Exit fullscreen" : "Fullscreen";
@@ -1483,6 +1488,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       resizeCanvas();
       draw();
     });
+    workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });
+    workspace.addEventListener("focusin", pinWorkspaceViewport);
     document.addEventListener("pointerdown", (event) => {
       workspaceActive = workspace.contains(event.target);
     }, true);
@@ -1835,6 +1842,7 @@ def render_html(
       height: clamp(560px, 72vh, 760px);
       margin-top: 14px;
       overflow: hidden;
+      overflow: clip;
       border: 1px solid #2b333b;
       border-radius: 10px;
       background: #0f1215;

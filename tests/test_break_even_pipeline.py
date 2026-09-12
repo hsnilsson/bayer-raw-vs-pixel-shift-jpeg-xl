@@ -858,6 +858,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('const notes = [tailSummary, mode.description || ""]', html)
             self.assertIn('-webkit-line-clamp: 4;', html)
             self.assertIn('background: #0f1215;', html)
+            self.assertIn('overflow: clip;', html)
+            self.assertIn('function pinWorkspaceViewport() {', html)
+            self.assertIn('workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });', html)
+            self.assertIn('workspace.addEventListener("focusin", pinWorkspaceViewport);', html)
             self.assertIn('ctx.fillStyle = "#101316";', html)
             self.assertIn('renderQualityList();\n      updateHeading();\n      loadCurrentImages();', html)
             self.assertNotIn(
