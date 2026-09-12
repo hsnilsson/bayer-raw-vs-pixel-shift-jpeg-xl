@@ -763,7 +763,20 @@ class BreakEvenPipelineTests(unittest.TestCase):
                   "set_id": "frame001",
                   "transform": "identity",
                   "crop": [1, 2, 3, 4],
-                  "local_raw61_alignment": {"applied": true, "shift_x_px": 1, "shift_y_px": -1}
+                  "local_raw61_alignment": {"applied": true, "shift_x_px": 1, "shift_y_px": -1},
+                  "negpy_tail_diagnostics": {
+                    "layers": {
+                      "reference": {"statistics": {"below_reference_shadow_cutoff_percent": 1.0}},
+                      "raw61": {"statistics": {
+                        "below_reference_shadow_cutoff_percent": 2.5,
+                        "above_reference_highlight_cutoff_percent": 0.75
+                      }},
+                      "jxl_d020": {"statistics": {
+                        "below_reference_shadow_cutoff_percent": 1.25,
+                        "above_reference_highlight_cutoff_percent": 1.5
+                      }}
+                    }
+                  }
                 }""",
                 encoding="utf-8",
             )
@@ -807,6 +820,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"referenceLabel": "RAW61 local aligned"', html)
             self.assertIn('"storageMib": 54.5', html)
             self.assertIn('"storageKind": "encoded JXL"', html)
+            self.assertIn('"referenceTailStats": {"below_reference_shadow_cutoff_percent": 2.5', html)
+            self.assertIn('"tailStats": {"below_reference_shadow_cutoff_percent": 1.25', html)
             self.assertIn('"referenceOverview": "assets/review-viewers/synthetic_scan/frame001/overview_raw61.png"', html)
             self.assertIn('"overview": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png"', html)
             self.assertIn(
@@ -838,6 +853,9 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 'function setCandidate(key) {\n      state.candidateKey = key;\n      renderQualityList();',
                 html,
             )
+            self.assertIn('Tail occupancy: RAW61 ${referenceValue.toFixed(2)}%', html)
+            self.assertIn('Counts alone are not latitude; compare coherent scene structure.', html)
+            self.assertIn('renderQualityList();\n      updateHeading();\n      loadCurrentImages();', html)
             self.assertNotIn(
                 'function setCandidate(key) {\n      state.candidateKey = key;\n      resetView();',
                 html,

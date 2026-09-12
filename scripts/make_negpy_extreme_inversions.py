@@ -40,7 +40,8 @@ TAIL_MODE_SPECS = (
         "description": (
             "Isolates the darkest 1% of the PS16-locked NegPy result on black and amplifies "
             "its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for "
-            "every layer. This reveals spatial tail differences, not capture latitude."
+            "every layer. Use it as a post-inversion latitude proxy by comparing coherent "
+            "structure, not pixel count; it is not an absolute capture-latitude measurement."
         ),
     },
     {
@@ -49,7 +50,8 @@ TAIL_MODE_SPECS = (
         "description": (
             "Isolates the brightest 1% of the PS16-locked NegPy result on black and amplifies "
             "its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for "
-            "every layer. This reveals spatial tail differences, not capture latitude."
+            "every layer. Use it as a post-inversion latitude proxy by comparing coherent "
+            "structure, not pixel count; it is not an absolute capture-latitude measurement."
         ),
     },
 )
