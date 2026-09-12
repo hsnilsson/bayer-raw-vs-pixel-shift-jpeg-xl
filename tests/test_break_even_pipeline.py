@@ -857,7 +857,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('Counts alone are not latitude; compare coherent scene structure.', html)
             self.assertIn('const notes = [tailSummary, mode.description || ""]', html)
             self.assertIn('-webkit-line-clamp: 4;', html)
-            self.assertIn('background: #3f454b;', html)
+            self.assertIn('background: #0f1215;', html)
+            self.assertIn('ctx.fillStyle = "#101316";', html)
             self.assertIn('renderQualityList();\n      updateHeading();\n      loadCurrentImages();', html)
             self.assertNotIn(
                 'function setCandidate(key) {\n      state.candidateKey = key;\n      resetView();',
