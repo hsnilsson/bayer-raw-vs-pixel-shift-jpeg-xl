@@ -234,6 +234,64 @@ class Transform:
     apply: Callable[[np.ndarray], np.ndarray]
     label: str = ""
     description: str = ""
+    apply_with_linear_gain: Callable[[np.ndarray, float], np.ndarray] | None = None
+
+
+LINEAR_LUMA_WEIGHTS = np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+
+
+def linear_rgb(arr: np.ndarray) -> np.ndarray:
+    """Approximate linear RGB from the rendered crop's display encoding."""
+    return np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
+
+
+def linear_luminance(arr: np.ndarray) -> np.ndarray:
+    """Return approximate linear-light luminance for an RGB render."""
+    return np.sum(linear_rgb(arr)[:, :, :3] * LINEAR_LUMA_WEIGHTS, axis=2)
+
+
+def estimate_linear_exposure_gain(
+    reference: np.ndarray,
+    candidate: np.ndarray,
+    *,
+    low_percentile: float = 20.0,
+    high_percentile: float = 80.0,
+    minimum_gain: float = 0.25,
+    maximum_gain: float = 4.0,
+) -> float:
+    """Estimate one robust candidate-to-reference exposure gain from midtones.
+
+    The spatially aligned images are compared only where reference luminance is
+    inside its central percentile range. A single scalar preserves channel
+    balance and local contrast while removing a global rendered-level mismatch.
+    """
+    if reference.shape[:2] != candidate.shape[:2]:
+        raise ValueError("reference and candidate must have the same image dimensions")
+    if not 0.0 <= low_percentile < high_percentile <= 100.0:
+        raise ValueError("exposure-match percentiles must be ordered within 0..100")
+    if not 0.0 < minimum_gain <= maximum_gain:
+        raise ValueError("exposure-match gain bounds must be positive and ordered")
+
+    ref_luma = linear_luminance(reference)
+    candidate_luma = linear_luminance(candidate)
+    low, high = np.percentile(ref_luma, [low_percentile, high_percentile])
+    epsilon = np.float32(1e-6)
+    valid = (
+        np.isfinite(ref_luma)
+        & np.isfinite(candidate_luma)
+        & (ref_luma >= low)
+        & (ref_luma <= high)
+        & (ref_luma > epsilon)
+        & (candidate_luma > epsilon)
+    )
+    if not np.any(valid):
+        return 1.0
+
+    log_ratio = np.log(ref_luma[valid]) - np.log(candidate_luma[valid])
+    gain = float(np.exp(np.median(log_ratio)))
+    if not math.isfinite(gain):
+        return 1.0
+    return float(np.clip(gain, minimum_gain, maximum_gain))
 
 
 def build_transforms(reference: np.ndarray) -> list[Transform]:
@@ -251,11 +309,7 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
     density_low = np.percentile(density_ref, 0.5, axis=(0, 1))
     density_high = np.percentile(density_ref, 99.5, axis=(0, 1))
     density_span = np.maximum(density_high - density_low, 1e-6)
-    reference_luma = (
-        ref_linear[:, :, 0] * 0.2126
-        + ref_linear[:, :, 1] * 0.7152
-        + ref_linear[:, :, 2] * 0.0722
-    )
+    reference_luma = np.sum(ref_linear[:, :, :3] * LINEAR_LUMA_WEIGHTS, axis=2)
     shadow_white = max(float(np.percentile(reference_luma, 12.0)), 1e-6)
     highlight_black = float(np.percentile(reference_luma, 88.0))
     highlight_white = max(float(np.percentile(reference_luma, 99.8)), highlight_black + 1e-6)
@@ -281,16 +335,20 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
         lifted = np.clip(x * 8.0, 0.0, 1.0)
         return np.power(lifted, 1 / 2.2)
 
-    def shadow_recovery(arr: np.ndarray) -> np.ndarray:
-        """Expand the lower reference luminance range in a shared linear scale."""
-        linear = np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
-        return np.power(np.clip(linear / shadow_white, 0.0, 1.0), 1 / 2.2)
+    def grayscale_display(luma: np.ndarray) -> np.ndarray:
+        display = np.power(np.clip(luma, 0.0, 1.0), 1 / 2.2)
+        return np.repeat(display[:, :, None], 3, axis=2)
 
-    def highlight_separation(arr: np.ndarray) -> np.ndarray:
-        """Expand the upper reference luminance range with the same channel mapping."""
-        linear = np.power(np.clip(to_unit(arr), 0.0, 1.0), 2.2)
-        expanded = (linear - highlight_black) / (highlight_white - highlight_black)
-        return np.power(np.clip(expanded, 0.0, 1.0), 1 / 2.2)
+    def shadow_recovery(arr: np.ndarray, linear_gain: float = 1.0) -> np.ndarray:
+        """Expand lower luminance on a shared reference scale in grayscale."""
+        expanded = linear_luminance(arr) * np.float32(linear_gain) / shadow_white
+        return grayscale_display(expanded)
+
+    def highlight_separation(arr: np.ndarray, linear_gain: float = 1.0) -> np.ndarray:
+        """Expand upper luminance on a shared reference scale in grayscale."""
+        luma = linear_luminance(arr) * np.float32(linear_gain)
+        expanded = (luma - highlight_black) / (highlight_white - highlight_black)
+        return grayscale_display(expanded)
 
     def steep_curve(arr: np.ndarray) -> np.ndarray:
         x = to_unit(arr)
@@ -346,16 +404,20 @@ def build_transforms(reference: np.ndarray) -> list[Transform]:
             "shadow_recovery_luma_p12",
             shadow_recovery,
             "Shadow recovery",
-            "Expands the reference crop's darkest 12% of linear luminance across the display range. "
+            "Expands the PS16 reference crop's darkest 12% of linear luminance as grayscale. "
+            "RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. "
             "A deliberately strong edit-resilience check, not a recommended grade.",
+            shadow_recovery,
         ),
         Transform("steep_curve", steep_curve, "Legacy steep curve", "Legacy diagnostic transform."),
         Transform(
             "highlight_separation_luma_p88_p998",
             highlight_separation,
             "Highlight separation",
-            "Expands the reference crop's 88th to 99.8th percentile of linear luminance. "
+            "Expands the PS16 reference crop's 88th to 99.8th percentile of linear luminance as grayscale. "
+            "RAW61 receives one midtone-derived exposure gain; PS16 JXL remains unadjusted. "
             "A deliberately strong edit-resilience check, not a recommended grade.",
+            highlight_separation,
         ),
         Transform("negative_percentile_stretch", negative_stretch, "Negative percentile stretch", "Negative display diagnostic."),
         Transform("negative_grade", negative_grade, "Negative grade", "Negative display diagnostic."),

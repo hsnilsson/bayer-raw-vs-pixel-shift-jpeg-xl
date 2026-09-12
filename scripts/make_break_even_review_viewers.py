@@ -31,7 +31,7 @@ from make_break_even_review_panels import (  # noqa: E402
     run_decode,
 )
 from incremental_cache import file_state, fingerprint  # noqa: E402
-from run_public_latitude_stress import build_transforms  # noqa: E402
+from run_public_latitude_stress import build_transforms, estimate_linear_exposure_gain  # noqa: E402
 
 
 DEFAULT_MATRIX = ROOT / "results/archival_break_even/archival_break_even_matrix.csv"
@@ -129,6 +129,18 @@ def read_viewer_metadata(path: Path) -> dict[str, object]:
     return payload if isinstance(payload, dict) else {}
 
 
+def portable_source_state(path: Path) -> dict[str, object] | None:
+    """Record generated-input paths relative to their project's outputs tree."""
+    state = file_state(path, ROOT)
+    if state is None:
+        return None
+    if Path(str(state["path"])).is_absolute():
+        parts = list(path.parts)
+        if "outputs" in parts:
+            state["path"] = Path(*parts[parts.index("outputs") :]).as_posix()
+    return state
+
+
 def viewer_build_inputs(
     ref_path: Path,
     raw_path: Path,
@@ -144,7 +156,7 @@ def viewer_build_inputs(
 ) -> dict[str, object]:
     """Record source state without hashing multi-gigabyte TIFFs on every viewer build."""
     jxl_sources = {
-        level: file_state(jxl_path(rendered_jxl_root, scan_set, set_id, level), ROOT)
+        level: portable_source_state(jxl_path(rendered_jxl_root, scan_set, set_id, level))
         for level in levels
     }
     return {
@@ -155,11 +167,12 @@ def viewer_build_inputs(
         "overview_max_dim": overview_max_dim,
         "max_local_shift": max_local_shift,
         "sources": {
-            "ps16": file_state(ref_path, ROOT),
-            "raw61_registered": file_state(raw_path, ROOT),
+            "ps16": portable_source_state(ref_path),
+            "raw61_registered": portable_source_state(raw_path),
             "jxl": jxl_sources,
         },
         "renderer_code": file_state(Path(__file__), ROOT),
+        "image_tools_code": file_state(SRC / "break_even_image_tools.py", ROOT),
         "transform_code": file_state(SCRIPTS / "run_public_latitude_stress.py", ROOT),
     }
 
@@ -493,6 +506,7 @@ def make_viewer(
     output_dir = args.output_dir / local_study.slugify(scan_set) / set_id / crop_name
     output_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = output_dir / "metadata.json"
+    existing_metadata = read_viewer_metadata(metadata_path)
     build_inputs = viewer_build_inputs(
         ref_path,
         raw_path,
@@ -508,7 +522,7 @@ def make_viewer(
     )
     # Metadata without a fingerprint intentionally triggers one full rebuild.
     rebuild_viewer = args.force or not viewer_metadata_is_current(
-        read_viewer_metadata(metadata_path), build_inputs
+        existing_metadata, build_inputs
     )
     reference_full = read_rgb_image(ref_path)
     raw_full = read_rgb_image(raw_path)
@@ -516,6 +530,8 @@ def make_viewer(
     ref_crop = crop(reference_full, crop_text)
     raw_crop = crop(raw_full, crop_text)
     aligned_raw, alignment = local_align_raw61(ref_crop, raw_crop, args.max_local_shift)
+    raw61_exposure_gain = estimate_linear_exposure_gain(ref_crop, aligned_raw)
+    raw61_exposure_stops = float(np.log2(raw61_exposure_gain))
     transforms = {transform.name: transform for transform in build_transforms(ref_crop)}
     selected_transforms = []
     for transform_name in transform_names:
@@ -547,7 +563,12 @@ def make_viewer(
         reference_display = transform.apply(ref_crop)
         reference_levels = display_range(reference_display)
         save_display(output_dir / images["reference"], reference_display, args.max_dim, force=rebuild_viewer, levels=reference_levels)
-        save_display(output_dir / images["raw61"], transform.apply(aligned_raw), args.max_dim, force=rebuild_viewer, levels=reference_levels)
+        raw61_display = (
+            transform.apply_with_linear_gain(aligned_raw, raw61_exposure_gain)
+            if transform.apply_with_linear_gain is not None
+            else transform.apply(aligned_raw)
+        )
+        save_display(output_dir / images["raw61"], raw61_display, args.max_dim, force=rebuild_viewer, levels=reference_levels)
     save_overview(
         output_dir / overviews["reference"],
         reference_full,
@@ -555,7 +576,7 @@ def make_viewer(
         labels["reference"],
         crop_name,
         args.overview_max_dim,
-        force=rebuild_viewer,
+        force=False,
     )
     save_overview(
         output_dir / overviews["raw61"],
@@ -564,7 +585,7 @@ def make_viewer(
         labels["raw61"],
         crop_name,
         args.overview_max_dim,
-        force=rebuild_viewer,
+        force=False,
     )
     with tempfile.TemporaryDirectory(prefix="break-even-viewer-") as temp_dir:
         temp_root = Path(temp_dir)
@@ -600,19 +621,42 @@ def make_viewer(
                 labels[f"jxl_{level}"],
                 crop_name,
                 args.overview_max_dim,
-                force=rebuild_viewer,
+                force=False,
             )
+            del candidate, candidate_full
     if not selected_transforms or len(images_by_transform[selected_transforms[0]]) < 3:
         return None
-    view_modes = [
-        {
-            "key": transform_name,
-            "label": transforms[transform_name].label or transform_name,
-            "description": transforms[transform_name].description,
-        }
-        for transform_name in selected_transforms
-    ]
+    view_modes = []
+    for transform_name in selected_transforms:
+        transform = transforms[transform_name]
+        description = transform.description
+        if transform.apply_with_linear_gain is not None:
+            description += (
+                f" This crop's RAW61 match is {raw61_exposure_gain:.3f}x "
+                f"({raw61_exposure_stops:+.2f} EV), fitted outside the tested tails."
+            )
+        view_modes.append(
+            {
+                "key": transform_name,
+                "label": transform.label or transform_name,
+                "description": description,
+            }
+        )
+    existing_view_modes = existing_metadata.get("view_modes", [])
+    if isinstance(existing_view_modes, list):
+        selected_keys = set(selected_transforms)
+        view_modes.extend(
+            mode
+            for mode in existing_view_modes
+            if isinstance(mode, dict) and str(mode.get("key", "")) not in selected_keys
+        )
+    existing_images = existing_metadata.get("images_by_transform", {})
+    if isinstance(existing_images, dict):
+        for transform_name, image_map in existing_images.items():
+            if transform_name not in images_by_transform and isinstance(image_map, dict):
+                images_by_transform[transform_name] = image_map
     metadata = {
+        **existing_metadata,
         "labels": labels,
         "scan_set": scan_set,
         "set_id": set_id,
@@ -629,6 +673,16 @@ def make_viewer(
             "shift_y_px": alignment.shift_y_px,
             "confidence": alignment.confidence,
             "applied": alignment.applied,
+        },
+        "raw61_exposure_match": {
+            "method": "single linear-luminance gain from aligned PS16-reference p20-p80 pixels",
+            "linear_gain": raw61_exposure_gain,
+            "stops": raw61_exposure_stops,
+            "applied_to_modes": [
+                transform_name
+                for transform_name in selected_transforms
+                if transforms[transform_name].apply_with_linear_gain is not None
+            ],
         },
     }
     metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")

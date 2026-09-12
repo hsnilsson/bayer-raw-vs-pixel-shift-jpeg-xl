@@ -61,10 +61,63 @@ def optional_tifffile():
     return tifffile
 
 
+def read_ppm(path: Path) -> np.ndarray:
+    """Memory-map an 8/16-bit binary RGB PPM without reducing precision."""
+    with path.open("rb") as handle:
+        tokens: list[bytes] = []
+        delimiter = b""
+        while len(tokens) < 4:
+            byte = handle.read(1)
+            while byte and byte in b" \t\r\n":
+                byte = handle.read(1)
+            if byte == b"#":
+                handle.readline()
+                continue
+            if not byte:
+                raise ValueError(f"incomplete PPM header: {path}")
+            token = bytearray(byte)
+            while True:
+                delimiter = handle.read(1)
+                if not delimiter or delimiter in b" \t\r\n":
+                    break
+                token.extend(delimiter)
+            tokens.append(bytes(token))
+        if delimiter == b"\r":
+            possible_lf = handle.read(1)
+            if possible_lf != b"\n":
+                handle.seek(-len(possible_lf), 1)
+        offset = handle.tell()
+
+    magic, width_token, height_token, max_token = tokens
+    if magic != b"P6":
+        raise ValueError(f"unsupported PPM magic in {path}: {magic!r}")
+    width = int(width_token)
+    height = int(height_token)
+    max_value = int(max_token)
+    if width <= 0 or height <= 0:
+        raise ValueError(f"invalid PPM dimensions in {path}: {width}x{height}")
+    if max_value <= 255:
+        dtype = np.dtype(np.uint8)
+    elif max_value <= 65535:
+        dtype = np.dtype(">u2")
+    else:
+        raise ValueError(f"unsupported PPM max value {max_value}")
+    expected = width * height * 3 * dtype.itemsize
+    actual = path.stat().st_size - offset
+    if actual != expected:
+        raise ValueError(f"unexpected PPM raster length in {path}: got {actual}, expected {expected}")
+    return np.memmap(path, mode="r", dtype=dtype, offset=offset, shape=(height, width, 3))
+
+
 def read_rgb_image(path: Path) -> np.ndarray:
     tifffile = optional_tifffile()
     if tifffile is not None and path.suffix.lower() in {".tif", ".tiff", ".dng"}:
-        arr = tifffile.imread(path)
+        try:
+            arr = tifffile.memmap(path)
+        except (ValueError, TypeError):
+            arr = tifffile.imread(path)
+    elif path.suffix.lower() in {".ppm", ".pnm"}:
+        arr = read_ppm(path)
     else:
         arr = np.asarray(Image.open(path))
     if arr.ndim == 2:
@@ -75,16 +128,19 @@ def read_rgb_image(path: Path) -> np.ndarray:
         arr = arr[:, :, :3]
     if arr.shape[2] == 1:
         arr = np.repeat(arr, 3, axis=2)
-    if arr.dtype.byteorder == ">":
+    # Keep memory-mapped big-endian PPM samples lazy. NumPy converts them
+    # correctly when a crop is promoted to floating point.
+    if arr.dtype.byteorder == ">" and not isinstance(arr, np.memmap):
         arr = arr.astype(arr.dtype.newbyteorder("="), copy=False)
-    if arr.dtype not in (np.uint8, np.uint16):
+    if not (arr.dtype.kind == "u" and arr.dtype.itemsize in (1, 2)):
         values = arr.astype(np.float64)
         low = float(values.min(initial=0.0))
         high = float(values.max(initial=0.0))
         if high > low:
             values = (values - low) / (high - low)
         arr = np.round(np.clip(values, 0.0, 1.0) * 65535.0).astype(np.uint16)
-    return np.ascontiguousarray(arr[:, :, :3])
+    rgb = arr[:, :, :3]
+    return rgb if isinstance(rgb, np.memmap) else np.ascontiguousarray(rgb)
 
 
 def write_rgb_tiff(path: Path, arr: np.ndarray) -> None:
