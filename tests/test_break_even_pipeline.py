@@ -872,7 +872,12 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('Use left and right arrow keys to move between Film candidates, View, and Candidate quality;', html)
             self.assertIn('aria-keyshortcuts="O"', html)
             self.assertIn('overlayToggle.textContent = enabled ? "Side-by-side (O)" : "Overlay (O)";', html)
-            self.assertIn('event.key.toLowerCase() === "o"', html)
+            self.assertIn(
+                '''event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')''',
+                html,
+            )
+            self.assertIn("event.preventDefault();\n        setOverlay(!state.overlay);", html)
+            self.assertNotIn('event.target.matches("input,select,textarea")', html)
             self.assertIn('press O to toggle the overlay.', html)
             self.assertIn('function pinWorkspaceViewport() {', html)
             self.assertIn('workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });', html)
