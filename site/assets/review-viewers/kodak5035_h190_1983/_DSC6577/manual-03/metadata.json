@@ -52,6 +52,11 @@
       "key": "negative_density_hard_shadow_recovery",
       "label": "Hard inversion + shadow recovery",
       "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
+    },
+    {
+      "key": "negpy_extreme_inversion",
+      "label": "NegPy extreme inversion",
+      "description": "Runs the real NegPy C-41 or B&W print pipeline on a 16-bit working crop. Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual density/grade make this a deliberately hard edit-resilience check."
     }
   ],
   "images_by_transform": {
@@ -114,6 +119,18 @@
       "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
       "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
       "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "reference_negpy_extreme_inversion.png",
+      "raw61": "raw61_negpy_extreme_inversion.png",
+      "jxl_d020": "jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "jxl_d200_negpy_extreme_inversion.png"
     }
   },
   "build_inputs": {
@@ -206,5 +223,76 @@
     "shift_y_px": -3.0,
     "confidence": 82.41729628794535,
     "applied": true
+  },
+  "negpy_extreme_inversion": {
+    "generator": "scripts/make_negpy_extreme_inversions.py",
+    "negpy_revision": "32ac4a2e882db5c2d2c12c1435ab4db77675f3c0",
+    "negpy_worktree_clean": true,
+    "input_precision": "native source precision promoted to a 16-bit working container",
+    "crop_size": [
+      768,
+      768
+    ],
+    "process_mode": "Color Negative",
+    "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "settings": {
+      "iso_r_grade": 50.0,
+      "print_density": 1.0,
+      "luma_range_clip_percent": 1.0,
+      "color_clip_percent": 5.0,
+      "auto_density": false,
+      "auto_grade": false,
+      "cast_removal_strength": 0.0,
+      "toe": -1.0,
+      "shoulder": -1.0,
+      "output": "16-bit sRGB PNG"
+    },
+    "outputs": [
+      {
+        "key": "reference",
+        "source": "outputs/rawtherapee_renders/kodak5035_h190_1983/_DSC6577/ps16.tif",
+        "sha256": "010fcdec5adac2ccc89efa3f5c728d6aee4af33345e6fa2f3ef693c65ed2bb87"
+      },
+      {
+        "key": "raw61",
+        "source": "outputs/registered_raw61_to_ps16/kodak5035_h190_1983/_DSC6577/raw61_registered_to_ps16.tif",
+        "sha256": "33b8662f6b7cb606858003827846ad99818e0621e7088267a0fec4a7d2ff061f"
+      },
+      {
+        "key": "jxl_d020",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d020/ps16.jxl",
+        "sha256": "e312e7867013b9b74978f9cc6d03bbf10bb440db9bad68f252dd2a965afec3ba"
+      },
+      {
+        "key": "jxl_d022",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d022/ps16.jxl",
+        "sha256": "0afe33aae2f28770eb6edba7c12a33f4dcde1b5a1f6ac7e5e5392dc3a0864a10"
+      },
+      {
+        "key": "jxl_d025",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d025/ps16.jxl",
+        "sha256": "b116f57a96054c7c3f69e4dddf3495ac49ed55af135a417c423eb4438d428ea5"
+      },
+      {
+        "key": "jxl_d028",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d028/ps16.jxl",
+        "sha256": "5e8732b6ca91ff5e2f7ae4542b681f888b6155bf9394fcddc9cb4519f356a60e"
+      },
+      {
+        "key": "jxl_d030",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d030/ps16.jxl",
+        "sha256": "77ca5a512d9041d9bc6dbe2abad094908b7a61ed34a915ee745952365e782797"
+      },
+      {
+        "key": "jxl_d100",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d100/ps16.jxl",
+        "sha256": "a510a545184673c7c060544597c3ed43c50ff1ddcaff787e6d7498b6df13237e"
+      },
+      {
+        "key": "jxl_d200",
+        "source": "outputs/rendered_ps16_jxl_matrix/kodak5035_h190_1983/_DSC6577/d200/ps16.jxl",
+        "sha256": "a4cfe61b764a096ec50f3b3d17615f899785af795baa10280381e503e7abbac2"
+      }
+    ]
   }
 }

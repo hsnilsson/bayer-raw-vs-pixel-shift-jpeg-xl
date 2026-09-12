@@ -58,6 +58,11 @@
       "key": "negative_density_hard_shadow_recovery",
       "label": "Hard inversion + shadow recovery",
       "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
+    },
+    {
+      "key": "negpy_extreme_inversion",
+      "label": "NegPy extreme inversion",
+      "description": "Runs the real NegPy C-41 or B&W print pipeline on a 16-bit working crop. Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual density/grade make this a deliberately hard edit-resilience check."
     }
   ],
   "images_by_transform": {
@@ -135,6 +140,21 @@
       "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
       "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
       "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "reference_negpy_extreme_inversion.png",
+      "raw61": "raw61_negpy_extreme_inversion.png",
+      "jxl_d003": "jxl_d003_negpy_extreme_inversion.png",
+      "jxl_d005": "jxl_d005_negpy_extreme_inversion.png",
+      "jxl_d010": "jxl_d010_negpy_extreme_inversion.png",
+      "jxl_d020": "jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "jxl_d200_negpy_extreme_inversion.png"
     }
   },
   "build_inputs": {
@@ -242,5 +262,91 @@
     "shift_y_px": -3.0,
     "confidence": 38.41923333562122,
     "applied": true
+  },
+  "negpy_extreme_inversion": {
+    "generator": "scripts/make_negpy_extreme_inversions.py",
+    "negpy_revision": "32ac4a2e882db5c2d2c12c1435ab4db77675f3c0",
+    "negpy_worktree_clean": true,
+    "input_precision": "native source precision promoted to a 16-bit working container",
+    "crop_size": [
+      768,
+      768
+    ],
+    "process_mode": "B&W Negative",
+    "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "settings": {
+      "iso_r_grade": 50.0,
+      "print_density": 1.0,
+      "luma_range_clip_percent": 1.0,
+      "color_clip_percent": 5.0,
+      "auto_density": false,
+      "auto_grade": false,
+      "cast_removal_strength": 0.0,
+      "toe": -1.0,
+      "shoulder": -1.0,
+      "output": "16-bit sRGB PNG"
+    },
+    "outputs": [
+      {
+        "key": "reference",
+        "source": "outputs/rawtherapee_renders/adox_vlad_resolution_target/_DSC6577/ps16.tif",
+        "sha256": "26c61ea2e1b1d47a727d2a59e214776ba7dccb904c4950f5e633f631a72fa211"
+      },
+      {
+        "key": "raw61",
+        "source": "outputs/registered_raw61_to_ps16/adox_vlad_resolution_target/_DSC6577/raw61_registered_to_ps16.tif",
+        "sha256": "1570a84788c8d9ce3c9eb35badb993b58dddc2ff3bd1eb1e44bcc87116c096d6"
+      },
+      {
+        "key": "jxl_d003",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d003/ps16.jxl",
+        "sha256": "b6a993bd9021758c49b2e6076b6b948de4234145f69c31e033cd1fb6c2fc5b0d"
+      },
+      {
+        "key": "jxl_d005",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d005/ps16.jxl",
+        "sha256": "5e695fa76171c8849219bc4334e4b098e7dfb01e4d99e7553f0c897875f9e24e"
+      },
+      {
+        "key": "jxl_d010",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d010/ps16.jxl",
+        "sha256": "e4ed3f748f5648f0d095a6a6343b7019674b2e6625ced2309ab55a1e185ea53a"
+      },
+      {
+        "key": "jxl_d020",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d020/ps16.jxl",
+        "sha256": "6a65b5b8903f57e6a0c64e0fda0688f705c64d03236ee6248803f208ce6a8d99"
+      },
+      {
+        "key": "jxl_d022",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d022/ps16.jxl",
+        "sha256": "5bbbcda2223c523080e3a9da6f8bf39ed3a91e638ecc9ff5e5113592262863ee"
+      },
+      {
+        "key": "jxl_d025",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d025/ps16.jxl",
+        "sha256": "e9b1e2d9157ef13134d807f54931b1f5435b744e23bca1ec499f1e320617618e"
+      },
+      {
+        "key": "jxl_d028",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d028/ps16.jxl",
+        "sha256": "e82c78e2175a7057c29a0f0b86b1aff2a648a092515fd559d5983e8406b71ddd"
+      },
+      {
+        "key": "jxl_d030",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d030/ps16.jxl",
+        "sha256": "7eebdc288e293f04c5fef293fb1a60110d612955994091a48153ca3b71a27d7d"
+      },
+      {
+        "key": "jxl_d100",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d100/ps16.jxl",
+        "sha256": "dc6022bf25b810656e718f70163c0aa7326999d2cd34f20c856544a4a5b3a2a9"
+      },
+      {
+        "key": "jxl_d200",
+        "source": "outputs/rendered_ps16_jxl_matrix/adox_vlad_resolution_target/_DSC6577/d200/ps16.jxl",
+        "sha256": "118610cfbd988c958c69191783f0dceaeff416301675ff65624cfb2db3d34c03"
+      }
+    ]
   }
 }

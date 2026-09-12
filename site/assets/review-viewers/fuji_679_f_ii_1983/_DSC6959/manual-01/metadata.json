@@ -52,6 +52,11 @@
       "key": "negative_density_hard_shadow_recovery",
       "label": "Hard inversion + shadow recovery",
       "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
+    },
+    {
+      "key": "negpy_extreme_inversion",
+      "label": "NegPy extreme inversion",
+      "description": "Runs the real NegPy C-41 or B&W print pipeline on a 16-bit working crop. Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual density/grade make this a deliberately hard edit-resilience check."
     }
   ],
   "images_by_transform": {
@@ -114,6 +119,18 @@
       "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
       "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
       "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "reference_negpy_extreme_inversion.png",
+      "raw61": "raw61_negpy_extreme_inversion.png",
+      "jxl_d020": "jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "jxl_d200_negpy_extreme_inversion.png"
     }
   },
   "build_inputs": {
@@ -206,5 +223,76 @@
     "shift_y_px": 6.0,
     "confidence": 110.5552220937735,
     "applied": true
+  },
+  "negpy_extreme_inversion": {
+    "generator": "scripts/make_negpy_extreme_inversions.py",
+    "negpy_revision": "32ac4a2e882db5c2d2c12c1435ab4db77675f3c0",
+    "negpy_worktree_clean": true,
+    "input_precision": "native source precision promoted to a 16-bit working container",
+    "crop_size": [
+      768,
+      768
+    ],
+    "process_mode": "Color Negative",
+    "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "settings": {
+      "iso_r_grade": 50.0,
+      "print_density": 1.0,
+      "luma_range_clip_percent": 1.0,
+      "color_clip_percent": 5.0,
+      "auto_density": false,
+      "auto_grade": false,
+      "cast_removal_strength": 0.0,
+      "toe": -1.0,
+      "shoulder": -1.0,
+      "output": "16-bit sRGB PNG"
+    },
+    "outputs": [
+      {
+        "key": "reference",
+        "source": "outputs/rawtherapee_renders/fuji_679_f_ii_1983/_DSC6959/ps16.tif",
+        "sha256": "bed6d7118111dd0b575849a20cebf3565fb1519b809f6a964c7cdd124a427876"
+      },
+      {
+        "key": "raw61",
+        "source": "outputs/registered_raw61_to_ps16/fuji_679_f_ii_1983/_DSC6959/raw61_registered_to_ps16.tif",
+        "sha256": "27202f5dc53ed6c6b972868d54ceaf590334bff6f43678f53b252a9c9d2a92e0"
+      },
+      {
+        "key": "jxl_d020",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d020/ps16.jxl",
+        "sha256": "210660da3702c9d75014d0edb16ae4b4e8c0d2eb84b80d1b6462ccd99895b0d1"
+      },
+      {
+        "key": "jxl_d022",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d022/ps16.jxl",
+        "sha256": "5deb8cc77f5f05c50a6be0643ebcd0dea7b2b5812d802065c944e043921d0e08"
+      },
+      {
+        "key": "jxl_d025",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d025/ps16.jxl",
+        "sha256": "42298798d7b64fd5461286af31d4161e7012cae23f5613f1e05745390eaafca4"
+      },
+      {
+        "key": "jxl_d028",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d028/ps16.jxl",
+        "sha256": "c3a18084abd162f8cd8d9d11165b4ca280fa685055af8450c698edeecadbbebe"
+      },
+      {
+        "key": "jxl_d030",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d030/ps16.jxl",
+        "sha256": "e2eea09bb6c143fadf05e0ac1e220e7c9fb203366e65163c043e3b98038705a4"
+      },
+      {
+        "key": "jxl_d100",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d100/ps16.jxl",
+        "sha256": "5f82257f1f58bb1653007800dd40b2cba65f8fc0c68986796f108215a3d5f8b9"
+      },
+      {
+        "key": "jxl_d200",
+        "source": "outputs/rendered_ps16_jxl_matrix/fuji_679_f_ii_1983/_DSC6959/d200/ps16.jxl",
+        "sha256": "05786527d9fb0072828eb73946abf5c027d66bac44b8f4e02d8f9fe2dee44c70"
+      }
+    ]
   }
 }

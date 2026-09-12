@@ -52,6 +52,11 @@
       "key": "negative_density_hard_shadow_recovery",
       "label": "Hard inversion + shadow recovery",
       "description": "Uses the same hard density inversion, then lifts its lower positive values before the final hard contrast. A compound edit-resilience stress check, not a recommended film grade."
+    },
+    {
+      "key": "negpy_extreme_inversion",
+      "label": "NegPy extreme inversion",
+      "description": "Runs the real NegPy C-41 or B&W print pipeline on a 16-bit working crop. Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual density/grade make this a deliberately hard edit-resilience check."
     }
   ],
   "images_by_transform": {
@@ -114,6 +119,18 @@
       "jxl_d030": "jxl_d030_negative_density_hard_shadow_recovery.png",
       "jxl_d100": "jxl_d100_negative_density_hard_shadow_recovery.png",
       "jxl_d200": "jxl_d200_negative_density_hard_shadow_recovery.png"
+    },
+    "negpy_extreme_inversion": {
+      "reference": "reference_negpy_extreme_inversion.png",
+      "ps16_lossless": "reference_negpy_extreme_inversion.png",
+      "raw61": "raw61_negpy_extreme_inversion.png",
+      "jxl_d020": "jxl_d020_negpy_extreme_inversion.png",
+      "jxl_d022": "jxl_d022_negpy_extreme_inversion.png",
+      "jxl_d025": "jxl_d025_negpy_extreme_inversion.png",
+      "jxl_d028": "jxl_d028_negpy_extreme_inversion.png",
+      "jxl_d030": "jxl_d030_negpy_extreme_inversion.png",
+      "jxl_d100": "jxl_d100_negpy_extreme_inversion.png",
+      "jxl_d200": "jxl_d200_negpy_extreme_inversion.png"
     }
   },
   "build_inputs": {
@@ -206,5 +223,76 @@
     "shift_y_px": 4.0,
     "confidence": 123.08407028533864,
     "applied": true
+  },
+  "negpy_extreme_inversion": {
+    "generator": "scripts/make_negpy_extreme_inversions.py",
+    "negpy_revision": "32ac4a2e882db5c2d2c12c1435ab4db77675f3c0",
+    "negpy_worktree_clean": true,
+    "input_precision": "native source precision promoted to a 16-bit working container",
+    "crop_size": [
+      768,
+      768
+    ],
+    "process_mode": "Color Negative",
+    "normalization": "PS16 reference bounds locked across RAW61 and JXL candidates",
+    "settings": {
+      "iso_r_grade": 50.0,
+      "print_density": 1.0,
+      "luma_range_clip_percent": 1.0,
+      "color_clip_percent": 5.0,
+      "auto_density": false,
+      "auto_grade": false,
+      "cast_removal_strength": 0.0,
+      "toe": -1.0,
+      "shoulder": -1.0,
+      "output": "16-bit sRGB PNG"
+    },
+    "outputs": [
+      {
+        "key": "reference",
+        "source": "outputs/rawtherapee_renders/konica_vx100_probable_1995/_DSC6879/ps16.tif",
+        "sha256": "492951901a44ccae5369ffb6b29e85149ba46dc12ec5b54695b79363ccd94f7d"
+      },
+      {
+        "key": "raw61",
+        "source": "outputs/registered_raw61_to_ps16/konica_vx100_probable_1995/_DSC6879/raw61_registered_to_ps16.tif",
+        "sha256": "5ea6a7ceae317fc66877f8f006cc00b057cdb33c4f08760b6a806afc80ad708a"
+      },
+      {
+        "key": "jxl_d020",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d020/ps16.jxl",
+        "sha256": "1ba2b402eaf132f1113b423b614aa7946e5676474a85404191efb2ce63167cf7"
+      },
+      {
+        "key": "jxl_d022",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d022/ps16.jxl",
+        "sha256": "95b9904db48240333207533595bede76ae80908dd033e8fb27a16e379a64974f"
+      },
+      {
+        "key": "jxl_d025",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d025/ps16.jxl",
+        "sha256": "06426dbcc48a3813965fa2eff36876808318e354ec2ee8c598d2c704a68226db"
+      },
+      {
+        "key": "jxl_d028",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d028/ps16.jxl",
+        "sha256": "57842b7653c8842ebd76bd9229d99eb3cd615698ab66d8a329f6058bc4cd7f48"
+      },
+      {
+        "key": "jxl_d030",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d030/ps16.jxl",
+        "sha256": "b7c77a19e32dfb9d45799e404eb302494c775805dd0c4a7bac24d37121b2b9d2"
+      },
+      {
+        "key": "jxl_d100",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d100/ps16.jxl",
+        "sha256": "21d707f4903f1e7388d6e51c6325cde8859918af5d391cef5cb41fc53a43dc36"
+      },
+      {
+        "key": "jxl_d200",
+        "source": "outputs/rendered_ps16_jxl_matrix/konica_vx100_probable_1995/_DSC6879/d200/ps16.jxl",
+        "sha256": "93cc45eb3d7988d1b2b373a53115476c40a7b7ee3e4f760ef456cb4ba86552f7"
+      }
+    ]
   }
 }
