@@ -64,6 +64,25 @@ differences in the normal or inversion views. PS16 JXL candidates receive no
 such adjustment because their absolute difference from PS16 is codec evidence.
 Keep these small derived crops limited to approved public cases.
 
+The separate Pixelshift combiner audit compares PixelShift2DNG and Sony ARQ
+only where both were built from the same 16 source frames. It registers both
+renders and independently exposure-matches them to the first source ARW, then
+keeps low-pass shadow/highlight error separate from high-pass detail
+correlation. Generate its compact three-column panels and JSON before the site
+build:
+
+```powershell
+python scripts\run_pixelshift_combiner_audit.py `
+  --plan <local-audit-plan.json> `
+  --output-assets site\assets\pixelshift-combiner-audit `
+  --output-json metadata\pixelshift_combiner_audit.json
+```
+
+The local plan contains paths to unpublished full-size renders and is not part
+of the public artifact. The report publishes only five approved crops with a
+single Normal / Highlight separation / Shadow recovery dropdown; it does not
+duplicate the main JPEG XL matrix.
+
 Do not commit locally generated scan panels or full-size renders automatically.
 Static diagnostic panels stay in `results/break_even_review_panels/` by
 default because they are large regenerated artifacts. Copy only selected

@@ -31,6 +31,7 @@ DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
 DEFAULT_MUIMG_PROBE = ROOT / "metadata/muimg_dng_jxl_probe.json"
 DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/muimg_archive_qualification.json"
+DEFAULT_COMBINER_AUDIT = ROOT / "metadata/pixelshift_combiner_audit.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
 VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
 
@@ -1563,6 +1564,124 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 """.replace("__VIEWER_DATA__", viewer_json)
 
 
+def render_combiner_audit(audit: dict[str, object]) -> str:
+    cases = audit.get("cases", [])
+    summary = audit.get("summary", {})
+    mode_labels = audit.get("mode_labels", {})
+    if not isinstance(cases, list) or not cases:
+        return ""
+    if not isinstance(summary, dict) or not isinstance(mode_labels, dict):
+        raise ValueError("combiner audit summary and mode_labels must be JSON objects")
+
+    winner_counts = summary.get("winner_counts", {})
+    exposure = summary.get("median_exposure_match_ev", {})
+    if not isinstance(winner_counts, dict) or not isinstance(exposure, dict):
+        raise ValueError("combiner audit winner counts and exposure values must be JSON objects")
+
+    def wins(range_name: str, combiner: str) -> int:
+        values = winner_counts.get(range_name, {})
+        if not isinstance(values, dict):
+            return 0
+        value = values.get(combiner, 0)
+        return int(value) if isinstance(value, (int, float)) else 0
+
+    crop_count = int(summary.get("crop_count", 0))
+    ps2dng_ev = float(exposure.get("pixelshift2dng", 0.0))
+    sony_ev = float(exposure.get("sony_arq", 0.0))
+    mode_order = [mode for mode in ("normal", "highlight", "shadow") if mode in mode_labels]
+    if not mode_order:
+        mode_order = ["normal", "highlight", "shadow"]
+    mode_options = "".join(
+        f'<option value="{esc(mode)}">{esc(mode_labels.get(mode, mode.title()))}</option>'
+        for mode in mode_order
+    )
+
+    cards = []
+    for case in cases:
+        if not isinstance(case, dict):
+            continue
+        label = str(case.get("label", "Pixelshift sequence"))
+        sequence = str(case.get("sequence", ""))
+        crops = case.get("crops", [])
+        if not isinstance(crops, list):
+            continue
+        for crop in crops:
+            if not isinstance(crop, dict):
+                continue
+            images = crop.get("images", {})
+            metrics = crop.get("metrics", {})
+            if not isinstance(images, dict) or not isinstance(metrics, dict):
+                continue
+            normal_src = str(images.get("normal", ""))
+            if not normal_src:
+                continue
+            data_sources = " ".join(
+                f'data-{esc(mode)}="{esc(images.get(mode, normal_src))}"' for mode in mode_order
+            )
+            range_errors = metrics.get("range_errors", {})
+            detail = metrics.get("detail_correlation", {})
+            if not isinstance(range_errors, dict):
+                range_errors = {}
+            if not isinstance(detail, dict):
+                detail = {}
+            shadow = range_errors.get("shadow", {})
+            highlight = range_errors.get("highlight", {})
+            shadow_winner = shadow.get("winner", "-") if isinstance(shadow, dict) else "-"
+            highlight_winner = highlight.get("winner", "-") if isinstance(highlight, dict) else "-"
+            detail_winner = detail.get("winner", "-")
+            winner_label = {"sony_arq": "Sony", "pixelshift2dng": "PixelShift2DNG", "tie": "Tie"}
+            name = str(crop.get("name", "crop"))
+            alt = f"{label}, {name}: source ARW anchor, PixelShift2DNG, and Sony ARQ"
+            cards.append(
+                f"""
+                <figure class="combiner-card">
+                  <a href="{esc(normal_src)}" data-combiner-link>
+                    <img src="{esc(normal_src)}" {data_sources} data-combiner-image alt="{esc(alt)}" loading="lazy">
+                  </a>
+                  <figcaption><strong>{esc(label)} / {esc(name)}</strong><br>
+                    <span class="subtle">{esc(sequence)} &middot; shadow: {esc(winner_label.get(str(shadow_winner), str(shadow_winner)))} &middot; highlight: {esc(winner_label.get(str(highlight_winner), str(highlight_winner)))} &middot; detail: {esc(winner_label.get(str(detail_winner), str(detail_winner)))}</span>
+                  </figcaption>
+                </figure>
+                """.strip()
+            )
+
+    if not cards:
+        return ""
+    scope = str(audit.get("scope", "A bounded same-source comparison."))
+    method = str(audit.get("method", ""))
+    return f"""<section id="combiner-audit">
+      <h2>Pixelshift Combiner Audit</h2>
+      <div class="note">
+        <p><strong>Outcome:</strong> Sony ARQ is the stronger latitude reference in this bounded audit: it wins all {wins('shadow', 'sony_arq')}/{crop_count} shadow crops and {wins('highlight', 'sony_arq')}/{crop_count} highlight crops. PixelShift2DNG retains the stronger detail correlation in {wins('detail', 'pixelshift2dng')}/{crop_count} crops. Neither combiner clipped valid crop pixels.</p>
+        <p><strong>What changed:</strong> each combiner is registered and independently exposure-matched to the first source ARW before the range tests. The median correction was {ps2dng_ev:+.2f} EV for PixelShift2DNG and {sony_ev:+.2f} EV for Sony ARQ, so a global brightness offset cannot decide the winner.</p>
+        <p><strong>Boundary:</strong> {esc(scope)} This does not prove a universal winner and it does not double the JPEG XL matrix. It identifies the fairer latitude baseline where matching Sony ARQ material exists; the existing PS16/JXL codec comparisons remain internally valid.</p>
+        <p class="muted">{esc(method)}</p>
+        <p><a href="https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/main/docs/pixelshift-combiner-audit.md">Full method, exact source sequences, and interpretation</a></p>
+      </div>
+      <label class="combiner-mode-label">Audit view
+        <select id="combinerAuditMode" aria-label="Pixelshift combiner audit view">{mode_options}</select>
+      </label>
+      <div class="combiner-grid">{''.join(cards)}</div>
+    </section>
+    <script>
+    (() => {{
+      const select = document.getElementById("combinerAuditMode");
+      if (!select) return;
+      const update = () => {{
+        document.querySelectorAll("[data-combiner-image]").forEach((image) => {{
+          const src = image.dataset[select.value] || image.dataset.normal;
+          if (!src) return;
+          image.src = src;
+          const link = image.closest("[data-combiner-link]");
+          if (link) link.href = src;
+        }});
+      }};
+      select.addEventListener("change", update);
+      update();
+    }})();
+    </script>"""
+
+
 def render_html(
     rows: list[dict[str, str]],
     summaries: list[LevelSummary],
@@ -1575,6 +1694,7 @@ def render_html(
     muimg_probe: dict[str, object] | None = None,
     muimg_qualification: dict[str, object] | None = None,
     render_index: Path = DEFAULT_RENDER_INDEX,
+    combiner_audit: dict[str, object] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -1607,6 +1727,7 @@ def render_html(
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
     public_reproducibility_html = render_public_reproducibility(public_figures or [], output)
     muimg_probe_html = render_muimg_probe(muimg_probe or {}, muimg_qualification)
+    combiner_audit_html = render_combiner_audit(combiner_audit or {})
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -1789,6 +1910,12 @@ def render_html(
     }}
     .metric {{ font-size: 28px; font-weight: 700; margin-top: 4px; }}
     .questions {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .combiner-mode-label {{ display: block; max-width: 360px; margin: 14px 0; font-weight: 700; }}
+    .combiner-mode-label select {{ display: block; width: 100%; margin-top: 5px; }}
+    .combiner-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .combiner-card {{ margin: 0; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }}
+    .combiner-card img {{ display: block; width: 100%; height: auto; background: #080a0c; border-radius: 7px; }}
+    .combiner-card figcaption {{ margin-top: 8px; }}
     .question-card details {{ margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }}
     .question-card summary {{ cursor: pointer; font-weight: 700; color: #075985; }}
     .question-card details p {{ margin: 8px 0 0; color: var(--muted); font-size: 13px; }}
@@ -1987,7 +2114,7 @@ def render_html(
       .crop-toolbar p {{ height: calc(1.45em * 5); }}
     }}
     @media (max-width: 900px) {{
-      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid {{ grid-template-columns: 1fr; }}
+      .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid, .combiner-grid {{ grid-template-columns: 1fr; }}
       .arrow {{ display: none; }}
       header, main {{ padding: 16px; }}
       table {{ font-size: 13px; }}
@@ -2054,7 +2181,7 @@ def render_html(
     </div>
 
     <p><strong>The second storage option:</strong> direct muimg DNG/JXL produced 16 checked outputs of 66-116 MiB at d001. All passed metadata, full segment-decode and Adobe rewrite checks. That fits the separate budget of about 200 MiB per capture; most files remain larger than RAW61.</p>
-    <nav aria-label="Article sections"><p><a href="#rendered-results">Rendered results</a> &middot; <a href="#visual-review">Visual review</a> &middot; <a href="#muimg-results">DNG storage option</a> &middot; <a href="#public-evidence">Public examples</a> &middot; <a href="#measurement-details">Measurement details</a></p></nav>
+    <nav aria-label="Article sections"><p><a href="#rendered-results">Rendered results</a> &middot; <a href="#visual-review">Visual review</a> &middot; <a href="#combiner-audit">Combiner audit</a> &middot; <a href="#muimg-results">DNG storage option</a> &middot; <a href="#public-evidence">Public examples</a> &middot; <a href="#measurement-details">Measurement details</a></p></nav>
     <p>The counts above describe frame-and-quality combinations: the same frames recur at different compression settings. A favorable diagnostic comparison means that the size and error thresholds pass. Useful detail and acceptable grain still need visual interpretation.</p>
     <h2>How To Read The Comparison</h2>
     <section class="questions">
@@ -2167,6 +2294,8 @@ def render_html(
       <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. Use left and right arrow keys to move between Film candidates, View, and Candidate quality; use up and down to change the selection, and press O to toggle the overlay.</p>
     </div>
     {visual_review_html}
+
+    {combiner_audit_html}
 
     <span id="muimg-results"></span>
     {muimg_probe_html}
@@ -2415,6 +2544,12 @@ def main() -> int:
         help="Optional image-free JSON summary of corpus-wide muimg archive qualification.",
     )
     parser.add_argument(
+        "--combiner-audit",
+        type=Path,
+        default=DEFAULT_COMBINER_AUDIT,
+        help="Optional JSON summary and public panels for the bounded Pixelshift combiner audit.",
+    )
+    parser.add_argument(
         "--copy-public-figures-to",
         type=Path,
         help="Copy selected public figures into the report artifact before linking them.",
@@ -2445,6 +2580,7 @@ def main() -> int:
     public_figures = public_figure_paths(args.public_figures)
     muimg_probe = read_json_object(args.muimg_probe)
     muimg_qualification = read_json_object(args.muimg_qualification)
+    combiner_audit = read_json_object(args.combiner_audit)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
@@ -2465,6 +2601,7 @@ def main() -> int:
             muimg_probe,
             muimg_qualification,
             args.render_index,
+            combiner_audit,
         ),
         encoding="utf-8",
     )

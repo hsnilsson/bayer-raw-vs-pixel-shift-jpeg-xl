@@ -110,6 +110,9 @@ These results do not establish a universal archival recommendation.
 - [docs/muimg-dng-jxl-probe.md](docs/muimg-dng-jxl-probe.md): bounded one-frame
   probe of direct DNG/JXL encoding, metadata retention, storage crossing, and
   current application support
+- [docs/pixelshift-combiner-audit.md](docs/pixelshift-combiner-audit.md):
+  bounded same-source comparison of PixelShift2DNG and Sony ARQ, with exposure-
+  normalized latitude and separate detail evidence
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
 - [TESTDATA.md](TESTDATA.md): public test data sources and rights notes
 - [docs/research-log.md](docs/research-log.md): project history and decisions
@@ -178,6 +181,9 @@ These results do not establish a universal archival recommendation.
   local pre-publication safety audit
 - [scripts/run_public_latitude_stress.py](scripts/run_public_latitude_stress.py):
   run reproducible JPEG XL stress tests on public TIFF crops
+- [scripts/run_pixelshift_combiner_audit.py](scripts/run_pixelshift_combiner_audit.py):
+  compare two Pixelshift combiners against a registered, exposure-normalized
+  source-ARW anchor without duplicating the main JPEG XL result matrix
 - [scripts/inspect_dng_jxl_color_path.py](scripts/inspect_dng_jxl_color_path.py):
   inspect embedded DNG/JXL headers and distinguish XYB from original-profile
   coding
