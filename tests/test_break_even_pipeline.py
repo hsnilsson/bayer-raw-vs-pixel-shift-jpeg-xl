@@ -1129,6 +1129,62 @@ class BreakEvenPipelineTests(unittest.TestCase):
             write_rgb_tiff(path, textured_rgb(16, 16))
             self.assertTrue(path.is_file())
 
+    def test_combiner_audit_keeps_latitude_and_detail_winners_separate(self) -> None:
+        audit = {
+            "scope": "Two exact source sequences.",
+            "method": "Registered and exposure-matched to the first source ARW.",
+            "mode_labels": {
+                "normal": "Exposure-matched normal",
+                "highlight": "Highlight separation",
+                "shadow": "Shadow recovery",
+            },
+            "summary": {
+                "crop_count": 5,
+                "winner_counts": {
+                    "shadow": {"sony_arq": 5},
+                    "highlight": {"sony_arq": 4},
+                    "detail": {"pixelshift2dng": 5},
+                },
+                "median_exposure_match_ev": {"pixelshift2dng": -0.103, "sony_arq": 0.0004},
+            },
+            "cases": [
+                {
+                    "label": "Test target",
+                    "sequence": "frame01-frame16",
+                    "crops": [
+                        {
+                            "name": "manual-01",
+                            "images": {
+                                "normal": "assets/a-normal.png",
+                                "highlight": "assets/a-highlight.png",
+                                "shadow": "assets/a-shadow.png",
+                            },
+                            "metrics": {
+                                "range_errors": {
+                                    "shadow": {"winner": "sony_arq"},
+                                    "highlight": {"winner": "sony_arq"},
+                                },
+                                "detail_correlation": {"winner": "pixelshift2dng"},
+                            },
+                        }
+                    ],
+                }
+            ],
+        }
+
+        html = report_site.render_combiner_audit(audit)
+
+        self.assertIn("Sony ARQ is the stronger latitude reference", html)
+        self.assertIn("PixelShift2DNG retains the stronger detail correlation", html)
+        self.assertIn('id="combinerAuditMode"', html)
+        self.assertIn('data-highlight="assets/a-highlight.png"', html)
+        self.assertIn("shadow: Sony", html)
+        self.assertIn("detail: PixelShift2DNG", html)
+        self.assertIn("does not double the JPEG XL matrix", html)
+
+    def test_empty_combiner_audit_renders_nothing(self) -> None:
+        self.assertEqual(report_site.render_combiner_audit({}), "")
+
 
 if __name__ == "__main__":
     unittest.main()
