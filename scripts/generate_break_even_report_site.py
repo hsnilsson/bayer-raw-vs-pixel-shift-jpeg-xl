@@ -711,29 +711,6 @@ def viewer_records(
         image_sets = metadata.get("images_by_transform", {}) if isinstance(metadata.get("images_by_transform", {}), dict) else {}
         mode_items = metadata.get("view_modes", []) if isinstance(metadata.get("view_modes", []), list) else []
         view_modes = [item for item in mode_items if isinstance(item, dict) and item.get("key") in image_sets]
-        tail_diagnostics = (
-            metadata.get("negpy_tail_diagnostics", {})
-            if isinstance(metadata.get("negpy_tail_diagnostics", {}), dict)
-            else {}
-        )
-        tail_layers = (
-            tail_diagnostics.get("layers", {})
-            if isinstance(tail_diagnostics.get("layers", {}), dict)
-            else {}
-        )
-
-        def tail_statistics(key: str) -> dict[str, float]:
-            layer = tail_layers.get(key, {})
-            if not isinstance(layer, dict):
-                return {}
-            statistics = layer.get("statistics", {})
-            if not isinstance(statistics, dict):
-                return {}
-            return {
-                str(name): float(value)
-                for name, value in statistics.items()
-                if isinstance(value, (int, float))
-            }
         if not view_modes:
             legacy_key = str(metadata.get("transform") or "identity")
             image_sets = {legacy_key: {"reference": "reference.png", "raw61": "raw61.png"}}
@@ -780,7 +757,6 @@ def viewer_records(
                     "storageKind": "lossless PS16 render",
                     "overview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
                     "overviews": ps16_overviews,
-                    "tailStats": tail_statistics("ps16_lossless") or tail_statistics("reference"),
                 }
             )
         raw_sources = {
@@ -820,7 +796,6 @@ def viewer_records(
                         else ""
                     ),
                     "overviews": overview_sources(key),
-                    "tailStats": tail_statistics(key),
                 }
             )
         if not reference_path.is_file() or not raw61_path.is_file() or not candidates:
@@ -846,7 +821,6 @@ def viewer_records(
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 "referenceOverviews": raw61_overviews,
-                "referenceTailStats": tail_statistics("raw61"),
                 "candidates": candidates,
                 "metadata": {
                     "transform": default_mode,
@@ -1393,7 +1367,6 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function updateHeading() {
       const viewer = currentViewer();
-      const candidate = currentCandidate();
       const alignment = viewer.metadata.localRaw61Alignment || {};
       const mode = currentMode();
       title.textContent = viewer.label;
@@ -1402,18 +1375,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (mode.label) parts.push(mode.label);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
-      const tailFields = {
-        negpy_deep_shadow_tail: ["below_reference_shadow_cutoff_percent", "below the shared shadow threshold"],
-        negpy_bright_highlight_tail: ["above_reference_highlight_cutoff_percent", "above the shared highlight threshold"]
-      };
-      const tailField = tailFields[state.modeKey];
-      const referenceValue = tailField && viewer.referenceTailStats ? viewer.referenceTailStats[tailField[0]] : null;
-      const candidateValue = tailField && candidate && candidate.tailStats ? candidate.tailStats[tailField[0]] : null;
-      const tailSummary = Number.isFinite(referenceValue) && Number.isFinite(candidateValue)
-        ? `Tail occupancy: RAW61 ${referenceValue.toFixed(2)}% vs ${candidate.label} ${candidateValue.toFixed(2)}% ${tailField[1]}. Counts alone are not latitude; compare coherent scene structure.`
-        : "";
-      const notes = [tailSummary, mode.description || ""].filter(Boolean).join(" ");
-      meta.textContent = `${parts.join(" | ")}${notes ? ` - ${notes}` : ""}`;
+      meta.textContent = `${parts.join(" | ")}${mode.description ? ` - ${mode.description}` : ""}`;
     }
 
     function setViewer(index) {

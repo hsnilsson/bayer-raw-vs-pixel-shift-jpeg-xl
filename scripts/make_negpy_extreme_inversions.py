@@ -31,34 +31,6 @@ MODE_DESCRIPTION = (
     "Normalization is locked to the PS16 reference; ISO-R 50 and fixed manual "
     "density/grade make this a deliberately hard edit-resilience check."
 )
-DEEP_SHADOW_MODE_KEY = "negpy_deep_shadow_tail"
-BRIGHT_HIGHLIGHT_MODE_KEY = "negpy_bright_highlight_tail"
-TAIL_MODE_SPECS = (
-    {
-        "key": DEEP_SHADOW_MODE_KEY,
-        "label": "NegPy deepest-shadow tail",
-        "description": (
-            "Isolates the darkest 1% of the PS16-locked NegPy result on black and amplifies "
-            "its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for "
-            "every layer. Use it as a post-inversion latitude proxy by comparing coherent "
-            "structure, not pixel count; it is not an absolute capture-latitude measurement."
-        ),
-    },
-    {
-        "key": BRIGHT_HIGHLIGHT_MODE_KEY,
-        "label": "NegPy brightest-highlight tail",
-        "description": (
-            "Isolates the brightest 1% of the PS16-locked NegPy result on black and amplifies "
-            "its chromaticity. The PS16 reference supplies fixed linear-luminance bounds for "
-            "every layer. Use it as a post-inversion latitude proxy by comparing coherent "
-            "structure, not pixel count; it is not an absolute capture-latitude measurement."
-        ),
-    },
-)
-SHADOW_INNER_PERCENTILE = 0.05
-SHADOW_CUTOFF_PERCENTILE = 1.0
-HIGHLIGHT_CUTOFF_PERCENTILE = 99.0
-HIGHLIGHT_INNER_PERCENTILE = 99.95
 
 
 def sha256(path: Path) -> str:
@@ -113,214 +85,6 @@ def merge_mode(metadata: dict[str, Any], images: dict[str, str], provenance: dic
     result["view_modes"] = modes
     result[MODE_KEY] = provenance
     return result
-
-
-def merge_tail_modes(
-    metadata: dict[str, Any],
-    images_by_mode: dict[str, dict[str, str]],
-    provenance: dict[str, Any],
-) -> dict[str, Any]:
-    result = dict(metadata)
-    image_sets = dict(result.get("images_by_transform", {}))
-    tail_keys = {str(spec["key"]) for spec in TAIL_MODE_SPECS}
-    for key, images in images_by_mode.items():
-        image_sets[key] = images
-    result["images_by_transform"] = image_sets
-
-    modes = [
-        dict(item)
-        for item in result.get("view_modes", [])
-        if isinstance(item, dict) and item.get("key") not in tail_keys
-    ]
-    modes.extend(
-        {
-            "key": str(spec["key"]),
-            "label": str(spec["label"]),
-            "description": str(spec["description"]),
-        }
-        for spec in TAIL_MODE_SPECS
-    )
-    result["view_modes"] = modes
-    result["negpy_tail_diagnostics"] = provenance
-    return result
-
-
-def srgb_to_linear(values: np.ndarray) -> np.ndarray:
-    unit = np.asarray(values, dtype=np.float32)
-    return np.where(
-        unit <= np.float32(0.04045),
-        unit / np.float32(12.92),
-        np.power((unit + np.float32(0.055)) / np.float32(1.055), np.float32(2.4)),
-    )
-
-
-def linear_to_srgb(values: np.ndarray) -> np.ndarray:
-    linear = np.clip(np.asarray(values, dtype=np.float32), 0.0, 1.0)
-    return np.where(
-        linear <= np.float32(0.0031308),
-        linear * np.float32(12.92),
-        np.float32(1.055) * np.power(linear, np.float32(1.0 / 2.4)) - np.float32(0.055),
-    )
-
-
-def linear_luminance(rgb: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    if rgb.ndim != 3 or rgb.shape[2] < 3 or rgb.dtype != np.uint16:
-        raise ValueError(f"expected uint16 RGB pixels, got {rgb.shape} {rgb.dtype}")
-    linear = srgb_to_linear(rgb[:, :, :3].astype(np.float32) / np.float32(65535.0))
-    luminance = (
-        linear[:, :, 0] * np.float32(0.2126)
-        + linear[:, :, 1] * np.float32(0.7152)
-        + linear[:, :, 2] * np.float32(0.0722)
-    )
-    return linear, luminance
-
-
-def reference_tail_bounds(reference: np.ndarray) -> dict[str, float]:
-    _linear, luminance = linear_luminance(reference)
-    shadow_inner, shadow_cutoff, highlight_cutoff, highlight_inner = np.percentile(
-        luminance,
-        [
-            SHADOW_INNER_PERCENTILE,
-            SHADOW_CUTOFF_PERCENTILE,
-            HIGHLIGHT_CUTOFF_PERCENTILE,
-            HIGHLIGHT_INNER_PERCENTILE,
-        ],
-    )
-    return {
-        "shadow_inner": float(shadow_inner),
-        "shadow_cutoff": float(shadow_cutoff),
-        "highlight_cutoff": float(highlight_cutoff),
-        "highlight_inner": float(highlight_inner),
-    }
-
-
-def render_tail_view(rgb: np.ndarray, bounds: dict[str, float], mode_key: str) -> np.ndarray:
-    linear, luminance = linear_luminance(rgb)
-    if mode_key == DEEP_SHADOW_MODE_KEY:
-        span = bounds["shadow_cutoff"] - bounds["shadow_inner"]
-        if span <= float(np.finfo(np.float32).eps):
-            strength = (luminance <= np.float32(bounds["shadow_cutoff"])).astype(np.float32)
-        else:
-            strength = (np.float32(bounds["shadow_cutoff"]) - luminance) / np.float32(span)
-    elif mode_key == BRIGHT_HIGHLIGHT_MODE_KEY:
-        span = bounds["highlight_inner"] - bounds["highlight_cutoff"]
-        if span <= float(np.finfo(np.float32).eps):
-            strength = (luminance >= np.float32(bounds["highlight_cutoff"])).astype(np.float32)
-        else:
-            strength = (luminance - np.float32(bounds["highlight_cutoff"])) / np.float32(span)
-    else:
-        raise ValueError(f"unknown NegPy tail mode: {mode_key}")
-
-    # Normalize chromaticity so selected near-black values remain visible. Exact
-    # neutral black uses white as its marker instead of disappearing into the
-    # black background. Brightness encodes distance into the selected tail.
-    peak = np.max(linear, axis=2, keepdims=True)
-    chromaticity = np.ones_like(linear)
-    np.divide(linear, peak, out=chromaticity, where=peak > np.float32(1e-12))
-    rendered = chromaticity * np.clip(strength, 0.0, 1.0)[:, :, None]
-    encoded = linear_to_srgb(rendered)
-    return np.round(encoded * np.float32(65535.0)).astype(np.uint16)
-
-
-def tail_statistics(rgb: np.ndarray, bounds: dict[str, float]) -> dict[str, float]:
-    _linear, luminance = linear_luminance(rgb)
-    return {
-        "below_reference_shadow_cutoff_percent": float(
-            np.mean(luminance <= np.float32(bounds["shadow_cutoff"])) * 100.0
-        ),
-        "above_reference_highlight_cutoff_percent": float(
-            np.mean(luminance >= np.float32(bounds["highlight_cutoff"])) * 100.0
-        ),
-        "all_channels_zero_percent": float(np.mean(np.all(rgb[:, :, :3] == 0, axis=2)) * 100.0),
-        "all_channels_max_percent": float(np.mean(np.all(rgb[:, :, :3] == 65535, axis=2)) * 100.0),
-    }
-
-
-def read_png_rgb16(path: Path, cv2: Any) -> np.ndarray:
-    bgr = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
-    if bgr is None or bgr.ndim != 3 or bgr.shape[2] < 3 or bgr.dtype != np.uint16:
-        shape = None if bgr is None else bgr.shape
-        dtype = None if bgr is None else bgr.dtype
-        raise ValueError(f"expected a 16-bit RGB PNG, got {shape} {dtype}: {path}")
-    return np.ascontiguousarray(bgr[:, :, :3][:, :, ::-1])
-
-
-def write_png_rgb16(path: Path, rgb: np.ndarray, cv2: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    bgr = np.ascontiguousarray(rgb[:, :, ::-1])
-    if not cv2.imwrite(str(path), bgr, [cv2.IMWRITE_PNG_COMPRESSION, 9]):
-        raise RuntimeError(f"failed to write PNG: {path}")
-
-
-def generate_tail_views(
-    item: dict[str, Any],
-    cv2: Any,
-    *,
-    force: bool,
-    force_raw61: bool,
-) -> tuple[dict[str, dict[str, str]], dict[str, Any]]:
-    negpy_images = item["outputs"]
-    reference_path = item["directory"] / negpy_images["reference"]
-    reference = read_png_rgb16(reference_path, cv2)
-    bounds = reference_tail_bounds(reference)
-    images_by_mode = {
-        str(spec["key"]): output_mapping(item["metadata"], str(spec["key"]))
-        for spec in TAIL_MODE_SPECS
-    }
-    layers: dict[str, dict[str, Any]] = {}
-    seen_sources: dict[Path, tuple[np.ndarray, dict[str, float]]] = {
-        reference_path: (reference, tail_statistics(reference, bounds))
-    }
-
-    for key, filename in negpy_images.items():
-        source_path = item["directory"] / filename
-        if source_path in seen_sources:
-            pixels, statistics = seen_sources[source_path]
-        else:
-            pixels = read_png_rgb16(source_path, cv2)
-            statistics = tail_statistics(pixels, bounds)
-            seen_sources[source_path] = (pixels, statistics)
-        outputs: dict[str, dict[str, str]] = {}
-        for spec in TAIL_MODE_SPECS:
-            mode_key = str(spec["key"])
-            output_path = item["directory"] / images_by_mode[mode_key][key]
-            rewrite = force or (force_raw61 and key == "raw61") or not output_path.is_file()
-            if rewrite:
-                write_png_rgb16(output_path, render_tail_view(pixels, bounds, mode_key), cv2)
-            outputs[mode_key] = {
-                "file": output_path.name,
-                "sha256": sha256(output_path),
-            }
-        layers[key] = {
-            "source_negpy_file": source_path.name,
-            "statistics": statistics,
-            "outputs": outputs,
-        }
-
-    provenance = {
-        "generator": str(Path(__file__).relative_to(ROOT)),
-        "source_mode": MODE_KEY,
-        "normalization": "PS16 reference tail bounds locked across RAW61 and JXL candidates",
-        "luminance": "linear-light sRGB with Rec.709 coefficients",
-        "percentiles": {
-            "deep_shadow_inner": SHADOW_INNER_PERCENTILE,
-            "deep_shadow_cutoff": SHADOW_CUTOFF_PERCENTILE,
-            "bright_highlight_cutoff": HIGHLIGHT_CUTOFF_PERCENTILE,
-            "bright_highlight_inner": HIGHLIGHT_INNER_PERCENTILE,
-        },
-        "reference_linear_luminance_bounds": bounds,
-        "rendering": (
-            "Selected tail pixels are shown on black; brightness is distance into the tail and hue is "
-            "linear-RGB chromaticity normalized to its strongest channel. Exact neutral black is marked white."
-        ),
-        "interpretation": (
-            "A post-inversion spatial tail diagnostic. Pixel occupancy is not a capture-latitude measurement; "
-            "noise, clipping, rendering, resampling, and registration can all change it."
-        ),
-        "output": "16-bit sRGB PNG",
-        "layers": layers,
-    }
-    return images_by_mode, provenance
 
 
 def _ppm_tokens(handle: Any, count: int) -> list[bytes]:
@@ -588,11 +352,6 @@ def main() -> int:
     parser.add_argument("--case", action="append", default=[], help='limit to "scan set|set id"')
     parser.add_argument("--force", action="store_true")
     parser.add_argument(
-        "--tail-only",
-        action="store_true",
-        help="derive the two tail diagnostics from existing 16-bit NegPy PNGs without rerunning NegPy",
-    )
-    parser.add_argument(
         "--force-raw61",
         action="store_true",
         help="regenerate only RAW61 outputs while reusing existing reference and JXL outputs",
@@ -602,26 +361,8 @@ def main() -> int:
     viewers = discover_viewers(args.viewers, set(args.case))
     if not viewers:
         raise SystemExit("no matching viewer metadata found")
-    try:
-        import cv2
-    except ModuleNotFoundError as exc:
-        raise SystemExit("opencv-python is required for 16-bit NegPy tail diagnostics") from exc
-
-    if args.tail_only:
-        for item in viewers:
-            images_by_mode, tail_provenance = generate_tail_views(
-                item,
-                cv2,
-                force=args.force,
-                force_raw61=args.force_raw61,
-            )
-            metadata = merge_tail_modes(item["metadata"], images_by_mode, tail_provenance)
-            item["metadata_path"].write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"Added two reference-locked NegPy tail diagnostics to {len(viewers)} viewer crop(s).")
-        return 0
-
     if args.negpy_root is None:
-        raise SystemExit("--negpy-root is required unless --tail-only is used")
+        raise SystemExit("--negpy-root is required")
     negpy_root = args.negpy_root.resolve()
     revision, dirty = negpy_revision(negpy_root)
     if dirty:
@@ -757,16 +498,9 @@ def main() -> int:
                 "outputs": generated[item["metadata_path"]],
             }
             metadata = merge_mode(item["metadata"], item["outputs"], provenance)
-            images_by_mode, tail_provenance = generate_tail_views(
-                item,
-                cv2,
-                force=args.force,
-                force_raw61=args.force_raw61,
-            )
-            metadata = merge_tail_modes(metadata, images_by_mode, tail_provenance)
             item["metadata_path"].write_text(json.dumps(metadata, indent=2), encoding="utf-8")
 
-    print(f"Added {MODE_LABEL} and two reference-locked tail diagnostics to {len(viewers)} viewer crop(s).")
+    print(f"Added {MODE_LABEL} to {len(viewers)} viewer crop(s).")
     return 0
 
 

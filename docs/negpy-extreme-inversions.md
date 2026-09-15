@@ -17,31 +17,6 @@ PNG. This is an extreme edit-resilience diagnostic, not a recommended grade.
 RAW61 also receives the same saved per-crop `local_raw61_alignment` translation
 as the existing viewer modes before it enters NegPy.
 
-## Deep-shadow and bright-highlight tails
-
-The generator also adds two post-inversion tail diagnostics to the viewer:
-`NegPy deepest-shadow tail` and `NegPy brightest-highlight tail`. They are a
-controlled version of dragging a curve almost completely into one corner. The
-darkest or brightest 1% of the PS16 reference's NegPy output is isolated on
-black. Bounds come from linear-light luminance at the 0.05/1 and 99/99.95
-percentiles and are then held fixed for RAW61 and every JXL layer. If the 1%
-threshold lands on a quantized plateau, the whole tied plateau is included and
-its actual occupancy is recorded. Brightness shows how far a pixel lies inside
-the selected tail; hue shows amplified linear-RGB chromaticity. Exact neutral
-black is marked white.
-
-These views are a **post-inversion latitude proxy**. They answer a narrow
-question: **where do the compared images place spatially coherent color or
-structure in their extreme output tails after the same inversion?** The report
-shows RAW61 and candidate occupancy against the same PS16-derived threshold.
-They do not measure absolute capture latitude. A larger number of marked pixels
-can also come from a tone or color offset, clipping, noise, demosaicing,
-resampling, or imperfect registration. Judge coherent detail that appears in
-the same scene location, not pixel count alone. An absolute latitude claim
-would need matched exposure brackets or an independent higher-dynamic-range
-reference. The metadata records the shared bounds, per-layer tail occupancy,
-exact black/white occupancy, and output hashes so the comparison can be audited.
-
 Run the generator after the normal review viewers have been generated:
 
 ```powershell
@@ -60,15 +35,6 @@ is decoded one file at a time to a temporary PPM, which is also mapped; only eac
 small crop enters NegPy. The existing images and transform modes are not
 overwritten. Generation details and hashes are recorded in every viewer's
 `metadata.json`.
-
-If the NegPy crop renderings already exist, the two tail diagnostics can be
-regenerated without launching NegPy or decoding the source files:
-
-```powershell
-python scripts\make_negpy_extreme_inversions.py `
-  --viewers site\assets\review-viewers `
-  --tail-only
-```
 
 Once the NegPy crop renderings are present, create the dropdown-aware
 360-pixel context previews from the completed crop pairs:
