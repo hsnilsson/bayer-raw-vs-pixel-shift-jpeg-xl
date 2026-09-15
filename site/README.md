@@ -64,6 +64,26 @@ differences in the normal or inversion views. PS16 JXL candidates receive no
 such adjustment because their absolute difference from PS16 is codec evidence.
 Keep these small derived crops limited to approved public cases.
 
+For a local, single-pair experiment with shared histogram and tone controls,
+first produce or decode both sides as 16-bit RGB images, then run:
+
+```powershell
+python scripts\make_interactive_tone_curve_prototype.py `
+  --reference <16-bit-reference.tif-or-ppm> `
+  --candidate <16-bit-candidate.tif-or-ppm> `
+  --crop <x,y,width,height> `
+  --output-dir work\tone-curve-prototype
+```
+
+Serve the output directory over HTTP because the browser loads the two raw
+16-bit RGB sidecars with `fetch()`. The generator deliberately refuses 8-bit
+inputs: the shared exposure, black/white window, and draggable tone curve must
+run before the browser creates an 8-bit display image. The prototype is a test
+of latitude in the fixed rendered RGB chain, not a measurement of all latitude
+available when developing the original raw files. Keep private high-precision
+crop buffers under ignored `work/`; do not copy them into the publishable site
+without a separate publication review.
+
 The separate Pixelshift combiner audit compares PixelShift2DNG and Sony ARQ
 only where both were built from the same 16 source frames. It registers both
 renders and independently exposure-matches them to the first source ARW, then
