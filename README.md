@@ -150,8 +150,9 @@ These results do not establish a universal archival recommendation.
   measure high-pass structure retention for RAW61 and PS16 JXL candidates
 - [scripts/run_rendered_ps16_jxl_matrix.py](scripts/run_rendered_ps16_jxl_matrix.py):
   encode rendered PS16 TIFF masters as standalone JPEG XL, decode them, and
-  measure codec loss without relying on DNG/JXL application support. The
-  default mode is incremental and records per-row fingerprints in
+  measure codec loss without relying on DNG/JXL application support. Inputs
+  that have collapsed to 8-bit are rejected. The default mode is incremental
+  and records per-row fingerprints in
   `results/rendered_ps16_jxl_matrix/artifact_cache.json`.
 - [scripts/make_break_even_review_panels.py](scripts/make_break_even_review_panels.py):
   create local visual panels for reviewing RAW61-vs-PS16 baseline and
@@ -160,8 +161,8 @@ These results do not establish a universal archival recommendation.
   create small full-frame context thumbnails that mark where selected review
   crops come from, without publishing full-size scans
 - [scripts/make_break_even_review_viewers.py](scripts/make_break_even_review_viewers.py):
-  create small static viewers with side-by-side, candidate-on-reference overlay,
-  zoom, and pan
+  create RGB16-only crop sources plus small navigation previews for the integrated
+  side-by-side viewer and rendered-RGB latitude editor
 - [scripts/make_mode_specific_overviews.py](scripts/make_mode_specific_overviews.py):
   create compact context previews that follow each review viewer's selected
   transform, calibrated from the corresponding rendered crop pair
@@ -171,7 +172,8 @@ These results do not establish a universal archival recommendation.
   RAW61 viewer images from those declared sources
 - [scripts/generate_break_even_report_site.py](scripts/generate_break_even_report_site.py):
   generate a local HTML report with color-coded break-even tables and review
-  context plus fullscreen crop-viewer navigation
+  context plus fullscreen crop-viewer navigation, client-side RGB16 stress
+  transforms, and staged background prefetch
 - [scripts/run_archival_break_even.py](scripts/run_archival_break_even.py):
   join size, DNG/JXL color-stress, metadata-risk, and external RAW61/structure
   metrics into a conservative break-even matrix

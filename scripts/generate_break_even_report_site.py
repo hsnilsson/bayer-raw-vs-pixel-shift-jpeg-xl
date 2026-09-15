@@ -708,8 +708,16 @@ def viewer_records(
             if isinstance(metadata.get("overviews_by_transform", {}), dict)
             else {}
         )
+        rgb16 = metadata.get("rgb16", {}) if isinstance(metadata.get("rgb16", {}), dict) else {}
+        rgb16_sources = rgb16.get("sources", {}) if isinstance(rgb16.get("sources", {}), dict) else {}
         image_sets = metadata.get("images_by_transform", {}) if isinstance(metadata.get("images_by_transform", {}), dict) else {}
         mode_items = metadata.get("view_modes", []) if isinstance(metadata.get("view_modes", []), list) else []
+        if rgb16_sources:
+            image_sets = {
+                str(item.get("key")): rgb16_sources
+                for item in mode_items
+                if isinstance(item, dict) and item.get("key")
+            }
         view_modes = [item for item in mode_items if isinstance(item, dict) and item.get("key") in image_sets]
         if not view_modes:
             legacy_key = str(metadata.get("transform") or "identity")
@@ -821,6 +829,9 @@ def viewer_records(
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 "referenceOverviews": raw61_overviews,
+                "pixelFormat": "rgb16le" if rgb16_sources else "image",
+                "pixelWidth": int(rgb16.get("width", 0)) if rgb16_sources else 0,
+                "pixelHeight": int(rgb16.get("height", 0)) if rgb16_sources else 0,
                 "candidates": candidates,
                 "metadata": {
                     "transform": default_mode,
@@ -829,6 +840,8 @@ def viewer_records(
                     "cropName": crop_name,
                     "crop": metadata.get("crop", []),
                     "localRaw61Alignment": metadata.get("local_raw61_alignment", {}),
+                    "raw61ExposureMatch": metadata.get("raw61_exposure_match", {}),
+                    "browserTransformRecipe": metadata.get("browser_transform_recipe", {}),
                 },
             }
         )
@@ -1038,6 +1051,25 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       </div>
       <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
       <div class="crop-status" id="cropStatus" aria-live="polite"></div>
+      <details class="crop-latitude" id="cropLatitude">
+        <summary>Rendered RGB edit latitude</summary>
+        <div class="crop-latitude-body">
+          <div class="crop-tone-controls">
+            <label>Exposure <input id="toneExposure" type="range" min="-4" max="4" step="0.1" value="0"><output>0.0 EV</output></label>
+            <label>Black <input id="toneBlack" type="range" min="0" max="0.5" step="0.005" value="0"><output>0.000</output></label>
+            <label>White <input id="toneWhite" type="range" min="0.05" max="1" step="0.005" value="1"><output>1.000</output></label>
+            <label>Shadows <input id="toneShadows" type="range" min="0" max="1" step="0.01" value="0.25"><output>0.25</output></label>
+            <label>Midtones <input id="toneMidtones" type="range" min="0" max="1" step="0.01" value="0.5"><output>0.50</output></label>
+            <label>Highlights <input id="toneHighlights" type="range" min="0" max="1" step="0.01" value="0.75"><output>0.75</output></label>
+            <button type="button" id="toneReset">Reset edit</button>
+          </div>
+          <div class="crop-histogram-wrap">
+            <canvas id="toneHistogram" width="512" height="128" aria-label="Shared luminance histograms"></canvas>
+            <p id="toneClipping">Clipping: -</p>
+          </div>
+          <p class="crop-scope"><strong>Scope:</strong> This tests editing latitude inside the fixed rendered RGB chain: the already-rendered 16-bit RGB pixels are decoded, adjusted identically, and only then reduced to the 8-bit display canvas. It measures neither the full latitude in the original raw files nor what a different raw developer, demosaic, white balance, highlight reconstruction, or camera profile could recover.</p>
+        </div>
+      </details>
     </section>
     <aside class="crop-sidebar crop-sidebar-right">
       <div class="crop-sidebar-header">
@@ -1066,7 +1098,27 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     const overlayToggle = document.getElementById("cropOverlayToggle");
     const fullscreenToggle = document.getElementById("cropFullscreen");
     const modeSelect = document.getElementById("cropMode");
+    const latitude = document.getElementById("cropLatitude");
+    const histogram = document.getElementById("toneHistogram");
+    const histogramContext = histogram.getContext("2d");
+    const clipping = document.getElementById("toneClipping");
+    const toneInputs = {
+      exposure: document.getElementById("toneExposure"),
+      black: document.getElementById("toneBlack"),
+      white: document.getElementById("toneWhite"),
+      shadows: document.getElementById("toneShadows"),
+      midtones: document.getElementById("toneMidtones"),
+      highlights: document.getElementById("toneHighlights")
+    };
     const imageCache = new Map();
+    const pixelCache = new Map();
+    const pixelCacheOrder = [];
+    const prefetchedSources = new Set();
+    const prefetchQueue = [];
+    let activePrefetches = 0;
+    let prefetchTimer = 0;
+    let browseCount = -1;
+    let toneFrame = 0;
     let loadSerial = 0;
     const navigationZones = ["film", "view", "quality"];
     let activeNavigationZone = "film";
@@ -1084,8 +1136,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       lastY: 0,
       referenceImage: null,
       candidateImage: null,
+      referencePixels: null,
+      candidatePixels: null,
       referenceOverviewImage: null,
-      candidateOverviewImage: null
+      candidateOverviewImage: null,
+      tone: { exposure: 0, black: 0, white: 1, shadows: .25, midtones: .5, highlights: .75 }
     };
 
     if (!viewers.length || !workspace) return;
@@ -1162,6 +1217,189 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       });
       imageCache.set(src, promise);
       return promise;
+    }
+
+    function rememberPixelSource(src, pixels) {
+      pixelCache.set(src, pixels);
+      const previous = pixelCacheOrder.indexOf(src);
+      if (previous >= 0) pixelCacheOrder.splice(previous, 1);
+      pixelCacheOrder.push(src);
+      while (pixelCacheOrder.length > 6) pixelCache.delete(pixelCacheOrder.shift());
+      return pixels;
+    }
+
+    async function loadRgb16(viewer, src) {
+      if (pixelCache.has(src)) return pixelCache.get(src);
+      const response = await fetch(src);
+      if (!response.ok) throw new Error(`${src}: ${response.status}`);
+      const buffer = await response.arrayBuffer();
+      const expectedBytes = viewer.pixelWidth * viewer.pixelHeight * 3 * 2;
+      if (buffer.byteLength !== expectedBytes) throw new Error(`${src}: expected ${expectedBytes} bytes, got ${buffer.byteLength}`);
+      return rememberPixelSource(src, new Uint16Array(buffer));
+    }
+
+    function clamp01(value) { return Math.max(0, Math.min(1, value)); }
+
+    function logistic(value, contrast, midpoint) {
+      const y = 1 / (1 + Math.exp(-contrast * (value - midpoint)));
+      const low = 1 / (1 + Math.exp(contrast * midpoint));
+      const high = 1 / (1 + Math.exp(-contrast * (1 - midpoint)));
+      return clamp01((y - low) / (high - low));
+    }
+
+    function curveValue(value) {
+      const x = clamp01(value);
+      if (x <= .25) return state.tone.shadows * (x / .25);
+      if (x <= .5) return state.tone.shadows + (state.tone.midtones - state.tone.shadows) * ((x - .25) / .25);
+      if (x <= .75) return state.tone.midtones + (state.tone.highlights - state.tone.midtones) * ((x - .5) / .25);
+      return state.tone.highlights + (1 - state.tone.highlights) * ((x - .75) / .25);
+    }
+
+    function editedValue(value) {
+      const exposed = value * Math.pow(2, state.tone.exposure);
+      const ranged = (exposed - state.tone.black) / Math.max(.001, state.tone.white - state.tone.black);
+      return clamp01(curveValue(ranged));
+    }
+
+    function renderRgb16(viewer, pixels, isRaw61) {
+      const output = document.createElement("canvas");
+      output.width = viewer.pixelWidth;
+      output.height = viewer.pixelHeight;
+      const outputContext = output.getContext("2d");
+      const imageData = outputContext.createImageData(output.width, output.height);
+      const histogramBins = new Uint32Array(256);
+      const recipe = viewer.metadata.browserTransformRecipe || {};
+      const modeKey = state.modeKey;
+      const gamma = recipe.gamma || 2.2;
+      const weights = recipe.luma_weights || [.2126, .7152, .0722];
+      const displayRange = (recipe.display_ranges || {})[modeKey] || [0, 1];
+      const displayLow = displayRange[0];
+      const displaySpan = Math.max(1e-6, displayRange[1] - displayLow);
+      const rawGain = isRaw61 && ["shadow_recovery_luma_p12", "highlight_separation_luma_p88_p998"].includes(modeKey)
+        ? Number((viewer.metadata.raw61ExposureMatch || {}).linear_gain || 1)
+        : 1;
+      const densityBlack = recipe.density_black || [0, 0, 0];
+      const densityBase = recipe.density_base || [1, 1, 1];
+      const densityLow = recipe.density_low || [0, 0, 0];
+      const densityHigh = recipe.density_high || [1, 1, 1];
+      const densityBalance = [1.07, 1, .94];
+      const densityChannel = (value, channel) => {
+        const linear = Math.pow(clamp01(value), gamma);
+        const transmission = Math.max(1e-5, Math.min(1, (linear - densityBlack[channel]) / Math.max(1e-6, densityBase[channel] - densityBlack[channel])));
+        let positive = clamp01((-Math.log(transmission) - densityLow[channel]) / Math.max(1e-6, densityHigh[channel] - densityLow[channel]));
+        positive = clamp01((positive - .035) / .90);
+        if (modeKey === "negative_density_hard_shadow_recovery") positive = Math.pow(positive, .68);
+        return logistic(clamp01(positive * densityBalance[channel]), 9, .5);
+      };
+      let clippedBlack = 0;
+      let clippedWhite = 0;
+      for (let sourceIndex = 0, targetIndex = 0; sourceIndex < pixels.length; sourceIndex += 3, targetIndex += 4) {
+        let red = pixels[sourceIndex] / 65535;
+        let green = pixels[sourceIndex + 1] / 65535;
+        let blue = pixels[sourceIndex + 2] / 65535;
+        if (modeKey === "shadow_recovery_luma_p12" || modeKey === "highlight_separation_luma_p88_p998") {
+          const lumaLinear = (
+            Math.pow(clamp01(red), gamma) * weights[0]
+            + Math.pow(clamp01(green), gamma) * weights[1]
+            + Math.pow(clamp01(blue), gamma) * weights[2]
+          ) * rawGain;
+          const transformed = modeKey === "shadow_recovery_luma_p12"
+            ? Math.pow(clamp01(lumaLinear / Math.max(1e-6, recipe.shadow_white || 1)), 1 / gamma)
+            : Math.pow(clamp01((lumaLinear - Number(recipe.highlight_black || 0)) / Math.max(1e-6, Number(recipe.highlight_white || 1) - Number(recipe.highlight_black || 0))), 1 / gamma);
+          red = transformed;
+          green = transformed;
+          blue = transformed;
+        } else if (modeKey === "negative_density_hard_print" || modeKey === "negative_density_hard_shadow_recovery") {
+          red = densityChannel(red, 0);
+          green = densityChannel(green, 1);
+          blue = densityChannel(blue, 2);
+        }
+        red = editedValue(clamp01((red - displayLow) / displaySpan));
+        green = editedValue(clamp01((green - displayLow) / displaySpan));
+        blue = editedValue(clamp01((blue - displayLow) / displaySpan));
+        const luma = clamp01(red * .2126 + green * .7152 + blue * .0722);
+        histogramBins[Math.min(255, Math.floor(luma * 256))] += 1;
+        if (Math.max(red, green, blue) <= 0) clippedBlack += 1;
+        if (Math.min(red, green, blue) >= 1) clippedWhite += 1;
+        imageData.data[targetIndex] = Math.round(red * 255);
+        imageData.data[targetIndex + 1] = Math.round(green * 255);
+        imageData.data[targetIndex + 2] = Math.round(blue * 255);
+        imageData.data[targetIndex + 3] = 255;
+      }
+      outputContext.putImageData(imageData, 0, 0);
+      return { canvas: output, histogram: histogramBins, clippedBlack, clippedWhite, pixels: output.width * output.height };
+    }
+
+    function drawHistogram(reference, candidate) {
+      histogramContext.clearRect(0, 0, histogram.width, histogram.height);
+      histogramContext.fillStyle = "#0b0e11";
+      histogramContext.fillRect(0, 0, histogram.width, histogram.height);
+      const peak = Math.max(1, ...reference.histogram, ...candidate.histogram);
+      [[reference.histogram, "rgba(125,211,252,.72)"], [candidate.histogram, "rgba(251,191,36,.58)"]].forEach(([bins, color]) => {
+        histogramContext.beginPath();
+        histogramContext.moveTo(0, histogram.height);
+        bins.forEach((count, index) => histogramContext.lineTo(index * 2, histogram.height - (count / peak) * (histogram.height - 5)));
+        histogramContext.lineTo(histogram.width, histogram.height);
+        histogramContext.fillStyle = color;
+        histogramContext.fill();
+      });
+      const percent = (count, total) => `${(100 * count / Math.max(1, total)).toFixed(2)}%`;
+      clipping.textContent = `Clipping - RAW61 black ${percent(reference.clippedBlack, reference.pixels)}, white ${percent(reference.clippedWhite, reference.pixels)}; candidate black ${percent(candidate.clippedBlack, candidate.pixels)}, white ${percent(candidate.clippedWhite, candidate.pixels)}.`;
+    }
+
+    function rerenderRgb16() {
+      const viewer = currentViewer();
+      if (viewer.pixelFormat !== "rgb16le" || !state.referencePixels || !state.candidatePixels) return;
+      const reference = renderRgb16(viewer, state.referencePixels, true);
+      const candidate = renderRgb16(viewer, state.candidatePixels, false);
+      state.referenceImage = reference.canvas;
+      state.candidateImage = candidate.canvas;
+      drawHistogram(reference, candidate);
+      draw();
+    }
+
+    function scheduleToneRender() {
+      window.cancelAnimationFrame(toneFrame);
+      toneFrame = window.requestAnimationFrame(rerenderRgb16);
+    }
+
+    function allRgb16Sources() {
+      const ordered = [];
+      const pushViewer = (viewer) => {
+        if (!viewer || viewer.pixelFormat !== "rgb16le") return;
+        [viewer.reference, ...viewer.candidates.map((candidate) => candidate.src)].forEach((src) => {
+          if (src && !ordered.includes(src)) ordered.push(src);
+        });
+      };
+      pushViewer(currentViewer());
+      for (let distance = 1; distance < viewers.length; distance += 1) {
+        pushViewer(viewers[state.viewerIndex + distance]);
+        pushViewer(viewers[state.viewerIndex - distance]);
+      }
+      return ordered;
+    }
+
+    function pumpPrefetchQueue() {
+      while (activePrefetches < 4 && prefetchQueue.length) {
+        const src = prefetchQueue.shift();
+        if (!src || prefetchedSources.has(src)) continue;
+        prefetchedSources.add(src);
+        activePrefetches += 1;
+        fetch(src, { priority: "low" })
+          .then((response) => response.ok ? response.arrayBuffer() : null)
+          .catch(() => null)
+          .finally(() => { activePrefetches -= 1; pumpPrefetchQueue(); });
+      }
+    }
+
+    function noteBrowsing() {
+      browseCount += 1;
+      if (browseCount < 3 || prefetchTimer) return;
+      prefetchTimer = window.setTimeout(() => {
+        prefetchTimer = 0;
+        prefetchQueue.push(...allRgb16Sources().filter((src) => !prefetchedSources.has(src)));
+        pumpPrefetchQueue();
+      }, 1200);
     }
 
     function resizeCanvas() {
@@ -1259,20 +1497,23 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       const candidateOverview = candidateOverviewSource(candidate);
       status.textContent = "Loading crop images...";
       try {
-        const [referenceImage, candidateImage, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
-          loadImage(referenceSource(viewer)),
-          loadImage(candidateSource(candidate)),
+        const rgb16 = viewer.pixelFormat === "rgb16le";
+        const [referenceData, candidateData, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
+          rgb16 ? loadRgb16(viewer, referenceSource(viewer)) : loadImage(referenceSource(viewer)),
+          rgb16 ? loadRgb16(viewer, candidateSource(candidate)) : loadImage(candidateSource(candidate)),
           referenceOverview ? loadImage(referenceOverview) : Promise.resolve(null),
           candidateOverview ? loadImage(candidateOverview) : Promise.resolve(null)
         ]);
         if (serial !== loadSerial) return;
-        state.referenceImage = referenceImage;
-        state.candidateImage = candidateImage;
+        state.referencePixels = rgb16 ? referenceData : null;
+        state.candidatePixels = rgb16 ? candidateData : null;
+        state.referenceImage = rgb16 ? null : referenceData;
+        state.candidateImage = rgb16 ? null : candidateData;
         state.referenceOverviewImage = referenceOverviewImage;
         state.candidateOverviewImage = candidateOverviewImage;
         status.textContent = "";
         resizeCanvas();
-        draw();
+        if (rgb16) rerenderRgb16(); else draw();
       } catch (error) {
         if (serial !== loadSerial) return;
         status.textContent = "Could not load this crop image.";
@@ -1293,7 +1534,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         button.type = "button";
         button.className = "crop-choice crop-film-choice";
         button.setAttribute("aria-pressed", String(index === state.viewerIndex));
-        const thumbnailSource = viewer.reference;
+        const thumbnailSource = viewer.referenceOverview || viewer.reference;
         if (thumbnailSource) {
           const thumbnail = document.createElement("img");
           thumbnail.className = "crop-film-thumbnail";
@@ -1395,7 +1636,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       renderQualityList();
       renderModeSelect();
       updateHeading();
+      latitude.hidden = viewer.pixelFormat !== "rgb16le";
       loadCurrentImages();
+      noteBrowsing();
     }
 
     function setCandidate(key) {
@@ -1403,6 +1646,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       renderQualityList();
       updateHeading();
       loadCurrentImages();
+      noteBrowsing();
     }
 
     function setMode(key) {
@@ -1410,6 +1654,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       renderModeSelect();
       updateHeading();
       loadCurrentImages();
+      noteBrowsing();
     }
 
     function setOverlay(enabled) {
@@ -1449,6 +1694,22 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     modeSelect.addEventListener("focus", () => { setNavigationZone("view"); });
+    Object.entries(toneInputs).forEach(([key, input]) => {
+      input.addEventListener("input", () => {
+        state.tone[key] = Number(input.value);
+        const suffix = key === "exposure" ? " EV" : "";
+        input.nextElementSibling.value = `${Number(input.value).toFixed(key === "exposure" ? 1 : key === "black" || key === "white" ? 3 : 2)}${suffix}`;
+        scheduleToneRender();
+      });
+    });
+    document.getElementById("toneReset").addEventListener("click", () => {
+      const defaults = { exposure: 0, black: 0, white: 1, shadows: .25, midtones: .5, highlights: .75 };
+      Object.entries(defaults).forEach(([key, value]) => {
+        state.tone[key] = value;
+        toneInputs[key].value = value;
+        toneInputs[key].dispatchEvent(new Event("input"));
+      });
+    });
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
@@ -2041,7 +2302,7 @@ def render_html(
     }}
     .crop-film-copy {{ display: grid; min-width: 0; gap: 3px; }}
     .crop-film-copy strong {{ overflow-wrap: anywhere; }}
-    .crop-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
+    .crop-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; }}
     .crop-toolbar {{
       display: flex;
       align-items: flex-start;
@@ -2097,12 +2358,25 @@ def render_html(
     }}
     #cropCanvas.dragging {{ cursor: grabbing; }}
     .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
+    .crop-latitude {{ border-top: 1px solid #2b333b; background: #15191e; color: #dbe4ec; }}
+    .crop-latitude summary {{ padding: 9px 14px; cursor: pointer; font-weight: 700; }}
+    .crop-latitude-body {{ display: grid; grid-template-columns: minmax(280px, 1fr) minmax(260px, .8fr); gap: 14px; max-height: 290px; overflow: auto; padding: 2px 14px 13px; }}
+    .crop-tone-controls {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }}
+    .crop-tone-controls label {{ display: grid; grid-template-columns: 74px minmax(80px, 1fr) 58px; align-items: center; gap: 7px; font-size: 12px; }}
+    .crop-tone-controls output {{ color: #a6b0ba; text-align: right; font-variant-numeric: tabular-nums; }}
+    .crop-tone-controls button {{ justify-self: start; border: 1px solid #3e4a56; border-radius: 7px; background: #20262d; color: #f4f7fa; padding: 6px 9px; cursor: pointer; }}
+    .crop-histogram-wrap {{ min-width: 0; }}
+    #toneHistogram {{ display: block; width: 100%; height: 96px; border: 1px solid #333d47; background: #0b0e11; }}
+    .crop-histogram-wrap p {{ margin: 5px 0 0; color: #a6b0ba; font-size: 11px; }}
+    .crop-scope {{ grid-column: 1 / -1; margin: 0; padding: 8px 10px; border-left: 3px solid #7dd3fc; background: #10151a; color: #bdc8d2; font-size: 12px; }}
     .crop-workspace:fullscreen {{ width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }}
     ul {{ margin-top: 8px; }}
     @media (max-width: 1150px) {{
       .crop-toolbar {{ align-items: flex-start; flex-direction: column; }}
       .crop-actions {{ width: 100%; justify-content: flex-start; }}
       .crop-toolbar p {{ height: calc(1.45em * 5); }}
+      .crop-latitude-body {{ grid-template-columns: 1fr; }}
+      .crop-scope {{ grid-column: 1; }}
     }}
     @media (max-width: 900px) {{
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid, .combiner-grid {{ grid-template-columns: 1fr; }}
@@ -2147,6 +2421,7 @@ def render_html(
       #cropOverlayToggle, #cropFullscreen {{ min-width: 0; grid-column: span 2; }}
       #cropReset {{ grid-column: span 2; }}
       #cropCanvas {{ min-height: 360px; }}
+      .crop-tone-controls {{ grid-template-columns: 1fr; }}
       .crop-workspace:fullscreen {{ overflow-y: auto; grid-template-rows: auto minmax(58vh, 1fr) auto; }}
     }}
   </style>
@@ -2579,21 +2854,22 @@ def main() -> int:
     if args.copy_public_figures_to:
         public_figures = copy_panel_assets(public_figures, args.public_figures, args.copy_public_figures_to)
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    rendered = render_html(
+        rows,
+        summaries,
+        panels,
+        contexts,
+        args.output,
+        viewers,
+        annotations,
+        public_figures,
+        muimg_probe,
+        muimg_qualification,
+        args.render_index,
+        combiner_audit,
+    )
     args.output.write_text(
-        render_html(
-            rows,
-            summaries,
-            panels,
-            contexts,
-            args.output,
-            viewers,
-            annotations,
-            public_figures,
-            muimg_probe,
-            muimg_qualification,
-            args.render_index,
-            combiner_audit,
-        ),
+        "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n",
         encoding="utf-8",
     )
     print(f"Wrote {args.output}")

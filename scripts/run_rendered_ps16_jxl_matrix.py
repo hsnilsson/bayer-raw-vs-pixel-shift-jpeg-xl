@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from PIL import Image
 
 
@@ -273,6 +274,14 @@ def output_paths(output_root: Path, source: Path, level: str) -> tuple[Path, Pat
     source_folder = output_root / relative_parent
     level_folder = source_folder / level
     return source_folder / "ps16_reference.ppm", level_folder / "ps16.jxl", level_folder / "ps16_candidate.png"
+
+
+def require_high_precision_render(arr: np.ndarray, source: Path) -> None:
+    if not np.issubdtype(arr.dtype, np.integer) or np.iinfo(arr.dtype).bits <= 8:
+        raise ValueError(
+            f"Rendered JXL input must remain above 8-bit precision: {source} was read as {arr.dtype}. "
+            'Install the TIFF extra with python -m pip install -e ".[tiff]" and rebuild the matrix.'
+        )
 
 
 def encode_command(
@@ -699,7 +708,9 @@ def main() -> int:
     for ppm, source in source_ppms.items():
         if args.force or not usable_file(ppm) or ppm.stat().st_mtime_ns < source.stat().st_mtime_ns:
             ppm.parent.mkdir(parents=True, exist_ok=True)
-            write_ppm(ppm, read_rgb_image(source))
+            render = read_rgb_image(source)
+            require_high_precision_render(render, source)
+            write_ppm(ppm, render)
         write_embedded_icc(source, ppm.with_suffix(".icc"))
 
     rows: list[MatrixRow] = list(cached_rows)

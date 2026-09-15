@@ -33,27 +33,45 @@ python scripts\make_break_even_review_viewers.py `
   --level d200
 ```
 
-To add the real NegPy-based extreme inversion to those same crops, follow
-[`docs/negpy-extreme-inversions.md`](../docs/negpy-extreme-inversions.md). Run
-that generator after the normal review-viewer command and before rebuilding the
-report site.
+The generator now requires true high-precision TIFF/PPM inputs. It writes one
+headerless little-endian RGB16 crop per source and removes the old generated
+full-crop PNG variants only after all replacements succeed. The small 8-bit
+overview PNGs remain as navigation aids; they are never used for close review
+or editing. If an older rendered JXL matrix was encoded from an 8-bit PPM,
+rebuild that matrix from the 16-bit TIFF render first. The viewer generator
+will stop rather than silently promote 8-bit values into a 16-bit container.
 
-After all crop modes exist, generate the compact dropdown-aware context
-previews:
+One-time matrix migration:
 
 ```powershell
-python scripts\make_mode_specific_overviews.py `
-  --viewers site\assets\review-viewers
+python -m pip install -e ".[tiff]"
+python scripts\run_rendered_ps16_jxl_matrix.py `
+  --force `
+  --jobs 2 `
+  --discard-intermediates
 ```
 
-These 8-bit previews use a per-image tone mapping fitted from each rendered
-identity/transformed crop pair. They are navigation aids only; inspection and
-measurement continue to use the full crop renderings.
+The matrix command now has the same precision gate, so the 16-bit TIFF cannot
+quietly pass through Pillow's 8-bit RGB fallback again.
 
-The viewer supports side-by-side viewing, a candidate-on-reference overlay
-toggle, zoom, and pan. It always includes the PS16 reference as the lossless
-baseline, and `d200` is included only as a deliberately heavy-compression visual
-anchor.
+The old pre-rendered NegPy mode is intentionally not carried into the
+RGB16-only format. Reintroducing it requires either a browser-side recipe or a
+separate high-precision source, not another full-size 8-bit PNG.
+
+The viewer supports side-by-side viewing, a candidate-on-reference overlay,
+zoom, and pan. `Rendered RGB edit latitude` stays collapsed until requested and
+then applies one shared exposure, black/white window, and tone curve to both
+16-bit sources before the final 8-bit canvas conversion. It also shows shared
+histograms and black/white clipping. It always includes the PS16 reference as
+the lossless baseline, and `d200` is included only as a deliberately
+heavy-compression visual anchor.
+
+After three film, quality, or view changes and 1.2 seconds without another
+trigger, the page starts a four-request background queue. It fetches the rest
+of the current crop first, then neighboring crops, and finally the remaining
+RGB16 sources. Completed prefetch buffers are discarded from JavaScript memory;
+the browser HTTP cache does the warming, while the active decoded-pixel cache is
+limited to six sources.
 
 `Highlight separation` and `Shadow recovery` are grayscale linear-luminance
 diagnostics. Their display bounds remain locked to PS16. For RAW61 only, one
@@ -64,8 +82,8 @@ differences in the normal or inversion views. PS16 JXL candidates receive no
 such adjustment because their absolute difference from PS16 is codec evidence.
 Keep these small derived crops limited to approved public cases.
 
-For a local, single-pair experiment with shared histogram and tone controls,
-first produce or decode both sides as 16-bit RGB images, then run:
+For a small standalone experiment outside the integrated report, first produce
+or decode both sides as 16-bit RGB images, then run:
 
 ```powershell
 python scripts\make_interactive_tone_curve_prototype.py `

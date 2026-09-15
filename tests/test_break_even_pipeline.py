@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import sys
 import tempfile
 import unittest
@@ -120,6 +121,38 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 review_viewers.viewer_metadata_is_current(
                     {"build_fingerprint": fingerprint(updated)}, updated
                 )
+            )
+
+    def test_rgb16_sidecar_preserves_samples_and_rejects_8_bit(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir) / "crop.rgb16le"
+            source = np.array([[[1, 257, 65535], [4096, 8192, 16384]]], dtype=np.uint16)
+
+            review_viewers.write_rgb16le(output, source, force=True)
+
+            decoded = np.frombuffer(output.read_bytes(), dtype="<u2").reshape(source.shape)
+            np.testing.assert_array_equal(decoded, source)
+            with self.assertRaisesRegex(ValueError, "above 8-bit precision"):
+                review_viewers.write_rgb16le(output, source.astype(np.uint8), force=True)
+
+    def test_browser_transform_recipe_is_derived_from_high_precision_reference(self) -> None:
+        reference = (textured_rgb(32, 40).astype(np.uint16) * 257)
+
+        recipe = review_viewers.browser_transform_recipe(reference)
+
+        self.assertEqual(recipe["gamma"], 2.2)
+        self.assertEqual(len(recipe["density_black"]), 3)
+        self.assertGreater(recipe["highlight_white"], recipe["highlight_black"])
+        self.assertIn("identity", recipe["display_ranges"])
+        self.assertLess(recipe["display_ranges"]["identity"][0], recipe["display_ranges"]["identity"][1])
+
+    def test_rendered_jxl_matrix_rejects_8_bit_input(self) -> None:
+        rendered_matrix.require_high_precision_render(
+            np.zeros((2, 2, 3), dtype=np.uint16), Path("high-precision.tif")
+        )
+        with self.assertRaisesRegex(ValueError, "must remain above 8-bit precision"):
+            rendered_matrix.require_high_precision_render(
+                np.zeros((2, 2, 3), dtype=np.uint8), Path("collapsed.tif")
             )
 
     def test_phase_correlation_returns_alignment_shift(self) -> None:
@@ -819,8 +852,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             )
             self.assertIn("function referenceOverviewSource(viewer)", html)
             self.assertIn("function candidateOverviewSource(candidate)", html)
-            self.assertIn("const thumbnailSource = viewer.reference;", html)
-            self.assertNotIn("const thumbnailSource = viewer.referenceOverview", html)
+            self.assertIn("const thumbnailSource = viewer.referenceOverview || viewer.reference;", html)
             self.assertIn('thumbnail.className = "crop-film-thumbnail";', html)
             self.assertIn('thumbnail.alt = "";', html)
             self.assertIn('const copy = document.createElement("div");', html)
@@ -879,6 +911,43 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 'function setCandidate(key) {\n      state.candidateKey = key;\n      resetView();',
                 html,
             )
+
+    def test_report_site_embeds_rgb16_editor_and_prefetch_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            viewer_dir = root / "site" / "assets" / "review-viewers" / "synthetic" / "frame" / "crop-01"
+            viewer_dir.mkdir(parents=True)
+            viewer_index = viewer_dir / "index.html"
+            viewer_index.write_text("<html></html>", encoding="utf-8")
+            for name in ["reference.rgb16le", "raw61.rgb16le", "jxl_d020.rgb16le"]:
+                (viewer_dir / name).write_bytes(b"\0" * 24)
+            for name in ["overview_reference.png", "overview_raw61.png", "overview_jxl_d020.png"]:
+                write_png(viewer_dir / name, textured_rgb(2, 2))
+            metadata = {
+                "schema": 2,
+                "scan_set": "Synthetic",
+                "set_id": "frame",
+                "crop_name": "crop-01",
+                "default_transform": "identity",
+                "view_modes": [{"key": "identity", "label": "Normal", "description": "Normal"}],
+                "labels": {"raw61": "RAW61 local aligned", "jxl_d020": "PS16 JXL d020"},
+                "overviews": {"reference": "overview_reference.png", "raw61": "overview_raw61.png", "jxl_d020": "overview_jxl_d020.png"},
+                "rgb16": {"width": 2, "height": 2, "channels": 3, "bytes_per_sample": 2, "sources": {"reference": "reference.rgb16le", "ps16_lossless": "reference.rgb16le", "raw61": "raw61.rgb16le", "jxl_d020": "jxl_d020.rgb16le"}},
+                "browser_transform_recipe": {"gamma": 2.2},
+            }
+            (viewer_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+
+            html = report_site.render_html([], [], [], [], root / "site" / "index.html", [viewer_index])
+
+            self.assertIn('"pixelFormat": "rgb16le"', html)
+            self.assertIn('"pixelWidth": 2', html)
+            self.assertIn('id="cropLatitude"', html)
+            self.assertIn("This tests editing latitude inside the fixed rendered RGB chain", html)
+            self.assertIn("function loadRgb16(viewer, src)", html)
+            self.assertIn("if (browseCount < 3 || prefetchTimer) return;", html)
+            self.assertIn("while (activePrefetches < 4 && prefetchQueue.length)", html)
+            self.assertIn('fetch(src, { priority: "low" })', html)
+            self.assertIn("viewer.referenceOverview || viewer.reference", html)
 
     def test_report_site_replaces_visual_review_items_with_inline_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

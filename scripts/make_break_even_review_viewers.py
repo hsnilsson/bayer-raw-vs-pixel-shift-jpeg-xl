@@ -160,7 +160,8 @@ def viewer_build_inputs(
         for level in levels
     }
     return {
-        "schema": 1,
+        "schema": 2,
+        "pixel_storage": "rgb16le",
         "crop": list(crop_spec),
         "transforms": transform_names,
         "max_dim": max_dim,
@@ -212,6 +213,70 @@ def save_display(path: Path, arr: np.ndarray, max_dim: int, *, force: bool, leve
     if path.is_file() and not force:
         return
     to_display(arr, max_dim, levels).save(path)
+
+
+def require_high_precision(arr: np.ndarray, label: str) -> None:
+    """Reject sources whose sample precision has already collapsed to 8 bits."""
+    if not np.issubdtype(arr.dtype, np.integer) or np.iinfo(arr.dtype).bits <= 8:
+        raise ValueError(
+            f"{label} must contain integer samples above 8-bit precision; got {arr.dtype}"
+        )
+
+
+def write_rgb16le(path: Path, arr: np.ndarray, *, force: bool) -> None:
+    """Write an interleaved, headerless little-endian RGB16 browser sidecar."""
+    require_high_precision(arr, path.name)
+    if path.is_file() and not force:
+        return
+    values = np.asarray(arr[:, :, :3])
+    peak = float(np.iinfo(values.dtype).max)
+    if values.dtype == np.uint16:
+        encoded = values.astype("<u2", copy=False)
+    else:
+        encoded = np.round(values.astype(np.float64) * (65535.0 / peak)).astype("<u2")
+    path.write_bytes(np.ascontiguousarray(encoded).tobytes())
+
+
+def browser_transform_recipe(reference: np.ndarray) -> dict[str, object]:
+    """Describe the fixed rendered-RGB transforms without baking 8-bit images."""
+    require_high_precision(reference, "PS16 reference")
+    ref = reference.astype(np.float32) / float(np.iinfo(reference.dtype).max)
+    ref_linear = np.power(np.clip(ref, 0.0, 1.0), 2.2)
+    base = np.percentile(ref_linear, 99.7, axis=(0, 1))
+    black = np.percentile(ref_linear, 0.3, axis=(0, 1))
+    transmission = np.clip((ref_linear - black) / np.maximum(base - black, 1e-6), 1e-5, 1.0)
+    density = -np.log(transmission)
+    luma = np.sum(ref_linear[:, :, :3] * np.array([0.2126, 0.7152, 0.0722], dtype=np.float32), axis=2)
+    transform_ranges: dict[str, list[float]] = {}
+    for transform in build_transforms(reference):
+        low, high = display_range(transform.apply(reference))
+        transform_ranges[transform.name] = [float(low), float(high)]
+    return {
+        "gamma": 2.2,
+        "luma_weights": [0.2126, 0.7152, 0.0722],
+        "shadow_white": max(float(np.percentile(luma, 12.0)), 1e-6),
+        "highlight_black": float(np.percentile(luma, 88.0)),
+        "highlight_white": max(float(np.percentile(luma, 99.8)), float(np.percentile(luma, 88.0)) + 1e-6),
+        "density_black": [float(value) for value in black],
+        "density_base": [float(value) for value in base],
+        "density_low": [float(value) for value in np.percentile(density, 0.5, axis=(0, 1))],
+        "density_high": [float(value) for value in np.percentile(density, 99.5, axis=(0, 1))],
+        "display_ranges": transform_ranges,
+    }
+
+
+def prune_legacy_full_images(output_dir: Path, metadata: dict[str, object]) -> None:
+    """Remove only the old generated full-crop PNGs after RGB16 succeeds."""
+    image_sets = metadata.get("images_by_transform", {})
+    if not isinstance(image_sets, dict):
+        return
+    for image_set in image_sets.values():
+        if not isinstance(image_set, dict):
+            continue
+        for filename in image_set.values():
+            path = output_dir / str(filename)
+            if path.suffix.lower() == ".png" and path.parent == output_dir and path.is_file():
+                path.unlink()
 
 
 def save_overview(
@@ -526,6 +591,8 @@ def make_viewer(
     )
     reference_full = read_rgb_image(ref_path)
     raw_full = read_rgb_image(raw_path)
+    require_high_precision(reference_full, str(ref_path))
+    require_high_precision(raw_full, str(raw_path))
     crop_text = ",".join(str(value) for value in crop_spec)
     ref_crop = crop(reference_full, crop_text)
     raw_crop = crop(raw_full, crop_text)
@@ -539,14 +606,13 @@ def make_viewer(
             raise SystemExit(f"Unknown transform: {transform_name}")
         if transform_name not in selected_transforms:
             selected_transforms.append(transform_name)
-    images_by_transform: dict[str, dict[str, str]] = {}
-    for transform_name in selected_transforms:
-        is_identity = transform_name == "identity"
-        images_by_transform[transform_name] = {
-            "reference": "reference.png" if is_identity else f"reference_{transform_name}.png",
-            "ps16_lossless": "reference.png" if is_identity else f"reference_{transform_name}.png",
-            "raw61": "raw61.png" if is_identity else f"raw61_{transform_name}.png",
-        }
+    rgb16_sources: dict[str, str] = {
+        "reference": "reference.rgb16le",
+        "ps16_lossless": "reference.rgb16le",
+        "raw61": "raw61.rgb16le",
+    }
+    write_rgb16le(output_dir / rgb16_sources["reference"], ref_crop, force=rebuild_viewer)
+    write_rgb16le(output_dir / rgb16_sources["raw61"], aligned_raw, force=rebuild_viewer)
     overviews: dict[str, str] = {
         "reference": "overview_reference.png",
         "ps16_lossless": "overview_reference.png",
@@ -557,18 +623,6 @@ def make_viewer(
         "ps16_lossless": "PS16 lossless / reference",
         "raw61": "RAW61 local aligned",
     }
-    for transform_name in selected_transforms:
-        transform = transforms[transform_name]
-        images = images_by_transform[transform_name]
-        reference_display = transform.apply(ref_crop)
-        reference_levels = display_range(reference_display)
-        save_display(output_dir / images["reference"], reference_display, args.max_dim, force=rebuild_viewer, levels=reference_levels)
-        raw61_display = (
-            transform.apply_with_linear_gain(aligned_raw, raw61_exposure_gain)
-            if transform.apply_with_linear_gain is not None
-            else transform.apply(aligned_raw)
-        )
-        save_display(output_dir / images["raw61"], raw61_display, args.max_dim, force=rebuild_viewer, levels=reference_levels)
     save_overview(
         output_dir / overviews["reference"],
         reference_full,
@@ -593,27 +647,20 @@ def make_viewer(
             source = jxl_path(args.rendered_jxl_root, scan_set, set_id, level)
             if not source.is_file():
                 continue
-            for transform_name in selected_transforms:
-                images_by_transform[transform_name][f"jxl_{level}"] = (
-                    f"jxl_{level}.png" if transform_name == "identity" else f"jxl_{level}_{transform_name}.png"
-                )
+            key = f"jxl_{level}"
+            rgb16_sources[key] = f"{key}.rgb16le"
             overviews[f"jxl_{level}"] = f"overview_jxl_{level}.png"
             labels[f"jxl_{level}"] = f"PS16 JXL {level}"
             overview_output = output_dir / overviews[f"jxl_{level}"]
-            image_outputs = [
-                output_dir / images_by_transform[transform_name][f"jxl_{level}"]
-                for transform_name in selected_transforms
-            ]
-            if all(path.is_file() for path in image_outputs) and overview_output.is_file() and not rebuild_viewer:
+            rgb16_output = output_dir / rgb16_sources[key]
+            if rgb16_output.is_file() and overview_output.is_file() and not rebuild_viewer:
                 continue
             decoded = temp_root / level / "ps16_candidate.ppm"
             run_decode(djxl, source, decoded)
             candidate_full = read_rgb_image(decoded)
+            require_high_precision(candidate_full, str(source))
             candidate = crop(candidate_full, crop_text)
-            for transform_name in selected_transforms:
-                output = output_dir / images_by_transform[transform_name][f"jxl_{level}"]
-                reference_levels = display_range(transforms[transform_name].apply(ref_crop))
-                save_display(output, transforms[transform_name].apply(candidate), args.max_dim, force=rebuild_viewer, levels=reference_levels)
+            write_rgb16le(rgb16_output, candidate, force=rebuild_viewer)
             save_overview(
                 overview_output,
                 candidate_full,
@@ -624,7 +671,7 @@ def make_viewer(
                 force=False,
             )
             del candidate, candidate_full
-    if not selected_transforms or len(images_by_transform[selected_transforms[0]]) < 3:
+    if not selected_transforms or len(rgb16_sources) < 3:
         return None
     view_modes = []
     for transform_name in selected_transforms:
@@ -642,21 +689,8 @@ def make_viewer(
                 "description": description,
             }
         )
-    existing_view_modes = existing_metadata.get("view_modes", [])
-    if isinstance(existing_view_modes, list):
-        selected_keys = set(selected_transforms)
-        view_modes.extend(
-            mode
-            for mode in existing_view_modes
-            if isinstance(mode, dict) and str(mode.get("key", "")) not in selected_keys
-        )
-    existing_images = existing_metadata.get("images_by_transform", {})
-    if isinstance(existing_images, dict):
-        for transform_name, image_map in existing_images.items():
-            if transform_name not in images_by_transform and isinstance(image_map, dict):
-                images_by_transform[transform_name] = image_map
     metadata = {
-        **existing_metadata,
+        "schema": 2,
         "labels": labels,
         "scan_set": scan_set,
         "set_id": set_id,
@@ -664,7 +698,16 @@ def make_viewer(
         "overviews": overviews,
         "default_transform": selected_transforms[0],
         "view_modes": view_modes,
-        "images_by_transform": images_by_transform,
+        "rgb16": {
+            "layout": "interleaved-rgb",
+            "endianness": "little",
+            "width": int(ref_crop.shape[1]),
+            "height": int(ref_crop.shape[0]),
+            "channels": 3,
+            "bytes_per_sample": 2,
+            "sources": rgb16_sources,
+        },
+        "browser_transform_recipe": browser_transform_recipe(ref_crop),
         "build_inputs": build_inputs,
         "build_fingerprint": fingerprint(build_inputs),
         "crop": list(crop_spec),
@@ -686,15 +729,18 @@ def make_viewer(
         },
     }
     metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    prune_legacy_full_images(output_dir, existing_metadata)
     title = f"{scan_set} / {set_id} / {crop_name}"
     (output_dir / "index.html").write_text(
-        html_page(title, images_by_transform[selected_transforms[0]], metadata), encoding="utf-8"
+        html_page(title, {"reference": overviews["reference"], "raw61": overviews["raw61"]}, metadata), encoding="utf-8"
     )
     return output_dir / "index.html"
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Create small static interactive review viewers for selected break-even crops.")
+    parser = argparse.ArgumentParser(
+        description="Create RGB16-only crop data and small navigation previews for the integrated review viewer."
+    )
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--renders-root", type=Path, default=DEFAULT_RENDERS_ROOT)
     parser.add_argument("--registered-root", type=Path, default=DEFAULT_REGISTERED_ROOT)
@@ -708,11 +754,16 @@ def main() -> int:
     parser.add_argument("--transform", action="append", default=None, help="Stress view to render; may be repeated.")
     parser.add_argument("--crop", type=parse_crop, default=DEFAULT_CROP)
     parser.add_argument("--crop-plan", type=Path, help="JSON crop plan produced by read_crop_selection_guides.py or serve_crop_selection.py.")
-    parser.add_argument("--max-dim", type=int, default=1024)
+    parser.add_argument(
+        "--max-dim",
+        type=int,
+        default=1024,
+        help="legacy fingerprint input retained for repeatable migration; RGB16 crops are stored at crop size",
+    )
     parser.add_argument("--overview-max-dim", type=int, default=DEFAULT_OVERVIEW_MAX_DIM)
     parser.add_argument("--max-local-shift", type=float, default=32.0)
     parser.add_argument("--jobs", type=int, default=1, help="number of crop viewers to build in parallel")
-    parser.add_argument("--force", action="store_true", help="rewrite existing viewer images")
+    parser.add_argument("--force", action="store_true", help="rewrite existing RGB16 crop data and previews")
     args = parser.parse_args()
     if args.max_dim <= 0:
         raise SystemExit("--max-dim must be positive")
