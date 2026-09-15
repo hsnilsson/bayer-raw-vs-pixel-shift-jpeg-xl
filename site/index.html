@@ -274,6 +274,9 @@
     .crop-scope { grid-column: 1 / -1; margin: 0; padding: 8px 10px; border-left: 3px solid #7dd3fc; background: #10151a; color: #bdc8d2; font-size: 12px; }
     .crop-workspace:fullscreen { width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }
     ul { margin-top: 8px; }
+    @media (min-width: 901px) {
+      .crop-workspace:has(.crop-latitude[open]) { height: clamp(780px, 92vh, 980px); }
+    }
     @media (max-width: 1150px) {
       .crop-toolbar { align-items: flex-start; flex-direction: column; }
       .crop-actions { width: 100%; justify-content: flex-start; }

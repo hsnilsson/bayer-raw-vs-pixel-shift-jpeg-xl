@@ -943,6 +943,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"pixelWidth": 2', html)
             self.assertIn('id="cropLatitude"', html)
             self.assertIn("This tests editing latitude inside the fixed rendered RGB chain", html)
+            self.assertIn(
+                ".crop-workspace:has(.crop-latitude[open]) { height: clamp(780px, 92vh, 980px); }",
+                html,
+            )
             self.assertIn("function loadRgb16(viewer, src)", html)
             self.assertIn("if (browseCount < 3 || prefetchTimer) return;", html)
             self.assertIn("while (activePrefetches < 4 && prefetchQueue.length)", html)
