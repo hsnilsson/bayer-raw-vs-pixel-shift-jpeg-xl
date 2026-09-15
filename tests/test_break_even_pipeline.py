@@ -137,6 +137,20 @@ class BreakEvenPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "above 8-bit precision"):
                 review_viewers.write_rgb16le(output, source.astype(np.uint8), force=True)
 
+    def test_large_ppm_overview_samples_before_display_conversion(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = np.zeros((6, 8, 3), dtype=np.uint16)
+            source[:, :, 0] = 65535
+            path = Path(temp_dir) / "candidate.ppm"
+            path.write_bytes(b"P6\n8 6\n65535\n" + source.astype(">u2").tobytes())
+
+            overview = review_viewers.overview_from_image_file(path, 4)
+
+            self.assertEqual(overview.size, (4, 3))
+            self.assertEqual(overview.mode, "RGB")
+            self.assertGreater(np.asarray(overview)[0, 0, 0], 250)
+            self.assertEqual(int(np.asarray(overview)[0, 0, 1]), 0)
+
     def test_browser_transform_recipe_is_derived_from_high_precision_reference(self) -> None:
         reference = (textured_rgb(32, 40).astype(np.uint16) * 257)
 
@@ -1161,6 +1175,19 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
         self.assertIn("--container=1", command)
         self.assertIn("icc_pathname=reference.icc", command)
+
+    def test_rendered_matrix_keeps_source_layout_under_an_external_output_root(self) -> None:
+        renders_root = Path("D:/source/renders")
+        output_root = Path("F:/temporary/rgb16")
+        source = renders_root / "film" / "frame" / "ps16.tif"
+
+        ppm, encoded, decoded = rendered_matrix.output_paths(
+            output_root, source, "d025", renders_root
+        )
+
+        self.assertEqual(ppm, output_root / "film" / "frame" / "ps16_reference.ppm")
+        self.assertEqual(encoded, output_root / "film" / "frame" / "d025" / "ps16.jxl")
+        self.assertEqual(decoded, output_root / "film" / "frame" / "d025" / "ps16_candidate.png")
 
     def test_rendered_matrix_metadata_copy_is_curated_from_the_rendered_tiff(self) -> None:
         command = rendered_matrix.metadata_copy_command(

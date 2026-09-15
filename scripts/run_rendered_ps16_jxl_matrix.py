@@ -266,9 +266,14 @@ def discover_ps16_renders(renders_root: Path) -> list[tuple[str, str, Path]]:
     return discovered
 
 
-def output_paths(output_root: Path, source: Path, level: str) -> tuple[Path, Path, Path]:
+def output_paths(
+    output_root: Path,
+    source: Path,
+    level: str,
+    renders_root: Path = DEFAULT_RENDERS_ROOT,
+) -> tuple[Path, Path, Path]:
     try:
-        relative_parent = source.parent.relative_to(DEFAULT_RENDERS_ROOT.resolve())
+        relative_parent = source.parent.resolve().relative_to(renders_root.resolve())
     except ValueError:
         relative_parent = Path(source.parent.name)
     source_folder = output_root / relative_parent
@@ -433,12 +438,14 @@ def process_render_level(
     source: Path,
     level: str,
     output_root: Path,
+    renders_root: Path,
     results_dir: Path,
     cjxl: str,
     djxl: str,
     exiftool: str,
     effort: int,
     force: bool,
+    encode_only: bool,
     discard_intermediates: bool,
     no_metrics: bool,
     patch_size: int,
@@ -446,7 +453,7 @@ def process_render_level(
     crop_spec: str | None,
     max_analysis_dim: int,
 ) -> tuple[MatrixRow, list[dict[str, Any]], list[dict[str, Any]]]:
-    ppm, encoded, decoded = output_paths(output_root, source, level)
+    ppm, encoded, decoded = output_paths(output_root, source, level, renders_root)
     icc_path = ppm.with_suffix(".icc")
     encoded.parent.mkdir(parents=True, exist_ok=True)
     row = MatrixRow(
@@ -478,6 +485,11 @@ def process_render_level(
             row.status = "metadata_failed"
             row.notes = note
             return row, [], []
+    if encode_only:
+        row.encoded_mib = mib(encoded)
+        row.status = "encoded_only"
+        row.notes = "ICC embedded; curated Exif copied from rendered TIFF; decode deferred"
+        return row, [], []
     if force or not usable_file(decoded):
         decoded.unlink(missing_ok=True)
         ok, note = run_checked(decode_command(djxl, encoded, decoded))
@@ -532,6 +544,11 @@ def main() -> int:
     parser.add_argument("--effort", type=int, default=7)
     parser.add_argument("--limit", type=int, default=0, help="Limit number of PS16 renders for smoke tests.")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--encode-only",
+        action="store_true",
+        help="Create JXL artifacts without decoding or metrics; useful when a downstream crop build will verify-decode them.",
+    )
     parser.add_argument(
         "--jobs",
         type=int,
@@ -606,7 +623,7 @@ def main() -> int:
     skipped_cached = 0
     for scan_set, set_id, source in renders:
         for level in levels:
-            ppm, encoded, decoded = output_paths(args.output_root, source, level)
+            ppm, encoded, decoded = output_paths(args.output_root, source, level, args.renders_root)
             key = "|".join(result_key(scan_set, set_id, level))
             entry = cache_entries.get(key) if isinstance(cache_entries.get(key), dict) else {}
             artifact_entry = entry.get("artifact") if isinstance(entry.get("artifact"), dict) else None
@@ -689,12 +706,14 @@ def main() -> int:
                     source,
                     level,
                     args.output_root,
+                    args.renders_root,
                     args.results_dir,
                     cjxl,
                     djxl,
                     exiftool,
                     args.effort,
                     encode_required,
+                    args.encode_only,
                     args.discard_intermediates,
                     args.no_metrics,
                     args.patch_size,
@@ -738,6 +757,7 @@ def main() -> int:
             args.output_root,
             Path(ROOT / row.source_tif),
             row.level,
+            args.renders_root,
         )
         artifact_fp = artifact_fingerprint(Path(ROOT / row.source_tif), row.level, cjxl, djxl, exiftool, args.effort)
         key = "|".join(result_key(row.scan_set, row.set_id, row.level))

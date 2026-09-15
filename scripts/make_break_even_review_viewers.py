@@ -339,7 +339,7 @@ def save_overview_image(
 def run_decode_overview(djxl: str, source: Path, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        [djxl, str(source), str(output), "--bits_per_sample=8"],
+        [djxl, str(source), str(output), "--bits_per_sample=8", "--downsampling=8"],
         cwd=ROOT,
         check=True,
         stdout=subprocess.PIPE,
@@ -349,10 +349,38 @@ def run_decode_overview(djxl: str, source: Path, output: Path) -> None:
 
 
 def overview_from_image_file(path: Path, max_dim: int) -> Image.Image:
-    with Image.open(path) as source:
-        image = source.convert("RGB")
-        image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
-        return ImageOps.autocontrast(image, cutoff=0.5)
+    # djxl emits an uncompressed PPM here. Sampling its memory map before
+    # conversion avoids materialising another full 240 MP image merely to
+    # produce a small navigation preview.
+    with path.open("rb") as stream:
+        if stream.readline().strip() != b"P6":
+            raise ValueError(f"Expected binary RGB PPM: {path}")
+
+        def next_values() -> list[bytes]:
+            while True:
+                line = stream.readline()
+                if not line:
+                    raise ValueError(f"Incomplete PPM header: {path}")
+                values = line.split(b"#", 1)[0].split()
+                if values:
+                    return values
+
+        dimensions = next_values()
+        while len(dimensions) < 2:
+            dimensions.extend(next_values())
+        width, height = (int(value) for value in dimensions[:2])
+        max_value = int(next_values()[0])
+        pixel_offset = stream.tell()
+
+    dtype = np.dtype(">u2") if max_value > 255 else np.dtype("u1")
+    pixels = np.memmap(path, dtype=dtype, mode="r", offset=pixel_offset, shape=(height, width, 3))
+    step = max(1, int(max(width, height) / max_dim))
+    sampled = np.asarray(pixels[::step, ::step], dtype=np.float32)
+    sampled = np.clip(sampled * (255.0 / max_value), 0, 255).astype(np.uint8)
+    del pixels
+    image = Image.fromarray(sampled, "RGB")
+    image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+    return ImageOps.autocontrast(image, cutoff=0.5)
 
 
 def save_existing_context(source: Path, output: Path, max_dim: int, *, force: bool) -> bool:
@@ -631,6 +659,7 @@ def make_viewer(
     rebuild_viewer = args.force or not viewer_metadata_is_current(
         existing_metadata, build_inputs
     )
+    print(f"Viewer {scan_set} / {set_id} / {crop_name}: loading sources", flush=True)
     reference_full = read_rgb_image(ref_path)
     raw_full = read_rgb_image(raw_path)
     require_high_precision(reference_full, str(ref_path))
@@ -641,6 +670,7 @@ def make_viewer(
     aligned_raw, alignment = local_align_raw61(ref_crop, raw_crop, args.max_local_shift)
     raw61_exposure_gain = estimate_linear_exposure_gain(ref_crop, aligned_raw)
     raw61_exposure_stops = float(np.log2(raw61_exposure_gain))
+    print(f"Viewer {scan_set} / {set_id} / {crop_name}: crop aligned", flush=True)
     transforms = {transform.name: transform for transform in build_transforms(ref_crop)}
     selected_transforms = []
     for transform_name in transform_names:
@@ -683,6 +713,9 @@ def make_viewer(
         args.overview_max_dim,
         force=False,
     )
+    # The full 240 MP mappings are no longer needed after the crop and small
+    # overview are available. Release them before any candidate work/metadata.
+    del reference_full, raw_full, raw_crop
     with tempfile.TemporaryDirectory(prefix="break-even-viewer-") as temp_dir:
         temp_root = Path(temp_dir)
         for level in levels:
@@ -780,6 +813,7 @@ def make_viewer(
     (output_dir / "index.html").write_text(
         html_page(title, {"reference": overviews["reference"], "raw61": overviews["raw61"]}, metadata), encoding="utf-8"
     )
+    print(f"Viewer {scan_set} / {set_id} / {crop_name}: complete", flush=True)
     return output_dir / "index.html"
 
 
