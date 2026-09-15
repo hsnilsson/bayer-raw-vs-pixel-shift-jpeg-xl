@@ -237,6 +237,12 @@ def write_rgb16le(path: Path, arr: np.ndarray, *, force: bool) -> None:
     path.write_bytes(np.ascontiguousarray(encoded).tobytes())
 
 
+def rgb16le_file_is_complete(path: Path, crop_spec: tuple[int, int, int, int]) -> bool:
+    """Return true when a resumable RGB16 crop has exactly the expected size."""
+    _, _, width, height = crop_spec
+    return path.is_file() and path.stat().st_size == width * height * 3 * 2
+
+
 def browser_transform_recipe(reference: np.ndarray) -> dict[str, object]:
     """Describe the fixed rendered-RGB transforms without baking 8-bit images."""
     require_high_precision(reference, "PS16 reference")
@@ -554,6 +560,42 @@ def make_case_overviews(
             del candidate_overview
 
 
+def make_case_rgb16_candidates(
+    scan_set: str,
+    set_id: str,
+    crop_specs: list[tuple[str, tuple[int, int, int, int]]],
+    levels: list[str],
+    args: argparse.Namespace,
+    djxl: str,
+) -> None:
+    """Decode each full-size JXL once, then fan its RGB16 crops out to the case viewers."""
+    case_dir = args.output_dir / local_study.slugify(scan_set) / set_id
+    with tempfile.TemporaryDirectory(prefix="break-even-rgb16-") as temp_dir:
+        temp_root = Path(temp_dir)
+        for level in levels:
+            source = jxl_path(args.rendered_jxl_root, scan_set, set_id, level)
+            if not source.is_file():
+                continue
+            pending = []
+            for crop_name, crop_spec in crop_specs:
+                output = case_dir / crop_name / f"jxl_{level}.rgb16le"
+                if args.force or not rgb16le_file_is_complete(output, crop_spec):
+                    pending.append((crop_name, crop_spec, output))
+            if not pending:
+                continue
+            decoded = temp_root / level / "ps16_candidate.ppm"
+            run_decode(djxl, source, decoded)
+            candidate_full = read_rgb_image(decoded)
+            require_high_precision(candidate_full, str(source))
+            for _, crop_spec, output in pending:
+                output.parent.mkdir(parents=True, exist_ok=True)
+                candidate = crop(candidate_full, ",".join(str(value) for value in crop_spec))
+                write_rgb16le(output, candidate, force=True)
+                del candidate
+            del candidate_full
+            print(f"RGB16 {scan_set} / {set_id} / {level}: {len(pending)} crop(s)", flush=True)
+
+
 def make_viewer(
     scan_set: str,
     set_id: str,
@@ -653,7 +695,11 @@ def make_viewer(
             labels[f"jxl_{level}"] = f"PS16 JXL {level}"
             overview_output = output_dir / overviews[f"jxl_{level}"]
             rgb16_output = output_dir / rgb16_sources[key]
-            if rgb16_output.is_file() and overview_output.is_file() and not rebuild_viewer:
+            if (
+                rgb16le_file_is_complete(rgb16_output, crop_spec)
+                and overview_output.is_file()
+                and not args.force
+            ):
                 continue
             decoded = temp_root / level / "ps16_candidate.ppm"
             run_decode(djxl, source, decoded)
@@ -793,6 +839,7 @@ def main() -> int:
         overview_jobs.setdefault((scan_set, set_id), []).append((crop_name, crop_spec))
     for (scan_set, set_id), crop_specs in overview_jobs.items():
         make_case_overviews(scan_set, set_id, crop_specs, levels, args, djxl)
+        make_case_rgb16_candidates(scan_set, set_id, crop_specs, levels, args, djxl)
     written = []
     if args.jobs == 1 or len(tasks) <= 1:
         for scan_set, set_id, crop_name, crop_spec in tasks:

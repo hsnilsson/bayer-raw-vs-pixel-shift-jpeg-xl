@@ -60,8 +60,10 @@ separate high-precision source, not another full-size 8-bit PNG.
 
 The viewer supports side-by-side viewing, a candidate-on-reference overlay,
 zoom, and pan. `Rendered RGB edit latitude` stays collapsed until requested and
-then applies one shared exposure, black/white window, and tone curve to both
-16-bit sources before the final 8-bit canvas conversion. It also shows shared
+can then be popped out and dragged within the browser viewport. It applies one
+shared exposure, black/white window, and point curve to both 16-bit sources
+before the final 8-bit canvas conversion. Left-click the curve to add or drag a
+point; right-click an interior point to remove it. The panel also shows shared
 histograms and black/white clipping. It always includes the PS16 reference as
 the lossless baseline, and `d200` is included only as a deliberately
 heavy-compression visual anchor.

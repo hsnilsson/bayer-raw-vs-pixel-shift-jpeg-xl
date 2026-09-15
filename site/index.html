@@ -262,27 +262,44 @@
     #cropCanvas.dragging { cursor: grabbing; }
     .crop-status { min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }
     .crop-latitude { border-top: 1px solid #2b333b; background: #15191e; color: #dbe4ec; }
-    .crop-latitude summary { padding: 9px 14px; cursor: pointer; font-weight: 700; }
-    .crop-latitude-body { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(260px, .8fr); gap: 14px; max-height: 290px; overflow: auto; padding: 2px 14px 13px; }
-    .crop-tone-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }
-    .crop-tone-controls label { display: grid; grid-template-columns: 74px minmax(80px, 1fr) 58px; align-items: center; gap: 7px; font-size: 12px; }
-    .crop-tone-controls output { color: #a6b0ba; text-align: right; font-variant-numeric: tabular-nums; }
+    .crop-latitude summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 14px; cursor: pointer; font-weight: 700; }
+    .tone-float-toggle { flex: 0 0 auto; border: 1px solid #53606d; border-radius: 7px; background: #20262d; color: #f4f7fa; padding: 5px 9px; cursor: pointer; }
+    .crop-latitude-body { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(240px, 1fr); gap: 14px; max-height: 460px; overflow: auto; padding: 6px 14px 14px; }
+    .crop-tone-controls { display: grid; align-content: start; gap: 10px; min-width: 0; }
+    .tone-control { display: grid; gap: 5px; min-width: 0; font-size: 13px; }
+    .tone-control > span { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; }
+    .tone-control strong { overflow-wrap: anywhere; }
+    .crop-tone-controls input { width: 100%; min-width: 0; }
+    .crop-tone-controls output { flex: 0 0 auto; color: #a6b0ba; text-align: right; font-variant-numeric: tabular-nums; }
     .crop-tone-controls button { justify-self: start; border: 1px solid #3e4a56; border-radius: 7px; background: #20262d; color: #f4f7fa; padding: 6px 9px; cursor: pointer; }
-    .crop-histogram-wrap { min-width: 0; }
-    #toneHistogram { display: block; width: 100%; height: 96px; border: 1px solid #333d47; background: #0b0e11; }
-    .crop-histogram-wrap p { margin: 5px 0 0; color: #a6b0ba; font-size: 11px; }
+    .crop-curve-wrap, .crop-histogram-wrap { min-width: 0; }
+    .crop-histogram-wrap { grid-column: 1 / -1; }
+    .crop-tool-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 3px 10px; margin-bottom: 6px; font-size: 13px; }
+    .crop-tool-heading span { color: #a6b0ba; font-size: 12px; }
+    #toneCurve, #toneHistogram { display: block; width: 100%; border: 1px solid #333d47; background: #0b0e11; }
+    #toneCurve { height: 168px; cursor: crosshair; touch-action: none; }
+    #toneHistogram { height: 128px; }
+    .crop-histogram-wrap p { margin: 5px 0 0; color: #a6b0ba; font-size: 12px; }
     .crop-scope { grid-column: 1 / -1; margin: 0; padding: 8px 10px; border-left: 3px solid #7dd3fc; background: #10151a; color: #bdc8d2; font-size: 12px; }
+    .crop-latitude.is-floating { position: fixed; z-index: 1000; width: min(920px, calc(100vw - 24px)); max-height: calc(100vh - 16px); overflow: auto; border: 1px solid #53606d; border-radius: 10px; box-shadow: 0 20px 55px rgba(0,0,0,.55); }
+    .crop-latitude.is-floating summary { position: sticky; top: 0; z-index: 2; cursor: grab; user-select: none; background: #20262d; }
+    .crop-latitude.is-floating summary:active { cursor: grabbing; }
+    .crop-latitude.is-floating .crop-latitude-body { grid-template-columns: minmax(160px, .6fr) minmax(260px, 1fr) minmax(260px, 1fr); max-height: none; }
+    .crop-latitude.is-floating .crop-histogram-wrap { grid-column: auto; }
     .crop-workspace:fullscreen { width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }
     ul { margin-top: 8px; }
     @media (min-width: 901px) {
-      .crop-workspace:has(.crop-latitude[open]) { height: clamp(780px, 92vh, 980px); }
+      .crop-workspace:has(.crop-latitude[open]:not(.is-floating)) { height: clamp(860px, 96vh, 1040px); }
     }
     @media (max-width: 1150px) {
       .crop-toolbar { align-items: flex-start; flex-direction: column; }
       .crop-actions { width: 100%; justify-content: flex-start; }
       .crop-toolbar p { height: calc(1.45em * 5); }
       .crop-latitude-body { grid-template-columns: 1fr; }
+      .crop-latitude.is-floating .crop-latitude-body { grid-template-columns: minmax(160px, .65fr) minmax(240px, 1fr); }
+      .crop-histogram-wrap, .crop-latitude.is-floating .crop-histogram-wrap { grid-column: 1 / -1; }
       .crop-scope { grid-column: 1; }
+      .crop-latitude.is-floating .crop-scope { grid-column: 1 / -1; }
     }
     @media (max-width: 900px) {
       .grid, .questions, .adc-grid, .panel-grid, .context-grid, .flow, .trend-charts, .public-figure-grid, .combiner-grid { grid-template-columns: 1fr; }
@@ -327,7 +344,8 @@
       #cropOverlayToggle, #cropFullscreen { min-width: 0; grid-column: span 2; }
       #cropReset { grid-column: span 2; }
       #cropCanvas { min-height: 360px; }
-      .crop-tone-controls { grid-template-columns: 1fr; }
+      .crop-latitude.is-floating .crop-latitude-body { grid-template-columns: 1fr; }
+      .crop-latitude.is-floating .crop-histogram-wrap { grid-column: 1; }
       .crop-workspace:fullscreen { overflow-y: auto; grid-template-rows: auto minmax(58vh, 1fr) auto; }
     }
   </style>
@@ -619,18 +637,23 @@
       <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
       <div class="crop-status" id="cropStatus" aria-live="polite"></div>
       <details class="crop-latitude" id="cropLatitude">
-        <summary>Rendered RGB edit latitude</summary>
+        <summary id="cropLatitudeHandle">
+          <span>Rendered RGB edit latitude</span>
+          <button type="button" class="tone-float-toggle" id="toneFloatToggle" aria-pressed="false">Pop out</button>
+        </summary>
         <div class="crop-latitude-body">
           <div class="crop-tone-controls">
-            <label>Exposure <input id="toneExposure" type="range" min="-4" max="4" step="0.1" value="0"><output>0.0 EV</output></label>
-            <label>Black <input id="toneBlack" type="range" min="0" max="0.5" step="0.005" value="0"><output>0.000</output></label>
-            <label>White <input id="toneWhite" type="range" min="0.05" max="1" step="0.005" value="1"><output>1.000</output></label>
-            <label>Shadows <input id="toneShadows" type="range" min="0" max="1" step="0.01" value="0.25"><output>0.25</output></label>
-            <label>Midtones <input id="toneMidtones" type="range" min="0" max="1" step="0.01" value="0.5"><output>0.50</output></label>
-            <label>Highlights <input id="toneHighlights" type="range" min="0" max="1" step="0.01" value="0.75"><output>0.75</output></label>
+            <label class="tone-control"><span><strong>Exposure</strong><output>0.0 EV</output></span><input id="toneExposure" type="range" min="-4" max="4" step="0.1" value="0"></label>
+            <label class="tone-control"><span><strong>Black</strong><output>0.000</output></span><input id="toneBlack" type="range" min="0" max="0.5" step="0.005" value="0"></label>
+            <label class="tone-control"><span><strong>White</strong><output>1.000</output></span><input id="toneWhite" type="range" min="0.05" max="1" step="0.005" value="1"></label>
             <button type="button" id="toneReset">Reset edit</button>
           </div>
+          <div class="crop-curve-wrap">
+            <div class="crop-tool-heading"><strong>Point curve</strong><span>Left-click to add or drag · right-click to remove</span></div>
+            <canvas id="toneCurve" width="360" height="180" tabindex="0" aria-label="Point tone curve. Left-click to add or drag a point. Right-click an interior point to remove it."></canvas>
+          </div>
           <div class="crop-histogram-wrap">
+            <div class="crop-tool-heading"><strong>Luminance histogram</strong><span>RAW61 blue · candidate amber</span></div>
             <canvas id="toneHistogram" width="512" height="128" aria-label="Shared luminance histograms"></canvas>
             <p id="toneClipping">Clipping: -</p>
           </div>
@@ -666,16 +689,17 @@
     const fullscreenToggle = document.getElementById("cropFullscreen");
     const modeSelect = document.getElementById("cropMode");
     const latitude = document.getElementById("cropLatitude");
+    const latitudeHandle = document.getElementById("cropLatitudeHandle");
+    const floatToggle = document.getElementById("toneFloatToggle");
+    const toneCurve = document.getElementById("toneCurve");
+    const toneCurveContext = toneCurve.getContext("2d");
     const histogram = document.getElementById("toneHistogram");
     const histogramContext = histogram.getContext("2d");
     const clipping = document.getElementById("toneClipping");
     const toneInputs = {
       exposure: document.getElementById("toneExposure"),
       black: document.getElementById("toneBlack"),
-      white: document.getElementById("toneWhite"),
-      shadows: document.getElementById("toneShadows"),
-      midtones: document.getElementById("toneMidtones"),
-      highlights: document.getElementById("toneHighlights")
+      white: document.getElementById("toneWhite")
     };
     const imageCache = new Map();
     const pixelCache = new Map();
@@ -707,7 +731,12 @@
       candidatePixels: null,
       referenceOverviewImage: null,
       candidateOverviewImage: null,
-      tone: { exposure: 0, black: 0, white: 1, shadows: .25, midtones: .5, highlights: .75 }
+      tone: { exposure: 0, black: 0, white: 1, points: [[0, 0], [.25, .25], [.5, .5], [.75, .75], [1, 1]] },
+      curvePoint: -1,
+      movingLatitude: false,
+      latitudeMoved: false,
+      latitudeOffsetX: 0,
+      latitudeOffsetY: 0
     };
 
     if (!viewers.length || !workspace) return;
@@ -816,10 +845,106 @@
 
     function curveValue(value) {
       const x = clamp01(value);
-      if (x <= .25) return state.tone.shadows * (x / .25);
-      if (x <= .5) return state.tone.shadows + (state.tone.midtones - state.tone.shadows) * ((x - .25) / .25);
-      if (x <= .75) return state.tone.midtones + (state.tone.highlights - state.tone.midtones) * ((x - .5) / .25);
-      return state.tone.highlights + (1 - state.tone.highlights) * ((x - .75) / .25);
+      const points = state.tone.points;
+      for (let index = 1; index < points.length; index += 1) {
+        if (x > points[index][0]) continue;
+        const left = points[index - 1];
+        const right = points[index];
+        const amount = (x - left[0]) / Math.max(.00001, right[0] - left[0]);
+        return left[1] + (right[1] - left[1]) * amount;
+      }
+      return points[points.length - 1][1];
+    }
+
+    function drawToneCurve() {
+      const width = toneCurve.width;
+      const height = toneCurve.height;
+      const inset = 12;
+      const plotWidth = width - inset * 2;
+      const plotHeight = height - inset * 2;
+      toneCurveContext.clearRect(0, 0, width, height);
+      toneCurveContext.fillStyle = "#0b0e11";
+      toneCurveContext.fillRect(0, 0, width, height);
+      toneCurveContext.strokeStyle = "rgba(166,176,186,.18)";
+      toneCurveContext.lineWidth = 1;
+      for (let step = 0; step <= 4; step += 1) {
+        const position = inset + plotWidth * step / 4;
+        toneCurveContext.beginPath();
+        toneCurveContext.moveTo(position, inset);
+        toneCurveContext.lineTo(position, height - inset);
+        toneCurveContext.stroke();
+        const horizontal = inset + plotHeight * step / 4;
+        toneCurveContext.beginPath();
+        toneCurveContext.moveTo(inset, horizontal);
+        toneCurveContext.lineTo(width - inset, horizontal);
+        toneCurveContext.stroke();
+      }
+      toneCurveContext.setLineDash([5, 5]);
+      toneCurveContext.strokeStyle = "rgba(166,176,186,.5)";
+      toneCurveContext.beginPath();
+      toneCurveContext.moveTo(inset, height - inset);
+      toneCurveContext.lineTo(width - inset, inset);
+      toneCurveContext.stroke();
+      toneCurveContext.setLineDash([]);
+      toneCurveContext.strokeStyle = "#7dd3fc";
+      toneCurveContext.lineWidth = 2;
+      toneCurveContext.beginPath();
+      state.tone.points.forEach(([x, y], index) => {
+        const px = inset + x * plotWidth;
+        const py = height - inset - y * plotHeight;
+        if (index) toneCurveContext.lineTo(px, py);
+        else toneCurveContext.moveTo(px, py);
+      });
+      toneCurveContext.stroke();
+      state.tone.points.forEach(([x, y], index) => {
+        toneCurveContext.beginPath();
+        toneCurveContext.arc(inset + x * plotWidth, height - inset - y * plotHeight, index === state.curvePoint ? 6 : 5, 0, Math.PI * 2);
+        toneCurveContext.fillStyle = index === state.curvePoint ? "#fbbf24" : "#e7f6fd";
+        toneCurveContext.fill();
+        toneCurveContext.strokeStyle = "#075985";
+        toneCurveContext.stroke();
+      });
+    }
+
+    function curvePosition(event) {
+      const rect = toneCurve.getBoundingClientRect();
+      const insetX = 12 * rect.width / toneCurve.width;
+      const insetY = 12 * rect.height / toneCurve.height;
+      return [
+        clamp01((event.clientX - rect.left - insetX) / Math.max(1, rect.width - insetX * 2)),
+        clamp01(1 - (event.clientY - rect.top - insetY) / Math.max(1, rect.height - insetY * 2))
+      ];
+    }
+
+    function nearestCurvePoint(event, radius = 14) {
+      const rect = toneCurve.getBoundingClientRect();
+      const [x, y] = curvePosition(event);
+      let nearest = -1;
+      let distance = Infinity;
+      state.tone.points.forEach((point, index) => {
+        const dx = (point[0] - x) * Math.max(1, rect.width - 24);
+        const dy = (point[1] - y) * Math.max(1, rect.height - 24);
+        const candidateDistance = Math.hypot(dx, dy);
+        if (candidateDistance < distance) {
+          nearest = index;
+          distance = candidateDistance;
+        }
+      });
+      return distance <= radius ? nearest : -1;
+    }
+
+    function moveCurvePoint(index, x, y) {
+      if (index < 0 || index >= state.tone.points.length) return;
+      if (index === 0) x = 0;
+      else if (index === state.tone.points.length - 1) x = 1;
+      else {
+        const previousX = state.tone.points[index - 1][0];
+        const nextX = state.tone.points[index + 1][0];
+        x = Math.max(previousX + .005, Math.min(nextX - .005, x));
+      }
+      state.tone.points[index] = [x, clamp01(y)];
+      drawToneCurve();
+      scheduleToneRender();
     }
 
     function editedValue(value) {
@@ -1258,6 +1383,35 @@
       setNavigationZone("view", true);
     }
 
+    function clampLatitudePosition() {
+      if (!latitude.classList.contains("is-floating")) return;
+      const rect = latitude.getBoundingClientRect();
+      const left = Math.max(8, Math.min(window.innerWidth - rect.width - 8, rect.left));
+      const top = Math.max(8, Math.min(window.innerHeight - rect.height - 8, rect.top));
+      latitude.style.left = `${left}px`;
+      latitude.style.top = `${top}px`;
+    }
+
+    function setLatitudeFloating(enabled) {
+      if (enabled) latitude.open = true;
+      latitude.classList.toggle("is-floating", enabled);
+      floatToggle.textContent = enabled ? "Dock" : "Pop out";
+      floatToggle.setAttribute("aria-pressed", String(enabled));
+      if (enabled) {
+        latitude.style.left = `${Math.max(12, (window.innerWidth - latitude.offsetWidth) / 2)}px`;
+        latitude.style.top = `${Math.max(12, (window.innerHeight - latitude.offsetHeight) / 2)}px`;
+        clampLatitudePosition();
+      } else {
+        latitude.style.removeProperty("left");
+        latitude.style.removeProperty("top");
+      }
+      window.requestAnimationFrame(() => {
+        resizeCanvas();
+        draw();
+        drawToneCurve();
+      });
+    }
+
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     modeSelect.addEventListener("focus", () => { setNavigationZone("view"); });
@@ -1265,16 +1419,96 @@
       input.addEventListener("input", () => {
         state.tone[key] = Number(input.value);
         const suffix = key === "exposure" ? " EV" : "";
-        input.nextElementSibling.value = `${Number(input.value).toFixed(key === "exposure" ? 1 : key === "black" || key === "white" ? 3 : 2)}${suffix}`;
+        input.closest("label").querySelector("output").value = `${Number(input.value).toFixed(key === "exposure" ? 1 : 3)}${suffix}`;
         scheduleToneRender();
       });
     });
     document.getElementById("toneReset").addEventListener("click", () => {
-      const defaults = { exposure: 0, black: 0, white: 1, shadows: .25, midtones: .5, highlights: .75 };
+      const defaults = { exposure: 0, black: 0, white: 1 };
       Object.entries(defaults).forEach(([key, value]) => {
         state.tone[key] = value;
         toneInputs[key].value = value;
         toneInputs[key].dispatchEvent(new Event("input"));
+      });
+      state.tone.points = [[0, 0], [.25, .25], [.5, .5], [.75, .75], [1, 1]];
+      state.curvePoint = -1;
+      drawToneCurve();
+      scheduleToneRender();
+    });
+    toneCurve.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      const [x, y] = curvePosition(event);
+      let index = nearestCurvePoint(event);
+      if (index < 0) {
+        state.tone.points.push([x, y]);
+        state.tone.points.sort((left, right) => left[0] - right[0]);
+        index = state.tone.points.findIndex((point) => point[0] === x && point[1] === y);
+      }
+      state.curvePoint = index;
+      moveCurvePoint(index, x, y);
+      toneCurve.setPointerCapture(event.pointerId);
+    });
+    toneCurve.addEventListener("pointermove", (event) => {
+      if (state.curvePoint < 0 || !toneCurve.hasPointerCapture(event.pointerId)) return;
+      const [x, y] = curvePosition(event);
+      moveCurvePoint(state.curvePoint, x, y);
+    });
+    const finishCurveDrag = (event) => {
+      if (toneCurve.hasPointerCapture(event.pointerId)) toneCurve.releasePointerCapture(event.pointerId);
+      state.curvePoint = -1;
+      drawToneCurve();
+    };
+    toneCurve.addEventListener("pointerup", finishCurveDrag);
+    toneCurve.addEventListener("pointercancel", finishCurveDrag);
+    toneCurve.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      const index = nearestCurvePoint(event);
+      if (index <= 0 || index >= state.tone.points.length - 1) return;
+      state.tone.points.splice(index, 1);
+      state.curvePoint = -1;
+      drawToneCurve();
+      scheduleToneRender();
+    });
+    floatToggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setLatitudeFloating(!latitude.classList.contains("is-floating"));
+    });
+    latitudeHandle.addEventListener("pointerdown", (event) => {
+      if (!latitude.classList.contains("is-floating") || event.button !== 0 || event.target.closest("button")) return;
+      const rect = latitude.getBoundingClientRect();
+      state.movingLatitude = true;
+      state.latitudeMoved = false;
+      state.latitudeOffsetX = event.clientX - rect.left;
+      state.latitudeOffsetY = event.clientY - rect.top;
+      latitudeHandle.setPointerCapture(event.pointerId);
+    });
+    latitudeHandle.addEventListener("pointermove", (event) => {
+      if (!state.movingLatitude || !latitudeHandle.hasPointerCapture(event.pointerId)) return;
+      state.latitudeMoved = true;
+      const left = Math.max(8, Math.min(window.innerWidth - latitude.offsetWidth - 8, event.clientX - state.latitudeOffsetX));
+      const top = Math.max(8, Math.min(window.innerHeight - latitude.offsetHeight - 8, event.clientY - state.latitudeOffsetY));
+      latitude.style.left = `${left}px`;
+      latitude.style.top = `${top}px`;
+    });
+    const finishLatitudeMove = (event) => {
+      state.movingLatitude = false;
+      if (latitudeHandle.hasPointerCapture(event.pointerId)) latitudeHandle.releasePointerCapture(event.pointerId);
+    };
+    latitudeHandle.addEventListener("pointerup", finishLatitudeMove);
+    latitudeHandle.addEventListener("pointercancel", finishLatitudeMove);
+    latitudeHandle.addEventListener("click", (event) => {
+      if (!state.latitudeMoved) return;
+      event.preventDefault();
+      state.latitudeMoved = false;
+    });
+    latitude.addEventListener("toggle", () => {
+      if (!latitude.open && latitude.classList.contains("is-floating")) setLatitudeFloating(false);
+      window.requestAnimationFrame(() => {
+        resizeCanvas();
+        draw();
+        drawToneCurve();
       });
     });
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
@@ -1320,8 +1554,10 @@
       canvas.releasePointerCapture(event.pointerId);
     });
     window.addEventListener("resize", () => {
+      clampLatitudePosition();
       resizeCanvas();
       draw();
+      drawToneCurve();
     });
     workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });
     workspace.addEventListener("focusin", pinWorkspaceViewport);
@@ -1360,6 +1596,7 @@
       }
     });
     setOverlay(false);
+    drawToneCurve();
     setViewer(0);
     setNavigationZone("film");
   })();

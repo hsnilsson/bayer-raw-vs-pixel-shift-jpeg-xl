@@ -132,6 +132,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
             decoded = np.frombuffer(output.read_bytes(), dtype="<u2").reshape(source.shape)
             np.testing.assert_array_equal(decoded, source)
+            self.assertTrue(review_viewers.rgb16le_file_is_complete(output, (0, 0, 2, 1)))
+            self.assertFalse(review_viewers.rgb16le_file_is_complete(output, (0, 0, 3, 1)))
             with self.assertRaisesRegex(ValueError, "above 8-bit precision"):
                 review_viewers.write_rgb16le(output, source.astype(np.uint8), force=True)
 
@@ -944,9 +946,15 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('id="cropLatitude"', html)
             self.assertIn("This tests editing latitude inside the fixed rendered RGB chain", html)
             self.assertIn(
-                ".crop-workspace:has(.crop-latitude[open]) { height: clamp(780px, 92vh, 980px); }",
+                ".crop-workspace:has(.crop-latitude[open]:not(.is-floating)) { height: clamp(860px, 96vh, 1040px); }",
                 html,
             )
+            self.assertIn('id="toneFloatToggle"', html)
+            self.assertIn('id="toneCurve"', html)
+            self.assertIn('state.tone.points.push([x, y]);', html)
+            self.assertIn('toneCurve.addEventListener("contextmenu"', html)
+            self.assertIn('latitude.classList.toggle("is-floating", enabled);', html)
+            self.assertNotIn('id="toneShadows"', html)
             self.assertIn("function loadRgb16(viewer, src)", html)
             self.assertIn("if (browseCount < 3 || prefetchTimer) return;", html)
             self.assertIn("while (activePrefetches < 4 && prefetchQueue.length)", html)
