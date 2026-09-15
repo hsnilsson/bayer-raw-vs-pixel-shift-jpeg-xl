@@ -189,6 +189,22 @@
     .crop-choice:hover, .crop-choice[aria-pressed="true"] { border-color: #7dd3fc; background: #0c4a6e; }
     .crop-choice span { color: #a6b0ba; font-size: 12px; }
     .crop-choice[aria-pressed="true"] span { color: #d8eefc; }
+    .crop-film-choice {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+    }
+    .crop-film-thumbnail {
+      width: 52px;
+      height: 52px;
+      border: 1px solid #46515c;
+      border-radius: 6px;
+      background: #101316;
+      object-fit: cover;
+    }
+    .crop-film-copy { display: grid; min-width: 0; gap: 3px; }
+    .crop-film-copy strong { overflow-wrap: anywhere; }
     .crop-stage { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
     .crop-toolbar {
       display: flex;
@@ -838,16 +854,29 @@
       viewers.forEach((viewer, index) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "crop-choice";
+        button.className = "crop-choice crop-film-choice";
         button.setAttribute("aria-pressed", String(index === state.viewerIndex));
+        const thumbnailSource = viewer.referenceOverview || viewer.reference;
+        if (thumbnailSource) {
+          const thumbnail = document.createElement("img");
+          thumbnail.className = "crop-film-thumbnail";
+          thumbnail.src = thumbnailSource;
+          thumbnail.alt = "";
+          thumbnail.loading = "lazy";
+          thumbnail.decoding = "async";
+          button.appendChild(thumbnail);
+        }
+        const copy = document.createElement("div");
+        copy.className = "crop-film-copy";
         const name = document.createElement("strong");
         name.textContent = viewer.label;
-        button.appendChild(name);
+        copy.appendChild(name);
         if (viewer.sampleRole) {
           const role = document.createElement("span");
           role.textContent = viewer.sampleRole;
-          button.appendChild(role);
+          copy.appendChild(role);
         }
+        button.appendChild(copy);
         button.addEventListener("click", () => {
           setNavigationZone("film");
           setViewer(index);
