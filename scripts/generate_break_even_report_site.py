@@ -1319,7 +1319,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         button.type = "button";
         button.className = "crop-choice crop-film-choice";
         button.setAttribute("aria-pressed", String(index === state.viewerIndex));
-        const thumbnailSource = viewer.referenceOverview || viewer.reference;
+        const thumbnailSource = viewer.reference;
         if (thumbnailSource) {
           const thumbnail = document.createElement("img");
           thumbnail.className = "crop-film-thumbnail";
