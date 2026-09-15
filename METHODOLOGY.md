@@ -56,6 +56,26 @@ Operations should include:
 
 This track should be automated outside FilmLab so it can be reproduced.
 
+#### Controlled capture-latitude calibration
+
+The local controlled-exposure audit measures camera latitude before rendering
+or codec testing. Four complete ISO 100 ARW brackets are decoded in the Bayer
+domain, black-subtracted per CFA channel, and exposure-normalized from robust
+midtone response. Green-site structure is compared with an exposure-weighted,
+leave-one-out bracket HDR reference; R/G1/G2/B clipping remains separate.
+
+An 8% outer inset excludes slide-holder/frame edges. Dense, midtone, and thin
+signal bands use HDR-reference percentiles 1-10, 35-65, and 90-99. The method
+explicitly reports pixels clipped in every bracket frame so unrecoverable
+highlights cannot disappear from the evaluated HDR domain.
+
+```powershell
+python scripts\run_controlled_exposure_latitude.py `
+  --source-root "C:\path\to\test-laowa"
+```
+
+See [docs/controlled-exposure-latitude.md](docs/controlled-exposure-latitude.md).
+
 Current public script:
 
 ```powershell

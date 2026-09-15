@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="600" viewBox="0 0 980 600">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="92" y="34" font-family="system-ui,sans-serif" font-size="24" font-weight="700" fill="#0f172a">Church interior: recovery error by signal band</text>
+<text x="92" y="58" font-family="system-ui,sans-serif" font-size="14" fill="#475569">Raw green signal normalized to the normal exposure and compared with the bracket HDR reference.</text>
+<line x1="92" y1="526.00" x2="948" y2="526.00" stroke="#e2e8f0"/>
+<text x="80" y="531.00" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#475569">0.001</text>
+<line x1="92" y1="415.00" x2="948" y2="415.00" stroke="#e2e8f0"/>
+<text x="80" y="420.00" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#475569">0.01</text>
+<line x1="92" y1="304.00" x2="948" y2="304.00" stroke="#e2e8f0"/>
+<text x="80" y="309.00" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#475569">0.1</text>
+<line x1="92" y1="193.00" x2="948" y2="193.00" stroke="#e2e8f0"/>
+<text x="80" y="198.00" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#475569">1</text>
+<line x1="92" y1="82.00" x2="948" y2="82.00" stroke="#e2e8f0"/>
+<text x="80" y="87.00" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#475569">10</text>
+<line x1="154.32" y1="82" x2="154.32" y2="526" stroke="#f1f5f9"/>
+<text x="154.32" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">-5</text>
+<line x1="227.02" y1="82" x2="227.02" y2="526" stroke="#f1f5f9"/>
+<text x="227.02" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">-4</text>
+<line x1="299.73" y1="82" x2="299.73" y2="526" stroke="#f1f5f9"/>
+<text x="299.73" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">-3</text>
+<line x1="372.44" y1="82" x2="372.44" y2="526" stroke="#f1f5f9"/>
+<text x="372.44" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">-2</text>
+<line x1="445.15" y1="82" x2="445.15" y2="526" stroke="#f1f5f9"/>
+<text x="445.15" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">-1</text>
+<line x1="517.86" y1="82" x2="517.86" y2="526" stroke="#f1f5f9"/>
+<text x="517.86" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+0</text>
+<line x1="590.57" y1="82" x2="590.57" y2="526" stroke="#f1f5f9"/>
+<text x="590.57" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+1</text>
+<line x1="663.28" y1="82" x2="663.28" y2="526" stroke="#f1f5f9"/>
+<text x="663.28" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+2</text>
+<line x1="735.98" y1="82" x2="735.98" y2="526" stroke="#f1f5f9"/>
+<text x="735.98" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+3</text>
+<line x1="808.69" y1="82" x2="808.69" y2="526" stroke="#f1f5f9"/>
+<text x="808.69" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+4</text>
+<line x1="881.40" y1="82" x2="881.40" y2="526" stroke="#f1f5f9"/>
+<text x="881.40" y="550" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#475569">+5</text>
+<line x1="92" y1="526" x2="948" y2="526" stroke="#334155"/>
+<line x1="92" y1="82" x2="92" y2="526" stroke="#334155"/>
+<text x="520.00" y="578" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#334155">Exposure relative to normal (EV)</text>
+<text x="22" y="304.00" transform="rotate(-90 22 304.00)" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#334155">Relative RMSE</text>
+<path d="M 130.91 50.50 L 323.14 135.97 L 517.86 214.16 L 710.09 276.01 L 909.09 267.03" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+<circle cx="130.91" cy="50.50" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>
+<circle cx="323.14" cy="135.97" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>
+<circle cx="517.86" cy="214.16" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>
+<circle cx="710.09" cy="276.01" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>
+<circle cx="909.09" cy="267.03" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>
+<line x1="102" y1="102" x2="124" y2="102" stroke="#1d4ed8" stroke-width="3"/>
+<text x="132" y="106" font-family="system-ui,sans-serif" font-size="12" fill="#0f172a">Dense</text>
+<path d="M 130.91 224.30 L 323.14 293.59 L 517.86 346.10 L 710.09 389.51 L 909.09 391.63" fill="none" stroke="#64748b" stroke-width="2.5"/>
+<circle cx="130.91" cy="224.30" r="4" fill="#64748b" stroke="#fff" stroke-width="1.5"/>
+<circle cx="323.14" cy="293.59" r="4" fill="#64748b" stroke="#fff" stroke-width="1.5"/>
+<circle cx="517.86" cy="346.10" r="4" fill="#64748b" stroke="#fff" stroke-width="1.5"/>
+<circle cx="710.09" cy="389.51" r="4" fill="#64748b" stroke="#fff" stroke-width="1.5"/>
+<circle cx="909.09" cy="391.63" r="4" fill="#64748b" stroke="#fff" stroke-width="1.5"/>
+<line x1="362" y1="102" x2="384" y2="102" stroke="#64748b" stroke-width="3"/>
+<text x="392" y="106" font-family="system-ui,sans-serif" font-size="12" fill="#0f172a">Midtone</text>
+<path d="M 130.91 341.13 L 323.14 385.24 L 517.86 387.19 L 710.09 218.09 L 909.09 194.82" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<circle cx="130.91" cy="341.13" r="4" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+<circle cx="323.14" cy="385.24" r="4" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+<circle cx="517.86" cy="387.19" r="4" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+<circle cx="710.09" cy="218.09" r="4" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+<circle cx="909.09" cy="194.82" r="4" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+<line x1="622" y1="102" x2="644" y2="102" stroke="#dc2626" stroke-width="3"/>
+<text x="652" y="106" font-family="system-ui,sans-serif" font-size="12" fill="#0f172a">Thin</text>
+</svg>

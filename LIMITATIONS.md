@@ -32,6 +32,13 @@ The principal interpretation limits are listed below.
 - Standard image metrics do not directly measure archival value.
 - A public target test can measure capture quality but cannot fully represent
   organic film grain, dye clouds, or real negatives.
+- The controlled exposure-latitude audit covers four private slide scenes and
+  one camera/lens/light setup. Its bracket HDR is an internal leave-one-out
+  reference rather than a densitometer measurement; it has no same-exposure
+  repeats for a formal photon/read-noise model. Structure is measured on the
+  two green CFA sites while R/G1/G2/B clipping is tracked separately. The manual
+  Laowa aperture is not reported in EXIF. The audit calibrates the RAW61 anchor
+  and does not itself compare ARQ, PixelShift2DNG, Pixel Shift, or JPEG XL.
 
 ## What This Does Not Prove
 

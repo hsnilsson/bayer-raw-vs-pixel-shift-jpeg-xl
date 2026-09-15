@@ -37,6 +37,12 @@ The current practical answer is:
   level, and color metadata. This materially improves the direct-DNG outlook,
   but current application support and the one-frame scope keep it outside the
   decision-grade verdict.
+- A controlled 16-frame ARW bracket audit shows that a meter-normal RAW61 is
+  not automatically a complete latitude reference. Three normal exposures
+  protected the evaluated thin-signal tail, but the white-shirt normal clipped
+  10.2-12.7% across CFA channels. Positive exposure improved dense-region
+  recovery by roughly 3x in two difficult scenes, with little practical gain
+  beyond +3 EV in the widest bracket.
 
 The deeper hypothesis remains alive: a very high-resolution PixelShift scan
 stored as conservative JPEG XL may be a better practical representation of a
@@ -96,6 +102,10 @@ The local exploratory tests support these points:
 - A local FilmLab ProPhoto test found `d=0.05` much less damaging than more
   aggressive distances after inversion, while reducing one selected DNG to about
   half its size.
+- Direct Bayer-domain brackets separate tone matching from recoverable capture
+  latitude: a combiner can resemble the normal ARW tonally even when a longer
+  exposure recovers more dense-region structure, or when a shorter exposure is
+  required to avoid thin-region clipping.
 
 The public tests support these points:
 
@@ -124,6 +134,10 @@ diffraction, lighting issues, or unstable film holders.
 They also do not prove that the public test images fully represent real
 camera-scanned negatives. The public data is useful and reproducible, while the
 owner-approved real-negative corpus remains too limited for a general claim.
+
+The controlled bracket result covers four stationary slide scenes from one
+camera/lens/light setup. It calibrates the single-shot raw anchor but does not
+compare ARQ, PixelShift2DNG, Pixel Shift 4/16, or JPEG XL.
 
 ## Practical Recommendation Today
 

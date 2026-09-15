@@ -15,6 +15,7 @@ python scripts\generate_break_even_report_site.py `
   --output site\index.html `
   --copy-contexts-to site\assets\review-contexts `
   --copy-public-figures-to site\assets\public-latitude-v2 `
+  --copy-controlled-latitude-figures-to site\assets\controlled-exposure-latitude `
   --viewers site\assets\review-viewers
 ```
 
@@ -116,6 +117,15 @@ python scripts\run_pixelshift_combiner_audit.py `
   --plan <local-audit-plan.json> `
   --output-assets site\assets\pixelshift-combiner-audit `
   --output-json metadata\pixelshift_combiner_audit.json
+```
+
+The controlled exposure-latitude section is image-free apart from SVG plots.
+Regenerate its JSON/figures first, then let the report build copy only those
+plots into the publishable site:
+
+```powershell
+python scripts\run_controlled_exposure_latitude.py `
+  --source-root "C:\path\to\test-laowa"
 ```
 
 The local plan contains paths to unpublished full-size renders and is not part

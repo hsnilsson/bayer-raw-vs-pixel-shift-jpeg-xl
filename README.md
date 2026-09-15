@@ -67,6 +67,11 @@ current pattern:
   edits.
 - Public FADGI/OpenDICE and LOC tests make the stress pipeline reproducible,
   but they do not answer the PixelShift sampling question by themselves.
+- A direct Bayer-domain audit of four complete exposure brackets shows that a
+  meter-normal RAW61 is not automatically a complete latitude reference:
+  three normal frames protected the tested thin-signal tail, while one
+  white-shirt normal clipped 10.2-12.7% across CFA channels and required a
+  shorter exposure for recoverable highlight structure.
 - The standalone rendered-PS16 JPEG XL matrix now crosses the 61 MP RAW storage
   budget in the current local real-negative material; `d022` is still slightly
   over budget on median and `d025` is the first tested under-budget level.
@@ -113,6 +118,9 @@ These results do not establish a universal archival recommendation.
 - [docs/pixelshift-combiner-audit.md](docs/pixelshift-combiner-audit.md):
   bounded same-source comparison of PixelShift2DNG and Sony ARQ, with exposure-
   normalized latitude and separate detail evidence
+- [docs/controlled-exposure-latitude.md](docs/controlled-exposure-latitude.md):
+  sensor-domain audit of four complete ARW exposure brackets, including
+  channel clipping, dense/thin recovery, and leave-one-out HDR references
 - [LIMITATIONS.md](LIMITATIONS.md): what the tests do not prove
 - [TESTDATA.md](TESTDATA.md): public test data sources and rights notes
 - [docs/research-log.md](docs/research-log.md): project history and decisions
@@ -186,6 +194,9 @@ These results do not establish a universal archival recommendation.
 - [scripts/run_pixelshift_combiner_audit.py](scripts/run_pixelshift_combiner_audit.py):
   compare two Pixelshift combiners against a registered, exposure-normalized
   source-ARW anchor without duplicating the main JPEG XL result matrix
+- [scripts/run_controlled_exposure_latitude.py](scripts/run_controlled_exposure_latitude.py):
+  measure black-subtracted Bayer latitude across declared ARW brackets, validate
+  exposure response, and publish pixel-free clipping/recovery figures
 - [scripts/inspect_dng_jxl_color_path.py](scripts/inspect_dng_jxl_color_path.py):
   inspect embedded DNG/JXL headers and distinguish XYB from original-profile
   coding

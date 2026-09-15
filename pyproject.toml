@@ -11,6 +11,7 @@ dependencies = [
 [project.optional-dependencies]
 tiff = ["tifffile"]
 public-tests = ["tifffile"]
+raw = ["rawpy>=0.27"]
 
 [project.scripts]
 jxl-archive-test = "jxl_archive_test:main"

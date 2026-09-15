@@ -1284,6 +1284,42 @@ class BreakEvenPipelineTests(unittest.TestCase):
     def test_empty_combiner_audit_renders_nothing(self) -> None:
         self.assertEqual(report_site.render_combiner_audit({}), "")
 
+    def test_controlled_latitude_section_keeps_capture_scope_separate(self) -> None:
+        audit = {
+            "summary": {
+                "frame_count": 16,
+                "median_absolute_linearity_error_ev": 0.012,
+                "median_dense_normal_to_best_improvement": 2.05,
+                "max_all_frames_clipped_fraction": 0.0876,
+            },
+            "cases": [
+                {
+                    "key": "white-shirt",
+                    "label": "White-shirt dinner",
+                    "normal": "white/normal.ARW",
+                    "all_frames_clipped_fraction": 0.0876,
+                    "best_by_band": {
+                        "dense": {"computed_ev": 1.68, "normal_to_best_improvement": 1.07},
+                        "thin": {"computed_ev": -1.32, "normal_to_best_improvement": 69.2},
+                    },
+                    "frames": [
+                        {
+                            "file": "white/normal.ARW",
+                            "clipped_fraction_by_channel": {"R": 0.10, "G1": 0.127, "G2": 0.127, "B": 0.12},
+                        }
+                    ],
+                }
+            ],
+        }
+
+        html = report_site.render_controlled_latitude(audit, [], Path("site/index.html"))
+
+        self.assertIn("Controlled RAW Exposure Latitude", html)
+        self.assertIn("12.700%", html)
+        self.assertIn("+1.68 EV", html)
+        self.assertIn("-1.32 EV", html)
+        self.assertIn("not an ARQ, PixelShift2DNG, Pixel Shift, or JPEG XL comparison", html)
+
 
 if __name__ == "__main__":
     unittest.main()

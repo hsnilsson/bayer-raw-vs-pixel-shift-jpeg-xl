@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "description": "Complete single-shot ARW exposure brackets selected from the local Laowa 110-slide test folder.",
+  "cases": [
+    {
+      "key": "church",
+      "label": "Church interior",
+      "normal": "church/DSC05314.ARW",
+      "files": [
+        "church/DSC05317.ARW",
+        "church/DSC05315.ARW",
+        "church/DSC05314.ARW",
+        "church/DSC05316.ARW",
+        "church/DSC05318.ARW"
+      ]
+    },
+    {
+      "key": "dinner",
+      "label": "Dinner with white shirt",
+      "normal": "New folder/DSC05298.ARW",
+      "files": [
+        "New folder/DSC05299.ARW",
+        "New folder/DSC05298.ARW",
+        "New folder/DSC05300.ARW"
+      ]
+    },
+    {
+      "key": "christmas",
+      "label": "Child beside Christmas tree",
+      "normal": "_DSC5303.ARW",
+      "files": [
+        "_DSC5306.ARW",
+        "_DSC5304.ARW",
+        "_DSC5303.ARW",
+        "_DSC5305.ARW",
+        "_DSC5307.ARW"
+      ]
+    },
+    {
+      "key": "white-shirt",
+      "label": "White-shirt dinner",
+      "normal": "whiteshirt/DSC05327.ARW",
+      "files": [
+        "whiteshirt/DSC05328.ARW",
+        "whiteshirt/DSC05327.ARW",
+        "whiteshirt/DSC05329.ARW"
+      ]
+    }
+  ]
+}
