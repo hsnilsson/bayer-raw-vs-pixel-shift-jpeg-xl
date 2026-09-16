@@ -974,7 +974,7 @@ def render_controlled_latitude(
         <p><strong>Outcome:</strong> four stationary ISO 100 ARW brackets ({int(summary.get('frame_count', 0))} frames) show that a meter-normal RAW61 is not automatically a complete latitude reference. The median dense-band gain from the best bracket exposure was {median_dense_gain:.2f}x, while one white-shirt set still had {max_all_clipped * 100:.2f}% of the analysis grid clipped in every exposure.</p>
         <p><strong>Validation:</strong> measured raw response followed reported shutter EV with {median_linearity:.3f} EV median absolute error. The analysis works before demosaic or tone mapping, uses leave-one-out HDR references, and reports R/G1/G2/B clipping separately.</p>
         <p><strong>Boundary:</strong> this calibrates the source-ARW anchor; it is not an ARQ, PixelShift2DNG, Pixel Shift, or JPEG XL comparison.</p>
-        <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/controlled-exposure-latitude.md">Full method, exact bracket membership, plots, and limitations</a></p>
+        <p><a href="https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/main/docs/controlled-exposure-latitude.md">Full method, exact bracket membership, plots, and limitations</a></p>
       </div>
       <div class="table-scroll" tabindex="0" role="region" aria-label="Controlled exposure latitude summary"><table class="small-table">
         <thead><tr><th>Case</th><th>Normal max channel clip</th><th>Best dense EV</th><th>Dense improvement</th><th>Best thin EV</th><th>All frames clipped</th></tr></thead>
@@ -1162,7 +1162,7 @@ def render_muimg_probe(
     <h3>Application Check</h3>
     <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL application compatibility"><table class="small-table"><thead><tr><th>Application</th><th>Status</th><th>Observed locally</th></tr></thead><tbody>{''.join(compatibility_rows)}</tbody></table></div>
     <p class="muted">Compatibility scope: DNG 1.7 added JPEG XL as compression type <code>52546</code>. The local failures are specific to decoding JPEG XL-compressed image data inside DNG; other DNG 1.7 features remain outside this application check. Implementation references: <a href="https://helpx.adobe.com/camera-raw/desktop/dng-and-file-formats/digital-negative.html">Adobe DNG specification and SDK</a>, <a href="https://github.com/darktable-org/rawspeed/issues/516">RawSpeed DNG/JXL support</a>, and <a href="https://github.com/RawTherapee/RawTherapee/blob/dev/rtengine/rawimage.cc">RawTherapee RAW loading</a>.</p>
-    <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
+    <p><a href="https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/main/docs/muimg-dng-jxl-probe.md">Full method, metadata audit, and interpretation</a></p>
     """.strip()
 
 
@@ -3072,7 +3072,7 @@ def render_html(
       <p><strong>What this adds:</strong> the same JPEG XL and post-codec density-inversion stress pipeline was run on six public images: three FADGI/OpenDICE transmissive targets and three Library of Congress photographs. This makes the codec behavior reproducible without publishing the private full-resolution film scans.</p>
       <p><strong>Result:</strong> across the six 2048-pixel test crops, <code>d=0.03</code> was cleanest, <code>d=0.05</code> remained the conservative lossy candidate, and <code>d=0.10</code> produced larger errors. The hard density transform amplified errors that were less prominent in the unchanged image. Each panel shows reference, decoded JXL, amplified absolute difference, and amplified signed difference.</p>
       <p><strong>Boundary:</strong> these TIFFs test codec and stress-transform behavior. Storage break-even requires paired RAW61 and PS16 camera captures, so these public files contribute reproducibility evidence only.</p>
-      <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/public-latitude-v2.md">Method, metrics, provenance, and complete public-test interpretation</a></p>
+      <p><a href="https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/main/docs/public-latitude-v2.md">Method, metrics, provenance, and complete public-test interpretation</a></p>
     </div>
     {public_reproducibility_html}
 
@@ -3336,12 +3336,12 @@ def main() -> int:
     parser.add_argument(
         "--copy-controlled-latitude-figures-to",
         type=Path,
-        help="Copy controlled-latitude SVG figures into the report artifact before linking them.",
+        help="Override the SVG asset directory (default: assets/controlled-exposure-latitude beside the report).",
     )
     parser.add_argument(
         "--copy-public-figures-to",
         type=Path,
-        help="Copy selected public figures into the report artifact before linking them.",
+        help="Override the public figure directory (default: assets/public-latitude-v2 beside the report).",
     )
     parser.add_argument(
         "--exclude-cases-file",
@@ -3379,14 +3379,16 @@ def main() -> int:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
         contexts = copy_context_assets(contexts, args.contexts, args.copy_contexts_to)
-    if args.copy_public_figures_to:
-        public_figures = copy_panel_assets(public_figures, args.public_figures, args.copy_public_figures_to)
-    if args.copy_controlled_latitude_figures_to:
-        controlled_latitude_figures = copy_panel_assets(
-            controlled_latitude_figures,
-            args.controlled_latitude_figures,
-            args.copy_controlled_latitude_figures_to,
-        )
+    public_figures = copy_panel_assets(
+        public_figures,
+        args.public_figures,
+        args.copy_public_figures_to or args.output.parent / "assets/public-latitude-v2",
+    )
+    controlled_latitude_figures = copy_panel_assets(
+        controlled_latitude_figures,
+        args.controlled_latitude_figures,
+        args.copy_controlled_latitude_figures_to or args.output.parent / "assets/controlled-exposure-latitude",
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     rendered = render_html(
         rows,

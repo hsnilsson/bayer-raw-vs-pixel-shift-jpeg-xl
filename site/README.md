@@ -3,6 +3,16 @@
 This folder is the publishable static site artifact for the Bayer Raw vs
 Pixel-Shift JPEG XL investigation.
 
+The report generator copies public comparison figures and controlled-latitude
+plots into `assets/` beside the output HTML by default. The corresponding
+`--copy-*-figures-to` options override those destinations. Only `site/` is
+deployed to GitHub Pages, so links must stay within that directory.
+
+Before publishing, run `python scripts/check_report_site.py`. This checks local
+HTML links, images, section anchors, and embedded crop-viewer assets against the
+publishable directory, including filename case. The Pages workflow runs the
+same check before uploading the artifact.
+
 Recommended local publication build:
 
 ```powershell

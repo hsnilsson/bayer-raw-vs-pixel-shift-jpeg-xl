@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - "site/**"
+      - "scripts/check_report_site.py"
+      - "tests/test_report_site_links.py"
       - ".github/workflows/report-site.yml"
 
 permissions:
@@ -27,6 +29,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Check report links and assets
+        run: |
+          python -m unittest discover -s tests -p test_report_site_links.py -v
+          python scripts/check_report_site.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:

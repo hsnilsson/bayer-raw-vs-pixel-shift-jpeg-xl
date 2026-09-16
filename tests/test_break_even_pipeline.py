@@ -840,6 +840,38 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("these public files contribute reproducibility evidence only", html)
             self.assertIn("fadgi-negative35mm2-d005-density-hard-print.png", html)
 
+    def test_report_cli_copies_figures_without_optional_copy_flags(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            public = root / "public"
+            controlled = root / "controlled"
+            public.mkdir()
+            controlled.mkdir()
+            image = public / "fadgi-negative35mm2-d005-density-hard-print.png"
+            write_png(image, textured_rgb(12, 12))
+            plot = controlled / "sensor-clipping.svg"
+            plot.write_text("<svg/>", encoding="utf-8")
+            audit = root / "audit.json"
+            audit.write_text('{"summary": {}, "cases": []}', encoding="utf-8")
+            output = root / "site/index.html"
+            argv = [
+                "generate_break_even_report_site.py", "--output", str(output),
+                "--matrix", str(root / "missing.csv"),
+                "--contexts", str(root / "no-contexts"),
+                "--public-figures", str(public),
+                "--controlled-latitude-figures", str(controlled),
+                "--controlled-latitude", str(audit),
+                "--combiner-audit", str(root / "no-combiner.json"),
+            ]
+            with mock.patch.object(sys, "argv", argv):
+                self.assertEqual(report_site.main(), 0)
+            html = output.read_text(encoding="utf-8")
+            for source, directory in ((image, "public-latitude-v2"), (plot, "controlled-exposure-latitude")):
+                relative = f"assets/{directory}/{source.name}"
+                self.assertEqual((output.parent / relative).read_bytes(), source.read_bytes())
+                self.assertIn(f'src="{relative}"', html)
+                self.assertIn(f'href="{relative}"', html)
+
     def test_report_site_embeds_inline_crop_viewer_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
