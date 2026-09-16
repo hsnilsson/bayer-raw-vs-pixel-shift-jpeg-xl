@@ -112,7 +112,31 @@ def render_command(rawtherapee: str, source: Path, output: Path, profile: Path) 
     ]
 
 
-def collect_jobs(scan_root: Path, output_root: Path, levels: list[str]) -> list[tuple[Path, Path, RenderJob]]:
+def sequence_first_raw(manifest: dict[str, Any], capture: dict[str, Any]) -> str | None:
+    """Return the first ARW from the matching PixelShift group for visual review.
+
+    This is deliberately opt-in at the CLI. A sequence frame is useful as a
+    61 MP visual baseline, but it is not an independently captured RAW61 master
+    and must not silently become a storage-budget pair in the manifest.
+    """
+    set_id = str(capture.get("set_id", ""))
+    for group in manifest.get("raw_pixelshift_groups", []):
+        raw_files = group.get("raw_files", [])
+        if not isinstance(raw_files, list) or not raw_files:
+            continue
+        stem = f"{Path(str(raw_files[0])).stem}-{Path(str(raw_files[-1])).stem}"
+        if stem == set_id:
+            return str(group.get("first_raw") or raw_files[0])
+    return None
+
+
+def collect_jobs(
+    scan_root: Path,
+    output_root: Path,
+    levels: list[str],
+    *,
+    use_sequence_first_raw: bool = False,
+) -> list[tuple[Path, Path, RenderJob]]:
     manifest = load_manifest(scan_root)
     if not manifest:
         return []
@@ -121,8 +145,14 @@ def collect_jobs(scan_root: Path, output_root: Path, levels: list[str]) -> list[
     for capture in manifest.get("capture_sets", []):
         set_id = capture.get("set_id", "")
         sources: list[tuple[str, str, str]] = []
-        if capture.get("single_raw"):
-            sources.append(("raw61", "", capture["single_raw"]))
+        single_raw = capture.get("single_raw")
+        raw61_note = ""
+        if not single_raw and use_sequence_first_raw:
+            single_raw = sequence_first_raw(manifest, capture)
+            if single_raw:
+                raw61_note = "first PixelShift-sequence ARW; visual baseline only, not an independent RAW61 pair"
+        if single_raw:
+            sources.append(("raw61", "", str(single_raw)))
         if capture.get("pixelshift16_dng"):
             sources.append(("ps16", "", capture["pixelshift16_dng"]))
             for level in levels:
@@ -137,7 +167,9 @@ def collect_jobs(scan_root: Path, output_root: Path, levels: list[str]) -> list[
             source = scan_root / relative
             output = output_path(output_root, scan_set, set_id, role, level)
             status = "pending" if source.is_file() else "missing_source"
-            notes = "" if source.is_file() else f"missing source: {relpath(source)}"
+            notes = raw61_note if role == "raw61" else ""
+            if not source.is_file():
+                notes = f"missing source: {relpath(source)}"
             jobs.append(
                 (
                     source,
@@ -192,6 +224,11 @@ def main() -> int:
     parser.add_argument("--level", action="append", default=None)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--use-sequence-first-raw",
+        action="store_true",
+        help="Use the first ARW in a matching PixelShift group as a visual RAW61 baseline when no independent single_raw exists.",
+    )
     args = parser.parse_args()
 
     if not args.profile.is_file():
@@ -203,7 +240,12 @@ def main() -> int:
     rawtherapee = find_rawtherapee(args.rawtherapee)
     rows: list[RenderJob] = []
     for scan_root in discover_scan_roots(args.input_root, args.scan_root):
-        for source, output, job in collect_jobs(scan_root, args.output_root, levels):
+        for source, output, job in collect_jobs(
+            scan_root,
+            args.output_root,
+            levels,
+            use_sequence_first_raw=args.use_sequence_first_raw,
+        ):
             if job.status == "missing_source":
                 rows.append(job)
                 continue

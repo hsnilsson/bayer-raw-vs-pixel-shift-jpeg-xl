@@ -29,9 +29,10 @@
     "local_archive_path": "input/_superseded/adox_vlad_resolution_target_f8"
   },
   "analysis_status": {
-    "replacement_measurements": "not_run",
+    "replacement_measurements": "visual_review_only",
     "historical_results": "Existing _DSC6577 results and the _DSC6582-_DSC6597 combiner audit describe the superseded f/8 capture.",
-    "crop_plan": "New crop selection is required; old f/8 coordinates are not assigned to this set.",
+    "crop_plan": "Four f/4.5 review crops are published from metadata/adox_vlad_f45_crop_plan.json.",
+    "visual_review": "DNG-derived PS16 and standalone JXL crops are compared with the aligned first ARW from the same sequence, including NegPy stress views.",
     "raw61_storage_budget": "No independent single-shot RAW61 supplied; set remains unpaired_secondary."
   },
   "verification": {

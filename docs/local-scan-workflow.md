@@ -52,8 +52,14 @@ The replacement set ID is `_DSC0001-_DSC0016`. There is no separate single-shot
 RAW61 capture in this intake, so the manifest leaves `single_raw` empty and
 marks the set `unpaired_secondary`. The first ARW can serve as a same-sequence
 combiner anchor, but must not be labelled an independently captured RAW61
-storage-budget reference. New renders, registration, crop selection and
-measurements are needed before publishing results for this capture.
+storage-budget reference. Renders, registration and four crop selections now
+exist for visual review, but an independent RAW61 pair and new measurements
+are still needed before publishing a storage-budget result for this capture.
+The site publishes the visual-only f/4.5 review crops from
+[`metadata/adox_vlad_f45_crop_plan.json`](../metadata/adox_vlad_f45_crop_plan.json):
+the DNG-derived PS16 render and standalone JXL levels are compared with the
+aligned first ARW from the same sequence. The viewer labels that scope
+explicitly and retains the older f/8 numeric and combiner results as historical.
 
 ### Generate a manifest
 

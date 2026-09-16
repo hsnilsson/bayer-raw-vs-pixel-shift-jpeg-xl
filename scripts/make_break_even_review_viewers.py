@@ -665,6 +665,8 @@ def make_viewer(
         args.overview_max_dim,
         args.max_local_shift,
     )
+    build_inputs["raw61_label"] = args.raw61_label
+    build_inputs["raw61_scope_note"] = args.raw61_scope_note
     # Metadata without a fingerprint intentionally triggers one full rebuild.
     rebuild_viewer = args.force or not viewer_metadata_is_current(
         existing_metadata, build_inputs
@@ -695,6 +697,14 @@ def make_viewer(
     }
     write_rgb16le(output_dir / rgb16_sources["reference"], ref_crop, force=rebuild_viewer)
     write_rgb16le(output_dir / rgb16_sources["raw61"], aligned_raw, force=rebuild_viewer)
+    thumbnail_name = "thumbnail_raw61.png"
+    save_display(
+        output_dir / thumbnail_name,
+        aligned_raw,
+        160,
+        force=rebuild_viewer,
+        levels=display_range(ref_crop),
+    )
     overviews: dict[str, str] = {
         "reference": "overview_reference.png",
         "ps16_lossless": "overview_reference.png",
@@ -703,7 +713,7 @@ def make_viewer(
     labels: dict[str, str] = {
         "reference": "PS16 reference",
         "ps16_lossless": "PS16 lossless / reference",
-        "raw61": "RAW61 local aligned",
+        "raw61": args.raw61_label,
     }
     save_overview(
         output_dir / overviews["reference"],
@@ -825,6 +835,7 @@ def make_viewer(
         "set_id": set_id,
         "crop_name": crop_name,
         "overviews": overviews,
+        "thumbnail": thumbnail_name,
         "default_transform": selected_transforms[0],
         "view_modes": view_modes,
         "rgb16": {
@@ -858,6 +869,8 @@ def make_viewer(
             ],
         },
     }
+    if args.raw61_scope_note:
+        metadata["raw61_scope_note"] = args.raw61_scope_note
     if external_image_sets:
         metadata["images_by_transform"] = external_image_sets
     if overview_sets:
@@ -903,6 +916,12 @@ def main() -> int:
     )
     parser.add_argument("--overview-max-dim", type=int, default=DEFAULT_OVERVIEW_MAX_DIM)
     parser.add_argument("--max-local-shift", type=float, default=32.0)
+    parser.add_argument("--raw61-label", default="RAW61 local aligned")
+    parser.add_argument(
+        "--raw61-scope-note",
+        default="",
+        help="Optional methodological note when the 61 MP visual baseline is not an independent RAW61 capture.",
+    )
     parser.add_argument("--jobs", type=int, default=1, help="number of crop viewers to build in parallel")
     parser.add_argument("--force", action="store_true", help="rewrite existing RGB16 crop data and previews")
     args = parser.parse_args()

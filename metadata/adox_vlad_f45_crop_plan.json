@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "adox_vlad_resolution_target|_DSC0001-_DSC0016": {
+      "scan_set": "adox_vlad_resolution_target",
+      "set_id": "_DSC0001-_DSC0016",
+      "crops": [
+        {"name": "manual-01", "crop": [11204, 4589, 768, 768]},
+        {"name": "manual-02", "crop": [16600, 1950, 768, 768]},
+        {"name": "manual-03", "crop": [13000, 5800, 768, 768]},
+        {"name": "manual-04", "crop": [17150, 5550, 768, 768]}
+      ]
+    }
+  }
+}
