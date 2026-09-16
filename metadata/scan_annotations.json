@@ -2,7 +2,12 @@
   "adox_vlad_resolution_target|_DSC6577": {
     "material_label": "Adox high-resolution black-and-white test target",
     "sample_role": "Vlad resolution target",
-    "notes": "Vlad resolution target. Select the lp/mm area manually for target-specific structure review."
+    "notes": "Historical f/8 Vlad resolution target, superseded for new work by the f/4.5 _DSC0001-_DSC0016 capture on 2026-09-16. Existing crops and measurements belong to this older capture."
+  },
+  "adox_vlad_resolution_target|_DSC0001-_DSC0016": {
+    "material_label": "Adox high-resolution black-and-white test target (f/4.5)",
+    "sample_role": "Vlad resolution target",
+    "notes": "Sigma 105mm F2.8 DG DN MACRO | Art 020 at f/4.5, ISO 100, 1/500 s. Matching Sony ARQ and PixelShift2DNG masters from all 16 ARW originals. No separate single-shot RAW61 capture is supplied. Select new lp/mm crops; previous f/8 crops and measurements do not apply."
   },
   "kodak5035_h190_1983|_DSC6598": {
     "material_label": "Kodak5035 H190-1983 (FFC)",

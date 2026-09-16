@@ -33,6 +33,30 @@ input/Kodak5035 H190-1983/
 
 ## Intake Manifest
 
+### Current Adox/Vlad target
+
+As of 2026-09-16, `input/adox_vlad_resolution_target/` uses the replacement
+Sigma 105 mm DG DN macro capture at **f/4.5**, ISO 100, 1/500 s. It contains
+`_DSC0001-_DSC0016.dng`, `_DSC0001_PSMS16.ARQ`, and the 16 matching ARW
+originals. File identities and capture metadata are recorded in
+[`metadata/adox_vlad_capture.json`](../metadata/adox_vlad_capture.json).
+
+The previous f/8 source folder is retained locally under
+`input/_superseded/adox_vlad_resolution_target_f8/`, outside automatic scan-set
+discovery. Its `_DSC6577` single-shot baseline, PS4 master, ADC candidates,
+crop coordinates, renders and measurements belong to the old capture.
+Published results for that capture remain historical; they have not been
+remeasured at f/4.5.
+
+The replacement set ID is `_DSC0001-_DSC0016`. There is no separate single-shot
+RAW61 capture in this intake, so the manifest leaves `single_raw` empty and
+marks the set `unpaired_secondary`. The first ARW can serve as a same-sequence
+combiner anchor, but must not be labelled an independently captured RAW61
+storage-budget reference. New renders, registration, crop selection and
+measurements are needed before publishing results for this capture.
+
+### Generate a manifest
+
 Create or refresh the local sidecar:
 
 ```powershell

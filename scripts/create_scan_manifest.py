@@ -188,6 +188,11 @@ def classify_file(path: Path, scan_root: Path, privacy: str) -> FileEntry:
         preservation_class = "original"
         archive_action = "keep"
         regeneration = "not_regeneratable"
+    elif suffix == ".arq":
+        role = "sony_pixelshift_master"
+        preservation_class = "master"
+        archive_action = "keep"
+        regeneration = "from_raw_sequence_and_sony_imaging_edge"
     elif suffix in {".jpg", ".jpeg"}:
         role = "camera_jpeg_preview"
         preservation_class = "preview"

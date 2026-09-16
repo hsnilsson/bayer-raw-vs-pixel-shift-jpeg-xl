@@ -101,6 +101,30 @@ class CreateScanManifestTests(unittest.TestCase):
         arw = next(entry for entry in manifest["files"] if entry["path"] == "DSC1000.ARW")
         self.assertEqual(arw["sha256"], "ae4b3280e56e2faf83f414a6e3dabe9d5fbe18976544c05fed121accb85b53fc")
 
+    def test_unpaired_ps16_with_sony_arq_keeps_master_without_inventing_raw61(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        for number in range(1, 17):
+            write_file(root / f"_DSC{number:04d}.ARW")
+        write_file(root / "_DSC0001-_DSC0016.dng")
+        write_file(root / "_DSC0001_PSMS16.ARQ")
+
+        manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)
+
+        self.assertEqual(len(manifest["capture_sets"]), 1)
+        capture = manifest["capture_sets"][0]
+        self.assertEqual(capture["set_id"], "_DSC0001-_DSC0016")
+        self.assertIsNone(capture["single_raw"])
+        self.assertEqual(capture["storage_budget_role"], "unpaired_secondary")
+        self.assertEqual(manifest["sequences"][0]["raw_files_present"], 16)
+        arq = next(entry for entry in manifest["files"] if entry["extension"] == "arq")
+        self.assertEqual(arq["role"], "sony_pixelshift_master")
+        self.assertEqual(arq["preservation_class"], "master")
+        self.assertIn(arq["path"], manifest["recommendations"]["keep"])
+        self.assertNotIn(arq["path"], manifest["recommendations"]["safe_to_regenerate"])
+        self.assertEqual(arq["git_policy"], "do_not_commit")
+
     def test_write_outputs_refuses_to_overwrite_without_force(self) -> None:
         root = self.make_scan_root()
         manifest = create_scan_manifest.build_manifest(root, use_exiftool=False)

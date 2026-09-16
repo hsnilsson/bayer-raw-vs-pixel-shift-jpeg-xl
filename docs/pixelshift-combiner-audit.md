@@ -12,6 +12,13 @@ change codec loss measured between a PS16 master and its decoded JPEG XL copy.
 
 ## Scope
 
+The Adox results below use the historical **f/8** capture. On 2026-09-16 the
+active local source was replaced by a new **f/4.5** capture with matching ARQ
+and DNG masters, sequence `_DSC0001-_DSC0016`. This audit has not been rerun
+with that replacement; its crop coordinates and scores must not be transferred
+to the new sequence. See the
+[current intake](local-scan-workflow.md#current-adoxvlad-target).
+
 The local archive contained matching Sony ARQ and PixelShift2DNG outputs for two
 exact 16-frame sequences:
 

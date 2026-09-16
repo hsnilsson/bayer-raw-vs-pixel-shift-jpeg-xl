@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "scan_set": "adox_vlad_resolution_target",
+  "set_id": "_DSC0001-_DSC0016",
+  "status": "active_source",
+  "intake_date": "2026-09-16",
+  "source_folder_name": "AdoxPS16",
+  "active_local_path": "input/adox_vlad_resolution_target",
+  "capture": {
+    "camera": "Sony ILCE-7RM5",
+    "lens": "Sigma 105mm F2.8 DG DN MACRO | Art 020",
+    "focal_length_mm": 105,
+    "f_number": 4.5,
+    "iso": 100,
+    "exposure_time_seconds": 0.002,
+    "first_frame_datetime_original": "2026:09:16 13:42:01",
+    "pixelshift_group_id": "16134201",
+    "raw_frame_count": 16,
+    "separate_single_raw": null
+  },
+  "masters": {
+    "sony_arq": "_DSC0001_PSMS16.ARQ",
+    "pixelshift2dng": "_DSC0001-_DSC0016.dng"
+  },
+  "supersedes": {
+    "set_id": "_DSC6577",
+    "pixelshift16_sequence": "_DSC6582-_DSC6597",
+    "f_number": 8.0,
+    "local_archive_path": "input/_superseded/adox_vlad_resolution_target_f8"
+  },
+  "analysis_status": {
+    "replacement_measurements": "not_run",
+    "historical_results": "Existing _DSC6577 results and the _DSC6582-_DSC6597 combiner audit describe the superseded f/8 capture.",
+    "crop_plan": "New crop selection is required; old f/8 coordinates are not assigned to this set.",
+    "raw61_storage_budget": "No independent single-shot RAW61 supplied; set remains unpaired_secondary."
+  },
+  "verification": {
+    "method": "SHA-256 of every original and staged copy; exact size and digest matches",
+    "files_verified": 18,
+    "arw_exif": "All 16 frames verified at f/4.5, ISO 100, 1/500 s with one complete PixelShiftInfo group."
+  },
+  "files": [
+    {
+      "path": "_DSC0001-_DSC0016.dng",
+      "role": "pixelshift2dng_pixelshift16_master",
+      "bytes": 716578900,
+      "sha256": "7a0c93eac1cf487badf8d9b45f2964ef7cd9ecfbae6f3160fcda2f5836b0a862"
+    },
+    {
+      "path": "_DSC0001.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131670016,
+      "sha256": "077e15c5d26a8677b76c775184c3ad7abb55bf9128db68cd95cc17dfa5d7c559"
+    },
+    {
+      "path": "_DSC0001_PSMS16.ARQ",
+      "role": "sony_pixelshift_master",
+      "bytes": 1967957598,
+      "sha256": "d6782c4d8acf4980a36e1e6d3ca85930879b5ab0c459f2a61b1f6b436ceeb943"
+    },
+    {
+      "path": "_DSC0002.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131657728,
+      "sha256": "842e7059c89f6e648b3ebdc951f8221f3eeff005f02220a7556b285ca64ec689"
+    },
+    {
+      "path": "_DSC0003.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131657728,
+      "sha256": "854cea6db03a99673bcdff16ef227df132dc0e16e70b2b1f497023601f769754"
+    },
+    {
+      "path": "_DSC0004.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "c2838a9f8027f136e7adef8f077bee4dd62099a73ce68b00bafe384045012df1"
+    },
+    {
+      "path": "_DSC0005.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "59242d14117962e2aa81e9138b0fba08c8e289714b10fe3e2b641014d6a0faf9"
+    },
+    {
+      "path": "_DSC0006.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "1bc497e14db3bfd780ee656ce5d2aa28d9bb1c92e91cf1bfc19c457e2c78c8b9"
+    },
+    {
+      "path": "_DSC0007.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131649536,
+      "sha256": "e1e3d3996728c6216158ad40c2e6accc70d29ba3b54d1f98b65bf007d48a0089"
+    },
+    {
+      "path": "_DSC0008.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131649536,
+      "sha256": "facd3e138a39f1c1c7cad955635af56c30b6132bbfae1fceb69471cc3d1665b3"
+    },
+    {
+      "path": "_DSC0009.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "c72384ab6fa04b63ca9ac3a80cc2215c7b8ef665b2fc840abc3fba24ada0c332"
+    },
+    {
+      "path": "_DSC0010.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "fd18b100ddc97326e04767d56ccd167dfd1283ceb61f6720c3a479f265d472e7"
+    },
+    {
+      "path": "_DSC0011.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "6344ef921df541852a5cf644366162db9be9fc9a4eef578b15dc3d5bebf2ee76"
+    },
+    {
+      "path": "_DSC0012.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131649536,
+      "sha256": "a029529f86526d34e84b7ff0e810a45c7ca0f8f57f5872b3eb541bef93dbd2b8"
+    },
+    {
+      "path": "_DSC0013.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "5ec451a2231bc291b18e38e7863d0a13ccc176f80cd83e8d8302682e3c0c8192"
+    },
+    {
+      "path": "_DSC0014.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131649536,
+      "sha256": "4e9cd8a11721aa2f3eca6778256b17064ce42a556a19a4ef8dfba1a0a816a832"
+    },
+    {
+      "path": "_DSC0015.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131653632,
+      "sha256": "9262fd920bfc4cfe80d229978058de2d2d9014797eecefd9615d6550b7248ab3"
+    },
+    {
+      "path": "_DSC0016.ARW",
+      "role": "camera_raw_original",
+      "bytes": 131649536,
+      "sha256": "a4480450cb3cded3612039e26c9f769ef7d3525b9d8adb32235b6b24320bf05c"
+    }
+  ]
+}
