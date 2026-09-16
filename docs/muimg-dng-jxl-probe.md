@@ -92,6 +92,27 @@ and increasing fine-structure mismatch as compression rises. They must not be
 divided directly by the main report's RAW61 values: those are measured after a
 RawTherapee render and registration, in a different processing domain.
 
+### Corpus lossless baseline (2026-09-16)
+
+The lossless DNG/JXL route was subsequently run across the same 16 paired
+PS16/RAW61 cases used for the d001 corpus qualification. The candidates span
+540.01-690.96 MiB, with a 590.59 MiB median. Per-file normalization gives a
+94.7% median size relative to the source PixelShift2DNG file and an 870.3%
+median relative to the paired RAW61 file.
+
+All 16 candidates were exact in the reviewed identity and hard-inversion crops,
+retained every checked preservation-relevant DNG field, decoded all main-image
+JPEG XL segments, and were accepted and rewritten by Adobe DNG Converter. Crop
+exactness does not claim a second full-image sample-by-sample comparison for
+every corpus member; the original one-frame probe above remains the full-image
+pixel-exact measurement.
+
+The image-free per-file record is retained in
+`metadata/muimg_lossless_qualification.json`. These figures explain why the
+lossless result belongs in the separate DNG/JXL storage table rather than in the
+standalone rendered-JXL break-even table: it modestly reduces the large PS16 DNG
+but remains roughly nine times the storage of a typical paired RAW61 file.
+
 Embedded-codestream inspection found the lossless main image on the
 original-profile/non-XYB path. Four d007 tiles spread across the 3,750-tile main
 image all used XYB. Lossy muimg is therefore still a perceptually transformed

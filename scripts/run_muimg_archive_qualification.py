@@ -196,8 +196,10 @@ def encode_case(
         result.update(
             {
                 "status": "encoded",
+                "source_dng_mib": round(case.source_dng.stat().st_size / 2**20, 4),
                 "candidate_bytes": output.stat().st_size,
                 "candidate_mib": round(output.stat().st_size / 2**20, 4),
+                "candidate_pct_source_dng": round(output.stat().st_size / case.source_dng.stat().st_size * 100, 2),
                 "raw61_mib": round(case.raw61.stat().st_size / 2**20, 4),
                 "candidate_pct_raw61": round(output.stat().st_size / case.raw61.stat().st_size * 100, 2),
                 "candidate_sha256": candidate_sha256,
@@ -378,11 +380,30 @@ def build_public_summary(result: dict[str, Any]) -> dict[str, Any]:
             and adobe.get("status") == "accepted"
             and float(encode.get("candidate_mib", float("inf"))) <= result["gates"]["maximum_candidate_mib"]
         )
+        crop_exact = (
+            verification.get("status") == "verified"
+            and float(verification.get("identity_p95_delta_e00", float("inf"))) == 0.0
+            and float(verification.get("stress_p95_delta_e00", float("inf"))) == 0.0
+            and float(verification.get("worst_structure_loss", float("inf"))) == 0.0
+        )
         records.append(
             {
                 "scan_set": source.get("scan_set"),
                 "set_id": source.get("set_id"),
                 "candidate_mib": encode.get("candidate_mib"),
+                "source_dng_mib": encode.get("source_dng_mib")
+                or round(float(encode.get("fingerprint", {}).get("source_bytes", 0)) / 2**20, 4),
+                "candidate_pct_source_dng": encode.get("candidate_pct_source_dng")
+                or (
+                    round(
+                        float(encode.get("candidate_bytes", 0))
+                        / float(encode.get("fingerprint", {}).get("source_bytes", 1))
+                        * 100,
+                        2,
+                    )
+                    if encode.get("fingerprint", {}).get("source_bytes")
+                    else None
+                ),
                 "candidate_pct_raw61": encode.get("candidate_pct_raw61"),
                 "candidate_sha256": encode.get("candidate_sha256"),
                 "identity_p95_delta_e00": verification.get("identity_p95_delta_e00"),
@@ -391,6 +412,7 @@ def build_public_summary(result: dict[str, Any]) -> dict[str, Any]:
                 "preservation_review_changes": verification.get("preservation_review_changes"),
                 "decoded_segments": decode.get("segments"),
                 "adobe_acceptance": adobe.get("status"),
+                "crop_exact": crop_exact,
                 "raw61_comparison": source.get("raw61_comparison"),
                 "technical_master_pass": technical_pass,
                 "archive_value_pass": source.get("qualification") == "pass",
@@ -405,6 +427,7 @@ def build_public_summary(result: dict[str, Any]) -> dict[str, Any]:
         "summary": {
             "cases": len(records),
             "technical_master_passed": sum(bool(row["technical_master_pass"]) for row in records),
+            "crop_exact_cases": sum(bool(row["crop_exact"]) for row in records),
             "archive_value_passed": sum(bool(row["archive_value_pass"]) for row in records),
             "archive_value_review": sum(not bool(row["archive_value_pass"]) for row in records),
         },

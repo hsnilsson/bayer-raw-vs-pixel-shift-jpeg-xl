@@ -93,8 +93,8 @@ class MuimgArchiveQualificationTests(unittest.TestCase):
             "gates": {"maximum_candidate_mib": 200},
             "records": [{
                 "scan_set": "film", "set_id": "frame", "qualification": "pass", "reasons": [], "warnings": [],
-                "encode": {"status": "encoded", "candidate_mib": 100, "candidate_pct_raw61": 90, "candidate_sha256": "abc", "source_dng": "private"},
-                "verification": {"status": "verified", "identity_p95_delta_e00": 0.01, "stress_p95_delta_e00": 0.5, "worst_structure_loss": 0.2, "preservation_review_changes": 0},
+                "encode": {"status": "encoded", "source_dng_mib": 120, "candidate_mib": 100, "candidate_pct_source_dng": 83.33, "candidate_pct_raw61": 90, "candidate_sha256": "abc", "source_dng": "private"},
+                "verification": {"status": "verified", "identity_p95_delta_e00": 0, "stress_p95_delta_e00": 0, "worst_structure_loss": 0, "preservation_review_changes": 0},
                 "full_segment_decode": {"status": "decoded", "segments": 2},
                 "adobe_dng_converter": {"status": "accepted", "command": ["private"]},
                 "raw61_comparison": {"candidate_to_raw61_stress_color_ratio": 0.5},
@@ -104,6 +104,10 @@ class MuimgArchiveQualificationTests(unittest.TestCase):
         serialized = json.dumps(public)
         self.assertNotIn("private", serialized)
         self.assertEqual(1, public["summary"]["technical_master_passed"])
+        self.assertEqual(1, public["summary"]["crop_exact_cases"])
+        self.assertTrue(public["records"][0]["crop_exact"])
+        self.assertEqual(120, public["records"][0]["source_dng_mib"])
+        self.assertEqual(83.33, public["records"][0]["candidate_pct_source_dng"])
 
 
 if __name__ == "__main__":

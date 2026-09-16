@@ -539,10 +539,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
         )
 
         self.assertIn('class="column-help-row"', html)
-        self.assertIn('<span class="column-help">JPEG XL distance label.', html)
+        self.assertIn('<span class="column-help">JPEG XL distance label for the standalone rendered route.', html)
         self.assertNotIn('data-full=', html)
-        self.assertIn("<strong>lossless</strong>", html)
-        self.assertLess(html.index("<strong>lossless</strong>"), html.index("<strong>d030</strong>"))
+        self.assertIn("<strong>lossless (standalone JXL)</strong>", html)
+        self.assertLess(html.index("<strong>lossless (standalone JXL)</strong>"), html.index("<strong>d030</strong>"))
+        self.assertIn("DNG/JXL lossless is measured separately below", html)
         self.assertNotIn('class="bar"', html)
 
     def test_report_site_question_cards_include_answers_so_far(self) -> None:
@@ -660,6 +661,43 @@ class BreakEvenPipelineTests(unittest.TestCase):
         offsets = [html.index(section) for section in sections]
         self.assertEqual(offsets, sorted(offsets))
         self.assertIn("muimg DNG candidates are covered separately below", html)
+
+    def test_report_site_keeps_lossless_dng_corpus_separate_from_standalone_jxl(self) -> None:
+        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
+        qualification = {
+            "summary": {"cases": 2, "technical_master_passed": 2},
+            "records": [
+                {"scan_set": "film", "set_id": "one", "candidate_mib": 100, "candidate_pct_raw61": 150},
+                {"scan_set": "film", "set_id": "two", "candidate_mib": 120, "candidate_pct_raw61": 170},
+            ],
+        }
+        lossless = {
+            "summary": {"cases": 2, "crop_exact_cases": 2},
+            "records": [
+                {"scan_set": "film", "set_id": "one", "source_dng_mib": 650, "candidate_mib": 560, "candidate_pct_source_dng": 86.15, "candidate_pct_raw61": 840},
+                {"scan_set": "film", "set_id": "two", "source_dng_mib": 700, "candidate_mib": 600, "candidate_pct_source_dng": 85.71, "candidate_pct_raw61": 900},
+            ],
+        }
+
+        html = report_site.render_html(
+            rows=[],
+            summaries=[],
+            panels=[],
+            contexts=[],
+            output=Path("site/index.html"),
+            muimg_probe=probe,
+            muimg_qualification=qualification,
+            muimg_lossless_qualification=lossless,
+        )
+
+        self.assertIn("Corpus-wide DNG/JXL Storage", html)
+        self.assertIn("580.00 MiB", html)
+        self.assertIn("560.00-600.00 MiB", html)
+        self.assertIn("85.9%", html)
+        self.assertIn("870.0%", html)
+        self.assertIn("2/2 exact in checked crops; all segments decoded", html)
+        self.assertIn("110.00 MiB", html)
+        self.assertIn("d001 DNG/JXL", html)
 
     def test_report_site_panel_paths_includes_generated_non_manual_crops(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

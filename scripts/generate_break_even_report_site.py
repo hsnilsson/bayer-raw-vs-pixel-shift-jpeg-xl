@@ -31,6 +31,7 @@ DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
 DEFAULT_MUIMG_PROBE = ROOT / "metadata/muimg_dng_jxl_probe.json"
 DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/muimg_archive_qualification.json"
+DEFAULT_MUIMG_LOSSLESS_QUALIFICATION = ROOT / "metadata/muimg_lossless_qualification.json"
 DEFAULT_COMBINER_AUDIT = ROOT / "metadata/pixelshift_combiner_audit.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
 VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
@@ -497,16 +498,16 @@ def status_reading(status: str) -> str:
 def lossless_reference_row() -> str:
     return (
         '<tr class="reference-row">'
-        '<td><strong>lossless</strong></td>'
-        '<td class="unknown">Reference only<br><span class="subtle">excluded from break-even counting</span></td>'
-        '<td>pending measurement<br><span class="subtle">complete standalone lossless sizes require a separate run</span></td>'
+        '<td><strong>lossless (standalone JXL)</strong></td>'
+        '<td class="unknown">Not measured<br><span class="subtle">excluded from break-even counting</span></td>'
+        '<td>pending measurement<br><span class="subtle">DNG/JXL lossless is measured separately below</span></td>'
         '<td>-<br><span class="subtle">shown to anchor the codec scale</span></td>'
         '<td>-</td>'
         '<td class="good"><strong>0.00 &Delta;E00</strong><br><span class="subtle">by definition against the PS16 reference</span></td>'
         '<td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec color loss</span></td>'
         '<td><strong>0.000 loss</strong><br><span class="subtle">zero high-pass codec loss</span></td>'
         '<td class="good"><strong>0.00x RAW61</strong><br><span class="subtle">zero codec structure loss</span></td>'
-        "<td>baseline; excluded from break-even counts</td>"
+        "<td>standalone codec baseline; DNG/JXL results are in the DNG section</td>"
         "</tr>"
     )
 
@@ -904,7 +905,11 @@ def esc(value: object) -> str:
     return html.escape(str(value))
 
 
-def render_muimg_probe(probe: dict[str, object], qualification: dict[str, object] | None = None) -> str:
+def render_muimg_probe(
+    probe: dict[str, object],
+    qualification: dict[str, object] | None = None,
+    lossless_qualification: dict[str, object] | None = None,
+) -> str:
     if not probe:
         return ""
 
@@ -973,6 +978,57 @@ def render_muimg_probe(probe: dict[str, object], qualification: dict[str, object
     if not isinstance(qualification_summary, dict) or not isinstance(qualification_records, list):
         raise ValueError("muimg qualification summary/records have invalid types")
     sizes = [float(item["candidate_mib"]) for item in qualification_records if isinstance(item, dict)]
+    lossless_qualification = lossless_qualification or {}
+    lossless_summary = lossless_qualification.get("summary", {})
+    lossless_records = lossless_qualification.get("records", [])
+    if not isinstance(lossless_summary, dict) or not isinstance(lossless_records, list):
+        raise ValueError("muimg lossless qualification summary/records have invalid types")
+    lossless_corpus_html = ""
+    if lossless_records:
+        lossless_sizes = [float(item["candidate_mib"]) for item in lossless_records if isinstance(item, dict)]
+        lossless_source_pct = [
+            float(item["candidate_pct_source_dng"]) for item in lossless_records if isinstance(item, dict)
+        ]
+        lossless_raw61_pct = [
+            float(item["candidate_pct_raw61"]) for item in lossless_records if isinstance(item, dict)
+        ]
+        source_mib = {
+            (str(item.get("scan_set", "")), str(item.get("set_id", ""))): float(item["source_dng_mib"])
+            for item in lossless_records
+            if isinstance(item, dict)
+        }
+        d001_source_pct = [
+            float(item["candidate_mib"]) / source_mib[(str(item.get("scan_set", "")), str(item.get("set_id", "")))] * 100
+            for item in qualification_records
+            if isinstance(item, dict)
+            and (str(item.get("scan_set", "")), str(item.get("set_id", ""))) in source_mib
+        ]
+        d001_raw61_pct = [
+            float(item["candidate_pct_raw61"]) for item in qualification_records if isinstance(item, dict)
+        ]
+        d001_row = ""
+        if sizes and d001_source_pct and d001_raw61_pct:
+            d001_row = (
+                "<tr><td><strong>d001 DNG/JXL</strong></td>"
+                f"<td>{len(sizes)}</td><td>{statistics.median(sizes):.2f} MiB</td>"
+                f"<td>{min(sizes):.2f}-{max(sizes):.2f} MiB</td>"
+                f"<td>{statistics.median(d001_source_pct):.1f}%</td>"
+                f"<td>{statistics.median(d001_raw61_pct):.1f}%</td>"
+                "<td>lossy; see qualification below</td></tr>"
+            )
+        exact_cases = int(lossless_summary.get("crop_exact_cases", 0))
+        lossless_corpus_html = f"""
+    <h3>Corpus-wide DNG/JXL Storage</h3>
+    <p>The lossless DNG/JXL row is kept here, separate from the standalone rendered-JXL table above. Both rows use the same {len(lossless_sizes)} PS16 DNG sources.</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="muimg DNG/JXL corpus storage summary; scroll horizontally on small screens"><table class="small-table">
+      <thead><tr><th>Candidate</th><th>Files</th><th>Median size</th><th>Size range</th><th>Median size vs source DNG</th><th>Median size vs RAW61</th><th>Decoded result</th></tr></thead>
+      <tbody>
+        <tr><td><strong>lossless DNG/JXL</strong></td><td>{len(lossless_sizes)}</td><td>{statistics.median(lossless_sizes):.2f} MiB</td><td>{min(lossless_sizes):.2f}-{max(lossless_sizes):.2f} MiB</td><td>{statistics.median(lossless_source_pct):.1f}%</td><td>{statistics.median(lossless_raw61_pct):.1f}%</td><td>{exact_cases}/{len(lossless_sizes)} exact in checked crops; all segments decoded</td></tr>
+        {d001_row}
+      </tbody>
+    </table></div>
+    <p class="muted">Source-relative percentages compare each encoded DNG/JXL file with its own PixelShift2DNG source before taking the median. RAW61 percentages use the separately captured, Sony-compressed 61 MP raw file paired with each PS16 sequence.</p>
+        """.strip()
     corpus_html = ""
     if qualification_records:
         corpus_html = f"""
@@ -993,6 +1049,7 @@ def render_muimg_probe(probe: dict[str, object], qualification: dict[str, object
     return f"""
     <h2>muimg Direct DNG/JXL Probe</h2>
     <p>This route addresses the larger, approximately 200 MiB DNG budget. The main level table and viewer above cover standalone rendered JXL.</p>
+    {lossless_corpus_html}
     {corpus_html}
     <details><summary>Initial resolution-target experiment and codec measurements</summary>
     <div class="note">
@@ -2150,6 +2207,7 @@ def render_html(
     muimg_qualification: dict[str, object] | None = None,
     render_index: Path = DEFAULT_RENDER_INDEX,
     combiner_audit: dict[str, object] | None = None,
+    muimg_lossless_qualification: dict[str, object] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -2181,7 +2239,9 @@ def render_html(
     current_conclusion = conclusion_text(summaries)
     viewer_manifest, viewer_index_by_path = viewer_records(viewers or [], output, annotations, rows)
     public_reproducibility_html = render_public_reproducibility(public_figures or [], output)
-    muimg_probe_html = render_muimg_probe(muimg_probe or {}, muimg_qualification)
+    muimg_probe_html = render_muimg_probe(
+        muimg_probe or {}, muimg_qualification, muimg_lossless_qualification
+    )
     combiner_audit_html = render_combiner_audit(combiner_audit or {})
 
     level_rows = [lossless_reference_row()]
@@ -2738,7 +2798,7 @@ def render_html(
     <div class="note">
       <p><strong>What this table is for:</strong> compare JPEG XL distance levels. The baseline table in Measurement Details explains the RAW61 comparisons.</p>
       <p><strong>Decision gate:</strong> a candidate passes the numeric screen when it is at or below the RAW61 storage budget and remains closer to the PS16 reference than RAW61 does for the current color and structure diagnostics.</p>
-      <p><strong>Lossless row:</strong> shown as a zero-codec-loss reference. Break-even counting begins once complete standalone lossless size rows exist for the same material.</p>
+      <p><strong>Lossless row:</strong> this is specifically the unmeasured standalone-JXL baseline for the rendered route. The measured lossless DNG/JXL corpus is reported separately in the DNG section below.</p>
       <p><strong>Important:</strong> the colors below are project-specific diagnostic labels. Formal FADGI conformance requires calibrated target captures and the prescribed measurement workflow; the present FADGI-style measurements serve as interpretation anchors for rendered film scans and compression candidates.</p>
     </div>
     <section class="questions">
@@ -2762,7 +2822,7 @@ def render_html(
           <th>{abbr("Verdicts", "Counts of conservative matrix verdicts for this level.")}</th>
         </tr>
         <tr class="column-help-row">
-          {column_help("Codec setting", "JPEG XL distance label. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. The lossless row serves as the reference and stays outside break-even counting.")}
+          {column_help("Codec setting", "JPEG XL distance label for the standalone rendered route. d020 means distance 0.20, d030 means distance 0.30. Higher distance usually means smaller files and more loss. The standalone lossless row stays outside break-even counting; lossless DNG/JXL is reported in its own section.")}
           {column_help("Decision label", "Plain-language status after combining size and the current diagnostics. Too large means the image metrics may still look strong, but the median file size is above the paired RAW61 budget.")}
           {column_help("Storage budget", "Median retained standalone PS16 JXL size divided by paired 61 MP RAW size. 100% means the same storage cost as RAW61; below 100% means the JXL candidate is smaller.")}
           {column_help("Actual size", "Median encoded standalone JXL file size in mebibytes. The small text also shows the paired RAW61 median size, so the percent budget can be checked in normal file-size units.")}
@@ -3050,6 +3110,12 @@ def main() -> int:
         help="Optional image-free JSON summary of corpus-wide muimg archive qualification.",
     )
     parser.add_argument(
+        "--muimg-lossless-qualification",
+        type=Path,
+        default=DEFAULT_MUIMG_LOSSLESS_QUALIFICATION,
+        help="Optional image-free JSON summary of corpus-wide lossless muimg DNG/JXL qualification.",
+    )
+    parser.add_argument(
         "--combiner-audit",
         type=Path,
         default=DEFAULT_COMBINER_AUDIT,
@@ -3086,6 +3152,7 @@ def main() -> int:
     public_figures = public_figure_paths(args.public_figures)
     muimg_probe = read_json_object(args.muimg_probe)
     muimg_qualification = read_json_object(args.muimg_qualification)
+    muimg_lossless_qualification = read_json_object(args.muimg_lossless_qualification)
     combiner_audit = read_json_object(args.combiner_audit)
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
@@ -3107,6 +3174,7 @@ def main() -> int:
         muimg_qualification,
         args.render_index,
         combiner_audit,
+        muimg_lossless_qualification,
     )
     args.output.write_text(
         "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n",
