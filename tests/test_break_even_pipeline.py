@@ -31,6 +31,7 @@ import make_break_even_context_images as context_images  # noqa: E402
 import make_break_even_review_viewers as review_viewers  # noqa: E402
 import generate_break_even_report_site as report_site  # noqa: E402
 import run_rendered_ps16_jxl_matrix as rendered_matrix  # noqa: E402
+import render_with_rawtherapee as rawtherapee_render  # noqa: E402
 import read_crop_selection_guides as crop_guides  # noqa: E402
 
 
@@ -60,6 +61,43 @@ def textured_rgb(height: int = 96, width: int = 128) -> np.ndarray:
 
 
 class BreakEvenPipelineTests(unittest.TestCase):
+    def test_sequence_first_raw_is_opt_in_visual_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            scan_root = root / "adox"
+            scan_root.mkdir()
+            for name in ["frame-01.ARW", "frame-16.ARW", "frame-01-frame-16.dng"]:
+                (scan_root / name).write_bytes(b"source")
+            manifest = {
+                "scan_root_name": "adox",
+                "capture_sets": [
+                    {
+                        "set_id": "frame-01-frame-16",
+                        "single_raw": None,
+                        "pixelshift16_dng": "frame-01-frame-16.dng",
+                    }
+                ],
+                "raw_pixelshift_groups": [
+                    {
+                        "raw_files": ["frame-01.ARW", "frame-16.ARW"],
+                        "first_raw": "frame-01.ARW",
+                    }
+                ],
+            }
+            (scan_root / "scan_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+            normal = rawtherapee_render.collect_jobs(scan_root, root / "renders", [])
+            visual = rawtherapee_render.collect_jobs(
+                scan_root,
+                root / "renders",
+                [],
+                use_sequence_first_raw=True,
+            )
+
+            self.assertEqual([job.role for _, _, job in normal], ["ps16"])
+            self.assertEqual([job.role for _, _, job in visual], ["raw61", "ps16"])
+            self.assertIn("visual baseline only", visual[0][2].notes)
+
     def test_ps16_path_accepts_high_precision_matrix_reference(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -826,6 +864,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 "overview_raw61_inverted.png",
                 "overview_jxl_d020_inverted.png",
                 "overview_jxl_d200_inverted.png",
+                "thumbnail_raw61.png",
             ]:
                 write_png(viewer_dir / name, textured_rgb(12, 12))
             (viewer_dir / "metadata.json").write_text(
@@ -842,6 +881,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
                     "jxl_d020": "overview_jxl_d020.png",
                     "jxl_d200": "overview_jxl_d200.png"
                   },
+                  "thumbnail": "thumbnail_raw61.png",
                   "overviews_by_transform": {
                     "identity": {
                       "reference": "overview_reference.png",
@@ -928,6 +968,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"storageMib": 54.5', html)
             self.assertIn('"storageKind": "encoded JXL"', html)
             self.assertIn('"referenceOverview": "assets/review-viewers/synthetic_scan/frame001/overview_raw61.png"', html)
+            self.assertIn('"thumbnail": "assets/review-viewers/synthetic_scan/frame001/thumbnail_raw61.png"', html)
             self.assertIn('"overview": "assets/review-viewers/synthetic_scan/frame001/overview_jxl_d200.png"', html)
             self.assertIn(
                 '"referenceOverviews": {"identity": "assets/review-viewers/synthetic_scan/frame001/overview_raw61.png", "inverted": "assets/review-viewers/synthetic_scan/frame001/overview_raw61_inverted.png"}',
@@ -939,7 +980,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             )
             self.assertIn("function referenceOverviewSource(viewer)", html)
             self.assertIn("function candidateOverviewSource(candidate)", html)
-            self.assertIn("const thumbnailSource = viewer.referenceOverview || viewer.reference;", html)
+            self.assertIn("const thumbnailSource = viewer.thumbnail || viewer.referenceOverview || viewer.reference;", html)
             self.assertIn('thumbnail.className = "crop-film-thumbnail";', html)
             self.assertIn('thumbnail.alt = "";', html)
             self.assertIn('const copy = document.createElement("div");', html)
@@ -947,7 +988,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("referenceOverview ? loadImage(referenceOverview)", html)
             self.assertIn("candidateOverview ? loadImage(candidateOverview)", html)
             self.assertIn("drawOverview(state.referenceOverviewImage", html)
-            self.assertIn('`${candidate.label} over RAW61`', html)
+            self.assertIn('`${candidate.label} over ${referenceLabel}`', html)
             self.assertIn('currentViewer().referenceLabel || "RAW61 local aligned"', html)
             self.assertIn("hard visual check", html)
             self.assertIn('const navigationZones = ["film", "view", "quality"]', html)
@@ -979,6 +1020,10 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('.crop-mode-label[data-navigation-active="true"]', html)
             self.assertIn('grid-template-columns: 52px minmax(0, 1fr);', html)
             self.assertIn('object-fit: cover;', html)
+            self.assertIn('id="cropLatitude" open', html)
+            self.assertIn('function renderImageSource(image)', html)
+            self.assertIn('new ResizeObserver(() => {', html)
+            self.assertIn('resize: both;', html)
             self.assertIn('Use left and right arrow keys to move between Film candidates, View, and Candidate quality;', html)
             self.assertIn('aria-keyshortcuts="O"', html)
             self.assertIn('overlayToggle.textContent = enabled ? "Side-by-side (O)" : "Overlay (O)";', html)
@@ -1053,7 +1098,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('fetch(src, { priority: "low" })', html)
             self.assertIn("viewer.referenceOverview || viewer.reference", html)
             self.assertIn('function currentPixelFormat(viewer = currentViewer())', html)
-            self.assertIn('latitude.hidden = currentPixelFormat() !== "rgb16le";', html)
+            self.assertNotIn('latitude.hidden = currentPixelFormat() !== "rgb16le";', html)
+            self.assertIn("function rerenderTone()", html)
 
     def test_report_site_replaces_visual_review_items_with_inline_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

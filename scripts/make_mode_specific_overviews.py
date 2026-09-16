@@ -88,6 +88,26 @@ def preview_filename(key: str, mode: str) -> str:
     return f"overview_{layer}_{mode}.png"
 
 
+def save_crop_thumbnail(
+    output: Path,
+    source: Path,
+    *,
+    rgb16: bool,
+    width: int,
+    height: int,
+    levels: tuple[float, float],
+    force: bool,
+) -> bool:
+    """Save a compact thumbnail of the crop itself, not its full-frame overview."""
+    if output.is_file() and not force:
+        return False
+    pixels = rgb16le_to_rgb8(source, width, height, levels) if rgb16 else rgb8(source)
+    image = Image.fromarray(pixels, mode="RGB")
+    image.thumbnail((160, 160), Image.Resampling.LANCZOS)
+    image.save(output, optimize=True)
+    return True
+
+
 def generate_viewer_previews(metadata_path: Path, *, force: bool) -> int:
     metadata = read_json(metadata_path)
     directory = metadata_path.parent
@@ -115,6 +135,22 @@ def generate_viewer_previews(metadata_path: Path, *, force: bool) -> int:
     identity_levels = (float(identity_range[0]), float(identity_range[1]))
     rgb16_width = int(rgb16.get("width", 0)) if isinstance(rgb16, dict) else 0
     rgb16_height = int(rgb16.get("height", 0)) if isinstance(rgb16, dict) else 0
+
+    thumbnail_name = "thumbnail_raw61.png"
+    raw61_name = identity_images.get("raw61")
+    if raw61_name:
+        raw61_source = directory / str(raw61_name)
+        if raw61_source.is_file():
+            save_crop_thumbnail(
+                directory / thumbnail_name,
+                raw61_source,
+                rgb16=rgb16_identity,
+                width=rgb16_width,
+                height=rgb16_height,
+                levels=identity_levels,
+                force=force,
+            )
+            metadata["thumbnail"] = thumbnail_name
 
     existing_preview_sets = metadata.get("overviews_by_transform", {})
     preview_sets: dict[str, dict[str, str]] = {

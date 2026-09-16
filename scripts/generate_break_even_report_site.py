@@ -790,6 +790,7 @@ def viewer_records(
         }
         raw61_path = directory / str(image_sets[default_mode].get("raw61", ""))
         raw61_overview_path = directory / str(overviews.get("raw61", ""))
+        thumbnail_path = directory / str(metadata.get("thumbnail", ""))
         keys = sorted(
             {key for image_set in image_sets.values() if isinstance(image_set, dict) for key in image_set if key.startswith("jxl_")},
             key=viewer_level_key,
@@ -845,6 +846,7 @@ def viewer_records(
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 "referenceOverviews": raw61_overviews,
+                "thumbnail": relpath(thumbnail_path, output) if thumbnail_path.is_file() else "",
                 "pixelFormat": pixel_formats.get(default_mode, "image"),
                 "pixelFormats": pixel_formats,
                 "pixelWidth": int(rgb16.get("width", 0)) if rgb16_sources else 0,
@@ -858,6 +860,7 @@ def viewer_records(
                     "crop": metadata.get("crop", []),
                     "localRaw61Alignment": metadata.get("local_raw61_alignment", {}),
                     "raw61ExposureMatch": metadata.get("raw61_exposure_match", {}),
+                    "raw61ScopeNote": metadata.get("raw61_scope_note", ""),
                     "browserTransformRecipe": metadata.get("browser_transform_recipe", {}),
                 },
             }
@@ -1192,7 +1195,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       </div>
       <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
       <div class="crop-status" id="cropStatus" aria-live="polite"></div>
-      <details class="crop-latitude" id="cropLatitude">
+      <details class="crop-latitude" id="cropLatitude" open>
         <summary id="cropLatitudeHandle">
           <span>Rendered RGB edit latitude</span>
           <button type="button" class="tone-float-toggle" id="toneFloatToggle" aria-pressed="false">Pop out</button>
@@ -1208,7 +1211,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
             <div class="crop-tool-heading"><strong>Point curve</strong><span>Left-click to add or drag · right-click to remove</span></div>
             <canvas id="toneCurve" width="360" height="180" tabindex="0" aria-label="Point tone curve. Left-click to add or drag a point. Right-click an interior point to remove it."></canvas>
           </div>
-          <div class="crop-histogram-wrap">
+          <div class="crop-histogram-wrap" title="Drag the lower-right corner to resize">
             <div class="crop-tool-heading"><strong>Luminance histogram</strong><span>RAW61 blue · candidate amber</span></div>
             <canvas id="toneHistogram" width="512" height="128" aria-label="Shared luminance histograms"></canvas>
             <p id="toneClipping">Clipping: -</p>
@@ -1287,6 +1290,10 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       candidatePixels: null,
       referenceOverviewImage: null,
       candidateOverviewImage: null,
+      referenceSourceImage: null,
+      candidateSourceImage: null,
+      histogramReference: null,
+      histogramCandidate: null,
       tone: { exposure: 0, black: 0, white: 1, points: [[0, 0], [.25, .25], [.5, .5], [.75, .75], [1, 1]] },
       curvePoint: -1,
       movingLatitude: false,
@@ -1582,16 +1589,31 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return { canvas: output, histogram: histogramBins, clippedBlack, clippedWhite, pixels: output.width * output.height };
     }
 
+    function resizeHistogramCanvas() {
+      const rect = histogram.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const ratio = window.devicePixelRatio || 1;
+      histogram.width = Math.max(1, Math.round(rect.width * ratio));
+      histogram.height = Math.max(1, Math.round(rect.height * ratio));
+      histogramContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
     function drawHistogram(reference, candidate) {
-      histogramContext.clearRect(0, 0, histogram.width, histogram.height);
+      if (!reference || !candidate) return;
+      state.histogramReference = reference;
+      state.histogramCandidate = candidate;
+      const width = histogram.clientWidth;
+      const height = histogram.clientHeight;
+      if (!width || !height) return;
+      histogramContext.clearRect(0, 0, width, height);
       histogramContext.fillStyle = "#0b0e11";
-      histogramContext.fillRect(0, 0, histogram.width, histogram.height);
+      histogramContext.fillRect(0, 0, width, height);
       const peak = Math.max(1, ...reference.histogram, ...candidate.histogram);
       [[reference.histogram, "rgba(125,211,252,.72)"], [candidate.histogram, "rgba(251,191,36,.58)"]].forEach(([bins, color]) => {
         histogramContext.beginPath();
-        histogramContext.moveTo(0, histogram.height);
-        bins.forEach((count, index) => histogramContext.lineTo(index * 2, histogram.height - (count / peak) * (histogram.height - 5)));
-        histogramContext.lineTo(histogram.width, histogram.height);
+        histogramContext.moveTo(0, height);
+        bins.forEach((count, index) => histogramContext.lineTo(index * width / (bins.length - 1), height - (count / peak) * (height - 3)));
+        histogramContext.lineTo(width, height);
         histogramContext.fillStyle = color;
         histogramContext.fill();
       });
@@ -1610,9 +1632,49 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       draw();
     }
 
+    function renderImageSource(image) {
+      const output = document.createElement("canvas");
+      output.width = image.naturalWidth || image.width;
+      output.height = image.naturalHeight || image.height;
+      const outputContext = output.getContext("2d", { willReadFrequently: true });
+      outputContext.drawImage(image, 0, 0);
+      const imageData = outputContext.getImageData(0, 0, output.width, output.height);
+      const histogramBins = new Uint32Array(256);
+      let clippedBlack = 0;
+      let clippedWhite = 0;
+      for (let index = 0; index < imageData.data.length; index += 4) {
+        const red = editedValue(imageData.data[index] / 255);
+        const green = editedValue(imageData.data[index + 1] / 255);
+        const blue = editedValue(imageData.data[index + 2] / 255);
+        const luma = clamp01(red * .2126 + green * .7152 + blue * .0722);
+        histogramBins[Math.min(255, Math.floor(luma * 256))] += 1;
+        if (Math.max(red, green, blue) <= 0) clippedBlack += 1;
+        if (Math.min(red, green, blue) >= 1) clippedWhite += 1;
+        imageData.data[index] = Math.round(red * 255);
+        imageData.data[index + 1] = Math.round(green * 255);
+        imageData.data[index + 2] = Math.round(blue * 255);
+      }
+      outputContext.putImageData(imageData, 0, 0);
+      return { canvas: output, histogram: histogramBins, clippedBlack, clippedWhite, pixels: output.width * output.height };
+    }
+
+    function rerenderTone() {
+      if (currentPixelFormat() === "rgb16le") {
+        rerenderRgb16();
+        return;
+      }
+      if (!state.referenceSourceImage || !state.candidateSourceImage) return;
+      const reference = renderImageSource(state.referenceSourceImage);
+      const candidate = renderImageSource(state.candidateSourceImage);
+      state.referenceImage = reference.canvas;
+      state.candidateImage = candidate.canvas;
+      drawHistogram(reference, candidate);
+      draw();
+    }
+
     function scheduleToneRender() {
       window.cancelAnimationFrame(toneFrame);
-      toneFrame = window.requestAnimationFrame(rerenderRgb16);
+      toneFrame = window.requestAnimationFrame(rerenderTone);
     }
 
     function allRgb16Sources() {
@@ -1744,7 +1806,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.restore();
       const candidate = currentCandidate();
       const referenceLabel = currentViewer().referenceLabel || "RAW61 local aligned";
-      drawPaneLabel(state.overlay ? `${candidate.label} over RAW61` : referenceLabel, 0, 0);
+      drawPaneLabel(state.overlay ? `${candidate.label} over ${referenceLabel}` : referenceLabel, 0, 0);
       drawPaneLabel(candidate.label, half, 0);
     }
 
@@ -1766,13 +1828,15 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         if (serial !== loadSerial) return;
         state.referencePixels = rgb16 ? referenceData : null;
         state.candidatePixels = rgb16 ? candidateData : null;
+        state.referenceSourceImage = rgb16 ? null : referenceData;
+        state.candidateSourceImage = rgb16 ? null : candidateData;
         state.referenceImage = rgb16 ? null : referenceData;
         state.candidateImage = rgb16 ? null : candidateData;
         state.referenceOverviewImage = referenceOverviewImage;
         state.candidateOverviewImage = candidateOverviewImage;
         status.textContent = "";
         resizeCanvas();
-        if (rgb16) rerenderRgb16(); else draw();
+        rerenderTone();
       } catch (error) {
         if (serial !== loadSerial) return;
         status.textContent = "Could not load this crop image.";
@@ -1793,7 +1857,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         button.type = "button";
         button.className = "crop-choice crop-film-choice";
         button.setAttribute("aria-pressed", String(index === state.viewerIndex));
-        const thumbnailSource = viewer.referenceOverview || viewer.reference;
+        const thumbnailSource = viewer.thumbnail || viewer.referenceOverview || viewer.reference;
         if (thumbnailSource) {
           const thumbnail = document.createElement("img");
           thumbnail.className = "crop-film-thumbnail";
@@ -1875,7 +1939,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (mode.label) parts.push(mode.label);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
-      meta.textContent = `${parts.join(" | ")}${mode.description ? ` - ${mode.description}` : ""}`;
+      const scopeNote = viewer.metadata.raw61ScopeNote || "";
+      meta.textContent = `${parts.join(" | ")}${mode.description ? ` - ${mode.description}` : ""}${scopeNote ? ` Scope: ${scopeNote}` : ""}`;
     }
 
     function setViewer(index) {
@@ -1895,7 +1960,6 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       renderQualityList();
       renderModeSelect();
       updateHeading();
-      latitude.hidden = currentPixelFormat(viewer) !== "rgb16le";
       loadCurrentImages();
       noteBrowsing();
     }
@@ -1912,7 +1976,6 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       state.modeKey = key;
       renderModeSelect();
       updateHeading();
-      latitude.hidden = currentPixelFormat() !== "rgb16le";
       loadCurrentImages();
       noteBrowsing();
     }
@@ -1977,6 +2040,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         resizeCanvas();
         draw();
         drawToneCurve();
+        resizeHistogramCanvas();
+        drawHistogram(state.histogramReference, state.histogramCandidate);
       });
     }
 
@@ -2077,6 +2142,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         resizeCanvas();
         draw();
         drawToneCurve();
+        resizeHistogramCanvas();
+        drawHistogram(state.histogramReference, state.histogramCandidate);
       });
     });
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
@@ -2126,7 +2193,13 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       resizeCanvas();
       draw();
       drawToneCurve();
+      resizeHistogramCanvas();
+      drawHistogram(state.histogramReference, state.histogramCandidate);
     });
+    new ResizeObserver(() => {
+      resizeHistogramCanvas();
+      drawHistogram(state.histogramReference, state.histogramCandidate);
+    }).observe(histogram.parentElement);
     workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });
     workspace.addEventListener("focusin", pinWorkspaceViewport);
     document.addEventListener("pointerdown", (event) => {
@@ -2165,6 +2238,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     });
     setOverlay(false);
     drawToneCurve();
+    resizeHistogramCanvas();
     setViewer(0);
     setNavigationZone("film");
   })();
@@ -2739,26 +2813,26 @@ def render_html(
     #cropCanvas.dragging {{ cursor: grabbing; }}
     .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
     .crop-latitude {{ border-top: 1px solid #2b333b; background: #15191e; color: #dbe4ec; }}
-    .crop-latitude summary {{ display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 14px; cursor: pointer; font-weight: 700; }}
-    .tone-float-toggle {{ flex: 0 0 auto; border: 1px solid #53606d; border-radius: 7px; background: #20262d; color: #f4f7fa; padding: 5px 9px; cursor: pointer; }}
-    .crop-latitude-body {{ display: grid; grid-template-columns: minmax(160px, .65fr) minmax(240px, 1fr); gap: 14px; max-height: 460px; overflow: auto; padding: 6px 14px 14px; }}
-    .crop-tone-controls {{ display: grid; align-content: start; gap: 10px; min-width: 0; }}
-    .tone-control {{ display: grid; gap: 5px; min-width: 0; font-size: 13px; }}
+    .crop-latitude summary {{ display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 7px; cursor: pointer; font-size: 11px; font-weight: 700; }}
+    .tone-float-toggle {{ flex: 0 0 auto; border: 1px solid #53606d; border-radius: 4px; background: #20262d; color: #f4f7fa; padding: 2px 5px; font-size: 10px; cursor: pointer; }}
+    .crop-latitude-body {{ display: grid; grid-template-columns: minmax(110px, .48fr) minmax(170px, 1fr); gap: 6px; max-height: 340px; overflow: auto; padding: 3px 6px 6px; }}
+    .crop-tone-controls {{ display: grid; align-content: start; gap: 3px; min-width: 0; }}
+    .tone-control {{ display: grid; gap: 1px; min-width: 0; font-size: 10px; line-height: 1.1; }}
     .tone-control > span {{ display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; }}
     .tone-control strong {{ overflow-wrap: anywhere; }}
     .crop-tone-controls input {{ width: 100%; min-width: 0; }}
     .crop-tone-controls output {{ flex: 0 0 auto; color: #a6b0ba; text-align: right; font-variant-numeric: tabular-nums; }}
-    .crop-tone-controls button {{ justify-self: start; border: 1px solid #3e4a56; border-radius: 7px; background: #20262d; color: #f4f7fa; padding: 6px 9px; cursor: pointer; }}
+    .crop-tone-controls button {{ justify-self: start; border: 1px solid #3e4a56; border-radius: 4px; background: #20262d; color: #f4f7fa; padding: 2px 5px; font-size: 10px; cursor: pointer; }}
     .crop-curve-wrap, .crop-histogram-wrap {{ min-width: 0; }}
-    .crop-histogram-wrap {{ grid-column: 1 / -1; }}
-    .crop-tool-heading {{ display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 3px 10px; margin-bottom: 6px; font-size: 13px; }}
-    .crop-tool-heading span {{ color: #a6b0ba; font-size: 12px; }}
+    .crop-histogram-wrap {{ grid-column: 1 / -1; display: grid; grid-template-rows: auto minmax(42px, 1fr) auto; width: 100%; height: 96px; min-width: 150px; min-height: 72px; max-width: 100%; padding: 3px; overflow: auto; resize: both; border: 1px solid #333d47; background: #101316; }}
+    .crop-tool-heading {{ display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1px 5px; margin-bottom: 2px; font-size: 10px; line-height: 1.1; }}
+    .crop-tool-heading span {{ color: #a6b0ba; font-size: 9px; }}
     #toneCurve, #toneHistogram {{ display: block; width: 100%; border: 1px solid #333d47; background: #0b0e11; }}
-    #toneCurve {{ height: 168px; cursor: crosshair; touch-action: none; }}
-    #toneHistogram {{ height: 128px; }}
-    .crop-histogram-wrap p {{ margin: 5px 0 0; color: #a6b0ba; font-size: 12px; }}
-    .crop-scope {{ grid-column: 1 / -1; margin: 0; padding: 8px 10px; border-left: 3px solid #7dd3fc; background: #10151a; color: #bdc8d2; font-size: 12px; }}
-    .crop-latitude.is-floating {{ position: fixed; z-index: 1000; width: min(920px, calc(100vw - 24px)); max-height: calc(100vh - 16px); overflow: auto; border: 1px solid #53606d; border-radius: 10px; box-shadow: 0 20px 55px rgba(0,0,0,.55); }}
+    #toneCurve {{ height: 106px; cursor: crosshair; touch-action: none; }}
+    #toneHistogram {{ height: 100%; min-height: 42px; border: 0; }}
+    .crop-histogram-wrap p {{ margin: 1px 0 0; color: #a6b0ba; font-size: 9px; line-height: 1.1; }}
+    .crop-scope {{ grid-column: 1 / -1; margin: 0; padding: 3px 5px; border-left: 2px solid #7dd3fc; background: #10151a; color: #bdc8d2; font-size: 9px; line-height: 1.15; }}
+    .crop-latitude.is-floating {{ position: fixed; z-index: 1000; width: min(760px, calc(100vw - 24px)); min-width: 300px; min-height: 180px; max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); overflow: auto; resize: both; border: 1px solid #53606d; border-radius: 8px; box-shadow: 0 20px 55px rgba(0,0,0,.55); }}
     .crop-latitude.is-floating summary {{ position: sticky; top: 0; z-index: 2; cursor: grab; user-select: none; background: #20262d; }}
     .crop-latitude.is-floating summary:active {{ cursor: grabbing; }}
     .crop-latitude.is-floating .crop-latitude-body {{ grid-template-columns: minmax(160px, .6fr) minmax(260px, 1fr) minmax(260px, 1fr); max-height: none; }}

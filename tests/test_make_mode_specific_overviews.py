@@ -37,6 +37,45 @@ class ModeSpecificOverviewTests(unittest.TestCase):
         self.assertEqual(preview_filename("ps16_lossless", "hard"), "overview_reference_hard.png")
         self.assertEqual(preview_filename("raw61", "hard"), "overview_raw61_hard.png")
 
+    def test_generator_adds_thumbnail_from_the_crop_pixels(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            width, height = 12, 8
+            pixels = np.zeros((height, width, 3), dtype="<u2")
+            pixels[:, : width // 2, 0] = 65535
+            pixels[:, width // 2 :, 2] = 65535
+            pixels.tofile(directory / "raw61.rgb16le")
+            pixels.tofile(directory / "reference.rgb16le")
+            Image.fromarray(np.zeros((20, 30, 3), dtype=np.uint8), mode="RGB").save(
+                directory / "overview_reference.png"
+            )
+            metadata = {
+                "labels": {"reference": "reference", "raw61": "raw61"},
+                "crop_name": "manual-01",
+                "overviews": {"reference": "overview_reference.png"},
+                "view_modes": [{"key": "identity"}],
+                "images_by_transform": {},
+                "rgb16": {
+                    "width": width,
+                    "height": height,
+                    "sources": {"reference": "reference.rgb16le", "raw61": "raw61.rgb16le"},
+                    "transforms": ["identity"],
+                },
+                "browser_transform_recipe": {"display_ranges": {"identity": [0, 1]}},
+            }
+            metadata_path = directory / "metadata.json"
+            metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+            generate_viewer_previews(metadata_path, force=False)
+
+            updated = json.loads(metadata_path.read_text(encoding="utf-8"))
+            self.assertEqual(updated["thumbnail"], "thumbnail_raw61.png")
+            with Image.open(directory / updated["thumbnail"]) as thumbnail:
+                self.assertEqual(thumbnail.size, (12, 8))
+                thumbnail_pixels = np.asarray(thumbnail.convert("RGB"))
+            self.assertGreater(int(thumbnail_pixels[:, :6, 0].mean()), 240)
+            self.assertGreater(int(thumbnail_pixels[:, 6:, 2].mean()), 240)
+
     def test_generator_preserves_identity_and_adds_mode_mapping(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
