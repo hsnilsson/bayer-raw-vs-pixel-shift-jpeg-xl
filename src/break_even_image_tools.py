@@ -113,7 +113,9 @@ def read_rgb_image(path: Path) -> np.ndarray:
     tifffile = optional_tifffile()
     if tifffile is not None and path.suffix.lower() in {".tif", ".tiff", ".dng"}:
         try:
-            arr = tifffile.memmap(path)
+            # tifffile defaults to r+ here, which needlessly requires write
+            # access to immutable corpus masters.  The pipeline only reads.
+            arr = tifffile.memmap(path, mode="r")
         except (ValueError, TypeError):
             arr = tifffile.imread(path)
     elif path.suffix.lower() in {".ppm", ".pnm"}:
