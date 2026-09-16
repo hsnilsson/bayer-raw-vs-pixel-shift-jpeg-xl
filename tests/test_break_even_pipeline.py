@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -21,6 +22,7 @@ from break_even_image_tools import (  # noqa: E402
     structure_metrics,
     write_rgb_tiff,
 )
+import break_even_image_tools as image_tools  # noqa: E402
 from incremental_cache import fingerprint, fresh, make_entry  # noqa: E402
 import run_raw61_loss_metrics as raw61_loss  # noqa: E402
 import run_structure_metrics as structure_runner  # noqa: E402
@@ -58,6 +60,23 @@ def textured_rgb(height: int = 96, width: int = 128) -> np.ndarray:
 
 
 class BreakEvenPipelineTests(unittest.TestCase):
+    def test_tiff_memmap_is_opened_read_only(self) -> None:
+        source = np.arange(18, dtype=np.uint16).reshape(2, 3, 3)
+
+        class FakeTiffFile:
+            mode: str | None = None
+
+            @classmethod
+            def memmap(cls, _path: Path, *, mode: str) -> np.ndarray:
+                cls.mode = mode
+                return source
+
+        with mock.patch.object(image_tools, "optional_tifffile", return_value=FakeTiffFile):
+            result = image_tools.read_rgb_image(Path("immutable.tif"))
+
+        self.assertEqual(FakeTiffFile.mode, "r")
+        np.testing.assert_array_equal(result, source)
+
     def test_incremental_cache_invalidates_changed_input_or_output(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
