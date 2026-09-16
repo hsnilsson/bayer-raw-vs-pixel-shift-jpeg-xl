@@ -27,6 +27,17 @@ def rgb8(path: Path) -> np.ndarray:
         return np.ascontiguousarray(np.asarray(source.convert("RGB"), dtype=np.uint8))
 
 
+def rgb16le_to_rgb8(path: Path, width: int, height: int, levels: tuple[float, float]) -> np.ndarray:
+    values = np.fromfile(path, dtype="<u2")
+    expected = width * height * 3
+    if values.size != expected:
+        raise ValueError(f"unexpected RGB16 sample count in {path}: {values.size} != {expected}")
+    image = values.reshape(height, width, 3).astype(np.float32) / 65535.0
+    low, high = levels
+    display = np.clip((image - low) / max(1e-6, high - low), 0.0, 1.0)
+    return np.round(display * 255).astype(np.uint8)
+
+
 def fit_channel_lut(source: np.ndarray, target: np.ndarray) -> np.ndarray:
     """Fit an 8-bit per-channel tone mapping from a rendered crop pair."""
     if source.shape != target.shape or source.ndim != 3 or source.shape[2] != 3:
@@ -88,10 +99,30 @@ def generate_viewer_previews(metadata_path: Path, *, force: bool) -> int:
     if not isinstance(overviews, dict) or not isinstance(image_sets, dict) or not isinstance(modes, list):
         return 0
     identity_images = image_sets.get(IDENTITY_MODE)
+    rgb16 = metadata.get("rgb16", {})
+    rgb16_identity = False
+    if not isinstance(identity_images, dict) and isinstance(rgb16, dict):
+        sources = rgb16.get("sources")
+        transforms = rgb16.get("transforms", [])
+        if isinstance(sources, dict) and IDENTITY_MODE in transforms:
+            identity_images = sources
+            rgb16_identity = True
     if not isinstance(identity_images, dict):
         return 0
+    recipe = metadata.get("browser_transform_recipe", {})
+    ranges = recipe.get("display_ranges", {}) if isinstance(recipe, dict) else {}
+    identity_range = ranges.get(IDENTITY_MODE, [0.0, 1.0]) if isinstance(ranges, dict) else [0.0, 1.0]
+    identity_levels = (float(identity_range[0]), float(identity_range[1]))
+    rgb16_width = int(rgb16.get("width", 0)) if isinstance(rgb16, dict) else 0
+    rgb16_height = int(rgb16.get("height", 0)) if isinstance(rgb16, dict) else 0
 
-    preview_sets: dict[str, dict[str, str]] = {IDENTITY_MODE: dict(overviews)}
+    existing_preview_sets = metadata.get("overviews_by_transform", {})
+    preview_sets: dict[str, dict[str, str]] = {
+        str(mode): {str(key): str(filename) for key, filename in image_set.items()}
+        for mode, image_set in existing_preview_sets.items()
+        if isinstance(image_set, dict)
+    } if isinstance(existing_preview_sets, dict) else {}
+    preview_sets[IDENTITY_MODE] = dict(overviews)
     generated = 0
     lut_cache: dict[tuple[Path, Path], np.ndarray] = {}
     image_cache: dict[Path, np.ndarray] = {}
@@ -124,7 +155,12 @@ def generate_viewer_previews(metadata_path: Path, *, force: bool) -> int:
                 continue
             crop_pair = (identity_crop, target_crop)
             if crop_pair not in lut_cache:
-                lut_cache[crop_pair] = fit_channel_lut(rgb8(identity_crop), rgb8(target_crop))
+                identity_pixels = (
+                    rgb16le_to_rgb8(identity_crop, rgb16_width, rgb16_height, identity_levels)
+                    if rgb16_identity
+                    else rgb8(identity_crop)
+                )
+                lut_cache[crop_pair] = fit_channel_lut(identity_pixels, rgb8(target_crop))
             if identity_overview not in image_cache:
                 image_cache[identity_overview] = rgb8(identity_overview)
             base = image_cache[identity_overview]

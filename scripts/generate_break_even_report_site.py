@@ -715,12 +715,21 @@ def viewer_records(
         rgb16_sources = rgb16.get("sources", {}) if isinstance(rgb16.get("sources", {}), dict) else {}
         image_sets = metadata.get("images_by_transform", {}) if isinstance(metadata.get("images_by_transform", {}), dict) else {}
         mode_items = metadata.get("view_modes", []) if isinstance(metadata.get("view_modes", []), list) else []
+        rgb16_modes = {
+            str(value)
+            for value in rgb16.get("transforms", [])
+            if isinstance(value, str) and value
+        }
         if rgb16_sources:
-            image_sets = {
-                str(item.get("key")): rgb16_sources
-                for item in mode_items
-                if isinstance(item, dict) and item.get("key")
-            }
+            if not rgb16_modes:
+                rgb16_modes = {
+                    str(item.get("key"))
+                    for item in mode_items
+                    if isinstance(item, dict) and item.get("key") not in image_sets
+                }
+            image_sets = dict(image_sets)
+            for mode_key in rgb16_modes:
+                image_sets[mode_key] = rgb16_sources
         view_modes = [item for item in mode_items if isinstance(item, dict) and item.get("key") in image_sets]
         if not view_modes:
             legacy_key = str(metadata.get("transform") or "identity")
@@ -731,6 +740,10 @@ def viewer_records(
         default_mode = str(metadata.get("default_transform") or view_modes[0].get("key"))
         if default_mode not in image_sets:
             default_mode = str(view_modes[0].get("key"))
+        pixel_formats = {
+            str(mode.get("key")): "rgb16le" if str(mode.get("key")) in rgb16_modes else "image"
+            for mode in view_modes
+        }
         scan_set = str(metadata.get("scan_set") or directory.parent.name)
         set_id = str(metadata.get("set_id") or directory.name)
         scan_slug = local_study.slugify(scan_set)
@@ -832,7 +845,8 @@ def viewer_records(
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
                 "referenceOverviews": raw61_overviews,
-                "pixelFormat": "rgb16le" if rgb16_sources else "image",
+                "pixelFormat": pixel_formats.get(default_mode, "image"),
+                "pixelFormats": pixel_formats,
                 "pixelWidth": int(rgb16.get("width", 0)) if rgb16_sources else 0,
                 "pixelHeight": int(rgb16.get("height", 0)) if rgb16_sources else 0,
                 "candidates": candidates,
@@ -1329,6 +1343,10 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return modes.find((mode) => mode.key === state.modeKey) || modes[0] || { key: "identity", label: "Normal", description: "" };
     }
 
+    function currentPixelFormat(viewer = currentViewer()) {
+      return (viewer.pixelFormats && viewer.pixelFormats[state.modeKey]) || viewer.pixelFormat || "image";
+    }
+
     function referenceSource(viewer) {
       return (viewer.references && viewer.references[state.modeKey]) || viewer.reference;
     }
@@ -1583,7 +1601,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function rerenderRgb16() {
       const viewer = currentViewer();
-      if (viewer.pixelFormat !== "rgb16le" || !state.referencePixels || !state.candidatePixels) return;
+      if (currentPixelFormat(viewer) !== "rgb16le" || !state.referencePixels || !state.candidatePixels) return;
       const reference = renderRgb16(viewer, state.referencePixels, true);
       const candidate = renderRgb16(viewer, state.candidatePixels, false);
       state.referenceImage = reference.canvas;
@@ -1600,9 +1618,16 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     function allRgb16Sources() {
       const ordered = [];
       const pushViewer = (viewer) => {
-        if (!viewer || viewer.pixelFormat !== "rgb16le") return;
-        [viewer.reference, ...viewer.candidates.map((candidate) => candidate.src)].forEach((src) => {
-          if (src && !ordered.includes(src)) ordered.push(src);
+        if (!viewer) return;
+        Object.entries(viewer.pixelFormats || {}).forEach(([modeKey, pixelFormat]) => {
+          if (pixelFormat !== "rgb16le") return;
+          const sources = [
+            (viewer.references && viewer.references[modeKey]) || viewer.reference,
+            ...viewer.candidates.map((candidate) => (candidate.sources && candidate.sources[modeKey]) || candidate.src)
+          ];
+          sources.forEach((src) => {
+            if (src && !ordered.includes(src)) ordered.push(src);
+          });
         });
       };
       pushViewer(currentViewer());
@@ -1731,7 +1756,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       const candidateOverview = candidateOverviewSource(candidate);
       status.textContent = "Loading crop images...";
       try {
-        const rgb16 = viewer.pixelFormat === "rgb16le";
+        const rgb16 = currentPixelFormat(viewer) === "rgb16le";
         const [referenceData, candidateData, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
           rgb16 ? loadRgb16(viewer, referenceSource(viewer)) : loadImage(referenceSource(viewer)),
           rgb16 ? loadRgb16(viewer, candidateSource(candidate)) : loadImage(candidateSource(candidate)),
@@ -1870,7 +1895,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       renderQualityList();
       renderModeSelect();
       updateHeading();
-      latitude.hidden = viewer.pixelFormat !== "rgb16le";
+      latitude.hidden = currentPixelFormat(viewer) !== "rgb16le";
       loadCurrentImages();
       noteBrowsing();
     }
@@ -1887,6 +1912,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       state.modeKey = key;
       renderModeSelect();
       updateHeading();
+      latitude.hidden = currentPixelFormat() !== "rgb16le";
       loadCurrentImages();
       noteBrowsing();
     }
