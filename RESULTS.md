@@ -249,6 +249,30 @@ files.
 Interpretation: lossless JPEG XL is technically attractive but may not reduce
 storage enough to justify replacing DNG masters.
 
+### Controlled Exposure Latitude Audit
+
+Four complete ISO 100 single-shot ARW brackets (16 captures total) were decoded
+directly in the Bayer domain. The median absolute difference between reported
+shutter EV and measured raw response was 0.012 EV, supporting the shutter-only
+bracket interpretation despite the manual lens not reporting aperture.
+
+Three of four normal exposures retained the evaluated thin/high-signal band
+with negligible channel clipping. The white-shirt normal was the exception:
+its most-clipped CFA channel reached 12.704%, and -1.32 reported EV reduced
+recoverable thin-band error by 69.2x. Even that shorter frame clipped part of
+the white region; 8.76% of the analysis grid was clipped in every bracket
+exposure.
+
+Dense/low-signal recovery was scene-dependent. A +2.64 EV church frame reduced
+dense-band relative RMSE 3.61x, and the Christmas bracket improved about 3.04x.
+The +3 EV Christmas frame was already practically tied with +5.91 EV in the
+dense band while clipping far less of the frame. The dinner normal needed no
+positive-exposure replacement in its evaluated dense band.
+
+The result rejects a simple equation of “tone closest to normal ARW” with “all
+recoverable latitude preserved.” Full method, plots, and limitations are in
+[docs/controlled-exposure-latitude.md](docs/controlled-exposure-latitude.md).
+
 ### FilmLab ProPhoto Latitude Test
 
 A private FilmLab test compared a lossless JPEG XL baseline with lossy JPEG XL

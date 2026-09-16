@@ -23,6 +23,7 @@ every numeric value from a smaller capture.
 | Patch-color diagnostics | Local DNG/JXL verification crops | Whether lossy JXL changes local mean color or mostly changes pixel texture/noise | Absolute scene color accuracy or a full color-managed film-rendering result |
 | Local scan-study runner | Ignored `input/` scan folders | Repeatable intake and verification for future private/anonymized scans | New scientific evidence by itself |
 | Storage-budget comparison | Local standalone rendered-PS16 JXL matrix plus RAW61/structure metrics | The main project hypothesis: 61 MP raw versus 240 MP PixelShift 16 JXL at similar retained size | Still preliminary because the film corpus is limited and the visual review is neither blinded nor independently reproduced |
+| Controlled exposure latitude | Four stationary ISO 100 ARW brackets, 16 captures | Whether the normal RAW61 tonal anchor preserves recoverable dense/thin transparency signal | ARQ/PixelShift/JXL quality or universal exposure guidance |
 
 ## What Happened To FADGI/OpenDICE
 
@@ -67,6 +68,14 @@ often be texture/noise/detail change rather than broad local color bias.
 
 That is encouraging, but it is not enough to recommend lossy JXL as the only
 master.
+
+The controlled exposure audit adds a separate capture-side boundary. Three of
+four meter-normal ARWs preserved the tested thin/high-signal band, while the
+white-shirt normal clipped 10.2-12.7% across its CFA channels and required a
+shorter exposure for recoverable highlight structure. Longer exposures improved
+dense-region recovery by about 3x in two demanding scenes, but extreme positive
+brackets added little beyond +3 EV while clipping much more. A normal ARW is
+therefore a useful tone anchor only after its own capture latitude is checked.
 
 The standalone rendered-PS16 JXL path now produces candidates that cross below
 the paired 61 MP raw storage budget on the current local material. The current

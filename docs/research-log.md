@@ -48,6 +48,26 @@ diagnostics, a paired storage-budget matrix, and selected public review crops.
 The maintained remaining-work list is [NEXT_STEPS.md](../NEXT_STEPS.md); this
 file remains a chronological record rather than a second roadmap.
 
+## Controlled Exposure Latitude Audit
+
+On 2026-09-16, four complete brackets from the stationary Laowa slide-test
+setup were decoded directly in Bayer space. The 16 ISO 100 ARWs were measured
+before demosaic or tone mapping with channel-specific black/white levels,
+robust response normalization, and leave-one-out bracket HDR references.
+
+Measured response followed reported shutter EV with 0.012 EV median absolute
+error. Three normal exposures protected the evaluated thin-signal tail. The
+white-shirt normal instead clipped 10.2-12.7% across CFA channels; a shorter
+exposure recovered much of the remaining evaluable white-shirt signal, while
+8.76% of the analysis grid remained clipped in every bracket frame. Longer
+exposures improved dense-region recovery about 3x in the church and Christmas
+scenes, but the Christmas +5.91 EV frame added almost nothing over +3 EV while
+raising whole-frame green clipping from 25.6% to 64.6%.
+
+This establishes a new interpretation rule: source-ARW tone matching and
+source-ARW recoverable latitude are separate claims. The full method is in
+[controlled-exposure-latitude.md](controlled-exposure-latitude.md).
+
 ## Related Work And Research Plan Review
 
 On 2026-08-15, the related-work and research-plan drafts were reviewed against

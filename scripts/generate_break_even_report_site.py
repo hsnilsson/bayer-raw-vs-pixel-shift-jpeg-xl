@@ -34,6 +34,8 @@ DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/muimg_archive_qualification.json"
 DEFAULT_MUIMG_LOSSLESS_QUALIFICATION = ROOT / "metadata/muimg_lossless_qualification.json"
 DEFAULT_COMBINER_AUDIT = ROOT / "metadata/pixelshift_combiner_audit.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
+DEFAULT_CONTROLLED_LATITUDE = ROOT / "metadata/controlled_exposure_latitude.json"
+DEFAULT_CONTROLLED_LATITUDE_FIGURES = ROOT / "docs/figures/controlled-exposure-latitude"
 VISUAL_STRESS_LEVELS = {"d100", "d150", "d200"}
 
 PUBLIC_LATITUDE_CAPTIONS = {
@@ -883,6 +885,10 @@ def public_figure_paths(root: Path) -> list[Path]:
     return [root / name for name in PUBLIC_LATITUDE_CAPTIONS if (root / name).is_file()]
 
 
+def controlled_latitude_figure_paths(root: Path) -> list[Path]:
+    return sorted(root.glob("*.svg"), key=lambda path: path.name)
+
+
 def render_public_reproducibility(figures: list[Path], output: Path) -> str:
     cards = []
     for path in figures:
@@ -895,6 +901,70 @@ def render_public_reproducibility(figures: list[Path], output: Path) -> str:
     if not cards:
         return '<p class="muted">Public comparison figures are not present in this build.</p>'
     return f'<div class="public-figure-grid">{"".join(cards)}</div>'
+
+
+def render_controlled_latitude(
+    audit: dict[str, object],
+    figures: list[Path],
+    output: Path,
+) -> str:
+    if not audit:
+        return ""
+    summary = audit.get("summary", {})
+    cases = audit.get("cases", [])
+    if not isinstance(summary, dict) or not isinstance(cases, list):
+        raise ValueError("controlled latitude summary/cases must be JSON objects")
+    rows = []
+    for case in cases:
+        if not isinstance(case, dict):
+            continue
+        frames = case.get("frames", [])
+        best = case.get("best_by_band", {})
+        if not isinstance(frames, list) or not isinstance(best, dict):
+            continue
+        normal = next(
+            (frame for frame in frames if isinstance(frame, dict) and frame.get("file") == case.get("normal")),
+            {},
+        )
+        channels = normal.get("clipped_fraction_by_channel", {}) if isinstance(normal, dict) else {}
+        max_clip = max((float(value) for value in channels.values()), default=0.0) if isinstance(channels, dict) else 0.0
+        dense = best.get("dense", {}) if isinstance(best.get("dense", {}), dict) else {}
+        thin = best.get("thin", {}) if isinstance(best.get("thin", {}), dict) else {}
+        rows.append(
+            "<tr>"
+            f"<td><strong>{esc(case.get('label', case.get('key', '')))}</strong></td>"
+            f"<td>{max_clip * 100:.3f}%</td>"
+            f"<td>{float(dense.get('computed_ev', 0.0)):+.2f} EV</td>"
+            f"<td>{float(dense.get('normal_to_best_improvement', 1.0)):.2f}x</td>"
+            f"<td>{float(thin.get('computed_ev', 0.0)):+.2f} EV</td>"
+            f"<td>{float(case.get('all_frames_clipped_fraction', 0.0)) * 100:.2f}%</td>"
+            "</tr>"
+        )
+    cards = []
+    for path in figures:
+        caption = path.stem.replace("-", " ").capitalize()
+        src = relpath(path, output)
+        cards.append(
+            f'<figure class="public-figure"><a href="{esc(src)}"><img src="{esc(src)}" '
+            f'alt="{esc(caption)}" loading="lazy"></a><figcaption>{esc(caption)}</figcaption></figure>'
+        )
+    median_linearity = float(summary.get("median_absolute_linearity_error_ev", 0.0))
+    median_dense_gain = float(summary.get("median_dense_normal_to_best_improvement", 1.0))
+    max_all_clipped = float(summary.get("max_all_frames_clipped_fraction", 0.0))
+    return f"""<section id="controlled-latitude">
+      <h2>Controlled RAW Exposure Latitude</h2>
+      <div class="note">
+        <p><strong>Outcome:</strong> four stationary ISO 100 ARW brackets ({int(summary.get('frame_count', 0))} frames) show that a meter-normal RAW61 is not automatically a complete latitude reference. The median dense-band gain from the best bracket exposure was {median_dense_gain:.2f}x, while one white-shirt set still had {max_all_clipped * 100:.2f}% of the analysis grid clipped in every exposure.</p>
+        <p><strong>Validation:</strong> measured raw response followed reported shutter EV with {median_linearity:.3f} EV median absolute error. The analysis works before demosaic or tone mapping, uses leave-one-out HDR references, and reports R/G1/G2/B clipping separately.</p>
+        <p><strong>Boundary:</strong> this calibrates the source-ARW anchor; it is not an ARQ, PixelShift2DNG, Pixel Shift, or JPEG XL comparison.</p>
+        <p><a href="https://github.com/hsnilsson/jpegxl-vs-dngpixelshift/blob/main/docs/controlled-exposure-latitude.md">Full method, exact bracket membership, plots, and limitations</a></p>
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Controlled exposure latitude summary"><table class="small-table">
+        <thead><tr><th>Case</th><th>Normal max channel clip</th><th>Best dense EV</th><th>Dense improvement</th><th>Best thin EV</th><th>All frames clipped</th></tr></thead>
+        <tbody>{''.join(rows)}</tbody>
+      </table></div>
+      <div class="public-figure-grid">{''.join(cards)}</div>
+    </section>"""
 
 
 def relpath(path: Path, output_file: Path) -> str:
@@ -2208,6 +2278,8 @@ def render_html(
     render_index: Path = DEFAULT_RENDER_INDEX,
     combiner_audit: dict[str, object] | None = None,
     muimg_lossless_qualification: dict[str, object] | None = None,
+    controlled_latitude: dict[str, object] | None = None,
+    controlled_latitude_figures: list[Path] | None = None,
 ) -> str:
     annotations = annotations or {}
     complete = [row for row in rows if row.get("evidence_status") == "complete"]
@@ -2243,6 +2315,9 @@ def render_html(
         muimg_probe or {}, muimg_qualification, muimg_lossless_qualification
     )
     combiner_audit_html = render_combiner_audit(combiner_audit or {})
+    controlled_latitude_html = render_controlled_latitude(
+        controlled_latitude or {}, controlled_latitude_figures or [], output
+    )
 
     level_rows = [lossless_reference_row()]
     for item in summaries:
@@ -2747,7 +2822,7 @@ def render_html(
     </div>
 
     <p><strong>The second storage option:</strong> direct muimg DNG/JXL produced 16 checked outputs of 66-116 MiB at d001. All passed metadata, full segment-decode and Adobe rewrite checks. That fits the separate budget of about 200 MiB per capture; most files remain larger than RAW61.</p>
-    <nav aria-label="Article sections"><p><a href="#rendered-results">Rendered results</a> &middot; <a href="#visual-review">Visual review</a> &middot; <a href="#combiner-audit">Combiner audit</a> &middot; <a href="#muimg-results">DNG storage option</a> &middot; <a href="#public-evidence">Public examples</a> &middot; <a href="#measurement-details">Measurement details</a></p></nav>
+    <nav aria-label="Article sections"><p><a href="#rendered-results">Rendered results</a> &middot; <a href="#visual-review">Visual review</a> &middot; <a href="#combiner-audit">Combiner audit</a> &middot; <a href="#controlled-latitude">RAW latitude</a> &middot; <a href="#muimg-results">DNG storage option</a> &middot; <a href="#public-evidence">Public examples</a> &middot; <a href="#measurement-details">Measurement details</a></p></nav>
     <p>The counts above describe frame-and-quality combinations: the same frames recur at different compression settings. A favorable diagnostic comparison means that the size and error thresholds pass. Useful detail and acceptable grain still need visual interpretation.</p>
     <h2>How To Read The Comparison</h2>
     <section class="questions">
@@ -2862,6 +2937,8 @@ def render_html(
     {visual_review_html}
 
     {combiner_audit_html}
+
+    {controlled_latitude_html}
 
     <span id="muimg-results"></span>
     {muimg_probe_html}
@@ -3122,6 +3199,23 @@ def main() -> int:
         help="Optional JSON summary and public panels for the bounded Pixelshift combiner audit.",
     )
     parser.add_argument(
+        "--controlled-latitude",
+        type=Path,
+        default=DEFAULT_CONTROLLED_LATITUDE,
+        help="Optional pixel-free JSON summary of the controlled ARW exposure-latitude audit.",
+    )
+    parser.add_argument(
+        "--controlled-latitude-figures",
+        type=Path,
+        default=DEFAULT_CONTROLLED_LATITUDE_FIGURES,
+        help="Directory containing pixel-free controlled-latitude SVG figures.",
+    )
+    parser.add_argument(
+        "--copy-controlled-latitude-figures-to",
+        type=Path,
+        help="Copy controlled-latitude SVG figures into the report artifact before linking them.",
+    )
+    parser.add_argument(
         "--copy-public-figures-to",
         type=Path,
         help="Copy selected public figures into the report artifact before linking them.",
@@ -3154,12 +3248,22 @@ def main() -> int:
     muimg_qualification = read_json_object(args.muimg_qualification)
     muimg_lossless_qualification = read_json_object(args.muimg_lossless_qualification)
     combiner_audit = read_json_object(args.combiner_audit)
+    controlled_latitude = read_json_object(args.controlled_latitude)
+    controlled_latitude_figures = controlled_latitude_figure_paths(
+        args.controlled_latitude_figures
+    )
     if args.copy_panels_to:
         panels = copy_panel_assets(panels, args.panels, args.copy_panels_to)
     if args.copy_contexts_to:
         contexts = copy_context_assets(contexts, args.contexts, args.copy_contexts_to)
     if args.copy_public_figures_to:
         public_figures = copy_panel_assets(public_figures, args.public_figures, args.copy_public_figures_to)
+    if args.copy_controlled_latitude_figures_to:
+        controlled_latitude_figures = copy_panel_assets(
+            controlled_latitude_figures,
+            args.controlled_latitude_figures,
+            args.copy_controlled_latitude_figures_to,
+        )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     rendered = render_html(
         rows,
@@ -3174,7 +3278,9 @@ def main() -> int:
         muimg_qualification,
         args.render_index,
         combiner_audit,
-        muimg_lossless_qualification,
+        muimg_lossless_qualification=muimg_lossless_qualification,
+        controlled_latitude=controlled_latitude,
+        controlled_latitude_figures=controlled_latitude_figures,
     )
     args.output.write_text(
         "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n",
