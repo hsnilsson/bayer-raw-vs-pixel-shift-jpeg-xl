@@ -1193,8 +1193,10 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <button type="button" id="cropFullscreen" aria-pressed="false" title="Enter fullscreen visual review">Fullscreen</button>
         </div>
       </div>
-      <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
-      <div class="crop-status" id="cropStatus" aria-live="polite"></div>
+      <div class="crop-canvas-wrap">
+        <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
+        <div class="crop-status" id="cropStatus" aria-live="polite"></div>
+      </div>
       <details class="crop-latitude" id="cropLatitude" open>
         <summary id="cropLatitudeHandle">
           <span>Rendered RGB edit latitude</span>
@@ -2773,7 +2775,7 @@ def render_html(
     }}
     .crop-film-copy {{ display: grid; min-width: 0; gap: 3px; }}
     .crop-film-copy strong {{ overflow-wrap: anywhere; }}
-    .crop-stage {{ min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; }}
+    .crop-stage {{ min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }}
     .crop-toolbar {{
       display: flex;
       align-items: flex-start;
@@ -2818,6 +2820,7 @@ def render_html(
     #cropOverlayToggle {{ min-width: 116px; text-align: center; }}
     #cropFullscreen {{ min-width: 116px; text-align: center; }}
     .crop-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
+    .crop-canvas-wrap {{ position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #101316; }}
     #cropCanvas {{
       display: block;
       width: 100%;
@@ -2828,20 +2831,21 @@ def render_html(
       touch-action: none;
     }}
     #cropCanvas.dragging {{ cursor: grabbing; }}
-    .crop-status {{ min-height: 28px; padding: 6px 14px; color: #a6b0ba; background: #15191e; }}
+    .crop-status {{ position: absolute; left: 8px; bottom: 8px; z-index: 2; max-width: calc(100% - 16px); padding: 4px 7px; border-radius: 4px; color: #dbe4ec; background: rgba(21,25,30,.9); pointer-events: none; transition: opacity .12s ease; }}
+    .crop-status:empty {{ opacity: 0; }}
     .crop-latitude {{ border-top: 1px solid #2b333b; background: #15191e; color: #dbe4ec; }}
     .crop-latitude summary {{ display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 7px; cursor: pointer; font-size: 11px; font-weight: 700; }}
     .tone-float-toggle {{ flex: 0 0 auto; border: 1px solid #53606d; border-radius: 4px; background: #20262d; color: #f4f7fa; padding: 2px 5px; font-size: 10px; cursor: pointer; }}
-    .crop-latitude-body {{ display: grid; grid-template-columns: minmax(110px, .48fr) minmax(170px, 1fr); gap: 6px; max-height: 340px; overflow: auto; padding: 3px 6px 6px; }}
-    .crop-tone-controls {{ display: grid; align-content: start; gap: 3px; min-width: 0; }}
+    .crop-latitude-body {{ display: grid; grid-template-columns: minmax(55px, 240px) minmax(85px, 420px); justify-content: start; gap: 6px; max-height: 340px; overflow: auto; padding: 3px 6px 6px; }}
+    .crop-tone-controls {{ display: grid; align-content: start; gap: 3px; width: min(240px, 100%); min-width: 55px; max-width: 240px; }}
     .tone-control {{ display: grid; gap: 1px; min-width: 0; font-size: 10px; line-height: 1.1; }}
     .tone-control > span {{ display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; }}
     .tone-control strong {{ overflow-wrap: anywhere; }}
-    .crop-tone-controls input {{ width: 100%; min-width: 0; }}
+    .crop-tone-controls input {{ width: 100%; min-width: 55px; max-width: 240px; }}
     .crop-tone-controls output {{ flex: 0 0 auto; color: #a6b0ba; text-align: right; font-variant-numeric: tabular-nums; }}
     .crop-tone-controls button {{ justify-self: start; border: 1px solid #3e4a56; border-radius: 4px; background: #20262d; color: #f4f7fa; padding: 2px 5px; font-size: 10px; cursor: pointer; }}
-    .crop-curve-wrap, .crop-histogram-wrap {{ min-width: 0; }}
-    .crop-histogram-wrap {{ grid-column: 1 / -1; display: grid; grid-template-rows: auto minmax(42px, 1fr) auto; width: 100%; height: 96px; min-width: 150px; min-height: 72px; max-width: 100%; padding: 3px; overflow: auto; resize: both; border: 1px solid #333d47; background: #101316; }}
+    .crop-curve-wrap {{ width: min(420px, 100%); min-width: 85px; max-width: 420px; }}
+    .crop-histogram-wrap {{ grid-column: 1 / -1; justify-self: start; display: grid; grid-template-rows: auto minmax(42px, 1fr) auto; width: min(720px, 100%); height: 96px; min-width: 75px; min-height: 72px; max-width: 720px; padding: 3px; overflow: auto; resize: both; border: 1px solid #333d47; background: #101316; }}
     .crop-tool-heading {{ display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1px 5px; margin-bottom: 2px; font-size: 10px; line-height: 1.1; }}
     .crop-tool-heading span {{ color: #a6b0ba; font-size: 9px; }}
     #toneCurve, #toneHistogram {{ display: block; width: 100%; border: 1px solid #333d47; background: #0b0e11; }}
@@ -2852,7 +2856,7 @@ def render_html(
     .crop-latitude.is-floating {{ position: fixed; z-index: 1000; width: min(760px, calc(100vw - 24px)); min-width: 300px; min-height: 180px; max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); overflow: auto; resize: both; border: 1px solid #53606d; border-radius: 8px; box-shadow: 0 20px 55px rgba(0,0,0,.55); }}
     .crop-latitude.is-floating summary {{ position: sticky; top: 0; z-index: 2; cursor: grab; user-select: none; background: #20262d; }}
     .crop-latitude.is-floating summary:active {{ cursor: grabbing; }}
-    .crop-latitude.is-floating .crop-latitude-body {{ grid-template-columns: minmax(160px, .6fr) minmax(260px, 1fr) minmax(260px, 1fr); max-height: none; }}
+    .crop-latitude.is-floating .crop-latitude-body {{ grid-template-columns: minmax(80px, 240px) minmax(130px, 420px) minmax(130px, 720px); max-height: none; }}
     .crop-latitude.is-floating .crop-histogram-wrap {{ grid-column: auto; }}
     .crop-workspace:fullscreen {{ width: 100vw; height: 100vh; max-width: none; margin: 0; border-radius: 0; }}
     ul {{ margin-top: 8px; }}
@@ -2864,7 +2868,7 @@ def render_html(
       .crop-actions {{ width: 100%; justify-content: flex-start; }}
       .crop-toolbar p {{ height: calc(1.45em * 5); }}
       .crop-latitude-body {{ grid-template-columns: 1fr; }}
-      .crop-latitude.is-floating .crop-latitude-body {{ grid-template-columns: minmax(160px, .65fr) minmax(240px, 1fr); }}
+      .crop-latitude.is-floating .crop-latitude-body {{ grid-template-columns: minmax(80px, 240px) minmax(120px, 420px); }}
       .crop-histogram-wrap, .crop-latitude.is-floating .crop-histogram-wrap {{ grid-column: 1 / -1; }}
       .crop-scope {{ grid-column: 1; }}
       .crop-latitude.is-floating .crop-scope {{ grid-column: 1 / -1; }}
