@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -52,15 +53,31 @@ def resolve_source(value: object) -> Path:
     if not isinstance(value, dict) or not value.get("path"):
         raise ValueError("viewer metadata has no source path")
     path = Path(str(value["path"]))
+    if os.name != "nt":
+        windows = re.match(r"^([A-Za-z]):[\\/](.*)$", str(value["path"]))
+        if windows:
+            relative = windows.group(2).replace("\\", "/")
+            return Path(f"/mnt/{windows.group(1).lower()}/{relative}")
     return path if path.is_absolute() else ROOT / path
+
+
+def source_label(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
 
 
 def output_mapping(metadata: dict[str, Any], mode_key: str = MODE_KEY) -> dict[str, str]:
     image_sets = metadata.get("images_by_transform")
-    if not isinstance(image_sets, dict) or not isinstance(image_sets.get("identity"), dict):
-        raise ValueError("viewer metadata has no identity image set")
+    identity = image_sets.get("identity") if isinstance(image_sets, dict) else None
+    if not isinstance(identity, dict):
+        rgb16 = metadata.get("rgb16", {})
+        identity = rgb16.get("sources") if isinstance(rgb16, dict) else None
+    if not isinstance(identity, dict):
+        raise ValueError("viewer metadata has no identity or RGB16 source set")
     mapping: dict[str, str] = {}
-    for key, filename in image_sets["identity"].items():
+    for key, filename in identity.items():
         source_name = Path(str(filename))
         mapping[str(key)] = f"{source_name.stem}_{mode_key}.png"
     return mapping
@@ -151,12 +168,18 @@ def align_raw61_crop(crop: np.ndarray, metadata: dict[str, Any]) -> np.ndarray:
 
 
 def tiff_icc(path: Path, tifffile: Any) -> bytes | None:
+    if path.suffix.lower() in {".ppm", ".pnm"}:
+        sidecar = path.with_suffix(".icc")
+        return sidecar.read_bytes() if sidecar.is_file() else None
     with tifffile.TiffFile(path) as tif:
         tag = tif.pages[0].tags.get("InterColorProfile")
         return bytes(tag.value) if tag is not None else None
 
 
 def tiff_memmap(path: Path, tifffile: Any) -> tuple[np.ndarray, bytes | None]:
+    if path.suffix.lower() in {".ppm", ".pnm"}:
+        array, _maximum = ppm_memmap(path)
+        return array, tiff_icc(path, tifffile)
     try:
         array = tifffile.memmap(path)
     except Exception as exc:
@@ -413,7 +436,7 @@ def main() -> int:
                     work_dir,
                 )
             generated[item["metadata_path"]].append(
-                {"key": "reference", "source": str(reference_path.relative_to(ROOT)), "sha256": sha256(reference_output)}
+                {"key": "reference", "source": source_label(reference_path), "sha256": sha256(reference_output)}
             )
             del reference_crop, reference
 
@@ -424,7 +447,7 @@ def main() -> int:
             if args.force or args.force_raw61 or not raw_output.is_file():
                 render_crop(raw_crop, raw_icc, raw_output, locked[item["metadata_path"]], api, tifffile, work_dir)
             generated[item["metadata_path"]].append(
-                {"key": "raw61", "source": str(raw_path.relative_to(ROOT)), "sha256": sha256(raw_output)}
+                {"key": "raw61", "source": source_label(raw_path), "sha256": sha256(raw_output)}
             )
             del raw_crop, raw
 
@@ -449,7 +472,7 @@ def main() -> int:
                     pending.append((item, key))
                 else:
                     generated[item["metadata_path"]].append(
-                        {"key": key, "source": str(source.relative_to(ROOT)), "sha256": sha256(output)}
+                        {"key": key, "source": source_label(source), "sha256": sha256(output)}
                     )
             if not pending:
                 continue
@@ -457,7 +480,7 @@ def main() -> int:
             if free < 4 * 1024**3:
                 raise RuntimeError("less than 4 GiB is free for the temporary JXL decode")
             decoded = work_dir / "decoded.ppm"
-            print(f"[JXL {index}/{len(jobs)}] {source.relative_to(ROOT)}", flush=True)
+            print(f"[JXL {index}/{len(jobs)}] {source_label(source)}", flush=True)
             decode_jxl(args.djxl, source, decoded)
             pixels, _maximum = ppm_memmap(decoded)
             profile_source = resolve_source(source_jobs[0][0]["sources"].get("ps16"))
@@ -468,7 +491,7 @@ def main() -> int:
                 render_crop(crop, profile, output, locked[item["metadata_path"]], api, tifffile, work_dir)
                 del crop
                 generated[item["metadata_path"]].append(
-                    {"key": key, "source": str(source.relative_to(ROOT)), "sha256": sha256(output)}
+                    {"key": key, "source": source_label(source), "sha256": sha256(output)}
                 )
             del pixels
             decoded.unlink()

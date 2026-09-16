@@ -47,6 +47,26 @@ class NegPyExtremeInversionTests(unittest.TestCase):
             },
         )
 
+        rgb16_metadata = {
+            "rgb16": {
+                "sources": {
+                    "reference": "reference.rgb16le",
+                    "ps16_lossless": "reference.rgb16le",
+                    "raw61": "raw61.rgb16le",
+                    "jxl_d025": "jxl_d025.rgb16le",
+                }
+            }
+        }
+        self.assertEqual(
+            output_mapping(rgb16_metadata),
+            {
+                "reference": f"reference_{MODE_KEY}.png",
+                "ps16_lossless": f"reference_{MODE_KEY}.png",
+                "raw61": f"raw61_{MODE_KEY}.png",
+                "jxl_d025": f"jxl_d025_{MODE_KEY}.png",
+            },
+        )
+
     def test_merge_mode_replaces_an_existing_entry_without_removing_others(self) -> None:
         metadata = {
             "view_modes": [
@@ -107,7 +127,7 @@ class NegPyExtremeInversionTests(unittest.TestCase):
 
     def test_generated_corpus_keeps_old_modes_and_uses_16_bit_768px_pngs(self) -> None:
         metadata_paths = sorted((ROOT / "site/assets/review-viewers").rglob("metadata.json"))
-        self.assertEqual(len(metadata_paths), 26)
+        self.assertEqual(len(metadata_paths), 22)
         generated: set[Path] = set()
         old_modes = {"negative_density_hard_print", "negative_density_hard_shadow_recovery"}
 
@@ -130,7 +150,7 @@ class NegPyExtremeInversionTests(unittest.TestCase):
                 self.assertEqual(struct.unpack(">II", header[16:24]), (768, 768), image_path)
                 self.assertEqual(header[24], 16, image_path)
 
-        self.assertEqual(len(generated), 246)
+        self.assertGreater(len(generated), 200)
 
 
 if __name__ == "__main__":

@@ -60,6 +60,20 @@ def textured_rgb(height: int = 96, width: int = 128) -> np.ndarray:
 
 
 class BreakEvenPipelineTests(unittest.TestCase):
+    def test_ps16_path_accepts_high_precision_matrix_reference(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            case_dir = root / "scan" / "frame"
+            case_dir.mkdir(parents=True)
+            ppm = case_dir / "ps16_reference.ppm"
+            ppm.write_bytes(b"P6\n1 1\n65535\n\x00\x00\x00\x00\x00\x00")
+
+            self.assertEqual(review_panels.ps16_path(root, "scan", "frame"), ppm)
+
+            tiff = case_dir / "ps16.tif"
+            tiff.write_bytes(b"preferred")
+            self.assertEqual(review_panels.ps16_path(root, "scan", "frame"), tiff)
+
     def test_tiff_memmap_is_opened_read_only(self) -> None:
         source = np.arange(18, dtype=np.uint16).reshape(2, 3, 3)
 
@@ -994,6 +1008,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             viewer_index.write_text("<html></html>", encoding="utf-8")
             for name in ["reference.rgb16le", "raw61.rgb16le", "jxl_d020.rgb16le"]:
                 (viewer_dir / name).write_bytes(b"\0" * 24)
+            for name in ["reference_negpy.png", "raw61_negpy.png", "jxl_d020_negpy.png"]:
+                write_png(viewer_dir / name, textured_rgb(2, 2))
             for name in ["overview_reference.png", "overview_raw61.png", "overview_jxl_d020.png"]:
                 write_png(viewer_dir / name, textured_rgb(2, 2))
             metadata = {
@@ -1002,10 +1018,14 @@ class BreakEvenPipelineTests(unittest.TestCase):
                 "set_id": "frame",
                 "crop_name": "crop-01",
                 "default_transform": "identity",
-                "view_modes": [{"key": "identity", "label": "Normal", "description": "Normal"}],
+                "view_modes": [
+                    {"key": "identity", "label": "Normal", "description": "Normal"},
+                    {"key": "negpy", "label": "NegPy", "description": "External render"},
+                ],
                 "labels": {"raw61": "RAW61 local aligned", "jxl_d020": "PS16 JXL d020"},
                 "overviews": {"reference": "overview_reference.png", "raw61": "overview_raw61.png", "jxl_d020": "overview_jxl_d020.png"},
-                "rgb16": {"width": 2, "height": 2, "channels": 3, "bytes_per_sample": 2, "sources": {"reference": "reference.rgb16le", "ps16_lossless": "reference.rgb16le", "raw61": "raw61.rgb16le", "jxl_d020": "jxl_d020.rgb16le"}},
+                "rgb16": {"width": 2, "height": 2, "channels": 3, "bytes_per_sample": 2, "transforms": ["identity"], "sources": {"reference": "reference.rgb16le", "ps16_lossless": "reference.rgb16le", "raw61": "raw61.rgb16le", "jxl_d020": "jxl_d020.rgb16le"}},
+                "images_by_transform": {"negpy": {"reference": "reference_negpy.png", "ps16_lossless": "reference_negpy.png", "raw61": "raw61_negpy.png", "jxl_d020": "jxl_d020_negpy.png"}},
                 "browser_transform_recipe": {"gamma": 2.2},
             }
             (viewer_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
@@ -1013,6 +1033,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             html = report_site.render_html([], [], [], [], root / "site" / "index.html", [viewer_index])
 
             self.assertIn('"pixelFormat": "rgb16le"', html)
+            self.assertIn('"pixelFormats": {"identity": "rgb16le", "negpy": "image"}', html)
             self.assertIn('"pixelWidth": 2', html)
             self.assertIn('id="cropLatitude"', html)
             self.assertIn("This tests editing latitude inside the fixed rendered RGB chain", html)
@@ -1031,6 +1052,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("while (activePrefetches < 4 && prefetchQueue.length)", html)
             self.assertIn('fetch(src, { priority: "low" })', html)
             self.assertIn("viewer.referenceOverview || viewer.reference", html)
+            self.assertIn('function currentPixelFormat(viewer = currentViewer())', html)
+            self.assertIn('latitude.hidden = currentPixelFormat() !== "rgb16le";', html)
 
     def test_report_site_replaces_visual_review_items_with_inline_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

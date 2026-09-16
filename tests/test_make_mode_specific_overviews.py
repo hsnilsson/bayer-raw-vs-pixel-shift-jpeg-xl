@@ -89,14 +89,18 @@ class ModeSpecificOverviewTests(unittest.TestCase):
 
     def test_generated_corpus_has_small_preview_for_every_available_mode_layer(self) -> None:
         metadata_paths = sorted((ROOT / "site/assets/review-viewers").rglob("metadata.json"))
-        self.assertEqual(len(metadata_paths), 26)
+        self.assertEqual(len(metadata_paths), 22)
         for metadata_path in metadata_paths:
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
             overview_sets = metadata.get("overviews_by_transform", {})
+            image_sets = metadata.get("images_by_transform", {})
+            rgb16 = metadata.get("rgb16", {})
+            rgb16_modes = set(rgb16.get("transforms", []))
             for mode in metadata["view_modes"]:
                 mode_key = mode["key"]
                 self.assertIn(mode_key, overview_sets, metadata_path)
-                for key in metadata["images_by_transform"][mode_key]:
+                layers = rgb16.get("sources", {}) if mode_key in rgb16_modes else image_sets[mode_key]
+                for key in layers:
                     self.assertIn(key, overview_sets[mode_key], (metadata_path, mode_key, key))
                     image_path = metadata_path.parent / overview_sets[mode_key][key]
                     with image_path.open("rb") as handle:

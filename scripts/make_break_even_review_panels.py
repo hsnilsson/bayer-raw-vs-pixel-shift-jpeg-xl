@@ -148,7 +148,11 @@ def choose_cases(rows: list[dict[str, str]], limit: int) -> list[ReviewCase]:
 
 
 def ps16_path(renders_root: Path, scan_set: str, set_id: str) -> Path:
-    return renders_root / local_study.slugify(scan_set) / set_id / "ps16.tif"
+    case_dir = renders_root / local_study.slugify(scan_set) / set_id
+    tiff = case_dir / "ps16.tif"
+    if tiff.is_file():
+        return tiff
+    return case_dir / "ps16_reference.ppm"
 
 
 def raw61_path(registered_root: Path, scan_set: str, set_id: str) -> Path:

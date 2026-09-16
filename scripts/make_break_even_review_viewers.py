@@ -271,8 +271,13 @@ def browser_transform_recipe(reference: np.ndarray) -> dict[str, object]:
     }
 
 
-def prune_legacy_full_images(output_dir: Path, metadata: dict[str, object]) -> None:
+def prune_legacy_full_images(
+    output_dir: Path,
+    metadata: dict[str, object],
+    preserve: set[str] | None = None,
+) -> None:
     """Remove only the old generated full-crop PNGs after RGB16 succeeds."""
+    preserve = preserve or set()
     image_sets = metadata.get("images_by_transform", {})
     if not isinstance(image_sets, dict):
         return
@@ -281,7 +286,12 @@ def prune_legacy_full_images(output_dir: Path, metadata: dict[str, object]) -> N
             continue
         for filename in image_set.values():
             path = output_dir / str(filename)
-            if path.suffix.lower() == ".png" and path.parent == output_dir and path.is_file():
+            if (
+                path.name not in preserve
+                and path.suffix.lower() == ".png"
+                and path.parent == output_dir
+                and path.is_file()
+            ):
                 path.unlink()
 
 
@@ -768,6 +778,46 @@ def make_viewer(
                 "description": description,
             }
         )
+    external_image_sets: dict[str, dict[str, str]] = {}
+    external_provenance: dict[str, object] = {}
+    existing_image_sets = existing_metadata.get("images_by_transform", {})
+    if not isinstance(existing_image_sets, dict):
+        existing_image_sets = {}
+    for item in existing_metadata.get("view_modes", []):
+        if not isinstance(item, dict):
+            continue
+        mode_key = str(item.get("key", ""))
+        image_set = existing_image_sets.get(mode_key)
+        if not mode_key or mode_key in selected_transforms or not isinstance(image_set, dict):
+            continue
+        available = {
+            str(key): str(filename)
+            for key, filename in image_set.items()
+            if (output_dir / str(filename)).is_file()
+        }
+        if not available:
+            continue
+        external_image_sets[mode_key] = available
+        view_modes.append(dict(item))
+        if mode_key in existing_metadata:
+            external_provenance[mode_key] = existing_metadata[mode_key]
+    overview_sets: dict[str, dict[str, str]] = {}
+    existing_overview_sets = existing_metadata.get("overviews_by_transform", {})
+    if isinstance(existing_overview_sets, dict):
+        for mode_key, image_set in existing_overview_sets.items():
+            if not isinstance(image_set, dict):
+                continue
+            available = {
+                str(key): str(filename)
+                for key, filename in image_set.items()
+                if (output_dir / str(filename)).is_file()
+            }
+            if available:
+                overview_sets[str(mode_key)] = available
+    for transform_name in selected_transforms:
+        mode_overviews = overview_sets.setdefault(transform_name, {})
+        for key, filename in overviews.items():
+            mode_overviews.setdefault(key, filename)
     metadata = {
         "schema": 2,
         "labels": labels,
@@ -785,6 +835,7 @@ def make_viewer(
             "channels": 3,
             "bytes_per_sample": 2,
             "sources": rgb16_sources,
+            "transforms": selected_transforms,
         },
         "browser_transform_recipe": browser_transform_recipe(ref_crop),
         "build_inputs": build_inputs,
@@ -807,8 +858,18 @@ def make_viewer(
             ],
         },
     }
+    if external_image_sets:
+        metadata["images_by_transform"] = external_image_sets
+    if overview_sets:
+        metadata["overviews_by_transform"] = overview_sets
+    metadata.update(external_provenance)
     metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    prune_legacy_full_images(output_dir, existing_metadata)
+    preserved_images = {
+        Path(filename).name
+        for image_set in external_image_sets.values()
+        for filename in image_set.values()
+    }
+    prune_legacy_full_images(output_dir, existing_metadata, preserved_images)
     title = f"{scan_set} / {set_id} / {crop_name}"
     (output_dir / "index.html").write_text(
         html_page(title, {"reference": overviews["reference"], "raw61": overviews["raw61"]}, metadata), encoding="utf-8"
