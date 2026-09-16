@@ -1423,9 +1423,21 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return points[points.length - 1][1];
     }
 
+    function resizeToneCurveCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const pixelWidth = Math.max(1, Math.round(toneCurve.clientWidth * ratio));
+      const pixelHeight = Math.max(1, Math.round(toneCurve.clientHeight * ratio));
+      if (toneCurve.width !== pixelWidth || toneCurve.height !== pixelHeight) {
+        toneCurve.width = pixelWidth;
+        toneCurve.height = pixelHeight;
+      }
+      toneCurveContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
     function drawToneCurve() {
-      const width = toneCurve.width;
-      const height = toneCurve.height;
+      resizeToneCurveCanvas();
+      const width = toneCurve.clientWidth;
+      const height = toneCurve.clientHeight;
       const inset = 12;
       const plotWidth = width - inset * 2;
       const plotHeight = height - inset * 2;
@@ -1475,8 +1487,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function curvePosition(event) {
       const rect = toneCurve.getBoundingClientRect();
-      const insetX = 12 * rect.width / toneCurve.width;
-      const insetY = 12 * rect.height / toneCurve.height;
+      const insetX = 12;
+      const insetY = 12;
       return [
         clamp01((event.clientX - rect.left - insetX) / Math.max(1, rect.width - insetX * 2)),
         clamp01(1 - (event.clientY - rect.top - insetY) / Math.max(1, rect.height - insetY * 2))
@@ -2035,6 +2047,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       } else {
         latitude.style.removeProperty("left");
         latitude.style.removeProperty("top");
+        latitude.style.removeProperty("width");
+        latitude.style.removeProperty("height");
       }
       window.requestAnimationFrame(() => {
         resizeCanvas();
@@ -2200,6 +2214,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       resizeHistogramCanvas();
       drawHistogram(state.histogramReference, state.histogramCandidate);
     }).observe(histogram.parentElement);
+    new ResizeObserver(() => {
+      drawToneCurve();
+    }).observe(toneCurve);
     workspace.addEventListener("scroll", pinWorkspaceViewport, { passive: true });
     workspace.addEventListener("focusin", pinWorkspaceViewport);
     document.addEventListener("pointerdown", (event) => {
@@ -2756,7 +2773,7 @@ def render_html(
     }}
     .crop-film-copy {{ display: grid; min-width: 0; gap: 3px; }}
     .crop-film-copy strong {{ overflow-wrap: anywhere; }}
-    .crop-stage {{ min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; }}
+    .crop-stage {{ min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; }}
     .crop-toolbar {{
       display: flex;
       align-items: flex-start;
