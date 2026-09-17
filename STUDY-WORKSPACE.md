@@ -12,8 +12,10 @@ jpegxl-study/
 ```
 
 The archive is private and excluded from Git. A Git clone alone contains the public
-project, not the private images. Place the complete preserved archive at
-`archive/study-20260917`. Do not edit its payloads, records or checksum manifests.
+project, not the private images. Copy the entire private `archive/` folder into
+the checkout, including `study-20260917`, `legacy-20260917`, `tooling-extra` and
+the operational receipts. `tooling-extra` supplies Node for the viewer tests.
+Do not edit preserved payloads, records or checksum manifests.
 The archive README documents restoration of the original frozen study and Git
 history. The working project may evolve independently of that frozen snapshot.
 
