@@ -142958,7 +142958,7 @@
       }
     }
   ],
-  "measurements_csv_sha256": "135945cd488808d518dff0f0c216ec18c1a2f7ebb50cf4b1dd7a4288f8b40df0",
+  "measurements_csv_sha256": "5f591fdccee51fb2629321999e3994a105d310c5d342de646d8225bd0b78a6ee",
   "method": {
     "budget": "Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
     "color": "Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
@@ -142975,7 +142975,7 @@
     "scripts/check_verified_release.py": "76904204f94c1b3fa2f10ea10e334b42045a9f3dc265b3baecdb37ceb4d1524c",
     "scripts/finalize_verified_viewers.py": "3c5f2e747f88db510006d6b4864d9ba79057247d00893a85474ece1732639597",
     "scripts/generate_break_even_report_site.py": "b0b969ca1c015fd773f0399a3921901d32a115a2c4ef33163b73042fe559c261",
-    "scripts/render_verified_report.py": "eb4ba51b49544ce98d26be7b14da9cb0341ac9bf0a5ec1c105569602b4619dca",
+    "scripts/render_verified_report.py": "d887bf61a27f4c365126e568a28458ffdc0db827242860cda406090f8293d597",
     "scripts/run_responsive.py": "b257f600bfa8e34257fa9a9771a87ae45764f9fb51189c8985d20ee5b73d77ad",
     "scripts/run_verified_rebuild.py": "7391d7d4f1b723ef4a9fde13aa1b4de92c2999c8a9b38c225dbf6688d08ce55b",
     "src/preview_cache.py": "93423d798347beebe85ecc9f37af31ca65b37e1767b042de815869826127a2bd",
@@ -142984,10 +142984,10 @@
     "src/report_styles.css": "d985e7fb003acd19e7c2d97796b9d0d097afa471a0ad9219ec2eb88ab6906abf",
     "src/viewer_overviews.py": "531eb92dc0b637d71931a2dcd6155bfcdba17cf3af56642ce1d5b0d4ccb5404f"
   },
-  "run_id": "verified-27006eb80a04a9da",
+  "run_id": "verified-76072f61940c3720",
   "schema": 3,
   "source": {
-    "ref": "aec0d11998ef06d923d77568a280705132c648be",
+    "ref": "2b3adbf3d7c5f5fb9c480d97f02acaf0075c5aad",
     "repository": "https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl"
   },
   "status": "validated",
