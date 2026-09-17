@@ -29,3 +29,6 @@ jxl_test_out/
 /*.TIFF
 /*.xmp
 /*.XMP
+
+# Private preserved study inputs, tooling and original history.
+/archive/

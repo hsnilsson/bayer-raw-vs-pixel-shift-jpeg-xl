@@ -1,5 +1,7 @@
 # Film information under a fixed storage budget
 
+Owner workflow: [Consolidated study workspace](STUDY-WORKSPACE.md) — portable inputs, pinned tools, report regeneration and future measurement runs. [History rewrite notes](docs/HISTORY-REWRITE.md).
+
 Can a better-sampled Pixel-Shift image stored as conservative JPEG XL preserve more useful information about a film original than a conventional lower-resolution Bayer raw capture at similar storage cost?
 
 This investigation retains that primary research question. It grew from a scanning project of approximately 20,000 privately held negatives whose physical originals will remain available. The motivation is to preserve useful sampling, color and editing information without retaining every large intermediate. A more pleasing texture or a closer match to a PS16 render is not, by itself, proof of greater scene accuracy or archival safety.
