@@ -2,6 +2,13 @@
 
 Review date: 2026-09-17. The owner reviewed the repaired report and approved publication on the same date. The initial publication used commit [d42e26a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/d42e26a97ddd109675d2a29c4db806f2fe1840c2); the subsequent editorial revision used [0220f2a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/0220f2a54b4c362214818e0a47126dda67ff1e4c). This record describes the machine-assisted numerical and visual checks performed during the repair. Owner approval concerns publication; the visual checks documented below use the stated machine-assisted method.
 
+## Full-frame background restoration
+
+- The viewer's overview fields had been assigned the native-crop preview files. A dedicated downstream export now supplies 1,320 full-frame images: 22 approved crops × 12 image sources × five fixed modes. Each source is linked to its audited file hash and ICC profile. The yellow crop outline uses the source dimensions and the measured RAW registration.
+- Full-frame backgrounds and bordered detail insets were checked in the actual viewer. Fuji `_DSC6938` loaded all five modes; RAW61, PS16 and JPEG XL selections were exercised. Konica `_DSC6917`, `manual-02`, was checked against PS16 at d=0.25 with shadow-lift inversion and 100% physical-pixel scale. Browser console errors were absent.
+- A contact sheet covered the full-frame reference for all 22 crop selections. All 1,320 WebPs were decoded and checked for their 640-pixel maximum dimension and embedded ICC profile. Their combined size is 70.58 MiB. At a requested 390×844 mobile viewport, content and scroll width were both 375 pixels, and the native-scale control showed 100%.
+- Comparison with the preceding documentation release confirmed all 1,611 existing image/pixel assets byte-identical, all 160 candidate records and 1,900 measurements unchanged, and the original analysis identity preserved. Publication checks now reject native-crop preview paths in overview fields and verify the final HTML bindings as well as the data manifests.
+
 ## Completed browser checks during the rebuild
 
 - The f/4.5 target and Fuji `_DSC6938`, `manual-01`, were inspected using the RGB16 crop viewer. The Fuji transport test used byte-plane shuffle plus gzip, independently checked to reproduce every original sample.
@@ -22,7 +29,7 @@ Review date: 2026-09-17. The owner reviewed the repaired report and approved pub
 - The complete unchanged-run check reused all 16 frames while every heavy preparation, render, encode and decode function was blocked. A separate partial-interruption regression completed one distance, interrupted the next, and preserved the completed checkpoint on restart despite changing ICC creation timestamps. The regression failed without the preview adapter and passed with it; changed pixels, profile data and corrupt PNGs are rejected.
 - Viewer export journals passed interruption/idempotency tests. Bounded retries resolved Windows sharing locks during packaging; access-denied and permanent-lock tests still fail rather than retry indefinitely. The packed transport preserves every uint16 sample and is checked by both file and decoded-pixel SHA-256.
 - The lineage audit verified all 160 original/repaired image codestreams equal, reproduced all 22 aligned RAW viewer buffers and all 220 native identity high-pass losses, and found no change in 220 relative decisions after removing the padding-dependent boundary pixels. RAW viewer quantization reached four sRGB display codes across the checked five modes at zero EV; normal-mode error was at most one code. Scientific measurements retain the floating-point RAW input.
-- Superseded report derivatives were removed only after the replacement passed: 1,550 obsolete assets totaling 755.41 MiB. The current site is about 877 MiB. Original captures, retained renders, encodes and historical results remain retained.
+- Superseded report derivatives were removed only after the replacement passed: 1,550 obsolete assets totaling 755.41 MiB. That initial site was about 877 MiB. Original captures, retained renders, encodes and historical results remain retained.
 
 ## Final assembled-page review
 

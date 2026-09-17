@@ -22,7 +22,7 @@ from build_verified_release import candidate_screen
 from image_color import SRGB
 import finalize_verified_viewers as exporter
 from check_verified_release import check_pixel_payload,public_values,safe_path
-from incremental_cache import atomic_write_json,sha256_file
+from incremental_cache import atomic_write_json,sha256_file,fingerprint
 from preview_cache import equivalent_png
 
 
@@ -87,7 +87,18 @@ class VerifiedEvidenceTests(unittest.TestCase):
             raw=np.arange(96,dtype="<u2").tobytes();pixels=viewer/"reference.rgb16le";pixels.write_bytes(raw)
             metadata=viewer/"metadata.json"
             atomic_write_json(metadata,{"schema":3,"asset_manifest":{"reference":{"file":pixels.name,"bytes":len(raw),"sha256":sha256_file(pixels)}},
-                                        "rgb16":{"sources":{"reference":pixels.name}},"negpy_extreme_inversion":{"legacy":True}})
+                                        "rgb16":{"sources":{"reference":pixels.name}},"negpy_extreme_inversion":{"legacy":True},
+                                        "scan_set":"scan","set_id":"frame","crop_name":"crop","crop":[1,2,8,4],
+                                        "browser_transform_recipe":{},"view_modes":[{"key":"identity"}]})
+            overview="assets/overviews-verified/scan/frame/crop/reference_identity.webp"
+            image=root/"site"/overview;image.parent.mkdir(parents=True)
+            Image.new("RGB",(100,60)).save(image)
+            atomic_write_json(root/"site/data/overview-evidence.json",{
+                "evidence_id":"test-overviews","method":"Synthetic full frame",
+                "asset_hashes":{overview:sha256_file(image)},
+                "records":[{"scan_set":"scan","set_id":"frame","crop":"crop","crop_xywh":[1,2,8,4],
+                            "recipe_sha256":fingerprint({}),"sources":{"reference":{
+                                "source_shape":[60,100,3],"source_bounds":[0,0,100,60],"files":{"identity":overview}}}}]})
             atomic_write_json(results/"private_inventory.json",{"frames":[{"slug":"scan","set_id":"frame","crops":[{}]}]})
             atomic_write_json(frame/"complete.json",{"metadata_hashes":{metadata.relative_to(root).as_posix():sha256_file(metadata)}})
             atomic_write_json(frame/"d003.json",{"asset_hashes":{pixels.relative_to(root).as_posix():sha256_file(pixels)}})

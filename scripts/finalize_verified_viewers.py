@@ -84,8 +84,6 @@ def sanitize(metadata):
     if metadata.get("schema")!=3:raise ValueError("Cannot finalize legacy viewer metadata")
     result={k:v for k,v in metadata.items() if k in FIELDS}
     result["raw61_scope_note"]=result.get("raw61_scope_note","").replace("The left image is","The RAW61 baseline is")
-    result["overview_preview_generation"]={"generator":"scripts/rebuild_verified_report.py",
-        "method":"ICC-managed sRGB native-crop previews using the same reference-derived linear-light recipe as the viewer"}
     return result
 
 
@@ -99,6 +97,12 @@ def apply_journal(journal):
 
 
 def finalize(results):
+    from viewer_overviews import overview_record, bind_overviews
+    site=ROOT/"site"
+    overviews=json.loads((site/"data/overview-evidence.json").read_text(encoding="utf-8"))
+    for relative,expected in overviews["asset_hashes"].items():
+        if not (site/relative).resolve().is_relative_to(site.resolve()) or sha256_file(site/relative)!=expected:
+            raise ValueError("Missing or changed full-frame overview")
     inventory=json.loads((results/"private_inventory.json").read_text(encoding="utf-8"))["frames"]
     jobs=[]
     cache=results/"viewer-pixels";cache.mkdir(parents=True,exist_ok=True)
@@ -113,6 +117,7 @@ def finalize(results):
         for relative,expected in data["metadata_hashes"].items():
             path=ROOT/relative
             if sha256_file(path)!=expected:raise ValueError("Viewer metadata changed outside the pipeline")
+            overview_record(json.loads(path.read_text(encoding="utf-8")),overviews)
         jobs.append((receipt,data))
     for receipt,data in jobs:
         print("PACK",receipt.parent.parent.name+"/"+receipt.parent.name,flush=True)
@@ -122,6 +127,7 @@ def finalize(results):
             metadata=json.loads(path.read_text(encoding="utf-8"))
             relocated.update(export_pixels(metadata,path,cache))
             metadata=sanitize(metadata)
+            bind_overviews(metadata,overviews,path,site)
             writes.append((relative,metadata))
             staged=receipt.with_name("viewer-export-staged.json")
             atomic_write_json(staged,metadata)

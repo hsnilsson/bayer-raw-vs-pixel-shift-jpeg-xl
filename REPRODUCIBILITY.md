@@ -4,12 +4,12 @@ The [published report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg
 
 ## Get this report's source version
 
-The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-docs](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-docs) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
+The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-overviews](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-overviews) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
 
 Run these commands in PowerShell with Git installed. The report scripts below use Python 3.12 on Windows. Git LFS supports the fixture acquisition option described later.
 
 ```powershell
-git clone --branch report-2026-09-17-docs --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
+git clone --branch report-2026-09-17-overviews --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
 Set-Location report-reproduction
 git rev-parse HEAD
 ```
@@ -17,13 +17,13 @@ git rev-parse HEAD
 For an existing clean checkout, select the same snapshot with:
 
 ```powershell
-git fetch origin tag report-2026-09-17-docs
-git switch --detach report-2026-09-17-docs
+git fetch origin tag report-2026-09-17-overviews
+git switch --detach report-2026-09-17-overviews
 ```
 
 ## Validate a public checkout
 
-Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-docs/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
+Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
 
 ```powershell
 python -m venv .venv
@@ -52,7 +52,7 @@ Or use the downloader:
 .\.venv\Scripts\python.exe scripts/download_testdata.py --include-loc --loc-count 3
 ```
 
-Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-docs/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-docs/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
+Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
 
 Replace each quoted `<...>` placeholder below with your actual local directory or file. Keep the quotes around paths containing spaces. Use a persistent scratch directory. The public experiment writes its output under `results/public-reproduction` for comparison with the committed evidence.
 
@@ -91,6 +91,7 @@ The DNG audit requires the retained lossy and lossless qualification records, th
 .\.venv\Scripts\python.exe scripts/rebuild_combiner_evidence.py --archive '<archive-checkout>' --scratch '<persistent-scratch>/combiner'
 .\.venv\Scripts\python.exe scripts/build_verified_contexts.py
 .\.venv\Scripts\python.exe scripts/audit_render_lineage.py --exiftool '<ExifTool.exe>'
+.\.venv\Scripts\python.exe scripts/run_responsive.py scripts/build_verified_overviews.py --djxl '<libjxl-0.11.2-bin>/djxl.exe' --scratch '<persistent-scratch>/overviews'
 .\.venv\Scripts\python.exe scripts/finalize_verified_viewers.py
 .\.venv\Scripts\python.exe scripts/check_verified_cache.py
 .\.venv\Scripts\python.exe scripts/build_verified_release.py --verify-private
@@ -101,6 +102,8 @@ The DNG audit requires the retained lossy and lossless qualification records, th
 .\.venv\Scripts\python.exe scripts/prune_superseded_site_assets.py --apply
 .\.venv\Scripts\python.exe scripts/check_report_site.py
 ```
+
+The full-frame overview stage reads the audited reference, RAW61 render and each released JXL. It creates separate navigation images for every crop, source and fixed view mode, with a yellow crop outline. ICC-linear box reduction includes every source pixel; the decoder's 8× progressive downsampling request reduces work where supported. The final sRGB WebP images are navigation aids. The RGB16 crop buffers remain the inputs for detail inspection and edits. The stage keeps hash-verified reductions in persistent scratch for reuse. Run it before finalizing viewer metadata; publication checks bind full-frame sources, dimensions, tone recipes and image paths independently of the native crop previews.
 
 The combiner stage uses RawTherapee 5.12 and the committed neutral preset to render two source-ARW anchors; inspect its `--help` for the executable override. Its fixed selections are in `metadata/combiner_crop_plan.json`. The controlled experiment retains sensor-domain measurements and audits source identity, exposure and aggregates; it does not rerun the full bracket analysis.
 

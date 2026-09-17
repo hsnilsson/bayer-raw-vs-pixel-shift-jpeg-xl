@@ -144,6 +144,14 @@ class ModeSpecificOverviewTests(unittest.TestCase):
                         key = "reference"
                     self.assertIn(key, overview_sets[mode_key], (metadata_path, mode_key, key))
                     image_path = metadata_path.parent / overview_sets[mode_key][key]
+                    if metadata.get("overview_preview_generation", {}).get("scope") == "full_frame":
+                        self.assertTrue(image_path.resolve().is_relative_to((ROOT / "site/assets/overviews-verified").resolve()))
+                        with Image.open(image_path) as image:
+                            self.assertEqual(image.format, "WEBP")
+                            self.assertEqual(max(image.size), 640)
+                            self.assertEqual(image.mode, "RGB")
+                            self.assertTrue(image.info.get("icc_profile"))
+                        continue
                     with image_path.open("rb") as handle:
                         header = handle.read(25)
                     self.assertEqual(header[:8], b"\x89PNG\r\n\x1a\n", image_path)

@@ -145,7 +145,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     decision = [r for r in primary if r["decision_level"]]
     release = {"schema":3,"status":"validated", "analysis_identity":code,"environment":environment,
                "source":{"repository":"https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl",
-                         "ref":"report-2026-09-17-docs"},
+                         "ref":"report-2026-09-17-overviews"},
                "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
                          "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
@@ -166,7 +166,8 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
                             "observations":read(results/"execution-notes.json") if (results/"execution-notes.json").is_file() else {}}}
     evidence={}
     for key,filename in (("dng","dng-evidence.json"),("public","public-evidence.json"),("combiner","combiner-evidence.json"),
-                         ("controlled","controlled-evidence.json"),("contexts","context-evidence.json"),("lineage","lineage-evidence.json")):
+                         ("controlled","controlled-evidence.json"),("contexts","context-evidence.json"),("lineage","lineage-evidence.json"),
+                         ("overviews","overview-evidence.json")):
         path=site/"data"/filename
         attachment=read(path)
         if attachment.get("schema")!=3:raise ValueError(f"Unverified auxiliary evidence: {key}")
@@ -188,7 +189,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
         assets[relative]=sha256_file(site/relative)
     release["experiment_sha256"]=sha256_file(ROOT/"metadata/verified_experiment.json")
     release["report_code"]={p:sha256_file(ROOT/p) for p in ("scripts/build_verified_release.py","scripts/render_verified_report.py",
-                                "scripts/generate_break_even_report_site.py","scripts/finalize_verified_viewers.py","scripts/check_verified_release.py","scripts/run_responsive.py","scripts/run_verified_rebuild.py","src/preview_cache.py","src/report_color.js","src/report_styles.css")}
+                                "scripts/generate_break_even_report_site.py","scripts/finalize_verified_viewers.py","scripts/check_verified_release.py","scripts/run_responsive.py","scripts/run_verified_rebuild.py","src/preview_cache.py","src/viewer_overviews.py","src/report_color.js","src/report_styles.css")}
     release["collection_sizes"]=[{"level":level,"primary_frames":len(primary)//len(LEVELS),
                                   "raw61_total_bytes":sum(f["raw61"]["bytes"] for f in frames if f["cohort"]=="primary_compressed_independent"),
                                   "jxl_total_bytes":sum(r["encoded_bytes"] for r in primary if r["level"]==level)} for level in LEVELS]

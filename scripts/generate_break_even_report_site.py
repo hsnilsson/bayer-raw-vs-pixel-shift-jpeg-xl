@@ -1724,19 +1724,37 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function drawOverview(image, x, paneWidth, height) {
       if (!image) return;
-      const maxWidth = Math.min(320, paneWidth * .54);
-      const maxHeight = Math.min(170, height * .27);
+      const maxWidth = paneWidth - 24;
+      const maxHeight = height - 64;
       const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
       const drawnWidth = image.width * scale;
       const drawnHeight = image.height * scale;
       const left = x + (paneWidth - drawnWidth) / 2;
-      const top = 12;
+      const top = 40;
       ctx.save();
-      ctx.globalAlpha = .92;
       ctx.drawImage(image, left, top, drawnWidth, drawnHeight);
       ctx.strokeStyle = "rgba(255,255,255,.32)";
       ctx.strokeRect(left - .5, top - .5, drawnWidth + 1, drawnHeight + 1);
       ctx.restore();
+    }
+
+    function cropViewport(x, paneWidth, height) {
+      const size = Math.min(paneWidth * .70, height * .52);
+      const overview = state.referenceOverviewImage || state.candidateOverviewImage;
+      const overviewHeight = overview
+        ? overview.height * Math.min((paneWidth - 24) / overview.width, (height - 64) / overview.height)
+        : height * .4;
+      const top = Math.min(height - size - 16, 40 + overviewHeight * .85);
+      return [x + (paneWidth - size) / 2, top, size, size];
+    }
+
+    function drawCrop(image, x, paneWidth, height) {
+      const box = cropViewport(x, paneWidth, height);
+      ctx.fillStyle = "#101316";
+      ctx.fillRect(box[0] - 2, box[1] - 2, box[2] + 4, box[3] + 4);
+      drawImageFit(image, ...box, box);
+      ctx.strokeStyle = "rgba(255,255,255,.8)";
+      ctx.strokeRect(box[0] - 1, box[1] - 1, box[2] + 2, box[3] + 2);
     }
 
     function drawPaneLabel(text, x, y) {
@@ -1763,14 +1781,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.fillRect(0, 0, width, height);
       const half = width / 2;
       document.getElementById("cropScale").textContent = state.referenceImage
-        ? `${Math.round(100 * fitScale(state.referenceImage, half, height) * state.zoom * (window.devicePixelRatio || 1))}%`
+        ? `${Math.round(100 * fitScale(state.referenceImage, ...cropViewport(0, half, height).slice(2)) * state.zoom * (window.devicePixelRatio || 1))}%`
         : "";
       drawOverview(state.referenceOverviewImage, 0, half, height);
       drawOverview(state.candidateOverviewImage, half, half, height);
-      drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
-      drawImageFit(state.candidateImage, half, 0, half, height, [half, 0, half, height]);
+      drawCrop(state.referenceImage, 0, half, height);
+      drawCrop(state.candidateImage, half, half, height);
       if (state.overlay) {
-        drawImageFit(state.candidateImage, 0, 0, half, height, [0, 0, half, height]);
+        drawCrop(state.candidateImage, 0, half, height);
       }
       ctx.save();
       ctx.strokeStyle = "rgba(255,255,255,.5)";
@@ -2131,7 +2149,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
     document.getElementById("cropNativeScale").addEventListener("click", () => {
       if (!state.referenceImage) return;
-      state.zoom = 1 / ((window.devicePixelRatio || 1) * fitScale(state.referenceImage, canvas.clientWidth / 2, canvas.clientHeight));
+      state.zoom = 1 / ((window.devicePixelRatio || 1) * fitScale(state.referenceImage, ...cropViewport(0, canvas.clientWidth / 2, canvas.clientHeight).slice(2)));
       state.panX = state.panY = 0;
       draw();
     });

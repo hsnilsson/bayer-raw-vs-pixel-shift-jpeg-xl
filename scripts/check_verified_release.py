@@ -20,6 +20,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"src"))
 from incremental_cache import fingerprint,sha256_file
+from viewer_overviews import verify_overview_binding
 
 LEVELS=("d003","d005","d010","d020","d022","d025","d028","d030","d100","d200")
 MODES=("identity","shadow_recovery_luma_p12","highlight_separation_luma_p88_p998","negative_density_hard_print","negative_density_hard_shadow_recovery")
@@ -72,6 +73,8 @@ def check(site:Path,check_html=True):
     unsigned={k:v for k,v in release.items() if k not in ("run_id","measurements_csv_sha256")}
     require(release["run_id"]=="verified-"+fingerprint(unsigned)[:16],"Release identity does not match its contents")
     require(release["analysis_identity"]==fingerprint(release["environment"]),"Mixed analysis environment")
+    require("overviews" in release["evidence"],"Missing full-frame overview evidence")
+    overviews=read(safe_path(site,release["evidence"]["overviews"]["file"]))
     for group in (release["environment"]["code"],release["report_code"]):
         for relative,expected in group.items():require(sha256_file(ROOT/relative)==expected,"Code changed after release: "+relative)
     design=read(ROOT/"metadata/verified_experiment.json")
@@ -153,6 +156,7 @@ def check(site:Path,check_html=True):
             recipe=release["analysis_recipes"][meta["analysis_recipe_sha256"]]
             scope=next(s for s in recipe["scopes"] if s["name"]==meta["crop_name"])
             require(meta["browser_transform_recipe"]==scope["recipe"] and meta["local_raw61_alignment"]==scope["alignment"],"Viewer transform/registration differs from measurements")
+            verify_overview_binding(meta,overviews,path,site)
             require(meta["build_inputs"]["reference_sha256"]==f["reference"]["sha256"] and meta["build_inputs"]["raw61_source_sha256"]==f["raw61"]["sha256"],"Wrong viewer source")
             require([m["key"] for m in meta["view_modes"]]==list(MODES),"Undeclared viewer transform")
             require(set(meta["asset_manifest"])=={"reference","raw61",*("jxl_"+level for level in LEVELS)},"Incomplete viewer quality matrix")
@@ -206,6 +210,43 @@ def check(site:Path,check_html=True):
             require({(c["sequence"],s["name"],tuple(s["crop_xywh"])) for c in data["cases"] for s in c["crops"]}==
                     {(c["sequence"],s["name"],tuple(s["crop"])) for c in plan["cases"] for s in c["crops"]},"Combiner crop identities changed")
         if name=="controlled":require(len(data["cases"])==4 and len(data["source_states"])==16,"Controlled source denominator changed")
+        if name=="overviews":
+            require(data["decoder_sha256"]==release["environment"]["tools"]["djxl.exe"],"Overview decoder changed")
+            require(data["evidence_id"]=="overviews-"+fingerprint({k:v for k,v in data.items() if k!="evidence_id"})[:16],"Overview evidence identity mismatch")
+            keys={(r["scan_set"],r["set_id"],r["crop"]) for r in data["records"]}
+            require(len(data["records"])==len(keys)==summary["native_crops"] and keys==
+                    {(f["scan_set"],f["set_id"],c["name"]) for f in frames.values() for c in f["crops"]},"Incomplete overview crop coverage")
+            used=set()
+            for record in data["records"]:
+                f=next(f for f in frames.values() if (f["scan_set"],f["set_id"])==(record["scan_set"],record["set_id"]))
+                require(record["reference_shape"]==f["shape"],"Overview reference dimensions mismatch")
+                for role,source in record["sources"].items():
+                    expected=f["reference"] if role=="reference" else f["raw_render"] if role=="raw61" else candidate_rows[(f["slug"],f["set_id"],role[4:])]
+                    require(source["source_sha256"]==expected.get("sha256",expected.get("encoded_sha256")),"Wrong full-frame overview source")
+                    profile=expected["decoded_profile"] if role.startswith("jxl_") else f["profile"]
+                    require(source["icc_sha256"]==profile["icc_sha256"],"Wrong full-frame overview ICC")
+                    if role!="raw61":require(source["source_shape"]==f["shape"],"Crop substituted for full-frame overview")
+                    else:require(source["source_shape"][0]>f["shape"][0]*.45 and source["source_shape"][1]>f["shape"][1]*.45,"RAW overview does not cover a full frame")
+                    candidate=candidate_rows[(f["slug"],f["set_id"],LEVELS[0])]
+                    scopes=release["analysis_recipes"][candidate["recipe_sha256"]]["scopes"]
+                    broad=next(s for s in scopes if s["kind"]=="reduced_full_frame")["alignment"]
+                    local=next(s for s in scopes if s["name"]==record["crop"])["alignment"]
+                    shift=[(broad[k]*10 if broad["applied"] else 0)+(local[k] if local["applied"] else 0)
+                           for k in ("shift_x_px","shift_y_px")] if role=="raw61" else [0,0]
+                    sx,sy=source["source_shape"][1]/f["shape"][1],source["source_shape"][0]/f["shape"][0]
+                    x,y,w,h=record["crop_xywh"]
+                    expected_box=[(x-shift[0])*sx,(y-shift[1])*sy,w*sx,h*sy]
+                    require(source["crop_xywh"]==expected_box,"Overview crop marker differs from measured registration")
+                    for relative in source["files"].values():
+                        require(relative in data["asset_hashes"] and data["asset_hashes"][relative]==release["asset_hashes"].get(relative),"Unbound full-frame overview image")
+                        with safe_path(site,relative).open("rb") as stream:header=stream.read(30)
+                        require(header[:4]==b"RIFF" and header[8:16]==b"WEBPVP8X" and header[20]&32,"Overview lacks sRGB WebP container")
+                        size=[int.from_bytes(header[24:27],"little")+1,int.from_bytes(header[27:30],"little")+1]
+                        require(size==source["size"] and max(size)==640,"Wrong overview preview dimensions")
+                        h,w,_=source["source_shape"]
+                        require(abs(size[0]/size[1]-w/h)<.005,"Overview aspect ratio differs from full frame")
+                        used.add(relative)
+            require(used==set(data["asset_hashes"]),"Orphan full-frame overview assets")
         if name in ("contexts","lineage"):
             records=data["records"] if name=="contexts" else data["frames"]
             require({(r["scan_set"],r["set_id"]) for r in records}=={(f["scan_set"],f["set_id"]) for f in frames.values()} and len(records)==len(frames),"Auxiliary capture coverage changed")
@@ -244,7 +285,13 @@ def check(site:Path,check_html=True):
         require(match is not None,"Missing crop viewer manifest")
         viewers=json.loads(match.group(1));require(len(viewers)==summary["native_crops"],"HTML viewer denominator mismatch")
         for viewer in viewers:
+            record=next(r for r in overviews["records"] if (r["scan_set"],r["set_id"],r["crop"])==
+                        (viewer["scanSet"],viewer["setId"],viewer["metadata"]["cropName"]))
+            require(viewer["referenceOverviews"]==record["sources"]["raw61"]["files"] and
+                    viewer["ps16Overviews"]==record["sources"]["reference"]["files"],"HTML full-frame overview binding mismatch")
             for c in viewer["candidates"]:
+                role=c["key"] if c["key"].startswith("jxl_") else "reference"
+                require(c["overviews"]==record["sources"][role]["files"],"HTML candidate full-frame overview binding mismatch")
                 if c["key"].startswith("jxl_"):
                     matching=[r for r in candidate_rows.values() if r["scan_set"]==viewer["scanSet"] and r["set_id"]==viewer["setId"] and r["level"]==c["key"][4:]]
                     require(bool(matching) and abs(c["storageMib"]-matching[0]["encoded_bytes"]/2**20)<1e-10,"Viewer/table size mismatch")

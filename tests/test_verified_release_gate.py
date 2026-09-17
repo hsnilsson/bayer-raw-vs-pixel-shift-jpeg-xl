@@ -63,5 +63,14 @@ class ReleaseMutationTests(unittest.TestCase):
         with patch.object(gate,"read",side_effect=changed):
             with self.assertRaisesRegex(ValueError,"transform/registration"):gate.check(ROOT/"site",False)
 
+    def test_rejects_crop_previews_used_as_full_frame_overviews(self):
+        original=gate.read
+        def changed(path):
+            data=original(path)
+            if Path(path).name=="metadata.json":data["overviews_by_transform"]=data["images_by_transform"]
+            return data
+        with patch.object(gate,"read",side_effect=changed):
+            with self.assertRaisesRegex(ValueError,"full-frame overview binding"):gate.check(ROOT/"site",False)
+
 
 if __name__=="__main__":unittest.main()
