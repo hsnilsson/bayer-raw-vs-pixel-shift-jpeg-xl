@@ -1,6 +1,6 @@
 # Sharing the reviewed report
 
-First obtain owner review of the [local report](../site/index.html). Publication requires a separate instruction; pushing main triggers the Pages workflow.
+The owner approved the repaired report, which was first [published](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg-xl/) on 2026-09-17. Subsequent publications use the [publication checklist](publication-checklist.md); pushing `main` triggers the Pages workflow.
 
 Share the reviewed report together with its release identity, downloadable evidence and [limitations](../LIMITATIONS.md). Describe the RAW61 budget and 200 MiB DNG route separately. Do not reuse old cross-domain DeltaE, 15/16 archive-value, mixed-cohort size-crossing, or combiner-latitude claims.
 

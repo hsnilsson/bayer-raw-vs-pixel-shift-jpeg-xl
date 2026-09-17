@@ -4,7 +4,7 @@ Can a better-sampled Pixel-Shift image stored as conservative JPEG XL preserve m
 
 This investigation retains that primary research question. It grew from a scanning project of approximately 20,000 privately held negatives whose physical originals will remain available. The motivation is to preserve useful sampling, color and editing information without retaining every large intermediate. A more pleasing texture or a closer match to a PS16 render is not, by itself, proof of greater scene accuracy or archival safety.
 
-Open the [validated local report](site/index.html) through a local HTTP server; the interactive viewer fetches RGB16 crop data. The report is awaiting owner review before publication. The deployed website may still show the earlier report until a separate publication action is authorized.
+Open the [published report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg-xl/), first published after owner review on 2026-09-17. Its downloads link to the exact source snapshot and measured evidence. For a local copy, follow the [reproduction instructions](REPRODUCIBILITY.md); the interactive viewer uses a local HTTP server to fetch RGB16 crop data.
 
 Two routes receive separate, equally prominent treatment:
 

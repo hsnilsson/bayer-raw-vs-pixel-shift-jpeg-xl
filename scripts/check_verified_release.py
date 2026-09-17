@@ -65,6 +65,8 @@ def check_pixel_payload(path,asset,decoded_bytes):
 
 def check(site:Path,check_html=True):
     site=site.resolve();release=read(site/"data/release.json")
+    require((site/"data/reproduction.md").read_bytes()==(ROOT/"REPRODUCIBILITY.md").read_bytes(),
+            "Published reproduction instructions differ from the repository source")
     public_values(release)
     require(release.get("schema")==3,"A complete schema-3 release is required")
     unsigned={k:v for k,v in release.items() if k not in ("run_id","measurements_csv_sha256")}

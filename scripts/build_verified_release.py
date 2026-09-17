@@ -143,7 +143,9 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
                 metrics.append(flat)
     primary = [r for r in candidates if r["cohort"] == "primary_compressed_independent"]
     decision = [r for r in primary if r["decision_level"]]
-    release = {"schema":3,"status":"validated local review", "analysis_identity":code,"environment":environment,
+    release = {"schema":3,"status":"validated", "analysis_identity":code,"environment":environment,
+               "source":{"repository":"https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl",
+                         "ref":"report-2026-09-17-docs"},
                "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
                          "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
@@ -181,6 +183,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
             if sha256_file(ROOT/relative)!=expected:raise ValueError(f"Changed auxiliary analysis code: {relative}")
         evidence[key]={"file":"data/"+filename,"sha256":sha256_file(path),"evidence_id":attachment["evidence_id"],"recipe_code":attachment_code}
     release["evidence"]=evidence
+    atomic_bytes(site/"data/reproduction.md",(ROOT/"REPRODUCIBILITY.md").read_bytes())
     for relative in ("data/reproduction.md","data/review-notes.md"):
         assets[relative]=sha256_file(site/relative)
     release["experiment_sha256"]=sha256_file(ROOT/"metadata/verified_experiment.json")

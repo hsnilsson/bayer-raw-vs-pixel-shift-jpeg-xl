@@ -1,6 +1,6 @@
 # Report repair acceptance record
 
-This repair preserves the research question, strict independent compressed RAW61 byte budgets, and the separate equally prominent 200 MiB DNG route. Its endpoint is a validated local report for owner review. Publication remains a separate action.
+This repair preserves the research question, strict independent compressed RAW61 byte budgets, and the separate equally prominent 200 MiB DNG route. It delivered a validated local report for owner review. The owner subsequently approved publication, completed on 2026-09-17.
 
 | Review finding | Repair and evidence |
 | --- | --- |

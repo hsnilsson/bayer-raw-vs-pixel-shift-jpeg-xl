@@ -7008,8 +7008,8 @@
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/preview_shadow_recovery_luma_p12_reference.png": "32690943484771de6f5c6171bca768b0b715728cc8b52e662318691d24690a77",
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/raw61.rgb16le.gz": "62242397039728adb3c6575cf908ae0755498dd69b80b39cfe25b9c6d6ec9e0b",
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/reference.rgb16le.gz": "1ad7779de86e7e899969cecc537b3c8af089f7108dad25d4e702692c8ddc8a46",
-    "data/reproduction.md": "42e25db19a528ff682a783e7f73ddbed90dd6ac2de07bd5f5f862c3c264f8307",
-    "data/review-notes.md": "b538c83416507689cbeb2c2db4d927fa203a660fab21e4bf1f466e70dbc4d55c"
+    "data/reproduction.md": "c77dd9d29badd45d561266164df7fd6c780a23005c0683d4483c2fe6f60d8b68",
+    "data/review-notes.md": "732f6925c1f2a52fca3b9f4a0a0bfe3ccd06520ef622123e9a101f1724684577"
   },
   "candidates": [
     {
@@ -138949,7 +138949,7 @@
       }
     }
   ],
-  "measurements_csv_sha256": "4bfb66b48a82929b5a2aa5607db4c0f17b04e82c54293d86ea69bf5dc928e09f",
+  "measurements_csv_sha256": "c2b014aa4e9b3c6d8e3393e50bd7f389d96f1aac7c0b5c185f1ac71415914b36",
   "method": {
     "budget": "Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
     "color": "Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
@@ -138961,20 +138961,24 @@
     "structure": "Linear ICC Y minus float64 5x5 box blur with reflect padding at the cropped measurement boundary; mismatch RMS / reference high-pass RMS. Favorable structure screens require reference HP RMS > 2^-23 (float32 precision guard); native boundary sensitivity is audited separately"
   },
   "report_code": {
-    "scripts/build_verified_release.py": "564a3bf75f8898de95a5fbbb271c63ec1f2c7171f2c77d8429c4fa3dd46818e0",
-    "scripts/check_verified_release.py": "cd0cde303a899d963ab842225155ef1f37b579989e718ced56b7a27c189821b4",
+    "scripts/build_verified_release.py": "4ea12abb8c4d966917e7375cb99bc7c61e1b533aa01efb0d1c0f46eca40dc8e3",
+    "scripts/check_verified_release.py": "1834bd55eee1868eb677a03fff6bf99063faafd536067d7ee999ae273eb2e626",
     "scripts/finalize_verified_viewers.py": "9876736fe5fb5f5eb994c50951d9ab006ae90c0100c522926ddd662e80169174",
     "scripts/generate_break_even_report_site.py": "c6bfcafd47452b956588d62f4aff0b4d8e1386bc5fe06f36df07ceda9eeb018c",
-    "scripts/render_verified_report.py": "fc213443864a972ce1f6a5f5cfb97fa5cc42e63fcb7c1542f117bffe726b0f57",
+    "scripts/render_verified_report.py": "51cf85e3f4db02a3ccd7a791885d05ee4970edf8b898476c562abc7052641cf3",
     "scripts/run_responsive.py": "b257f600bfa8e34257fa9a9771a87ae45764f9fb51189c8985d20ee5b73d77ad",
     "scripts/run_verified_rebuild.py": "7391d7d4f1b723ef4a9fde13aa1b4de92c2999c8a9b38c225dbf6688d08ce55b",
     "src/preview_cache.py": "93423d798347beebe85ecc9f37af31ca65b37e1767b042de815869826127a2bd",
     "src/report_color.js": "827c90976d15e7c827e411acbad5a1c6724b39954d72f47984c8631e15183f48",
     "src/report_styles.css": "5c927d6ba3ef0d1431766587390e6bc14269d65d6e3720c13bfe6fa985908430"
   },
-  "run_id": "verified-9c2433ddff20ae0e",
+  "run_id": "verified-a80eb0981d8aa4b6",
   "schema": 3,
-  "status": "validated local review",
+  "source": {
+    "ref": "report-2026-09-17-docs",
+    "repository": "https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl"
+  },
+  "status": "validated",
   "summary": {
     "candidates": 160,
     "cohort_frames": {

@@ -1,6 +1,6 @@
 # Machine-assisted review record
 
-Review date: 2026-09-17. Owner review and publication remain pending. This record describes machine-assisted numerical and visual checks; it is not a blinded human assessment of archival suitability.
+Review date: 2026-09-17. The owner reviewed the repaired report and approved publication on the same date. The initial publication used commit [d42e26a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/d42e26a97ddd109675d2a29c4db806f2fe1840c2); the subsequent editorial revision used [0220f2a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/0220f2a54b4c362214818e0a47126dda67ff1e4c). This record describes the machine-assisted numerical and visual checks performed during the repair. Owner approval concerns publication; the visual checks documented below use the stated machine-assisted method.
 
 ## Completed browser checks during the rebuild
 
@@ -32,4 +32,4 @@ Review date: 2026-09-17. Owner review and publication remain pending. This recor
 - The CSV link produced a browser download event. The browser automation's event check for the larger JSON download timed out; independent HTTP checks returned status 200 and byte-identical content for all ten data/documentation links, including the complete JSON and CSV. This records the automation limit without claiming an observed JSON download event.
 - The final page reported no browser console errors or warnings in the checked interactions. Server requests for RGB16 transport remained confined to the selected crops and adjacent quality levels. Canceled obsolete requests can appear as connection resets in the local server log.
 
-Owner review, any additional scientific work listed in the limitations, and publication remain pending. Passing these checks does not establish universal archival suitability or authorize deleting source masters.
+Owner review and initial publication are complete. The [current report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg-xl/) lists the remaining scientific work, including stronger visual acceptance criteria and the common DNG/RAW61 quality comparison. Original source masters remain retained.
