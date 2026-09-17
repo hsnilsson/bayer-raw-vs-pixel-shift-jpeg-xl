@@ -4,12 +4,12 @@ The [published report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg
 
 ## Get this report's source version
 
-The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-overviews](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-overviews) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
+The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-viewer-layout](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-viewer-layout) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
 
 Run these commands in PowerShell with Git installed. The report scripts below use Python 3.12 on Windows. Git LFS supports the fixture acquisition option described later.
 
 ```powershell
-git clone --branch report-2026-09-17-overviews --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
+git clone --branch report-2026-09-17-viewer-layout --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
 Set-Location report-reproduction
 git rev-parse HEAD
 ```
@@ -17,13 +17,13 @@ git rev-parse HEAD
 For an existing clean checkout, select the same snapshot with:
 
 ```powershell
-git fetch origin tag report-2026-09-17-overviews
-git switch --detach report-2026-09-17-overviews
+git fetch origin tag report-2026-09-17-viewer-layout
+git switch --detach report-2026-09-17-viewer-layout
 ```
 
 ## Validate a public checkout
 
-Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
+Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-viewer-layout/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
 
 ```powershell
 python -m venv .venv
@@ -52,7 +52,7 @@ Or use the downloader:
 .\.venv\Scripts\python.exe scripts/download_testdata.py --include-loc --loc-count 3
 ```
 
-Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-overviews/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
+Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-viewer-layout/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-viewer-layout/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
 
 Replace each quoted `<...>` placeholder below with your actual local directory or file. Keep the quotes around paths containing spaces. Use a persistent scratch directory. The public experiment writes its output under `results/public-reproduction` for comparison with the committed evidence.
 
