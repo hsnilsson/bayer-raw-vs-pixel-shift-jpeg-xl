@@ -1,5 +1,7 @@
 # Break-even Review Panels
 
+> This standalone panel workflow is historical. The current [verified report](../site/index.html#visual) uses ICC-managed RGB16 crops, the corrected shared transforms and a bound release manifest. These earlier panels must not be used as current visual evidence.
+
 The local review panels are a visual sanity check for the storage-budget
 question:
 

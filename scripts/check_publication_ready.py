@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GIT_SAFE_DIRECTORY = ROOT.as_posix()
 WARN_SIZE = 50 * 1024 * 1024
-IGNORED_LINK_DIRS = {".git", "results", "outputs", "work", "input", ".agents", ".codex"}
+IGNORED_LINK_DIRS = {".git", "results", "outputs", "work", "input", ".agents", ".codex", ".deps", ".venv", "__pycache__"}
 REQUIRED_FILES = [
     ".gitattributes",
     ".gitignore",
@@ -150,7 +150,7 @@ def check_unit_tests() -> Check:
     output = (result.stdout + result.stderr).strip()
     if result.returncode:
         return Check("unit tests", False, output)
-    summary = output.splitlines()[-1] if output else "tests passed"
+    summary = " ".join(line for line in output.splitlines()[-3:] if line) if output else "tests passed"
     return Check("unit tests", True, summary)
 
 

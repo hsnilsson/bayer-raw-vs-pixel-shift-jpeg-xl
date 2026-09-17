@@ -35,6 +35,15 @@ Large public TIFF test files are intended to be included through Git LFS so the
 public results can be reproduced without relying only on future availability of
 the upstream downloads. Source sidecars and manifests should still be kept.
 
+## Color-management regression fixture
+
+`tests/fixtures/rtv4_large.icc` is the 748-byte embedded working profile from a
+retained neutral RawTherapee render. Its embedded copyright field reads
+"Copyright RawTherapee 2018, CC0". The profile is preserved unchanged for
+independent color-management regression checks; it contains no image pixels or
+personal capture metadata. Its SHA-256 is
+`42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37`.
+
 ## Private Data
 
 Private scans, raw files, DNG files, FilmLab exports, and local experiment output

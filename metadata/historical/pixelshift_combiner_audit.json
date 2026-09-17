@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "scope": "Two 16-frame sequences rendered through the same RawTherapee 5.12 neutral profile.",
+  "method": "Each combiner crop is registered and exposure-matched in linear-luminance midtones to the first source ARW from the same sequence. A 24 px registration margin is excluded. Tone RMSE uses a 9x9 low-pass image; detail correlation is reported separately.",
+  "mode_labels": {
+    "normal": "Exposure-matched normal",
+    "highlight": "Highlight separation",
+    "shadow": "Shadow recovery"
+  },
+  "combiner_labels": [
+    "Source ARW anchor",
+    "PixelShift2DNG",
+    "Sony ARQ"
+  ],
+  "summary": {
+    "crop_count": 5,
+    "winner_counts": {
+      "shadow": {
+        "pixelshift2dng": 0,
+        "sony_arq": 5,
+        "tie": 0
+      },
+      "midtone": {
+        "pixelshift2dng": 3,
+        "sony_arq": 2,
+        "tie": 0
+      },
+      "highlight": {
+        "pixelshift2dng": 1,
+        "sony_arq": 4,
+        "tie": 0
+      },
+      "detail": {
+        "pixelshift2dng": 5,
+        "sony_arq": 0,
+        "tie": 0
+      }
+    },
+    "median_exposure_match_ev": {
+      "pixelshift2dng": -0.10345066233221395,
+      "sony_arq": 0.0004589486872652037
+    },
+    "latitude_reference_winner": "sony_arq",
+    "detail_winner": "pixelshift2dng"
+  },
+  "cases": [
+    {
+      "key": "adox-vlad",
+      "label": "Adox high-resolution black-and-white target",
+      "sequence": "_DSC6582-_DSC6597",
+      "crops": [
+        {
+          "name": "manual-01",
+          "crop": [
+            11204,
+            4589,
+            768,
+            768
+          ],
+          "images": {
+            "normal": "assets/pixelshift-combiner-audit/adox-vlad-manual-01-normal.png",
+            "highlight": "assets/pixelshift-combiner-audit/adox-vlad-manual-01-highlight.png",
+            "shadow": "assets/pixelshift-combiner-audit/adox-vlad-manual-01-shadow.png"
+          },
+          "metrics": {
+            "registration": {
+              "sony_to_pixelshift2dng": {
+                "shift_x_px": 6.0,
+                "shift_y_px": 4.0,
+                "confidence": 470.5820535761926,
+                "applied": true
+              },
+              "anchor_to_pixelshift2dng": {
+                "shift_x_px": -4.0,
+                "shift_y_px": -1.0,
+                "confidence": 163.95820646978214,
+                "applied": true
+              },
+              "trim_px": 24
+            },
+            "exposure_match": {
+              "pixelshift2dng_gain": 0.9239648580551147,
+              "pixelshift2dng_ev": -0.1140901134557072,
+              "sony_arq_gain": 1.0102756023406982,
+              "sony_arq_ev": 0.014748912671520214
+            },
+            "range_errors": {
+              "shadow": {
+                "pixelshift2dng_rmse": 0.00023180140124168247,
+                "sony_arq_rmse": 0.00022199760132934898,
+                "winner": "sony_arq"
+              },
+              "midtone": {
+                "pixelshift2dng_rmse": 0.0003197658807039261,
+                "sony_arq_rmse": 0.0003342875570524484,
+                "winner": "pixelshift2dng"
+              },
+              "highlight": {
+                "pixelshift2dng_rmse": 0.006577892228960991,
+                "sony_arq_rmse": 0.006923170294612646,
+                "winner": "pixelshift2dng"
+              }
+            },
+            "detail_correlation": {
+              "pixelshift2dng": 0.9146066683883065,
+              "sony_arq": 0.9026796240355743,
+              "winner": "pixelshift2dng"
+            },
+            "clipped_pixel_fraction": {
+              "pixelshift2dng_low": 0.0,
+              "sony_arq_low": 0.0,
+              "pixelshift2dng_high": 0.0,
+              "sony_arq_high": 0.0
+            }
+          }
+        },
+        {
+          "name": "manual-02",
+          "crop": [
+            13458,
+            2273,
+            768,
+            768
+          ],
+          "images": {
+            "normal": "assets/pixelshift-combiner-audit/adox-vlad-manual-02-normal.png",
+            "highlight": "assets/pixelshift-combiner-audit/adox-vlad-manual-02-highlight.png",
+            "shadow": "assets/pixelshift-combiner-audit/adox-vlad-manual-02-shadow.png"
+          },
+          "metrics": {
+            "registration": {
+              "sony_to_pixelshift2dng": {
+                "shift_x_px": 6.0,
+                "shift_y_px": 4.0,
+                "confidence": 425.227927081217,
+                "applied": true
+              },
+              "anchor_to_pixelshift2dng": {
+                "shift_x_px": -5.0,
+                "shift_y_px": 3.0,
+                "confidence": 152.12195705486485,
+                "applied": true
+              },
+              "trim_px": 24
+            },
+            "exposure_match": {
+              "pixelshift2dng_gain": 0.9368802905082703,
+              "pixelshift2dng_ev": -0.09406337498924551,
+              "sony_arq_gain": 1.0017874240875244,
+              "sony_arq_ev": 0.0025764059873075074
+            },
+            "range_errors": {
+              "shadow": {
+                "pixelshift2dng_rmse": 0.004304425325244665,
+                "sony_arq_rmse": 0.0040146601386368275,
+                "winner": "sony_arq"
+              },
+              "midtone": {
+                "pixelshift2dng_rmse": 0.01510201022028923,
+                "sony_arq_rmse": 0.014500381425023079,
+                "winner": "sony_arq"
+              },
+              "highlight": {
+                "pixelshift2dng_rmse": 0.004206002224236727,
+                "sony_arq_rmse": 0.004001175984740257,
+                "winner": "sony_arq"
+              }
+            },
+            "detail_correlation": {
+              "pixelshift2dng": 0.8530513137609018,
+              "sony_arq": 0.8282359981937122,
+              "winner": "pixelshift2dng"
+            },
+            "clipped_pixel_fraction": {
+              "pixelshift2dng_low": 0.0,
+              "sony_arq_low": 0.0,
+              "pixelshift2dng_high": 0.0,
+              "sony_arq_high": 0.0
+            }
+          }
+        },
+        {
+          "name": "manual-03",
+          "crop": [
+            12458,
+            6098,
+            768,
+            768
+          ],
+          "images": {
+            "normal": "assets/pixelshift-combiner-audit/adox-vlad-manual-03-normal.png",
+            "highlight": "assets/pixelshift-combiner-audit/adox-vlad-manual-03-highlight.png",
+            "shadow": "assets/pixelshift-combiner-audit/adox-vlad-manual-03-shadow.png"
+          },
+          "metrics": {
+            "registration": {
+              "sony_to_pixelshift2dng": {
+                "shift_x_px": 6.0,
+                "shift_y_px": 4.0,
+                "confidence": 412.7231726233576,
+                "applied": true
+              },
+              "anchor_to_pixelshift2dng": {
+                "shift_x_px": -6.0,
+                "shift_y_px": -4.0,
+                "confidence": 135.45386896280854,
+                "applied": true
+              },
+              "trim_px": 24
+            },
+            "exposure_match": {
+              "pixelshift2dng_gain": 0.9279837608337402,
+              "pixelshift2dng_ev": -0.10782853562246691,
+              "sony_arq_gain": 1.000318169593811,
+              "sony_arq_ev": 0.0004589486872652037
+            },
+            "range_errors": {
+              "shadow": {
+                "pixelshift2dng_rmse": 0.00027454187511466444,
+                "sony_arq_rmse": 0.00023631620570085943,
+                "winner": "sony_arq"
+              },
+              "midtone": {
+                "pixelshift2dng_rmse": 0.0005750420386902988,
+                "sony_arq_rmse": 0.000625409884378314,
+                "winner": "pixelshift2dng"
+              },
+              "highlight": {
+                "pixelshift2dng_rmse": 0.001032140920870006,
+                "sony_arq_rmse": 0.0009583260398358107,
+                "winner": "sony_arq"
+              }
+            },
+            "detail_correlation": {
+              "pixelshift2dng": 0.4061649609741191,
+              "sony_arq": 0.3812463978850093,
+              "winner": "pixelshift2dng"
+            },
+            "clipped_pixel_fraction": {
+              "pixelshift2dng_low": 0.0,
+              "sony_arq_low": 0.0,
+              "pixelshift2dng_high": 0.0,
+              "sony_arq_high": 0.0
+            }
+          }
+        },
+        {
+          "name": "manual-04",
+          "crop": [
+            15095,
+            6247,
+            768,
+            768
+          ],
+          "images": {
+            "normal": "assets/pixelshift-combiner-audit/adox-vlad-manual-04-normal.png",
+            "highlight": "assets/pixelshift-combiner-audit/adox-vlad-manual-04-highlight.png",
+            "shadow": "assets/pixelshift-combiner-audit/adox-vlad-manual-04-shadow.png"
+          },
+          "metrics": {
+            "registration": {
+              "sony_to_pixelshift2dng": {
+                "shift_x_px": 6.0,
+                "shift_y_px": 4.0,
+                "confidence": 383.935615671384,
+                "applied": true
+              },
+              "anchor_to_pixelshift2dng": {
+                "shift_x_px": -9.0,
+                "shift_y_px": -3.0,
+                "confidence": 93.6769749242508,
+                "applied": true
+              },
+              "trim_px": 24
+            },
+            "exposure_match": {
+              "pixelshift2dng_gain": 0.9324415326118469,
+              "pixelshift2dng_ev": -0.10091482877463759,
+              "sony_arq_gain": 0.9970182180404663,
+              "sony_arq_ev": -0.004308228341619403
+            },
+            "range_errors": {
+              "shadow": {
+                "pixelshift2dng_rmse": 0.00033856616937555373,
+                "sony_arq_rmse": 0.0002604258479550481,
+                "winner": "sony_arq"
+              },
+              "midtone": {
+                "pixelshift2dng_rmse": 0.004996258299797773,
+                "sony_arq_rmse": 0.005030941218137741,
+                "winner": "pixelshift2dng"
+              },
+              "highlight": {
+                "pixelshift2dng_rmse": 0.002372354967519641,
+                "sony_arq_rmse": 0.0019695088267326355,
+                "winner": "sony_arq"
+              }
+            },
+            "detail_correlation": {
+              "pixelshift2dng": 0.36893168837598583,
+              "sony_arq": 0.3333910771346458,
+              "winner": "pixelshift2dng"
+            },
+            "clipped_pixel_fraction": {
+              "pixelshift2dng_low": 0.0,
+              "sony_arq_low": 0.0,
+              "pixelshift2dng_high": 0.0,
+              "sony_arq_high": 0.0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "kodak-gold-200",
+      "label": "Kodak Gold 200-5 1997 negative",
+      "sequence": "_DSC6798-_DSC6813",
+      "crops": [
+        {
+          "name": "manual-01",
+          "crop": [
+            7866,
+            5949,
+            768,
+            768
+          ],
+          "images": {
+            "normal": "assets/pixelshift-combiner-audit/kodak-gold-200-manual-01-normal.png",
+            "highlight": "assets/pixelshift-combiner-audit/kodak-gold-200-manual-01-highlight.png",
+            "shadow": "assets/pixelshift-combiner-audit/kodak-gold-200-manual-01-shadow.png"
+          },
+          "metrics": {
+            "registration": {
+              "sony_to_pixelshift2dng": {
+                "shift_x_px": 6.0,
+                "shift_y_px": 4.0,
+                "confidence": 396.6724712638886,
+                "applied": true
+              },
+              "anchor_to_pixelshift2dng": {
+                "shift_x_px": 0.0,
+                "shift_y_px": -3.0,
+                "confidence": 142.91406464594687,
+                "applied": true
+              },
+              "trim_px": 24
+            },
+            "exposure_match": {
+              "pixelshift2dng_gain": 0.9308040142059326,
+              "pixelshift2dng_ev": -0.10345066233221395,
+              "sony_arq_gain": 0.9991059303283691,
+              "sony_arq_ev": -0.0012904468421627566
+            },
+            "range_errors": {
+              "shadow": {
+                "pixelshift2dng_rmse": 0.00024763974943198264,
+                "sony_arq_rmse": 0.00021068031492177397,
+                "winner": "sony_arq"
+              },
+              "midtone": {
+                "pixelshift2dng_rmse": 0.0018932940438389778,
+                "sony_arq_rmse": 0.0018626475939527154,
+                "winner": "sony_arq"
+              },
+              "highlight": {
+                "pixelshift2dng_rmse": 0.0016816541319712996,
+                "sony_arq_rmse": 0.0016039429465308785,
+                "winner": "sony_arq"
+              }
+            },
+            "detail_correlation": {
+              "pixelshift2dng": 0.44027613181286607,
+              "sony_arq": 0.3998188911230117,
+              "winner": "pixelshift2dng"
+            },
+            "clipped_pixel_fraction": {
+              "pixelshift2dng_low": 0.0,
+              "sony_arq_low": 0.0,
+              "pixelshift2dng_high": 0.0,
+              "sony_arq_high": 0.0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

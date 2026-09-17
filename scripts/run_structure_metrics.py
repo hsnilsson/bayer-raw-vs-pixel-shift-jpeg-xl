@@ -13,6 +13,7 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,6 +125,9 @@ def jxl_render_path(
 ) -> Path:
     scan_slug = local_study.slugify(scan_set)
     if candidate_kind == "rendered_ps16_jxl":
+        jxl = rendered_jxl_root / scan_slug / set_id / level / "ps16.jxl"
+        if jxl.is_file():
+            return jxl
         png = rendered_jxl_root / scan_slug / set_id / level / "ps16_candidate.png"
         if png.is_file():
             return png
@@ -248,14 +252,18 @@ def read_jxl_candidate(path: Path, djxl: str) -> np.ndarray:
     with tempfile.TemporaryDirectory(prefix="structure-jxl-") as temp_dir:
         decoded = Path(temp_dir) / "candidate.ppm"
         subprocess.run(
-            [djxl, str(path), str(decoded)],
+            [djxl, str(path), str(decoded), "--bits_per_sample=16", "--num_threads=4"],
             cwd=ROOT,
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
         )
-        return read_rgb_image(decoded)
+        mapped = read_rgb_image(decoded)
+        pixels = mapped.copy()
+        if isinstance(mapped, np.memmap):
+            mapped._mmap.close()
+        return pixels
 
 
 def analyze_case(
@@ -395,8 +403,13 @@ def analyze_case_group(
     prepared_reference: Any | None = None
     prepared_raw61: Any | None = None
     prepared_analysis_scale: float | None = None
+    prepared_key = None
     for case in cases:
         scan_set, set_id, level = case[:3]
+        case_key = (scan_set, set_id, case[3], case[4], crop_spec, max_analysis_dim)
+        if case_key != prepared_key:
+            prepared_reference = prepared_raw61 = prepared_analysis_scale = None
+            prepared_key = case_key
         scope = crop_spec or "full"
         cached_jxl = reusable_jxl.get((scan_set, set_id, level, scope))
         cached_raw = raw_detail_cache.get((scan_set, set_id, scope))

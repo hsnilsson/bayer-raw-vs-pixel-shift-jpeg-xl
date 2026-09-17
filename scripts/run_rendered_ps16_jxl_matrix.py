@@ -130,13 +130,12 @@ def artifact_fingerprint(
             "kind": "rendered_ps16_jxl_artifacts",
             "source": file_state(source, ROOT),
             "cjxl": file_state(Path(cjxl), ROOT),
-            "djxl": file_state(Path(djxl), ROOT),
             "exiftool": file_state(Path(exiftool), ROOT),
             "level": level,
             "distance": distance_for_level(level),
             "effort": effort,
             "jxl_archive_layout": JXL_ARCHIVE_LAYOUT_VERSION,
-            "code": cache_code_states(),
+            "encode_recipe": 2,
         }
     )
 
@@ -183,11 +182,8 @@ def existing_metrics_are_current(
     pixel_keys: set[tuple[str, ...]],
     patch_keys: set[tuple[str, ...]],
 ) -> bool:
-    return (
-        existing_encoded_is_current(source, encoded)
-        and key in pixel_keys
-        and key in patch_keys
-    )
+    # A legacy timestamp and a row key cannot establish metric provenance.
+    return False
 
 
 def result_key(scan_set: str, set_id: str, level: str) -> tuple[str, str, str]:
@@ -204,19 +200,12 @@ def existing_artifacts_are_current(
     decoded: Path,
     matrix_row: dict[str, str] | None,
 ) -> bool:
-    """Trust a pre-cache run once its recorded row and file timestamps agree."""
-    if not matrix_row or matrix_row.get("status") != "encoded_decoded":
-        return False
-    if not is_jxl_container(encoded) or not usable_file(decoded):
-        return False
-    return encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns and decoded.stat().st_mtime_ns >= encoded.stat().st_mtime_ns
+    """Legacy adoption requires the explicit rebuild_verified_report audit."""
+    return False
 
 
 def existing_encoded_is_current(source: Path, encoded: Path) -> bool:
-    return (
-        is_jxl_container(encoded)
-        and encoded.stat().st_mtime_ns >= source.stat().st_mtime_ns
-    )
+    return False
 
 
 def find_tool(name: str, fallback: Path, explicit: Path | None = None) -> str:
@@ -278,7 +267,7 @@ def output_paths(
         relative_parent = Path(source.parent.name)
     source_folder = output_root / relative_parent
     level_folder = source_folder / level
-    return source_folder / "ps16_reference.ppm", level_folder / "ps16.jxl", level_folder / "ps16_candidate.png"
+    return source_folder / "ps16_reference.ppm", level_folder / "ps16.jxl", level_folder / "ps16_candidate.ppm"
 
 
 def require_high_precision_render(arr: np.ndarray, source: Path) -> None:
@@ -302,6 +291,7 @@ def encode_command(
         str(source),
         str(encoded),
         "--container=1",
+        "--num_threads=4",
         "-x",
         f"icc_pathname={icc_path}",
         "-e",
@@ -317,7 +307,7 @@ def encode_command(
 
 
 def decode_command(djxl: str, encoded: Path, decoded: Path) -> list[str]:
-    return [djxl, str(encoded), str(decoded)]
+    return [djxl, str(encoded), str(decoded), "--bits_per_sample=16", "--num_threads=4", f"--icc_out={decoded.with_suffix('.icc')}"]
 
 
 def metadata_copy_command(exiftool: str, source: Path, encoded: Path) -> list[str]:

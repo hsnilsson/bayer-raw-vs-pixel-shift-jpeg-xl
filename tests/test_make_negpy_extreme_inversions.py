@@ -125,15 +125,24 @@ class NegPyExtremeInversionTests(unittest.TestCase):
         self.assertEqual(mode_for_scan("adox_vlad_resolution_target"), "B&W Negative")
         self.assertEqual(mode_for_scan("Kodak Gold 200-5 1997"), "Color Negative")
 
-    def test_generated_corpus_keeps_old_modes_and_uses_16_bit_768px_pngs(self) -> None:
+    def test_generated_corpus_declares_current_modes_and_precision(self) -> None:
         metadata_paths = sorted((ROOT / "site/assets/review-viewers").rglob("metadata.json"))
         self.assertEqual(len(metadata_paths), 22)
         generated: set[Path] = set()
+        verified = 0
         old_modes = {"negative_density_hard_print", "negative_density_hard_shadow_recovery"}
 
         for metadata_path in metadata_paths:
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
             modes = [mode["key"] for mode in metadata["view_modes"]]
+            if metadata.get("schema") == 3:
+                verified += 1
+                self.assertNotIn(MODE_KEY, modes, metadata_path)
+                self.assertNotIn(MODE_KEY, metadata, metadata_path)
+                self.assertTrue(old_modes.issubset(modes), metadata_path)
+                self.assertEqual(metadata["rgb16"]["bytes_per_sample"], 2)
+                self.assertTrue(metadata["source_profile"]["icc_sha256"])
+                continue
             self.assertEqual(modes.count(MODE_KEY), 1, metadata_path)
             self.assertTrue(old_modes.issubset(modes), metadata_path)
             self.assertEqual(
@@ -150,7 +159,9 @@ class NegPyExtremeInversionTests(unittest.TestCase):
                 self.assertEqual(struct.unpack(">II", header[16:24]), (768, 768), image_path)
                 self.assertEqual(header[24], 16, image_path)
 
-        self.assertGreater(len(generated), 200)
+        self.assertEqual(verified + sum(json.loads(p.read_text(encoding="utf-8")).get("schema") != 3 for p in metadata_paths), 22)
+        if not verified:
+            self.assertGreater(len(generated), 200)
 
 
 if __name__ == "__main__":

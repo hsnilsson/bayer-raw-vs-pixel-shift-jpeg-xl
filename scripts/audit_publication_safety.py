@@ -32,6 +32,7 @@ SAFE_BINARY_PREFIXES = {
 IGNORED_DIRS = {
     ".git",
     ".venv",
+    ".deps",
     "__pycache__",
     "work",
     "outputs",

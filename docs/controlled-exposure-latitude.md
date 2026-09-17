@@ -1,5 +1,7 @@
 # Controlled Exposure Latitude Audit
 
+The 2026-09-17 [source and aggregate audit](../site/data/controlled-evidence.json) retains these sensor-domain measurements. It records current source hashes and clarifies that original-run hashes were unavailable and the bracket reference is not independent scene truth. This experiment is separate from the corrected combiner and JPEG XL results.
+
 ## Question
 
 Does a meter-normal single-shot ARW retain the recoverable high- and low-signal

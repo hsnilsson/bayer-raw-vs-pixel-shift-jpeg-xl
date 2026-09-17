@@ -11,7 +11,7 @@ from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSET_SUFFIXES = {".png", ".jpg", ".jpeg", ".svg", ".webp", ".rgb16le", ".html"}
+ASSET_SUFFIXES = {".png", ".jpg", ".jpeg", ".svg", ".webp", ".rgb16le", ".gz", ".html"}
 
 
 def asset_strings(value: object):

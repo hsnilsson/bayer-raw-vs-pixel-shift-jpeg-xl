@@ -100,8 +100,8 @@ def row_status(
     assert single_size is not None
     assert candidate_size is not None
     ratio = candidate_size / single_size
-    if 0.95 <= ratio <= 1.05:
-        return "within_5pct_budget", "candidate size is within +/-5% of single-shot raw"
+    if 0.95 <= ratio <= 1.0:
+        return "within_5pct_budget", "candidate is within 5% below the strict single-shot raw budget"
     if ratio < 0.95:
         return "under_budget", "candidate is smaller than single-shot raw budget"
     return "over_budget", "candidate is larger than single-shot raw budget"

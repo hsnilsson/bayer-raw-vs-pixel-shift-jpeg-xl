@@ -1,5 +1,7 @@
 # Research Log
 
+> Entries below record the history of the investigation, including superseded results. Current conclusions and numerical evidence are in the [verified report](../site/index.html). The September 17 repair entry explains the corrections; earlier size, color and latitude claims are not current release results.
+
 This is a cleaned public-facing log. It preserves the reasoning without exposing
 private source images.
 
@@ -194,3 +196,8 @@ The Kodak5035 run repeated the same ordering as Kodak Gold but with a larger
 hard-print error tail: `d=0.03` remained cleaner than `d=0.05`, while `d=0.10`
 looked clearly too risky for archival claims. This makes the case for measuring
 median, p95, and max patch behavior rather than relying on a single average.
+
+
+## 2026-09-17 — corrected RGB16 report release
+
+Earlier entries are historical and may contain superseded measurements. The current release repairs precision, actual ICC interpretation, exposure, filtering, per-frame reference reuse, strict byte thresholds and native measurement scope. It separates capture cohorts and the two storage routes, audits retained artifacts, checkpoints each candidate, bounds viewer loading, and publishes matching JSON/CSV evidence. Public and combiner outputs are rebuilt; sensor-domain exposure evidence is audited separately. Camera-RGB DeltaE and archive-value verdicts are withdrawn. The validated local report awaits owner review; this repair does not authorize deployment.

@@ -1,5 +1,7 @@
 # Research Plan
 
+> This is the historical research plan, retained as a record of exploratory decisions. Its numerical summaries and earlier acceptance rules are superseded by the [current methodology](METHODOLOGY.md) and [verified report](site/index.html). Current scope and remaining work are described in [NEXT_STEPS.md](NEXT_STEPS.md).
+
 This plan turns the related-work review into a stronger test design. The aim is
 not to make the project larger for its own sake. The aim is to make the evidence
 cleaner, easier to reproduce, and harder to over-interpret.

@@ -4,12 +4,38 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def atomic_write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=path.name + ".", suffix=".partial", delete=False) as handle:
+            temporary = Path(handle.name)
+            json.dump(payload, handle, indent=2, sort_keys=True, allow_nan=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def file_state(path: Path | None, root: Path | None = None) -> dict[str, Any] | None:
@@ -24,6 +50,7 @@ def file_state(path: Path | None, root: Path | None = None) -> dict[str, Any] | 
         "path": display_path,
         "size": stat.st_size,
         "mtime_ns": stat.st_mtime_ns,
+        "sha256": sha256_file(path),
     }
 
 
@@ -48,7 +75,7 @@ def save_cache(path: Path, cache: dict[str, Any]) -> None:
     cache["schema_version"] = SCHEMA_VERSION
     cache["updated_at_utc"] = datetime.now(timezone.utc).isoformat()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(cache, indent=2, sort_keys=True), encoding="utf-8")
+    atomic_write_json(path, cache)
 
 
 def outputs_match(entry: dict[str, Any], outputs: dict[str, Path], root: Path | None = None) -> bool:

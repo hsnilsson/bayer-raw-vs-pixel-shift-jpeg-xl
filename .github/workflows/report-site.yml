@@ -8,6 +8,9 @@ on:
     paths:
       - "site/**"
       - "scripts/check_report_site.py"
+      - "scripts/check_verified_release.py"
+      - "src/report_color.js"
+      - "metadata/verified_experiment.json"
       - "tests/test_report_site_links.py"
       - ".github/workflows/report-site.yml"
 
@@ -32,7 +35,9 @@ jobs:
       - name: Check report links and assets
         run: |
           python -m unittest discover -s tests -p test_report_site_links.py -v
+          python -m unittest discover -s tests -p test_verified_release_gate.py -v
           python scripts/check_report_site.py
+          python scripts/check_verified_release.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:

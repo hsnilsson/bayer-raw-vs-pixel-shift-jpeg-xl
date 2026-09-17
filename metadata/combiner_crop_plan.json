@@ -1,0 +1,64 @@
+{
+  "schema": 3,
+  "cases": [
+    {
+      "key": "adox-vlad",
+      "label": "Adox high-resolution black-and-white target",
+      "sequence": "_DSC6582-_DSC6597",
+      "crops": [
+        {
+          "name": "manual-01",
+          "crop": [
+            11204,
+            4589,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "crop": [
+            13458,
+            2273,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-03",
+          "crop": [
+            12458,
+            6098,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-04",
+          "crop": [
+            15095,
+            6247,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "key": "kodak-gold-200",
+      "label": "Kodak Gold 200-5 1997 negative",
+      "sequence": "_DSC6798-_DSC6813",
+      "crops": [
+        {
+          "name": "manual-01",
+          "crop": [
+            7866,
+            5949,
+            768,
+            768
+          ]
+        }
+      ]
+    }
+  ]
+}

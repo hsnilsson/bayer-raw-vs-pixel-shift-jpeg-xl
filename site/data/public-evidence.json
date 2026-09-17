@@ -1,0 +1,4807 @@
+{
+  "asset_hashes": {
+    "assets/public-verified/public-1.png": "c05a1f0edcb91caa7073fd5a8060ffd22cc2eb58a5e403e9fbdfa46196439c62",
+    "assets/public-verified/public-2.png": "6290d5131f6f902f735fb1f8c7aba32089a31cbff3840ecd01f47de8f59ebebf",
+    "assets/public-verified/public-3.png": "3538ed0d0f1fc0445a5732553f77adb80712afe17990c957db91b14f628ebef8",
+    "assets/public-verified/public-4.png": "f2f1394395d109533d6411e8bdf5f689fb4be66b8085460b2374037db2094ea6",
+    "assets/public-verified/public-5.png": "dfca17ad4584bdfc22865a5dfcce738b74335a0878b569c0edf55a67e39df40f",
+    "assets/public-verified/public-6.png": "a97a4f23d2dd40135d9832601192d893fef996cd403016cb37e9c6237494ec9d"
+  },
+  "evidence_id": "public-a10f349ad8f32198",
+  "method": "The same five linear-light transformations and ICC-managed measurement recipe as the private rendered-JXL route",
+  "recipe_code": {
+    "scripts/rebuild_public_evidence.py": "0d2cbd1824b80369c45a2cc4d3536419dae1bd23a9169e4397eedc32ec94199c",
+    "scripts/rebuild_verified_report.py": "e2cc42970f4ff61aaa57d1717aabd844f328506a42297fa870817634a72ef25a",
+    "scripts/run_public_latitude_v2.py": "c371b6dd6d8c44825402027ef54c50b881ea5e18a63f0676019b05cdc41f3a3b",
+    "src/break_even_image_tools.py": "1eb072ad4ec370e52fe4ea26065cf7057ebbe6311159b7a01e242405f62940eb",
+    "src/color_patch_metrics.py": "5f8ad57507bfb71fd27f16ff8bc3bb7c85c3a603cb43f383aa0b39ca8ff3124c",
+    "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+    "src/report_transforms.py": "72d4e4179edb802826c7b198064283e396795f9e28abc5eb67a5b643710376b5"
+  },
+  "records": [
+    {
+      "conversion": {
+        "littlecms_max_code_error": 1.0,
+        "method": "Gray ICC gamma to relative PCS D50, then sRGB RGB16",
+        "source_gamma": 2.19921875,
+        "source_precision_bits": 8
+      },
+      "crop_xywh": [
+        1868,
+        977,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-1.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              }
+            ],
+            "icc_sha256": "9d293542f8fa1aeb22816f035e8c0dc02fb5438d57d40f997acf6e5a483e0a60",
+            "linear_to_srgb": [
+              [
+                0.9997568602552521,
+                -0.00012633592146468154,
+                2.5020771669185898e-05
+              ],
+              [
+                2.036709753737205e-05,
+                1.000088379029577,
+                -2.2875944486227497e-06
+              ],
+              [
+                -1.2237449604832217e-05,
+                -3.466487825577809e-05,
+                0.9999786845179267
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.43603515625,
+                0.3851165771484375,
+                0.1430511474609375
+              ],
+              [
+                0.2224884033203125,
+                0.7169036865234375,
+                0.06060791015625
+              ],
+              [
+                0.013916015625,
+                0.0970611572265625,
+                0.7139129638671875
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 1655621,
+          "encoded_sha256": "38d2b17b4829a2a738733946a8692715f7eddd9d28ff232a450e8563590972ac",
+          "measurements": [
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999998,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.01827961908120705,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.0,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8869459629058838,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.060952831544906494,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8869459629058838,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.9121863842010498,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.05434678505686412,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9121863842010498,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.6695055166880289,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999998,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.08014514681943488,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.6695055166880289,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.06344493073247287,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              }
+            ],
+            "icc_sha256": "1406efc5429250febe778c182eb5e5168aa14b2caefcf772211a2ec2ecf31659",
+            "linear_to_srgb": [
+              [
+                0.9997090447386229,
+                -0.00018912289010222571,
+                1.5631032414157862e-06
+              ],
+              [
+                3.53026811542428e-05,
+                1.0001043352368584,
+                -8.158025441304629e-06
+              ],
+              [
+                -1.3335664194849572e-05,
+                7.136176263314587e-06,
+                1.0003860274727228
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.4360198974609375,
+                0.385101318359375,
+                0.143096923828125
+              ],
+              [
+                0.2224884033203125,
+                0.7169036865234375,
+                0.0606231689453125
+              ],
+              [
+                0.013916015625,
+                0.0970916748046875,
+                0.714202880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 2984617,
+          "encoded_sha256": "27265b1eb4b9acdf96cdd2d2d8cd14ffbe8026f1f10e3a6f89a5ebf328ec1419",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00025076770705068085,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.02370340154908517,
+              "delta_e00_p95": 0.022803230479068612,
+              "detail_correlation": 0.99990832921436,
+              "detail_energy_ratio": 0.9998605291282113,
+              "highpass_reference_rms": 0.01827961908120705,
+              "highpass_rmse": 0.0002475086428054475,
+              "linear_mae": 0.00021772196261623153,
+              "linear_rmse": 0.00030748080058771304,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.013540142259304886,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 1.5094080211497385e-05,
+              "clip_fraction": 0.8800017833709717,
+              "delta_e00_max": 0.003824786835820058,
+              "delta_e00_p95": 0.0021006987809466535,
+              "detail_correlation": 0.9997426356431922,
+              "detail_energy_ratio": 0.9991505692578265,
+              "highpass_reference_rms": 0.060952831544906494,
+              "highpass_rmse": 0.0013832573597965384,
+              "linear_mae": 0.0003846214907952117,
+              "linear_rmse": 0.0014005047222256288,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8869459629058838,
+              "structure_loss": 0.022693898293755805,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.00018375226665318968,
+              "clip_fraction": 0.8619074821472168,
+              "delta_e00_max": 0.2188221225168217,
+              "delta_e00_p95": 0.16492242766424828,
+              "detail_correlation": 0.9994382565230489,
+              "detail_energy_ratio": 0.9970150780921272,
+              "highpass_reference_rms": 0.05434678505686412,
+              "highpass_rmse": 0.0018261192566293859,
+              "linear_mae": 0.000551540619475108,
+              "linear_rmse": 0.0018893076552687078,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9121863842010498,
+              "structure_loss": 0.033601237952137944,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 8.62429975462543e-05,
+              "clip_fraction": 0.6685543855031332,
+              "delta_e00_max": 0.03320248751373305,
+              "delta_e00_p95": 0.026023983489343903,
+              "detail_correlation": 0.9998234241651925,
+              "detail_energy_ratio": 0.9989039540866561,
+              "highpass_reference_rms": 0.08014514681943488,
+              "highpass_rmse": 0.0015078493456532418,
+              "linear_mae": 0.0004775497271289368,
+              "linear_rmse": 0.0015790937964379782,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.018813981950153397,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 6.216891643463784e-05,
+              "clip_fraction": 0.6686995029449463,
+              "delta_e00_max": 0.02333199403256724,
+              "delta_e00_p95": 0.014903011017801273,
+              "detail_correlation": 0.9999133237510193,
+              "detail_energy_ratio": 0.9994122524505838,
+              "highpass_reference_rms": 0.06344493073247287,
+              "highpass_rmse": 0.0008359241198789597,
+              "linear_mae": 0.00031511534977157984,
+              "linear_rmse": 0.0008963000404677442,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.013175585665051575,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              }
+            ],
+            "icc_sha256": "1406efc5429250febe778c182eb5e5168aa14b2caefcf772211a2ec2ecf31659",
+            "linear_to_srgb": [
+              [
+                0.9997090447386229,
+                -0.00018912289010222571,
+                1.5631032414157862e-06
+              ],
+              [
+                3.53026811542428e-05,
+                1.0001043352368584,
+                -8.158025441304629e-06
+              ],
+              [
+                -1.3335664194849572e-05,
+                7.136176263314587e-06,
+                1.0003860274727228
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.4360198974609375,
+                0.385101318359375,
+                0.143096923828125
+              ],
+              [
+                0.2224884033203125,
+                0.7169036865234375,
+                0.0606231689453125
+              ],
+              [
+                0.013916015625,
+                0.0970916748046875,
+                0.714202880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 2674507,
+          "encoded_sha256": "e37edfbec7549cb3b08fe355299c8f5ae5b83b873d60764c4ad6619822e4f727",
+          "measurements": [
+            {
+              "channel_bias_max": 0.000250720214515221,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.023700702193317207,
+              "delta_e00_p95": 0.022807225074214062,
+              "detail_correlation": 0.9997154630559708,
+              "detail_energy_ratio": 0.9994551675830524,
+              "highpass_reference_rms": 0.01827961908120705,
+              "highpass_rmse": 0.00043606018096849274,
+              "linear_mae": 0.00033506936395803305,
+              "linear_rmse": 0.0004758494726970261,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.023854992767152267,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 1.808586387141986e-05,
+              "clip_fraction": 0.8798189163208008,
+              "delta_e00_max": 0.006444175224059693,
+              "delta_e00_p95": 0.002897380778725369,
+              "detail_correlation": 0.9992295871784402,
+              "detail_energy_ratio": 0.9982815973680674,
+              "highpass_reference_rms": 0.060952831544906494,
+              "highpass_rmse": 0.0023928398585513905,
+              "linear_mae": 0.000664788362698232,
+              "linear_rmse": 0.002420453023281586,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8869459629058838,
+              "structure_loss": 0.039257238718901605,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0002572141920451493,
+              "clip_fraction": 0.8664984703063965,
+              "delta_e00_max": 0.2857958493706553,
+              "delta_e00_p95": 0.22999737331833767,
+              "detail_correlation": 0.9982864757859061,
+              "detail_energy_ratio": 0.9948251140918302,
+              "highpass_reference_rms": 0.05434678505686412,
+              "highpass_rmse": 0.00318571067714658,
+              "linear_mae": 0.0009341181711930296,
+              "linear_rmse": 0.003277378739145683,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9121863842010498,
+              "structure_loss": 0.05861819928839043,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0001262457071685697,
+              "clip_fraction": 0.6679815451304117,
+              "delta_e00_max": 0.05152237986336824,
+              "delta_e00_p95": 0.03756446666717549,
+              "detail_correlation": 0.9994407034223265,
+              "detail_energy_ratio": 0.9973360264305808,
+              "highpass_reference_rms": 0.08014514681943488,
+              "highpass_rmse": 0.0026854126217780785,
+              "linear_mae": 0.0008386176520242826,
+              "linear_rmse": 0.002815746243399797,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.03350686508602011,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 8.415046892369833e-05,
+              "clip_fraction": 0.6681391398111979,
+              "delta_e00_max": 0.026003498285388373,
+              "delta_e00_p95": 0.019637615823069336,
+              "detail_correlation": 0.9997312270765363,
+              "detail_energy_ratio": 0.9987250688386053,
+              "highpass_reference_rms": 0.06344493073247287,
+              "highpass_rmse": 0.0014722586707272447,
+              "linear_mae": 0.0005481031591366148,
+              "linear_rmse": 0.0015772237194170249,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.02320530030894497,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              },
+              {
+                "function": 3,
+                "kind": "parametric",
+                "parameters": [
+                  2.399993896484375,
+                  0.9478607177734375,
+                  0.0521392822265625,
+                  0.077392578125,
+                  0.0404510498046875
+                ]
+              }
+            ],
+            "icc_sha256": "1406efc5429250febe778c182eb5e5168aa14b2caefcf772211a2ec2ecf31659",
+            "linear_to_srgb": [
+              [
+                0.9997090447386229,
+                -0.00018912289010222571,
+                1.5631032414157862e-06
+              ],
+              [
+                3.53026811542428e-05,
+                1.0001043352368584,
+                -8.158025441304629e-06
+              ],
+              [
+                -1.3335664194849572e-05,
+                7.136176263314587e-06,
+                1.0003860274727228
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.4360198974609375,
+                0.385101318359375,
+                0.143096923828125
+              ],
+              [
+                0.2224884033203125,
+                0.7169036865234375,
+                0.0606231689453125
+              ],
+              [
+                0.013916015625,
+                0.0970916748046875,
+                0.714202880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2239838,
+          "encoded_sha256": "5f2a20ff25ca4184f48dd2ae74dd5ebb3c1258389ab6ddcd1c4fde8ed9f3f605",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00024999674123094007,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.023717925269642576,
+              "delta_e00_p95": 0.02280951390775297,
+              "detail_correlation": 0.998562753113121,
+              "detail_energy_ratio": 0.9968813451116822,
+              "highpass_reference_rms": 0.01827961908120705,
+              "highpass_rmse": 0.000980178883679812,
+              "linear_mae": 0.0006949404986567043,
+              "linear_rmse": 0.0010049214391835949,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.05362140640488053,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 2.114623024596085e-05,
+              "clip_fraction": 0.8798656463623047,
+              "delta_e00_max": 0.008992626868061643,
+              "delta_e00_p95": 0.004421594444784504,
+              "detail_correlation": 0.9966369033693775,
+              "detail_energy_ratio": 0.9959279597543633,
+              "highpass_reference_rms": 0.060952831544906494,
+              "highpass_rmse": 0.004994929443326231,
+              "linear_mae": 0.0013819083508863628,
+              "linear_rmse": 0.005047911533295612,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8869459629058838,
+              "structure_loss": 0.08194745538025183,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.00030634121997193814,
+              "clip_fraction": 0.8688993453979492,
+              "delta_e00_max": 0.3768494835138553,
+              "delta_e00_p95": 0.28900887435862116,
+              "detail_correlation": 0.9910636062317143,
+              "detail_energy_ratio": 0.9766374851147951,
+              "highpass_reference_rms": 0.05434678505686412,
+              "highpass_rmse": 0.007291597259571311,
+              "linear_mae": 0.002059453812201427,
+              "linear_rmse": 0.007414725140865988,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9121863842010498,
+              "structure_loss": 0.13416795955716548,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0002456413978633755,
+              "clip_fraction": 0.6673945585886637,
+              "delta_e00_max": 0.0934212885758224,
+              "delta_e00_p95": 0.06695455014191473,
+              "detail_correlation": 0.9974547310486714,
+              "detail_energy_ratio": 0.9924517991154813,
+              "highpass_reference_rms": 0.08014514681943488,
+              "highpass_rmse": 0.005728606031870085,
+              "linear_mae": 0.001769946244557264,
+              "linear_rmse": 0.006000844034274977,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.07147789054247414,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.00014401005660376331,
+              "clip_fraction": 0.6674919128417969,
+              "delta_e00_max": 0.04156578754689494,
+              "delta_e00_p95": 0.030765462685570944,
+              "detail_correlation": 0.9988064678978423,
+              "detail_energy_ratio": 0.9964089515480866,
+              "highpass_reference_rms": 0.06344493073247287,
+              "highpass_rmse": 0.0031025724331331522,
+              "linear_mae": 0.001149039996050472,
+              "linear_rmse": 0.0033070332146564823,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.6695055166880289,
+              "structure_loss": 0.04890181764427666,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "Negative_35mm_ICC",
+      "public_input": "testdata/fadgi_opendice/negative_35mm_1/Negative_35mm_ICC.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.907578706741333,
+          0.907578706741333,
+          0.907578706741333
+        ],
+        "density_black": [
+          0.005036816466599703,
+          0.005038401577621698,
+          0.005038401577621698
+        ],
+        "density_high": [
+          11.512925464970229,
+          11.512925464970229,
+          11.512925464970229
+        ],
+        "density_low": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.8512938655367179,
+        "highlight_white": 0.907578706741333,
+        "luma_weights": [
+          0.2224884033203125,
+          0.7169036865234375,
+          0.06060791015625
+        ],
+        "profile": {
+          "curves": [
+            {
+              "function": 3,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0404510498046875
+              ]
+            },
+            {
+              "function": 3,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0404510498046875
+              ]
+            },
+            {
+              "function": 3,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0404510498046875
+              ]
+            }
+          ],
+          "icc_sha256": "9d293542f8fa1aeb22816f035e8c0dc02fb5438d57d40f997acf6e5a483e0a60",
+          "linear_to_srgb": [
+            [
+              0.9997568602552521,
+              -0.00012633592146468154,
+              2.5020771669185898e-05
+            ],
+            [
+              2.036709753737205e-05,
+              1.000088379029577,
+              -2.2875944486227497e-06
+            ],
+            [
+              -1.2237449604832217e-05,
+              -3.466487825577809e-05,
+              0.9999786845179267
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.43603515625,
+              0.3851165771484375,
+              0.1430511474609375
+            ],
+            [
+              0.2224884033203125,
+              0.7169036865234375,
+              0.06060791015625
+            ],
+            [
+              0.013916015625,
+              0.0970611572265625,
+              0.7139129638671875
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.00971298385411501
+      },
+      "source_profile_sha256": "de47062f711b093b3a3f9e5c0f5e2d3d23f63d759b19ae1643c24a3311de0c4e",
+      "source_provenance": {
+        "bytes": 23171932,
+        "downloaded_at_utc": "2026-06-28T19:10:07.569748+00:00",
+        "file": "testdata\\fadgi_opendice\\negative_35mm_1\\Negative_35mm_ICC.tif",
+        "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+        "role": "standardized transmissive target image for objective digitization-quality checks",
+        "sha256": "97b625eae9406a8d0ccd732c81ff6184b4724e3a24d02d0bc6133da6f38de746",
+        "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+        "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative_35mm_ICC.tif"
+      },
+      "source_sha256": "97b625eae9406a8d0ccd732c81ff6184b4724e3a24d02d0bc6133da6f38de746",
+      "source_shape": [
+        4002,
+        5784
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "function": 3,
+            "kind": "parametric",
+            "parameters": [
+              2.399993896484375,
+              0.9478607177734375,
+              0.0521392822265625,
+              0.077392578125,
+              0.0404510498046875
+            ]
+          },
+          {
+            "function": 3,
+            "kind": "parametric",
+            "parameters": [
+              2.399993896484375,
+              0.9478607177734375,
+              0.0521392822265625,
+              0.077392578125,
+              0.0404510498046875
+            ]
+          },
+          {
+            "function": 3,
+            "kind": "parametric",
+            "parameters": [
+              2.399993896484375,
+              0.9478607177734375,
+              0.0521392822265625,
+              0.077392578125,
+              0.0404510498046875
+            ]
+          }
+        ],
+        "icc_sha256": "9d293542f8fa1aeb22816f035e8c0dc02fb5438d57d40f997acf6e5a483e0a60",
+        "linear_to_srgb": [
+          [
+            0.9997568602552521,
+            -0.00012633592146468154,
+            2.5020771669185898e-05
+          ],
+          [
+            2.036709753737205e-05,
+            1.000088379029577,
+            -2.2875944486227497e-06
+          ],
+          [
+            -1.2237449604832217e-05,
+            -3.466487825577809e-05,
+            0.9999786845179267
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.43603515625,
+            0.3851165771484375,
+            0.1430511474609375
+          ],
+          [
+            0.2224884033203125,
+            0.7169036865234375,
+            0.06060791015625
+          ],
+          [
+            0.013916015625,
+            0.0970611572265625,
+            0.7139129638671875
+          ]
+        ]
+      }
+    },
+    {
+      "conversion": {
+        "method": "Original RGB profile retained; RGB8 expanded exactly by 257 when applicable",
+        "source_precision_bits": 16
+      },
+      "crop_xywh": [
+        510,
+        1254,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-2.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              }
+            ],
+            "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+            "linear_to_srgb": [
+              [
+                1.3980490333179867,
+                -0.39838951130821,
+                -1.1462630324264554e-05
+              ],
+              [
+                7.651127826325136e-06,
+                1.0000803859014389,
+                1.893181523259337e-05
+              ],
+              [
+                2.249638747826182e-08,
+                -0.042961671792697,
+                1.0429148811209301
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097412109375,
+                0.2052764892578125,
+                0.1491851806640625
+              ],
+              [
+                0.3111114501953125,
+                0.62567138671875,
+                0.0632171630859375
+              ],
+              [
+                0.01947021484375,
+                0.0608673095703125,
+                0.74456787109375
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 12383672,
+          "encoded_sha256": "c3fd1079416d45115e0cce1f36444030bd3f74d18a0272e864da573ac0cb8f2c",
+          "measurements": [
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.013852204302112179,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.0,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8799998760223389,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.013199405060276288,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8819999694824219,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.024807640912705004,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.03532075881958008,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.0060720305327766335,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.03532075881958008,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.0361025333404541,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.009659248955428662,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0361025333404541,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 4369593,
+          "encoded_sha256": "b5fe8ac777c3f93c43ccafbad3bcd49e1c5bdaacc70ca227c0996b4b469e08b5",
+          "measurements": [
+            {
+              "channel_bias_max": 4.7819334935916835e-05,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.022413578570151024,
+              "delta_e00_p95": 0.01890132287586508,
+              "detail_correlation": 0.9999318657750085,
+              "detail_energy_ratio": 0.9999257676759571,
+              "highpass_reference_rms": 0.013852204302112179,
+              "highpass_rmse": 0.0001616996976073591,
+              "linear_mae": 0.00032298024157997873,
+              "linear_rmse": 0.0005312262677994599,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.011673210564957029,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 8.365771265506083e-06,
+              "clip_fraction": 0.8799803256988525,
+              "delta_e00_max": 0.004901389098041669,
+              "delta_e00_p95": 0.0024501827143060626,
+              "detail_correlation": 0.9997002159070516,
+              "detail_energy_ratio": 0.999890863730668,
+              "highpass_reference_rms": 0.013199405060276288,
+              "highpass_rmse": 0.00032318728117776305,
+              "linear_mae": 7.922652970959732e-05,
+              "linear_rmse": 0.0003273673819291052,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.024484988505307535,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 1.3805390340926922e-05,
+              "clip_fraction": 0.8824381828308105,
+              "delta_e00_max": 0.02191659382228156,
+              "delta_e00_p95": 0.010038471563348547,
+              "detail_correlation": 0.9999598828552256,
+              "detail_energy_ratio": 0.9999795087331884,
+              "highpass_reference_rms": 0.024807640912705004,
+              "highpass_rmse": 0.0002222092632554244,
+              "linear_mae": 5.29002258796285e-05,
+              "linear_rmse": 0.00022749723227794244,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.008957291184492355,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.0024751713424296e-05,
+              "clip_fraction": 0.035310983657836914,
+              "delta_e00_max": 0.029900554023388773,
+              "delta_e00_p95": 0.016166978649197146,
+              "detail_correlation": 0.9971903030387558,
+              "detail_energy_ratio": 0.999952713545083,
+              "highpass_reference_rms": 0.0060720305327766335,
+              "highpass_rmse": 0.00045516462666708284,
+              "linear_mae": 0.0003182664636672061,
+              "linear_rmse": 0.0014199937683170441,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.03532075881958008,
+              "structure_loss": 0.07496085933858834,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 4.558239318225776e-05,
+              "clip_fraction": 0.03609792391459147,
+              "delta_e00_max": 0.02702277391343591,
+              "delta_e00_p95": 0.018819281630528747,
+              "detail_correlation": 0.9995858612570405,
+              "detail_energy_ratio": 0.9998035747645386,
+              "highpass_reference_rms": 0.009659248955428662,
+              "highpass_rmse": 0.0002779705250618523,
+              "linear_mae": 0.00038023528127625964,
+              "linear_rmse": 0.0008853105319463979,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0361025333404541,
+              "structure_loss": 0.02877765407481584,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 3464373,
+          "encoded_sha256": "4832c84c42b551ea319db80ea0873cde114761e396f5cbe17e467ab86a091f3d",
+          "measurements": [
+            {
+              "channel_bias_max": 4.735102786376788e-05,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.02587682594169571,
+              "delta_e00_p95": 0.01998146825287647,
+              "detail_correlation": 0.9998084997358833,
+              "detail_energy_ratio": 0.9998073199962852,
+              "highpass_reference_rms": 0.013852204302112179,
+              "highpass_rmse": 0.0002710801907659162,
+              "linear_mae": 0.0004467307782724528,
+              "linear_rmse": 0.0007161834955539325,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.019569462365248393,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 7.96369025124477e-06,
+              "clip_fraction": 0.8800008296966553,
+              "delta_e00_max": 0.005910521296960195,
+              "delta_e00_p95": 0.002545423230695288,
+              "detail_correlation": 0.9991523418254689,
+              "detail_energy_ratio": 0.9993782680285332,
+              "highpass_reference_rms": 0.013199405060276288,
+              "highpass_rmse": 0.0005433682013006664,
+              "linear_mae": 0.00013184898993578997,
+              "linear_rmse": 0.0005485923190754834,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.0411661130800461,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 1.4311521116212286e-05,
+              "clip_fraction": 0.8825416564941406,
+              "delta_e00_max": 0.026993217901557672,
+              "delta_e00_p95": 0.010162165101130343,
+              "detail_correlation": 0.9998892237617406,
+              "detail_energy_ratio": 0.9999945510918617,
+              "highpass_reference_rms": 0.024807640912705004,
+              "highpass_rmse": 0.0003692517967989447,
+              "linear_mae": 8.637474154067096e-05,
+              "linear_rmse": 0.0003739834202511858,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.014884599390095002,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.331683982562753e-05,
+              "clip_fraction": 0.035271008809407554,
+              "delta_e00_max": 0.04415989328797361,
+              "delta_e00_p95": 0.018795103197036735,
+              "detail_correlation": 0.9931625322505956,
+              "detail_energy_ratio": 0.998780993603681,
+              "highpass_reference_rms": 0.0060720305327766335,
+              "highpass_rmse": 0.0007096682049555665,
+              "linear_mae": 0.00043246728464461736,
+              "linear_rmse": 0.0018360749080871194,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.03532075881958008,
+              "structure_loss": 0.11687494012502068,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 4.6598444273030816e-05,
+              "clip_fraction": 0.03607026735941569,
+              "delta_e00_max": 0.033568938781562786,
+              "delta_e00_p95": 0.02044263574799605,
+              "detail_correlation": 0.9989408985591329,
+              "detail_energy_ratio": 0.9993652878077955,
+              "highpass_reference_rms": 0.009659248955428662,
+              "highpass_rmse": 0.00044445785755584886,
+              "linear_mae": 0.0005250511880045193,
+              "linear_rmse": 0.0011641940689785036,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0361025333404541,
+              "structure_loss": 0.04601370765022637,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2390914,
+          "encoded_sha256": "b94de34e38bcfe8f047aae86f737fe4b97cf6ecbdd1f20440c9cde1c70c3b17b",
+          "measurements": [
+            {
+              "channel_bias_max": 4.7832865143732084e-05,
+              "clip_fraction": 0.0,
+              "delta_e00_max": 0.030793264948543463,
+              "delta_e00_p95": 0.02317753529595123,
+              "detail_correlation": 0.9992298728203682,
+              "detail_energy_ratio": 0.999288561138554,
+              "highpass_reference_rms": 0.013852204302112179,
+              "highpass_rmse": 0.0005435405702584272,
+              "linear_mae": 0.0006668830556858842,
+              "linear_rmse": 0.0010371499138296133,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0,
+              "structure_loss": 0.039238561488408624,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 7.0438432251407335e-06,
+              "clip_fraction": 0.8800048828125,
+              "delta_e00_max": 0.009134655076069222,
+              "delta_e00_p95": 0.002925224266868878,
+              "detail_correlation": 0.9966711439516813,
+              "detail_energy_ratio": 0.9970616924699491,
+              "highpass_reference_rms": 0.013199405060276288,
+              "highpass_rmse": 0.0010761185505045697,
+              "linear_mae": 0.0002592741431302059,
+              "linear_rmse": 0.0010848847193868684,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.0815278071693668,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 1.704191975650778e-05,
+              "clip_fraction": 0.8830022811889648,
+              "delta_e00_max": 0.03489385169215102,
+              "delta_e00_p95": 0.012334133880608205,
+              "detail_correlation": 0.9995880230196406,
+              "detail_energy_ratio": 0.9999900816771369,
+              "highpass_reference_rms": 0.024807640912705004,
+              "highpass_rmse": 0.0007120898770882731,
+              "linear_mae": 0.00016810383293251169,
+              "linear_rmse": 0.0007186144630706398,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.02870445761424992,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.94304900114137e-05,
+              "clip_fraction": 0.03519272804260254,
+              "delta_e00_max": 0.10088235607449687,
+              "delta_e00_p95": 0.02930355572387365,
+              "detail_correlation": 0.9786700929856306,
+              "detail_energy_ratio": 0.9913301937428334,
+              "highpass_reference_rms": 0.0060720305327766335,
+              "highpass_rmse": 0.001249793334532273,
+              "linear_mae": 0.0006362574707039173,
+              "linear_rmse": 0.002557590189891159,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.03532075881958008,
+              "structure_loss": 0.20582790679097004,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 4.8324733314959734e-05,
+              "clip_fraction": 0.03601900736490885,
+              "delta_e00_max": 0.06370170551622877,
+              "delta_e00_p95": 0.02548130139732272,
+              "detail_correlation": 0.9963552813402685,
+              "detail_energy_ratio": 0.997133945453097,
+              "highpass_reference_rms": 0.009659248955428662,
+              "highpass_rmse": 0.000823971850812858,
+              "linear_mae": 0.0007869240880911012,
+              "linear_rmse": 0.001656944270701801,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0361025333404541,
+              "structure_loss": 0.08530392524459905,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "Negative 35mm_2",
+      "public_input": "testdata/fadgi_opendice/negative_35mm_2/Negative 35mm_2.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.7139857411384583,
+          0.679107666015625,
+          0.7742976546287537
+        ],
+        "density_black": [
+          0.0023834321182221174,
+          0.0019242517882958055,
+          0.0015672222943976521
+        ],
+        "density_high": [
+          8.86175900813367,
+          9.252738166934028,
+          9.396284169889684
+        ],
+        "density_low": [
+          0.00668178941282252,
+          0.0063494348796921925,
+          0.0062794197121091725
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.18558773721621039,
+        "highlight_white": 0.69826252084925,
+        "luma_weights": [
+          0.3111114501953125,
+          0.62567138671875,
+          0.0632171630859375
+        ],
+        "profile": {
+          "curves": [
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            }
+          ],
+          "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+          "linear_to_srgb": [
+            [
+              1.3980490333179867,
+              -0.39838951130821,
+              -1.1462630324264554e-05
+            ],
+            [
+              7.651127826325136e-06,
+              1.0000803859014389,
+              1.893181523259337e-05
+            ],
+            [
+              2.249638747826182e-08,
+              -0.042961671792697,
+              1.0429148811209301
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.6097412109375,
+              0.2052764892578125,
+              0.1491851806640625
+            ],
+            [
+              0.3111114501953125,
+              0.62567138671875,
+              0.0632171630859375
+            ],
+            [
+              0.01947021484375,
+              0.0608673095703125,
+              0.74456787109375
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.04898455462495576
+      },
+      "source_profile_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+      "source_provenance": {
+        "bytes": 83911364,
+        "downloaded_at_utc": "2026-06-28T19:10:07.649070+00:00",
+        "file": "testdata\\fadgi_opendice\\negative_35mm_2\\Negative 35mm_2.tif",
+        "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+        "role": "standardized transmissive target image for objective digitization-quality checks",
+        "sha256": "67cec06ac97398963bc774efc85d82f81b4fd9b8f15b1d6f373f41ebd756b74e",
+        "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+        "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Negative%2035mm_2.tif"
+      },
+      "source_sha256": "67cec06ac97398963bc774efc85d82f81b4fd9b8f15b1d6f373f41ebd756b74e",
+      "source_shape": [
+        4557,
+        3068,
+        3
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          }
+        ],
+        "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+        "linear_to_srgb": [
+          [
+            1.3980490333179867,
+            -0.39838951130821,
+            -1.1462630324264554e-05
+          ],
+          [
+            7.651127826325136e-06,
+            1.0000803859014389,
+            1.893181523259337e-05
+          ],
+          [
+            2.249638747826182e-08,
+            -0.042961671792697,
+            1.0429148811209301
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.6097412109375,
+            0.2052764892578125,
+            0.1491851806640625
+          ],
+          [
+            0.3111114501953125,
+            0.62567138671875,
+            0.0632171630859375
+          ],
+          [
+            0.01947021484375,
+            0.0608673095703125,
+            0.74456787109375
+          ]
+        ]
+      }
+    },
+    {
+      "conversion": {
+        "method": "Original RGB profile retained; RGB8 expanded exactly by 257 when applicable",
+        "source_precision_bits": 8
+      },
+      "crop_xywh": [
+        2129,
+        1392,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-3.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              }
+            ],
+            "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+            "linear_to_srgb": [
+              [
+                1.3980490333179867,
+                -0.39838951130821,
+                -1.1462630324264554e-05
+              ],
+              [
+                7.651127826325136e-06,
+                1.0000803859014389,
+                1.893181523259337e-05
+              ],
+              [
+                2.249638747826182e-08,
+                -0.042961671792697,
+                1.0429148811209301
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097412109375,
+                0.2052764892578125,
+                0.1491851806640625
+              ],
+              [
+                0.3111114501953125,
+                0.62567138671875,
+                0.0632171630859375
+              ],
+              [
+                0.01947021484375,
+                0.0608673095703125,
+                0.74456787109375
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 2593150,
+          "encoded_sha256": "062fa493178b53430e9a8dd730ba6600ec2c9c6b1bd28737569d402f5718885c",
+          "measurements": [
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.0016480286916097004,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999999,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.027549080796159614,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0016480286916097004,
+              "structure_loss": 0.0,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8881454467773438,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.03174570541567912,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8881454467773438,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.9107236862182617,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999999,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.04531664219972557,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9107236862182617,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.2900544802347819,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.05593713877137237,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2900544802347819,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.2905397415161133,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.04562209139775532,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2905397415161133,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 4406444,
+          "encoded_sha256": "fc76e63ed03778472373a1d2661a7a59e74330f287fc49dc82194fd675862931",
+          "measurements": [
+            {
+              "channel_bias_max": 9.093460820458563e-05,
+              "clip_fraction": 0.0002926190694173177,
+              "delta_e00_max": 0.0319692374515766,
+              "delta_e00_p95": 0.02869311286867314,
+              "detail_correlation": 0.999963371386187,
+              "detail_energy_ratio": 0.999642248640375,
+              "highpass_reference_rms": 0.027549080796159614,
+              "highpass_rmse": 0.00023595752443567288,
+              "linear_mae": 0.0005448753642361698,
+              "linear_rmse": 0.0009334481824109461,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0016480286916097004,
+              "structure_loss": 0.008564987201626188,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 8.67662921127943e-06,
+              "clip_fraction": 0.8834309577941895,
+              "delta_e00_max": 0.004944402108619173,
+              "delta_e00_p95": 0.0006556452373160607,
+              "detail_correlation": 0.9999375208332194,
+              "detail_energy_ratio": 1.0000525588412745,
+              "highpass_reference_rms": 0.03174570541567912,
+              "highpass_rmse": 0.00035488186431652317,
+              "linear_mae": 9.506623133531678e-05,
+              "linear_rmse": 0.000360472339567614,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8881454467773438,
+              "structure_loss": 0.011178893638358023,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 9.736416266989963e-05,
+              "clip_fraction": 0.8882865905761719,
+              "delta_e00_max": 0.15540486227427125,
+              "delta_e00_p95": 0.13954252248704363,
+              "detail_correlation": 0.9998295120571252,
+              "detail_energy_ratio": 0.9974453260187874,
+              "highpass_reference_rms": 0.04531664219972557,
+              "highpass_rmse": 0.000843706752111154,
+              "linear_mae": 0.00022467194264010884,
+              "linear_rmse": 0.0008769498339344668,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9107236862182617,
+              "structure_loss": 0.01861803326894029,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0001503217886859428,
+              "clip_fraction": 0.2902668317159017,
+              "delta_e00_max": 0.03697467628399551,
+              "delta_e00_p95": 0.031806817987500104,
+              "detail_correlation": 0.999941694125384,
+              "detail_energy_ratio": 0.9997795903014597,
+              "highpass_reference_rms": 0.05593713877137237,
+              "highpass_rmse": 0.0006041071849235045,
+              "linear_mae": 0.0014285305971579202,
+              "linear_rmse": 0.0024602171627329935,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2900544802347819,
+              "structure_loss": 0.010799751259938874,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0001407278756274102,
+              "clip_fraction": 0.29059481620788574,
+              "delta_e00_max": 0.051376540872556616,
+              "delta_e00_p95": 0.02200924451114662,
+              "detail_correlation": 0.9999441737197304,
+              "detail_energy_ratio": 0.99968555031613,
+              "highpass_reference_rms": 0.04562209139775532,
+              "highpass_rmse": 0.0004822070106964963,
+              "linear_mae": 0.00122254898988462,
+              "linear_rmse": 0.00212087682102948,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2905397415161133,
+              "structure_loss": 0.010569594596012354,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 3465047,
+          "encoded_sha256": "3b35baa6fe6ad1faac9af09f47f0c5d44f0dbda962f93667bbc50e8c1e63cd78",
+          "measurements": [
+            {
+              "channel_bias_max": 8.915214098545107e-05,
+              "clip_fraction": 0.00029778480529785156,
+              "delta_e00_max": 0.03224714663704635,
+              "delta_e00_p95": 0.02924257368028769,
+              "detail_correlation": 0.9999008911804877,
+              "detail_energy_ratio": 0.9994197878842734,
+              "highpass_reference_rms": 0.027549080796159614,
+              "highpass_rmse": 0.00038807970411176807,
+              "linear_mae": 0.0007041818555984053,
+              "linear_rmse": 0.0010951911077399965,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0016480286916097004,
+              "structure_loss": 0.014086847651405741,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 7.328565618278798e-06,
+              "clip_fraction": 0.8839476108551025,
+              "delta_e00_max": 0.0049086031306356465,
+              "delta_e00_p95": 0.0007794140718249375,
+              "detail_correlation": 0.9998096669146149,
+              "detail_energy_ratio": 0.9997313238905657,
+              "highpass_reference_rms": 0.03174570541567912,
+              "highpass_rmse": 0.0006193554433214731,
+              "linear_mae": 0.00016445835629844488,
+              "linear_rmse": 0.0006280040954874357,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8881454467773438,
+              "structure_loss": 0.019509897014780935,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 7.806289823969166e-05,
+              "clip_fraction": 0.8779041767120361,
+              "delta_e00_max": 0.14219483863428783,
+              "delta_e00_p95": 0.11658823218137283,
+              "detail_correlation": 0.9995700927630495,
+              "detail_energy_ratio": 0.9966473684428214,
+              "highpass_reference_rms": 0.04531664219972557,
+              "highpass_rmse": 0.001335243901253536,
+              "linear_mae": 0.0003618414954572077,
+              "linear_rmse": 0.001363650987636826,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9107236862182617,
+              "structure_loss": 0.029464758120618703,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0001502543270418973,
+              "clip_fraction": 0.29032230377197266,
+              "delta_e00_max": 0.05151679452728164,
+              "delta_e00_p95": 0.032956440140908955,
+              "detail_correlation": 0.9998208846906983,
+              "detail_energy_ratio": 0.9994664745109575,
+              "highpass_reference_rms": 0.05593713877137237,
+              "highpass_rmse": 0.0010588593682521442,
+              "linear_mae": 0.002015832642202379,
+              "linear_rmse": 0.003189777818822246,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2900544802347819,
+              "structure_loss": 0.018929451729376788,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.00013751577105867996,
+              "clip_fraction": 0.2906610171000163,
+              "delta_e00_max": 0.0529819211004339,
+              "delta_e00_p95": 0.02260155224894969,
+              "detail_correlation": 0.9998286091394253,
+              "detail_energy_ratio": 0.9994029077539018,
+              "highpass_reference_rms": 0.04562209139775532,
+              "highpass_rmse": 0.0008448511296839294,
+              "linear_mae": 0.001691882166979745,
+              "linear_rmse": 0.002650542723473727,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2905397415161133,
+              "structure_loss": 0.01851846558979752,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2574670,
+          "encoded_sha256": "c37f1a5e240ba0f9d43445f6e7a78d8c78e35c9439e65208e8089f3c03b746b0",
+          "measurements": [
+            {
+              "channel_bias_max": 8.649308555427632e-05,
+              "clip_fraction": 0.0002930164337158203,
+              "delta_e00_max": 0.04216693159011987,
+              "delta_e00_p95": 0.03334125336961855,
+              "detail_correlation": 0.9995690546320368,
+              "detail_energy_ratio": 0.9985284538292338,
+              "highpass_reference_rms": 0.027549080796159614,
+              "highpass_rmse": 0.0008092060638528319,
+              "linear_mae": 0.0009364150822100806,
+              "linear_rmse": 0.0013628830051899497,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.0016480286916097004,
+              "structure_loss": 0.02937325095673016,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 3.935695728929378e-06,
+              "clip_fraction": 0.8839414119720459,
+              "delta_e00_max": 0.005382572903611629,
+              "delta_e00_p95": 0.00118595691625009,
+              "detail_correlation": 0.9992129585377748,
+              "detail_energy_ratio": 0.9989153239813727,
+              "highpass_reference_rms": 0.03174570541567912,
+              "highpass_rmse": 0.0012592893831896528,
+              "linear_mae": 0.0003336034272187205,
+              "linear_rmse": 0.0012756052351004727,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8881454467773438,
+              "structure_loss": 0.039668023334195404,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 8.855937058604951e-05,
+              "clip_fraction": 0.8699419498443604,
+              "delta_e00_max": 0.19936857019379095,
+              "delta_e00_p95": 0.14402872277166234,
+              "detail_correlation": 0.9980649783560439,
+              "detail_energy_ratio": 0.993543689536834,
+              "highpass_reference_rms": 0.04531664219972557,
+              "highpass_rmse": 0.0028252086371463206,
+              "linear_mae": 0.00078734741564451,
+              "linear_rmse": 0.0028679533027341545,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.9107236862182617,
+              "structure_loss": 0.06234373289827351,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.00015826123409327277,
+              "clip_fraction": 0.2903785705566406,
+              "delta_e00_max": 0.08355265017415209,
+              "delta_e00_p95": 0.03963936897427208,
+              "detail_correlation": 0.9992628143144545,
+              "detail_energy_ratio": 0.9984151951022913,
+              "highpass_reference_rms": 0.05593713877137237,
+              "highpass_rmse": 0.0021479762131918164,
+              "linear_mae": 0.0026030145893635175,
+              "linear_rmse": 0.003942907512409801,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2900544802347819,
+              "structure_loss": 0.03839982273621604,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.00013648372038757052,
+              "clip_fraction": 0.2907288074493408,
+              "delta_e00_max": 0.058700837802181785,
+              "delta_e00_p95": 0.025956453093325012,
+              "detail_correlation": 0.9993129878385085,
+              "detail_energy_ratio": 0.998426180813165,
+              "highpass_reference_rms": 0.04562209139775532,
+              "highpass_rmse": 0.0016913056054972642,
+              "linear_mae": 0.002135369926507645,
+              "linear_rmse": 0.003155933396113036,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2905397415161133,
+              "structure_loss": 0.03707207525300954,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "Positive 35mm",
+      "public_input": "testdata/fadgi_opendice/positive_35mm/Positive 35mm.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.9573844075202942,
+          0.9489825963973999,
+          0.9489825963973999
+        ],
+        "density_black": [
+          0.03851728141307831,
+          0.03851728141307831,
+          0.03851728141307831
+        ],
+        "density_high": [
+          5.7307166364029,
+          5.721530913774177,
+          5.721530913774177
+        ],
+        "density_low": [
+          0.09372163462569907,
+          0.08453591199697562,
+          0.08453591199697562
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.8200215101242065,
+        "highlight_white": 0.9828323125839233,
+        "luma_weights": [
+          0.3111114501953125,
+          0.62567138671875,
+          0.0632171630859375
+        ],
+        "profile": {
+          "curves": [
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            }
+          ],
+          "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+          "linear_to_srgb": [
+            [
+              1.3980490333179867,
+              -0.39838951130821,
+              -1.1462630324264554e-05
+            ],
+            [
+              7.651127826325136e-06,
+              1.0000803859014389,
+              1.893181523259337e-05
+            ],
+            [
+              2.249638747826182e-08,
+              -0.042961671792697,
+              1.0429148811209301
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.6097412109375,
+              0.2052764892578125,
+              0.1491851806640625
+            ],
+            [
+              0.3111114501953125,
+              0.62567138671875,
+              0.0632171630859375
+            ],
+            [
+              0.01947021484375,
+              0.0608673095703125,
+              0.74456787109375
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.09725363123334319
+      },
+      "source_profile_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+      "source_provenance": {
+        "bytes": 91437382,
+        "downloaded_at_utc": "2026-06-28T19:10:07.731333+00:00",
+        "file": "testdata\\fadgi_opendice\\positive_35mm\\Positive 35mm.tif",
+        "rights": "FADGI/OpenDICE sample target from digitizationguidelines.gov. Verify source terms before redistribution.",
+        "role": "standardized transmissive target image for objective digitization-quality checks",
+        "sha256": "17a6b0cdc916e535cb8aaa389c3b3d5e8b4d67b89048feeb3bf4b67931b85c9b",
+        "source_page": "https://www.digitizationguidelines.gov/guidelines/digitize-OpenDice.html",
+        "url": "https://www.digitizationguidelines.gov/guidelines/OpenDICE/Positive%2035mm.tif"
+      },
+      "source_sha256": "17a6b0cdc916e535cb8aaa389c3b3d5e8b4d67b89048feeb3bf4b67931b85c9b",
+      "source_shape": [
+        4833,
+        6306,
+        3
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          }
+        ],
+        "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+        "linear_to_srgb": [
+          [
+            1.3980490333179867,
+            -0.39838951130821,
+            -1.1462630324264554e-05
+          ],
+          [
+            7.651127826325136e-06,
+            1.0000803859014389,
+            1.893181523259337e-05
+          ],
+          [
+            2.249638747826182e-08,
+            -0.042961671792697,
+            1.0429148811209301
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.6097412109375,
+            0.2052764892578125,
+            0.1491851806640625
+          ],
+          [
+            0.3111114501953125,
+            0.62567138671875,
+            0.0632171630859375
+          ],
+          [
+            0.01947021484375,
+            0.0608673095703125,
+            0.74456787109375
+          ]
+        ]
+      }
+    },
+    {
+      "conversion": {
+        "method": "Original RGB profile retained; RGB8 expanded exactly by 257 when applicable",
+        "source_precision_bits": 16
+      },
+      "crop_xywh": [
+        2656,
+        1432,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-4.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              }
+            ],
+            "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+            "linear_to_srgb": [
+              [
+                1.3980490333179867,
+                -0.39838951130821,
+                -1.1462630324264554e-05
+              ],
+              [
+                7.651127826325136e-06,
+                1.0000803859014389,
+                1.893181523259337e-05
+              ],
+              [
+                2.249638747826182e-08,
+                -0.042961671792697,
+                1.0429148811209301
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097412109375,
+                0.2052764892578125,
+                0.1491851806640625
+              ],
+              [
+                0.3111114501953125,
+                0.62567138671875,
+                0.0632171630859375
+              ],
+              [
+                0.01947021484375,
+                0.0608673095703125,
+                0.74456787109375
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 12185476,
+          "encoded_sha256": "69ac63bec7096ef83fa2af1112027f8fd1f8e57e362907c6e006b62590ab3580",
+          "measurements": [
+            {
+              "channel_bias_max": 6.596641860855625e-24,
+              "clip_fraction": 6.9141387939453125e-06,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.0418053608235105,
+              "highpass_rmse": 5.195115723040347e-22,
+              "linear_mae": 2.258952780865542e-24,
+              "linear_rmse": 1.6447689610375722e-21,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 7.5499216715494794e-06,
+              "structure_loss": 1.2426912770762925e-20,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8799998760223389,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.04170950594549064,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8819999694824219,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.04098704405196744,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.17573968569437662,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.043008542892729665,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17573968569437662,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.1763168970743815,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.0457594349491021,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1763168970743815,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 4217016,
+          "encoded_sha256": "5d4224424e39cb7bb6cfa2ce847c21e1e150f395983048f98c3a37f6dfb9e0c4",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00010127222369522471,
+              "clip_fraction": 4.553794860839844e-05,
+              "delta_e00_max": 0.02759566120844318,
+              "delta_e00_p95": 0.022910597685665283,
+              "detail_correlation": 0.9999772959989881,
+              "detail_energy_ratio": 0.9999111988278694,
+              "highpass_reference_rms": 0.0418053608235105,
+              "highpass_rmse": 0.00028171929908371444,
+              "linear_mae": 0.00041311347102974846,
+              "linear_rmse": 0.0006980576014203303,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 7.5499216715494794e-06,
+              "structure_loss": 0.00673883189940753,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 9.299254581110472e-06,
+              "clip_fraction": 0.8800003528594971,
+              "delta_e00_max": 0.005904109659440899,
+              "delta_e00_p95": 0.0018613146059757195,
+              "detail_correlation": 0.9998277443679098,
+              "detail_energy_ratio": 1.0000540747183295,
+              "highpass_reference_rms": 0.04170950594549064,
+              "highpass_rmse": 0.0007741949668487988,
+              "linear_mae": 0.00019991805169942978,
+              "linear_rmse": 0.0007799455407470073,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.018561595235881707,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 5.7958236764172995e-05,
+              "clip_fraction": 0.8820621967315674,
+              "delta_e00_max": 0.05310682355828993,
+              "delta_e00_p95": 0.03340764615406341,
+              "detail_correlation": 0.9998228239141799,
+              "detail_energy_ratio": 0.9990399950536686,
+              "highpass_reference_rms": 0.04098704405196744,
+              "highpass_rmse": 0.0007721828580420999,
+              "linear_mae": 0.00020613022727406543,
+              "linear_rmse": 0.0007953948457568178,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.01883968156042309,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.8749619164872255e-05,
+              "clip_fraction": 0.1757065455118815,
+              "delta_e00_max": 0.02915935529758406,
+              "delta_e00_p95": 0.01796446661189706,
+              "detail_correlation": 0.9998866650307158,
+              "detail_energy_ratio": 1.000381556029823,
+              "highpass_reference_rms": 0.043008542892729665,
+              "highpass_rmse": 0.0006478491621884313,
+              "linear_mae": 0.0006650094935105171,
+              "linear_rmse": 0.0017150392718998833,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17573968569437662,
+              "structure_loss": 0.015063266937554082,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 5.0567819595653686e-05,
+              "clip_fraction": 0.17627914746602377,
+              "delta_e00_max": 0.03367160506572405,
+              "delta_e00_p95": 0.02335097704922415,
+              "detail_correlation": 0.9999415647911073,
+              "detail_energy_ratio": 1.0001135490361268,
+              "highpass_reference_rms": 0.0457594349491021,
+              "highpass_rmse": 0.0004947451652027442,
+              "linear_mae": 0.0006449924475194609,
+              "linear_rmse": 0.0013424208503798718,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1763168970743815,
+              "structure_loss": 0.010811872256574973,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 3465045,
+          "encoded_sha256": "2f72ddf3dae39d59674497cb7e4681b4999ecb03c24e8294ad8a51ff6ff057fa",
+          "measurements": [
+            {
+              "channel_bias_max": 0.0001040212220866941,
+              "clip_fraction": 5.547205607096354e-05,
+              "delta_e00_max": 0.034528606243735806,
+              "delta_e00_p95": 0.024141072556821564,
+              "detail_correlation": 0.9999386588042457,
+              "detail_energy_ratio": 0.9998673432020937,
+              "highpass_reference_rms": 0.0418053608235105,
+              "highpass_rmse": 0.0004630473838838895,
+              "linear_mae": 0.0005828344532402305,
+              "linear_rmse": 0.0009714908180944275,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 7.5499216715494794e-06,
+              "structure_loss": 0.011076268085299741,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 8.619824227465434e-06,
+              "clip_fraction": 0.8799962997436523,
+              "delta_e00_max": 0.006145675085859579,
+              "delta_e00_p95": 0.001763328773842525,
+              "detail_correlation": 0.9995398932035429,
+              "detail_energy_ratio": 1.0000071518388256,
+              "highpass_reference_rms": 0.04170950594549064,
+              "highpass_rmse": 0.0012652633627744559,
+              "linear_mae": 0.0003275733161314104,
+              "linear_rmse": 0.0012739577356914078,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.030335131862458512,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 5.7892064081016366e-05,
+              "clip_fraction": 0.8820590972900391,
+              "delta_e00_max": 0.05257824177462481,
+              "delta_e00_p95": 0.03415745818105146,
+              "detail_correlation": 0.9995329869743527,
+              "detail_energy_ratio": 0.9988180837916035,
+              "highpass_reference_rms": 0.04098704405196744,
+              "highpass_rmse": 0.001252835922410076,
+              "linear_mae": 0.0003319687734524089,
+              "linear_rmse": 0.0012726252449461366,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.030566632734519872,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.494558111626243e-05,
+              "clip_fraction": 0.17571338017781576,
+              "delta_e00_max": 0.04090619488894848,
+              "delta_e00_p95": 0.022583925577829088,
+              "detail_correlation": 0.9997209003930828,
+              "detail_energy_ratio": 1.0006537319627824,
+              "highpass_reference_rms": 0.043008542892729665,
+              "highpass_rmse": 0.0010168510186956154,
+              "linear_mae": 0.0009246215817096285,
+              "linear_rmse": 0.002314691192345989,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17573968569437662,
+              "structure_loss": 0.023643000908721973,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 4.8713702299565677e-05,
+              "clip_fraction": 0.17628105481465658,
+              "delta_e00_max": 0.04778192035682305,
+              "delta_e00_p95": 0.02637135528737987,
+              "detail_correlation": 0.9998471623063525,
+              "detail_energy_ratio": 1.0001335097164101,
+              "highpass_reference_rms": 0.0457594349491021,
+              "highpass_rmse": 0.0008001152321766587,
+              "linear_mae": 0.0009047560273382939,
+              "linear_rmse": 0.0018251941037650133,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1763168970743815,
+              "structure_loss": 0.017485251578535033,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2580460,
+          "encoded_sha256": "2f74f30fce8a9535ea3de5f6a4b9e1a87a15278dfa7f05bd3412f6a21a06b0bd",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00010826258289184135,
+              "clip_fraction": 7.565816243489583e-05,
+              "delta_e00_max": 0.07038392024199763,
+              "delta_e00_p95": 0.02860100895693643,
+              "detail_correlation": 0.9997839020753023,
+              "detail_energy_ratio": 0.9996746355582391,
+              "highpass_reference_rms": 0.0418053608235105,
+              "highpass_rmse": 0.0008690700979428026,
+              "linear_mae": 0.000936695236425106,
+              "linear_rmse": 0.001532803893733613,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 7.5499216715494794e-06,
+              "structure_loss": 0.02078848455851755,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 6.0252401740332195e-06,
+              "clip_fraction": 0.8800079822540283,
+              "delta_e00_max": 0.00853465997727905,
+              "delta_e00_p95": 0.0019185919953872378,
+              "detail_correlation": 0.9983965694400182,
+              "detail_energy_ratio": 0.9999198394557309,
+              "highpass_reference_rms": 0.04170950594549064,
+              "highpass_rmse": 0.002361881745159785,
+              "linear_mae": 0.0006146062607260624,
+              "linear_rmse": 0.002377921496076888,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.05662694130797146,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 6.189034166183278e-05,
+              "clip_fraction": 0.8820662498474121,
+              "delta_e00_max": 0.0840073341763495,
+              "delta_e00_p95": 0.03972843936572533,
+              "detail_correlation": 0.9984233009522856,
+              "detail_energy_ratio": 0.9982239494610071,
+              "highpass_reference_rms": 0.04098704405196744,
+              "highpass_rmse": 0.002300739678268995,
+              "linear_mae": 0.0006134080848917977,
+              "linear_rmse": 0.0023231948284251755,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.05613333997328251,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 2.2491656899121082e-05,
+              "clip_fraction": 0.17569406827290854,
+              "delta_e00_max": 0.06724693725477277,
+              "delta_e00_p95": 0.03748401708189584,
+              "detail_correlation": 0.9990949676638826,
+              "detail_energy_ratio": 1.0010558739046747,
+              "highpass_reference_rms": 0.043008542892729665,
+              "highpass_rmse": 0.0018313211001830007,
+              "linear_mae": 0.0014423711101936125,
+              "linear_rmse": 0.0034561756559783993,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17573968569437662,
+              "structure_loss": 0.0425804032643146,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 5.382127383787472e-05,
+              "clip_fraction": 0.17625904083251953,
+              "delta_e00_max": 0.07761478255199586,
+              "delta_e00_p95": 0.03469216092354103,
+              "detail_correlation": 0.9994650751009906,
+              "detail_energy_ratio": 1.000022346963329,
+              "highpass_reference_rms": 0.0457594349491021,
+              "highpass_rmse": 0.0014967422270699114,
+              "linear_mae": 0.0014319384827796583,
+              "linear_rmse": 0.0027673169491015176,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1763168970743815,
+              "structure_loss": 0.03270893158393952,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "golden-gate-bridge-san-francisco-california",
+      "public_input": "testdata/library_of_congress/highsmith/golden-gate-bridge-san-francisco-california.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.7472966909408569,
+          0.7585129248499879,
+          0.7562004923820496
+        ],
+        "density_black": [
+          0.003382884431630373,
+          0.0009198033949360251,
+          0.0018388103926554322
+        ],
+        "density_high": [
+          7.0905393622796025,
+          7.495099266358846,
+          7.099767512931336
+        ],
+        "density_low": [
+          0.019793505140501613,
+          0.0179096843034926,
+          0.014178802829338364
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.5724560034717433,
+        "highlight_white": 0.7622484809568157,
+        "luma_weights": [
+          0.3111114501953125,
+          0.62567138671875,
+          0.0632171630859375
+        ],
+        "profile": {
+          "curves": [
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            }
+          ],
+          "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+          "linear_to_srgb": [
+            [
+              1.3980490333179867,
+              -0.39838951130821,
+              -1.1462630324264554e-05
+            ],
+            [
+              7.651127826325136e-06,
+              1.0000803859014389,
+              1.893181523259337e-05
+            ],
+            [
+              2.249638747826182e-08,
+              -0.042961671792697,
+              1.0429148811209301
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.6097412109375,
+              0.2052764892578125,
+              0.1491851806640625
+            ],
+            [
+              0.3111114501953125,
+              0.62567138671875,
+              0.0632171630859375
+            ],
+            [
+              0.01947021484375,
+              0.0608673095703125,
+              0.74456787109375
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.02129804158729485
+      },
+      "source_profile_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+      "source_provenance": {
+        "bytes": 216940422,
+        "downloaded_at_utc": "2026-06-28T19:10:08.920376+00:00",
+        "file": "testdata\\library_of_congress\\highsmith\\golden-gate-bridge-san-francisco-california.tif",
+        "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+        "role": "public-domain photographic imagery for visual JXL stress tests",
+        "sha256": "dccf7e68cee5a49ea89b51a59f360f94f6f89792312fc45e6862397a78d7bae3",
+        "source_page": "https://www.loc.gov/item/2013630257/",
+        "url": "https://tile.loc.gov/storage-services/master/pnp/highsm/20800/20829a.tif"
+      },
+      "source_sha256": "dccf7e68cee5a49ea89b51a59f360f94f6f89792312fc45e6862397a78d7bae3",
+      "source_shape": [
+        4912,
+        7360,
+        3
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          }
+        ],
+        "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+        "linear_to_srgb": [
+          [
+            1.3980490333179867,
+            -0.39838951130821,
+            -1.1462630324264554e-05
+          ],
+          [
+            7.651127826325136e-06,
+            1.0000803859014389,
+            1.893181523259337e-05
+          ],
+          [
+            2.249638747826182e-08,
+            -0.042961671792697,
+            1.0429148811209301
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.6097412109375,
+            0.2052764892578125,
+            0.1491851806640625
+          ],
+          [
+            0.3111114501953125,
+            0.62567138671875,
+            0.0632171630859375
+          ],
+          [
+            0.01947021484375,
+            0.0608673095703125,
+            0.74456787109375
+          ]
+        ]
+      }
+    },
+    {
+      "conversion": {
+        "method": "Original RGB profile retained; RGB8 expanded exactly by 257 when applicable",
+        "source_precision_bits": 16
+      },
+      "crop_xywh": [
+        3320,
+        1872,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-5.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              }
+            ],
+            "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+            "linear_to_srgb": [
+              [
+                1.3980490333179867,
+                -0.39838951130821,
+                -1.1462630324264554e-05
+              ],
+              [
+                7.651127826325136e-06,
+                1.0000803859014389,
+                1.893181523259337e-05
+              ],
+              [
+                2.249638747826182e-08,
+                -0.042961671792697,
+                1.0429148811209301
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097412109375,
+                0.2052764892578125,
+                0.1491851806640625
+              ],
+              [
+                0.3111114501953125,
+                0.62567138671875,
+                0.0632171630859375
+              ],
+              [
+                0.01947021484375,
+                0.0608673095703125,
+                0.74456787109375
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 12638186,
+          "encoded_sha256": "758593cb8f6d2f1a5388883cdfb8a652edad6ab91c558a26ac573eeee64c3814",
+          "measurements": [
+            {
+              "channel_bias_max": 2.1184738404198117e-23,
+              "clip_fraction": 0.008582592010498047,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.04845218812498019,
+              "highpass_rmse": 0.0,
+              "linear_mae": 7.06157946806604e-24,
+              "linear_rmse": 1.8074171426794804e-21,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.008582592010498047,
+              "structure_loss": 0.0,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8799998760223389,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999998,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.07976497267892958,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8820016384124756,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999999,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.027620366684886478,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8820016384124756,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.25371893246968585,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.0721089460269965,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.25371893246968585,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.2539339065551758,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999998,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.07876991317653258,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2539339065551758,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 4272158,
+          "encoded_sha256": "a382fd6f2955475c5fbd1427aed360b351ea914f6a067f681df8020fa8eacc2e",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00016721632002894525,
+              "clip_fraction": 0.003342866897583008,
+              "delta_e00_max": 0.029646226826807627,
+              "delta_e00_p95": 0.026162680409082137,
+              "detail_correlation": 0.9999649487645664,
+              "detail_energy_ratio": 0.9996900496275785,
+              "highpass_reference_rms": 0.04845218812498019,
+              "highpass_rmse": 0.00040589173820132485,
+              "linear_mae": 0.0006974131802874032,
+              "linear_rmse": 0.0011028141307042262,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.008582592010498047,
+              "structure_loss": 0.0083771601223529,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 7.883829495153316e-06,
+              "clip_fraction": 0.8799669742584229,
+              "delta_e00_max": 0.002533538338635377,
+              "delta_e00_p95": 0.0011702398391327375,
+              "detail_correlation": 0.9999714667534054,
+              "detail_energy_ratio": 0.9998441522323837,
+              "highpass_reference_rms": 0.07976497267892958,
+              "highpass_rmse": 0.0006026447609674715,
+              "linear_mae": 0.00015810642231858796,
+              "linear_rmse": 0.0006079284886881826,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.007555255655803213,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.00011940769726620132,
+              "clip_fraction": 0.882235050201416,
+              "delta_e00_max": 0.14081687786596606,
+              "delta_e00_p95": 0.10478171769839029,
+              "detail_correlation": 0.9996395796547012,
+              "detail_energy_ratio": 0.9968463876221092,
+              "highpass_reference_rms": 0.027620366684886478,
+              "highpass_rmse": 0.0007455006156883399,
+              "linear_mae": 0.00021442190969539457,
+              "linear_rmse": 0.0008214411812044256,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8820016384124756,
+              "structure_loss": 0.026990974601950834,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 8.322700176346835e-05,
+              "clip_fraction": 0.2536093393961589,
+              "delta_e00_max": 0.10405568384458715,
+              "delta_e00_p95": 0.04711545460814935,
+              "detail_correlation": 0.9999759364275945,
+              "detail_energy_ratio": 1.00037933496473,
+              "highpass_reference_rms": 0.0721089460269965,
+              "highpass_rmse": 0.000501088672551766,
+              "linear_mae": 0.0007237450865698404,
+              "linear_rmse": 0.002975460441106652,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.25371893246968585,
+              "structure_loss": 0.006949050016126515,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 3.879096678001859e-05,
+              "clip_fraction": 0.25382264455159503,
+              "delta_e00_max": 0.04849715736964191,
+              "delta_e00_p95": 0.03432125940007215,
+              "detail_correlation": 0.9999801062589729,
+              "detail_energy_ratio": 1.000107924756462,
+              "highpass_reference_rms": 0.07876991317653258,
+              "highpass_rmse": 0.0004969590255153248,
+              "linear_mae": 0.0008160584886770381,
+              "linear_rmse": 0.0024964531375472176,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2539339065551758,
+              "structure_loss": 0.006308995471425513,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 3556093,
+          "encoded_sha256": "c5fcf9c2197bdeea5d28fc2ff1665dd0757392171b4609e76edc46c22c784e72",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00017678797568524654,
+              "clip_fraction": 0.003225406010945638,
+              "delta_e00_max": 0.03191209117239744,
+              "delta_e00_p95": 0.027451372947725292,
+              "detail_correlation": 0.9998975367103131,
+              "detail_energy_ratio": 0.999548610946663,
+              "highpass_reference_rms": 0.04845218812498019,
+              "highpass_rmse": 0.0006937937653365746,
+              "linear_mae": 0.0009464742457668457,
+              "linear_rmse": 0.00148954434674559,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.008582592010498047,
+              "structure_loss": 0.01431914206943483,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 5.2353438088625914e-06,
+              "clip_fraction": 0.8799600601196289,
+              "delta_e00_max": 0.0028345523185975344,
+              "delta_e00_p95": 0.0010230052052924655,
+              "detail_correlation": 0.9999194968958408,
+              "detail_energy_ratio": 0.9996713592530792,
+              "highpass_reference_rms": 0.07976497267892958,
+              "highpass_rmse": 0.0010122966990278605,
+              "linear_mae": 0.0002655494396383573,
+              "linear_rmse": 0.0010208939840774412,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.012690992863528743,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.00012770555218013702,
+              "clip_fraction": 0.8821978569030762,
+              "delta_e00_max": 0.16609003929675217,
+              "delta_e00_p95": 0.109080710018659,
+              "detail_correlation": 0.9989286915007096,
+              "detail_energy_ratio": 0.9950732204113164,
+              "highpass_reference_rms": 0.027620366684886478,
+              "highpass_rmse": 0.0012825888221686286,
+              "linear_mae": 0.00034689740026769907,
+              "linear_rmse": 0.0013431905066303691,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8820016384124756,
+              "structure_loss": 0.0464363430363307,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.00015616935379302109,
+              "clip_fraction": 0.2536170482635498,
+              "delta_e00_max": 0.20122902746634683,
+              "delta_e00_p95": 0.0910956940403799,
+              "detail_correlation": 0.9999345787952113,
+              "detail_energy_ratio": 1.0005760583627339,
+              "highpass_reference_rms": 0.0721089460269965,
+              "highpass_rmse": 0.0008261105805968667,
+              "linear_mae": 0.0010045588285596523,
+              "linear_rmse": 0.004064046008673207,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.25371893246968585,
+              "structure_loss": 0.01145642290053142,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 3.6245247060928644e-05,
+              "clip_fraction": 0.2538314660390218,
+              "delta_e00_max": 0.054131645407390516,
+              "delta_e00_p95": 0.03617484093819136,
+              "detail_correlation": 0.9999442065651662,
+              "detail_energy_ratio": 1.0001643979298684,
+              "highpass_reference_rms": 0.07876991317653258,
+              "highpass_rmse": 0.0008322526531886298,
+              "linear_mae": 0.0011326163365500874,
+              "linear_rmse": 0.003386183577844679,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2539339065551758,
+              "structure_loss": 0.010565615977301566,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2695237,
+          "encoded_sha256": "8d4f82d48efc2fb8f79207da56194f8b898c28fa1024a691363e1c2e9ab4c184",
+          "measurements": [
+            {
+              "channel_bias_max": 0.00019623854856163795,
+              "clip_fraction": 0.0030313332875569663,
+              "delta_e00_max": 0.05417311417623377,
+              "delta_e00_p95": 0.03809863820145609,
+              "detail_correlation": 0.9995450033952739,
+              "detail_energy_ratio": 0.9989880526506991,
+              "highpass_reference_rms": 0.04845218812498019,
+              "highpass_rmse": 0.0014616961004039449,
+              "linear_mae": 0.001531700236324501,
+              "linear_rmse": 0.0023131899207881525,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.008582592010498047,
+              "structure_loss": 0.030167803704418197,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 5.6385292302174594e-06,
+              "clip_fraction": 0.8799765110015869,
+              "delta_e00_max": 0.003332057772847068,
+              "delta_e00_p95": 0.0017495647273971903,
+              "detail_correlation": 0.9996599638172221,
+              "detail_energy_ratio": 0.9991446368841242,
+              "highpass_reference_rms": 0.07976497267892958,
+              "highpass_rmse": 0.002080355974472433,
+              "linear_mae": 0.0005449831626924417,
+              "linear_rmse": 0.0020977488528987633,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8799998760223389,
+              "structure_loss": 0.02608107173616537,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0001479895759216266,
+              "clip_fraction": 0.8820915222167969,
+              "delta_e00_max": 0.2355593347188068,
+              "delta_e00_p95": 0.12835792875585433,
+              "detail_correlation": 0.9953360752994962,
+              "detail_energy_ratio": 0.9893118495440426,
+              "highpass_reference_rms": 0.027620366684886478,
+              "highpass_rmse": 0.0026696750435015095,
+              "linear_mae": 0.0007127073158660194,
+              "linear_rmse": 0.0027277610077109256,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8820016384124756,
+              "structure_loss": 0.09665603190425139,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.00026306687764009076,
+              "clip_fraction": 0.25360918045043945,
+              "delta_e00_max": 0.33206327172328803,
+              "delta_e00_p95": 0.1906156314486422,
+              "detail_correlation": 0.999735165024291,
+              "detail_energy_ratio": 1.0006648728440766,
+              "highpass_reference_rms": 0.0721089460269965,
+              "highpass_rmse": 0.001660799385837928,
+              "linear_mae": 0.0015263553441433712,
+              "linear_rmse": 0.005824940185216774,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.25371893246968585,
+              "structure_loss": 0.023031807803932536,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 2.9345380023976762e-05,
+              "clip_fraction": 0.25382669766743976,
+              "delta_e00_max": 0.11602840049520702,
+              "delta_e00_p95": 0.04846993039189172,
+              "detail_correlation": 0.9997679222615882,
+              "detail_energy_ratio": 0.9999373480400449,
+              "highpass_reference_rms": 0.07876991317653258,
+              "highpass_rmse": 0.0016969941209641387,
+              "linear_mae": 0.0017419636484409693,
+              "linear_rmse": 0.00488992805771341,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.2539339065551758,
+              "structure_loss": 0.02154368403531151,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "roadside-wildflowers-and-some-dandelion-remnants-in-bent-county-colorado",
+      "public_input": "testdata/library_of_congress/highsmith/roadside-wildflowers-and-some-dandelion-remnants-in-bent-county-colorado.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.9893596768379211,
+          1.0,
+          1.0
+        ],
+        "density_black": [
+          0.008399730548262596,
+          0.009083050303161144,
+          0.0010474036680534482
+        ],
+        "density_high": [
+          5.519950825887609,
+          5.495730823829516,
+          7.094978254625198
+        ],
+        "density_low": [
+          0.017894788386159727,
+          -0.0,
+          -0.0
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.8092690576555469,
+        "highlight_white": 0.9968903411727297,
+        "luma_weights": [
+          0.3111114501953125,
+          0.62567138671875,
+          0.0632171630859375
+        ],
+        "profile": {
+          "curves": [
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            }
+          ],
+          "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+          "linear_to_srgb": [
+            [
+              1.3980490333179867,
+              -0.39838951130821,
+              -1.1462630324264554e-05
+            ],
+            [
+              7.651127826325136e-06,
+              1.0000803859014389,
+              1.893181523259337e-05
+            ],
+            [
+              2.249638747826182e-08,
+              -0.042961671792697,
+              1.0429148811209301
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.6097412109375,
+              0.2052764892578125,
+              0.1491851806640625
+            ],
+            [
+              0.3111114501953125,
+              0.62567138671875,
+              0.0632171630859375
+            ],
+            [
+              0.01947021484375,
+              0.0608673095703125,
+              0.74456787109375
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.15394920193659117
+      },
+      "source_profile_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+      "source_provenance": {
+        "bytes": 301960276,
+        "downloaded_at_utc": "2026-06-28T19:10:10.100036+00:00",
+        "file": "testdata\\library_of_congress\\highsmith\\roadside-wildflowers-and-some-dandelion-remnants-in-bent-county-colorado.tif",
+        "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+        "role": "public-domain photographic imagery for visual JXL stress tests",
+        "sha256": "f72ad502187a890d11123be9ae5c93ba3b8b37a7ed1a8008e82637d415ae1721",
+        "source_page": "https://www.loc.gov/item/2017688831/",
+        "url": "https://tile.loc.gov/storage-services/master/pnp/highsm/38900/38939a.tif"
+      },
+      "source_sha256": "f72ad502187a890d11123be9ae5c93ba3b8b37a7ed1a8008e82637d415ae1721",
+      "source_shape": [
+        5792,
+        8688,
+        3
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          }
+        ],
+        "icc_sha256": "e5f6ffb83b6d3491301dd750975684cc5cc2a1951c994a14b08cfdaa0d75a041",
+        "linear_to_srgb": [
+          [
+            1.3980490333179867,
+            -0.39838951130821,
+            -1.1462630324264554e-05
+          ],
+          [
+            7.651127826325136e-06,
+            1.0000803859014389,
+            1.893181523259337e-05
+          ],
+          [
+            2.249638747826182e-08,
+            -0.042961671792697,
+            1.0429148811209301
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.6097412109375,
+            0.2052764892578125,
+            0.1491851806640625
+          ],
+          [
+            0.3111114501953125,
+            0.62567138671875,
+            0.0632171630859375
+          ],
+          [
+            0.01947021484375,
+            0.0608673095703125,
+            0.74456787109375
+          ]
+        ]
+      }
+    },
+    {
+      "conversion": {
+        "method": "Original RGB profile retained; RGB8 expanded exactly by 257 when applicable",
+        "source_precision_bits": 16
+      },
+      "crop_xywh": [
+        6334,
+        4494,
+        2048,
+        2048
+      ],
+      "figure": "assets/public-verified/public-6.png",
+      "levels": [
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              },
+              {
+                "gamma": 2.19921875,
+                "kind": "gamma"
+              }
+            ],
+            "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+            "linear_to_srgb": [
+              [
+                1.3980490333179867,
+                -0.39838951130821,
+                -1.1462630324264554e-05
+              ],
+              [
+                7.651127826325136e-06,
+                1.0000803859014389,
+                1.893181523259337e-05
+              ],
+              [
+                2.249638747826182e-08,
+                -0.042961671792697,
+                1.0429148811209301
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097412109375,
+                0.2052764892578125,
+                0.1491851806640625
+              ],
+              [
+                0.3111114501953125,
+                0.62567138671875,
+                0.0632171630859375
+              ],
+              [
+                0.01947021484375,
+                0.0608673095703125,
+                0.74456787109375
+              ]
+            ]
+          },
+          "distance": 0,
+          "encoded_bytes": 14900835,
+          "encoded_sha256": "882cac9b0feb5452c2730a62868d5c751fa05c11006d42beb32f650deab45d80",
+          "measurements": [
+            {
+              "channel_bias_max": 7.027531713259792e-33,
+              "clip_fraction": 2.868970235188802e-05,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999999,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.02101534907828472,
+              "highpass_rmse": 0.0,
+              "linear_mae": 2.3908254949037767e-33,
+              "linear_rmse": 4.5508084835468515e-30,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 2.8848648071289062e-05,
+              "structure_loss": 0.0,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8800082206726074,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.05603662525635271,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8800082206726074,
+              "structure_loss": 0.0,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.8819999694824219,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.03509326494989886,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.0,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.1764522393544515,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 0.9999999999999998,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.07706160234343662,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1764522393544515,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.0,
+              "clip_fraction": 0.17695887883504233,
+              "delta_e00_max": 0.0,
+              "delta_e00_p95": 0.0,
+              "detail_correlation": 1.0,
+              "detail_energy_ratio": 1.0,
+              "highpass_reference_rms": 0.07240903366243209,
+              "highpass_rmse": 0.0,
+              "linear_mae": 0.0,
+              "linear_rmse": 0.0,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17695887883504233,
+              "structure_loss": 0.0,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": true
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.03,
+          "encoded_bytes": 4527234,
+          "encoded_sha256": "dc50afc8382690e858ebc0cbf0921c5a32c4f88a4e214f3d3545437ae9af7ebd",
+          "measurements": [
+            {
+              "channel_bias_max": 5.885610255407694e-05,
+              "clip_fraction": 1.5656153361002605e-05,
+              "delta_e00_max": 0.02382218818290717,
+              "delta_e00_p95": 0.01625933083764197,
+              "detail_correlation": 0.9999551136654197,
+              "detail_energy_ratio": 0.9997894729108259,
+              "highpass_reference_rms": 0.02101534907828472,
+              "highpass_rmse": 0.00019914534571794084,
+              "linear_mae": 0.0003424552870335213,
+              "linear_rmse": 0.0006399696761706021,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 2.8848648071289062e-05,
+              "structure_loss": 0.009476185476439164,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 1.178750835219911e-05,
+              "clip_fraction": 0.8799910545349121,
+              "delta_e00_max": 0.0047734967932808285,
+              "delta_e00_p95": 0.0016515085568565835,
+              "detail_correlation": 0.9996984574533673,
+              "detail_energy_ratio": 1.0000878159278248,
+              "highpass_reference_rms": 0.05603662525635271,
+              "highpass_rmse": 0.001376204944751605,
+              "linear_mae": 0.00034665643903543445,
+              "linear_rmse": 0.0013871329702437969,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8800082206726074,
+              "structure_loss": 0.024559026145058383,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 2.1510174887424515e-05,
+              "clip_fraction": 0.8821287155151367,
+              "delta_e00_max": 0.057524812442651764,
+              "delta_e00_p95": 0.020722696938792053,
+              "detail_correlation": 0.999807513977134,
+              "detail_energy_ratio": 0.9994747573002938,
+              "highpass_reference_rms": 0.03509326494989886,
+              "highpass_rmse": 0.0006886204668478553,
+              "linear_mae": 0.0001776686244127425,
+              "linear_rmse": 0.0006965229169031944,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.019622581935051328,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 8.44254380138855e-05,
+              "clip_fraction": 0.17643102010091147,
+              "delta_e00_max": 0.04864785887613303,
+              "delta_e00_p95": 0.029945886406584993,
+              "detail_correlation": 0.9999259051581753,
+              "detail_energy_ratio": 1.0000850107106944,
+              "highpass_reference_rms": 0.07706160234343662,
+              "highpass_rmse": 0.0009381581767719784,
+              "linear_mae": 0.001278998434345731,
+              "linear_rmse": 0.002928581561733967,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1764522393544515,
+              "structure_loss": 0.01217413274890049,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 7.07316744158245e-05,
+              "clip_fraction": 0.17694377899169922,
+              "delta_e00_max": 0.023167300703456902,
+              "delta_e00_p95": 0.016254965843109634,
+              "detail_correlation": 0.9999579509994885,
+              "detail_energy_ratio": 0.9999822145368757,
+              "highpass_reference_rms": 0.07240903366243209,
+              "highpass_rmse": 0.0006640221137001367,
+              "linear_mae": 0.0010782898181035065,
+              "linear_rmse": 0.0021814427547892814,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17695887883504233,
+              "structure_loss": 0.00917043192146135,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.05,
+          "encoded_bytes": 3631150,
+          "encoded_sha256": "5897a1337d3c421e1ced6f1b8fe5aef8f8b254ecf6f3f998056311c720115220",
+          "measurements": [
+            {
+              "channel_bias_max": 5.7250677252071165e-05,
+              "clip_fraction": 1.8676122029622395e-05,
+              "delta_e00_max": 0.02966894097759239,
+              "delta_e00_p95": 0.018004645047919588,
+              "detail_correlation": 0.9998706792052747,
+              "detail_energy_ratio": 0.9996459043955982,
+              "highpass_reference_rms": 0.02101534907828472,
+              "highpass_rmse": 0.00033799802601463966,
+              "linear_mae": 0.00047563398945812166,
+              "linear_rmse": 0.0008702443668675011,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 2.8848648071289062e-05,
+              "structure_loss": 0.016083388610655766,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 9.957788698012107e-06,
+              "clip_fraction": 0.8799774646759033,
+              "delta_e00_max": 0.006790567112679889,
+              "delta_e00_p95": 0.0019515135361400154,
+              "detail_correlation": 0.9991630521213795,
+              "detail_energy_ratio": 0.9998937361484368,
+              "highpass_reference_rms": 0.05603662525635271,
+              "highpass_rmse": 0.0022925275613530096,
+              "linear_mae": 0.0005810115840279658,
+              "linear_rmse": 0.0023093855710302623,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8800082206726074,
+              "structure_loss": 0.040911235301292745,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 2.415072045693954e-05,
+              "clip_fraction": 0.8821115493774414,
+              "delta_e00_max": 0.08923192267579041,
+              "delta_e00_p95": 0.026865722961087208,
+              "detail_correlation": 0.9994350480285692,
+              "detail_energy_ratio": 0.9992122256137922,
+              "highpass_reference_rms": 0.03509326494989886,
+              "highpass_rmse": 0.0011794858463609237,
+              "linear_mae": 0.00030517237312233954,
+              "linear_rmse": 0.0011905597424971305,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.033610034519296644,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.00011165508011182802,
+              "clip_fraction": 0.17642108599344888,
+              "delta_e00_max": 0.0761802808376489,
+              "delta_e00_p95": 0.04408131187405744,
+              "detail_correlation": 0.9997985926176917,
+              "detail_energy_ratio": 1.0000650678641743,
+              "highpass_reference_rms": 0.07706160234343662,
+              "highpass_rmse": 0.0015467037427145665,
+              "linear_mae": 0.0017950710191963508,
+              "linear_rmse": 0.003993371776165525,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1764522393544515,
+              "structure_loss": 0.020071004179506267,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 8.442229824221555e-05,
+              "clip_fraction": 0.17693003018697104,
+              "delta_e00_max": 0.03491666016900339,
+              "delta_e00_p95": 0.020593940712060454,
+              "detail_correlation": 0.9998860049456026,
+              "detail_energy_ratio": 0.9999399117399159,
+              "highpass_reference_rms": 0.07240903366243209,
+              "highpass_rmse": 0.001093304524036352,
+              "linear_mae": 0.0015113441281596484,
+              "linear_rmse": 0.002987735249457259,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17695887883504233,
+              "structure_loss": 0.015099007247262715,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        },
+        {
+          "decoded_profile": {
+            "curves": [
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              },
+              {
+                "function": 0,
+                "kind": "parametric",
+                "parameters": [
+                  2.19921875
+                ]
+              }
+            ],
+            "icc_sha256": "0f3e89585fb2bff531e5cf2f6b1ee2756551db858441f502941b12c40128dea0",
+            "linear_to_srgb": [
+              [
+                1.3980184074995923,
+                -0.39844481255084324,
+                -3.4920298752034665e-05
+              ],
+              [
+                -6.1433717689042166e-06,
+                1.0000958317968882,
+                1.3061384239908021e-05
+              ],
+              [
+                2.3868661862457218e-05,
+                -0.04294132037273246,
+                1.0433222240757263
+              ]
+            ],
+            "name": "embedded RGB matrix/TRC",
+            "rgb_to_xyz_d50": [
+              [
+                0.6097259521484375,
+                0.20526123046875,
+                0.14923095703125
+              ],
+              [
+                0.31109619140625,
+                0.62567138671875,
+                0.063232421875
+              ],
+              [
+                0.0194854736328125,
+                0.060882568359375,
+                0.7448577880859375
+              ]
+            ]
+          },
+          "distance": 0.1,
+          "encoded_bytes": 2576403,
+          "encoded_sha256": "9c839293cbd93eeb1d32064ec5d250bb28defcdbee67c6994dcf459cdd1cd7c2",
+          "measurements": [
+            {
+              "channel_bias_max": 5.204601260865531e-05,
+              "clip_fraction": 2.2570292154947918e-05,
+              "delta_e00_max": 0.055180026413199273,
+              "delta_e00_p95": 0.03129753205599713,
+              "detail_correlation": 0.9994963922490689,
+              "detail_energy_ratio": 0.999110312569399,
+              "highpass_reference_rms": 0.02101534907828472,
+              "highpass_rmse": 0.0006669223391684898,
+              "linear_mae": 0.0007355932754183038,
+              "linear_rmse": 0.0012982288895886814,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 2.8848648071289062e-05,
+              "structure_loss": 0.03173501123793487,
+              "transform": "identity"
+            },
+            {
+              "channel_bias_max": 4.4710075957075137e-07,
+              "clip_fraction": 0.8800604343414307,
+              "delta_e00_max": 0.008236854524407073,
+              "delta_e00_p95": 0.002991135315193712,
+              "detail_correlation": 0.9969980912308255,
+              "detail_energy_ratio": 0.9993334377528579,
+              "highpass_reference_rms": 0.05603662525635271,
+              "highpass_rmse": 0.004340672344837187,
+              "linear_mae": 0.0011192410179044464,
+              "linear_rmse": 0.004373836697776723,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8800082206726074,
+              "structure_loss": 0.07746134470053757,
+              "transform": "shadow_recovery_luma_p12"
+            },
+            {
+              "channel_bias_max": 3.464574905338836e-05,
+              "clip_fraction": 0.8821601867675781,
+              "delta_e00_max": 0.18042188565467882,
+              "delta_e00_p95": 0.046300144677945416,
+              "detail_correlation": 0.9978095113926335,
+              "detail_energy_ratio": 0.9977215715625459,
+              "highpass_reference_rms": 0.03509326494989886,
+              "highpass_rmse": 0.00232151608250773,
+              "linear_mae": 0.0006128530044401469,
+              "linear_rmse": 0.0023414798572462267,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.8819999694824219,
+              "structure_loss": 0.06615275283796074,
+              "transform": "highlight_separation_luma_p88_p998"
+            },
+            {
+              "channel_bias_max": 0.0001723235754918559,
+              "clip_fraction": 0.17643014589945474,
+              "delta_e00_max": 0.17265552141511328,
+              "delta_e00_p95": 0.07993575839677981,
+              "detail_correlation": 0.9992736624503047,
+              "detail_energy_ratio": 0.999840015125228,
+              "highpass_reference_rms": 0.07706160234343662,
+              "highpass_rmse": 0.0029369149146122367,
+              "linear_mae": 0.002761410686116151,
+              "linear_rmse": 0.005917428065419907,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.1764522393544515,
+              "structure_loss": 0.038111261968359206,
+              "transform": "negative_density_hard_print"
+            },
+            {
+              "channel_bias_max": 0.00010989406583712799,
+              "clip_fraction": 0.17692931493123373,
+              "delta_e00_max": 0.07082437572765335,
+              "delta_e00_p95": 0.031331853755396426,
+              "detail_correlation": 0.9995842665182082,
+              "detail_energy_ratio": 0.9996897568328549,
+              "highpass_reference_rms": 0.07240903366243209,
+              "highpass_rmse": 0.0020877236705610443,
+              "linear_mae": 0.0023177571665523224,
+              "linear_rmse": 0.004430830508052236,
+              "patch_count": 1024,
+              "patch_size": 64,
+              "reference_clip_fraction": 0.17695887883504233,
+              "structure_loss": 0.028832364761197136,
+              "transform": "negative_density_hard_shadow_recovery"
+            }
+          ],
+          "pixel_exact": false
+        }
+      ],
+      "name": "the-caloosahatchee-bridge-carries-us-highway-41-over-the-caloosahatchee-river-in",
+      "public_input": "testdata/library_of_congress/highsmith/the-caloosahatchee-bridge-carries-us-highway-41-over-the-caloosahatchee-river-in.tif",
+      "recipe": {
+        "candidate_fit": "none",
+        "density_base": [
+          0.6018713116645813,
+          0.5706738829612732,
+          0.6820211164355282
+        ],
+        "density_black": [
+          0.001390460995258763,
+          0.001517097232863307,
+          0.001842057448811829
+        ],
+        "density_high": [
+          7.5372243620270325,
+          7.363352694272238,
+          7.342481409147483
+        ],
+        "density_low": [
+          0.0330852127087925,
+          0.04736170457316777,
+          0.046954574950829386
+        ],
+        "domain": "ICC linear RGB",
+        "exposure_domain": "linear RGB before stress transform",
+        "highlight_black": 0.4348493713334574,
+        "highlight_white": 0.590238807568341,
+        "luma_weights": [
+          0.3111114501953125,
+          0.62567138671875,
+          0.0632171630859375
+        ],
+        "profile": {
+          "curves": [
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            },
+            {
+              "gamma": 2.19921875,
+              "kind": "gamma"
+            }
+          ],
+          "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+          "linear_to_srgb": [
+            [
+              1.3980490333179867,
+              -0.39838951130821,
+              -1.1462630324264554e-05
+            ],
+            [
+              7.651127826325136e-06,
+              1.0000803859014389,
+              1.893181523259337e-05
+            ],
+            [
+              2.249638747826182e-08,
+              -0.042961671792697,
+              1.0429148811209301
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.6097412109375,
+              0.2052764892578125,
+              0.1491851806640625
+            ],
+            [
+              0.3111114501953125,
+              0.62567138671875,
+              0.0632171630859375
+            ],
+            [
+              0.01947021484375,
+              0.0608673095703125,
+              0.74456787109375
+            ]
+          ]
+        },
+        "schema": 3,
+        "shadow_white": 0.011298914592121605
+      },
+      "source_profile_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+      "source_provenance": {
+        "bytes": 974657224,
+        "downloaded_at_utc": "2026-06-28T19:10:09.813004+00:00",
+        "file": "testdata\\library_of_congress\\highsmith\\the-caloosahatchee-bridge-carries-us-highway-41-over-the-caloosahatchee-river-in.tif",
+        "rights": "Carol M. Highsmith Archive, Library of Congress. LOC describes the archive as public domain/no known restrictions; verify the individual item page before publication.",
+        "role": "public-domain photographic imagery for visual JXL stress tests",
+        "sha256": "21c60d9436411574927dfae0b6f000e52e1e6c9401e00c4f1231dbabbe9be9f7",
+        "source_page": "https://www.loc.gov/item/2020721211/",
+        "url": "https://tile.loc.gov/storage-services/master/pnp/highsm/62900/62946a.tif"
+      },
+      "source_sha256": "21c60d9436411574927dfae0b6f000e52e1e6c9401e00c4f1231dbabbe9be9f7",
+      "source_shape": [
+        11037,
+        14717,
+        3
+      ],
+      "working_profile": {
+        "curves": [
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          },
+          {
+            "gamma": 2.19921875,
+            "kind": "gamma"
+          }
+        ],
+        "icc_sha256": "304f569a83c1e5eddaddac54e99ed03339333db013738bb499ab64f049887e28",
+        "linear_to_srgb": [
+          [
+            1.3980490333179867,
+            -0.39838951130821,
+            -1.1462630324264554e-05
+          ],
+          [
+            7.651127826325136e-06,
+            1.0000803859014389,
+            1.893181523259337e-05
+          ],
+          [
+            2.249638747826182e-08,
+            -0.042961671792697,
+            1.0429148811209301
+          ]
+        ],
+        "name": "embedded RGB matrix/TRC",
+        "rgb_to_xyz_d50": [
+          [
+            0.6097412109375,
+            0.2052764892578125,
+            0.1491851806640625
+          ],
+          [
+            0.3111114501953125,
+            0.62567138671875,
+            0.0632171630859375
+          ],
+          [
+            0.01947021484375,
+            0.0608673095703125,
+            0.74456787109375
+          ]
+        ]
+      }
+    }
+  ],
+  "schema": 3,
+  "scope": "Six public center crops; source precision retained and declared. Codec edit sensitivity only; no RAW61 comparator or archival-latitude claim",
+  "tools": {
+    "cjxl": "b6ae9f8a2c47fb371f62afa9ebf4e87db2fdd42b0b643ab2e90e0382d323f551",
+    "djxl": "48b8e42736f2e05ed9b4fd99e26717fc91a393cef63432c3ae194fbdcc9115e9"
+  },
+  "versions": {
+    "numpy": "2.5.3",
+    "tifffile": "2026.9.15"
+  }
+}

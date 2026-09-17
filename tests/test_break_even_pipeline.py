@@ -668,7 +668,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertNotIn("roughly <code>5-10%</code>", html)
 
     def test_report_site_includes_bounded_muimg_probe(self) -> None:
-        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
+        probe = report_site.read_json_object(ROOT / "metadata/historical/muimg_dng_jxl_probe.json")
 
         html = report_site.render_html(
             rows=[],
@@ -695,8 +695,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("compression type <code>52546</code>", html)
 
     def test_report_site_states_practical_muimg_conclusion_for_qualified_corpus(self) -> None:
-        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
-        qualification = report_site.read_json_object(ROOT / "metadata/muimg_archive_qualification.json")
+        probe = report_site.read_json_object(ROOT / "metadata/historical/muimg_dng_jxl_probe.json")
+        qualification = report_site.read_json_object(ROOT / "metadata/historical/muimg_archive_qualification.json")
 
         html = report_site.render_html(
             rows=[],
@@ -734,7 +734,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
         self.assertIn("muimg DNG candidates are covered separately below", html)
 
     def test_report_site_keeps_lossless_dng_corpus_separate_from_standalone_jxl(self) -> None:
-        probe = report_site.read_json_object(ROOT / "metadata/muimg_dng_jxl_probe.json")
+        probe = report_site.read_json_object(ROOT / "metadata/historical/muimg_dng_jxl_probe.json")
         qualification = {
             "summary": {"cases": 2, "technical_master_passed": 2},
             "records": [
@@ -855,7 +855,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             audit.write_text('{"summary": {}, "cases": []}', encoding="utf-8")
             output = root / "site/index.html"
             argv = [
-                "generate_break_even_report_site.py", "--output", str(output),
+                "generate_break_even_report_site.py", "--legacy-unverified", "--output", str(output),
                 "--matrix", str(root / "missing.csv"),
                 "--contexts", str(root / "no-contexts"),
                 "--public-figures", str(public),
@@ -1020,7 +1020,8 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn("referenceOverview ? loadImage(referenceOverview)", html)
             self.assertIn("candidateOverview ? loadImage(candidateOverview)", html)
             self.assertIn("drawOverview(state.referenceOverviewImage", html)
-            self.assertIn('`${candidate.label} over ${referenceLabel}`', html)
+            self.assertIn('`${candidate.label} over ${leftLabel}`', html)
+            self.assertIn('id="cropReference"', html)
             self.assertIn('currentViewer().referenceLabel || "RAW61 local aligned"', html)
             self.assertIn("hard visual check", html)
             self.assertIn('const navigationZones = ["film", "view", "quality"]', html)
@@ -1052,7 +1053,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('.crop-mode-label[data-navigation-active="true"]', html)
             self.assertIn('grid-template-columns: 52px minmax(0, 1fr);', html)
             self.assertIn('object-fit: cover;', html)
-            self.assertIn('id="cropLatitude" open', html)
+            self.assertNotIn('id="cropLatitude" open', html)
             self.assertIn('function renderImageSource(image)', html)
             self.assertIn('new ResizeObserver(() => {', html)
             self.assertIn('resize: both;', html)
@@ -1148,10 +1149,11 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('toneCurve.addEventListener("contextmenu"', html)
             self.assertIn('latitude.classList.toggle("is-floating", enabled);', html)
             self.assertNotIn('id="toneShadows"', html)
-            self.assertIn("function loadRgb16(viewer, src)", html)
-            self.assertIn("if (browseCount < 3 || prefetchTimer) return;", html)
-            self.assertIn("while (activePrefetches < 4 && prefetchQueue.length)", html)
-            self.assertIn('fetch(src, { priority: "low" })', html)
+            self.assertIn("function loadRgb16(viewer, src, signal)", html)
+            self.assertIn("viewer.candidates[index - 1], viewer.candidates[index + 1]", html)
+            self.assertIn("prefetchController.abort()", html)
+            self.assertNotIn("allRgb16Sources", html)
+            self.assertIn("ReportColor.compileU16(recipe", html)
             self.assertIn("viewer.referenceOverview || viewer.reference", html)
             self.assertIn('function currentPixelFormat(viewer = currentViewer())', html)
             self.assertNotIn('latitude.hidden = currentPixelFormat() !== "rgb16le";', html)
@@ -1369,7 +1371,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
 
         self.assertEqual(ppm, output_root / "film" / "frame" / "ps16_reference.ppm")
         self.assertEqual(encoded, output_root / "film" / "frame" / "d025" / "ps16.jxl")
-        self.assertEqual(decoded, output_root / "film" / "frame" / "d025" / "ps16_candidate.png")
+        self.assertEqual(decoded, output_root / "film" / "frame" / "d025" / "ps16_candidate.ppm")
 
     def test_rendered_matrix_metadata_copy_is_curated_from_the_rendered_tiff(self) -> None:
         command = rendered_matrix.metadata_copy_command(

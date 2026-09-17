@@ -159,7 +159,10 @@ def load_structure(path: Path | None) -> dict[tuple[str, str, str], StructureRow
             structure_verdict=row.get("structure_verdict", ""),
             notes=row.get("notes", ""),
         )
-        rows[(item.scan_set, item.set_id, item.level)] = item
+        key = (item.scan_set, item.set_id, item.level)
+        if key in rows:
+            raise ValueError(f"Multiple structure scopes for {key}; use the verified release builder to preserve and compare each scope")
+        rows[key] = item
     return rows
 
 
@@ -383,9 +386,9 @@ def build_rows(
             stress = patch_by_level.get(budget.level, {}).get(HARD_TRANSFORM, {})
         diff = metadata_by_level.get(budget.level, {})
         if using_rendered_jxl:
-            review_changes = 0
-            fields = "-"
-            meta_risk = "pass"
+            review_changes = None
+            fields = "requires audited rendered-JXL metadata evidence"
+            meta_risk = "blocked_missing_metadata_diff"
         else:
             review_changes = diff.get("review_preservation_change")
             fields = ", ".join(sorted(diff.get("review_preservation_fields", set()))) or "-"

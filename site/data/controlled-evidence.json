@@ -1,0 +1,1597 @@
+{
+  "cases": [
+    {
+      "all_frames_clipped_fraction": 0.0,
+      "all_frames_near_black_fraction": 0.0005499502263559447,
+      "analysis_grid_shape": [
+        3188,
+        4782
+      ],
+      "best_by_band": {
+        "dense": {
+          "computed_ev": 2.643856189774725,
+          "file": "church/DSC05316.ARW",
+          "normal_relative_rmse": 0.6447317600250244,
+          "normal_to_best_improvement": 3.6076980071584934,
+          "relative_rmse": 0.17871001362800598
+        },
+        "midtone": {
+          "computed_ev": 5.38082163967142,
+          "file": "church/DSC05318.ARW",
+          "normal_relative_rmse": 0.0417531356215477,
+          "normal_to_best_improvement": 2.5712735533288154,
+          "relative_rmse": 0.01623830944299698
+        },
+        "thin": {
+          "computed_ev": 0.0,
+          "file": "church/DSC05314.ARW",
+          "normal_relative_rmse": 0.017804427072405815,
+          "normal_to_best_improvement": 1.0,
+          "relative_rmse": 0.017804427072405815
+        }
+      },
+      "capture_count": 5,
+      "f_number_recorded": 0.0,
+      "frames": [
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9998140766685845,
+              "pixel_count": 968141,
+              "recovery_db": -25.675441442293593,
+              "relative_mae": 12.10774040222168,
+              "relative_p95_error": 55.86197280883789,
+              "relative_rmse": 19.220827102661133,
+              "structure_correlation": 0.007924781301762069
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9984872832307242,
+              "pixel_count": 3226645,
+              "recovery_db": 5.639618158254949,
+              "relative_mae": 0.41621100902557373,
+              "relative_p95_error": 1.0,
+              "relative_rmse": 0.5224191546440125,
+              "structure_correlation": 0.04098536063016802
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 967988,
+              "recovery_db": 26.689603708239105,
+              "relative_mae": 0.0367947556078434,
+              "relative_p95_error": 0.0911811888217926,
+              "relative_rmse": 0.0462934784591198,
+              "structure_correlation": 0.1790495126319327
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -5.3,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": -5.321928094887363,
+          "exposure_seconds": 0.0002,
+          "f_number": 0.0,
+          "file": "church/DSC05317.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.8263969442708062,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.8257454108280372,
+          "iso": 100,
+          "linearity_error_ev": 0.02751166727505794,
+          "measured_response_ev": -5.294416427612305,
+          "near_black_fraction_by_channel": {
+            "B": 0.8557262911367229,
+            "G1": 0.8262736490404471,
+            "G2": 0.8252171726156273,
+            "R": 0.861614707390271
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "4",
+          "timestamp": "2026:04:17 15:48:36.160",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9998213070203616,
+              "pixel_count": 968141,
+              "recovery_db": -10.274908938624222,
+              "relative_mae": 2.4675886631011963,
+              "relative_p95_error": 8.553738594055176,
+              "relative_rmse": 3.2639646530151367,
+              "structure_correlation": 0.03739796876955775
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.027441506580364435,
+              "pixel_count": 3226645,
+              "recovery_db": 18.12382601761612,
+              "relative_mae": 0.09821438789367676,
+              "relative_p95_error": 0.24128751456737518,
+              "relative_rmse": 0.12411054968833923,
+              "structure_correlation": 0.1726850119736947
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 967988,
+              "recovery_db": 34.636984907373964,
+              "relative_mae": 0.014745201915502548,
+              "relative_p95_error": 0.03642553463578224,
+              "relative_rmse": 0.01854175142943859,
+              "structure_correlation": 0.4388057188110751
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -2.7,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": -2.678071905112638,
+          "exposure_seconds": 0.00125,
+          "f_number": 0.0,
+          "file": "church/DSC05315.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9764811604873214,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.4504729611303786,
+          "iso": 100,
+          "linearity_error_ev": 0.01668732259310657,
+          "measured_response_ev": -2.6613845825195312,
+          "near_black_fraction_by_channel": {
+            "B": 0.532089110303328,
+            "G1": 0.4441872019025759,
+            "G2": 0.4567587203581813,
+            "R": 0.7297356067058244
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "2",
+          "timestamp": "2026:04:17 15:48:35.861",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9191336799081952,
+              "pixel_count": 968141,
+              "recovery_db": 3.812418711060179,
+              "relative_mae": 0.5040094256401062,
+              "relative_p95_error": 1.4652512073516846,
+              "relative_rmse": 0.6447317600250244,
+              "structure_correlation": 0.17943542635523577
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226645,
+              "recovery_db": 27.586218076901044,
+              "relative_mae": 0.03285181522369385,
+              "relative_p95_error": 0.07648493349552155,
+              "relative_rmse": 0.0417531356215477,
+              "structure_correlation": 0.46554911398705423
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 967988,
+              "recovery_db": 34.98943993802091,
+              "relative_mae": 0.014162648469209671,
+              "relative_p95_error": 0.03550118952989578,
+              "relative_rmse": 0.017804427072405815,
+              "structure_correlation": 0.4593737861068162
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 0.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": 0.0,
+          "exposure_seconds": 0.008,
+          "f_number": 0.0,
+          "file": "church/DSC05314.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9976451642030074,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.27430696038626656,
+          "iso": 100,
+          "linearity_error_ev": 0.0,
+          "measured_response_ev": 0.0,
+          "near_black_fraction_by_channel": {
+            "B": 0.2818775657565725,
+            "G1": 0.27395228709500863,
+            "G2": 0.2746616336775245,
+            "R": 0.3011432064092291
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "1",
+          "timestamp": "2026:04:17 15:48:35.736",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.36875000645567124,
+              "pixel_count": 968141,
+              "recovery_db": 14.957022241264283,
+              "relative_mae": 0.1363242119550705,
+              "relative_p95_error": 0.3710498511791229,
+              "relative_rmse": 0.17871001362800598,
+              "structure_correlation": 0.5908453489147505
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226645,
+              "recovery_db": 35.407628730140146,
+              "relative_mae": 0.013373580761253834,
+              "relative_p95_error": 0.030909977853298187,
+              "relative_rmse": 0.0169675275683403,
+              "structure_correlation": 0.7997428091437887
+            },
+            "thin": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 967988,
+              "recovery_db": 4.5209660858571,
+              "relative_mae": 0.5648771524429321,
+              "relative_p95_error": 0.6592711806297302,
+              "relative_rmse": 0.594226062297821,
+              "structure_correlation": 0.009685766006846626
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 2.7,
+          "clipped_fraction_by_channel": {
+            "B": 0.07531812364119526,
+            "G1": 0.10608817990089352,
+            "G2": 0.10613042321503631,
+            "R": 0.05149899481902807
+          },
+          "computed_ev": 2.643856189774725,
+          "exposure_seconds": 0.05,
+          "f_number": 0.0,
+          "file": "church/DSC05316.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9955850667036172,
+          "green_clipped_fraction": 0.10610930155796491,
+          "green_near_black_fraction": 0.20266544817007737,
+          "iso": 100,
+          "linearity_error_ev": 0.024522163344171677,
+          "measured_response_ev": 2.6683783531188965,
+          "near_black_fraction_by_channel": {
+            "B": 0.21658357065679695,
+            "G1": 0.20254245715452185,
+            "G2": 0.20278843918563286,
+            "R": 0.24090201020451538
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "3",
+          "timestamp": "2026:04:17 15:48:36.036",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968132,
+              "recovery_db": 13.338022005909734,
+              "relative_mae": 0.16173291206359863,
+              "relative_p95_error": 0.3938324451446533,
+              "relative_rmse": 0.2153272032737732,
+              "structure_correlation": 0.5202560841450014
+            },
+            "midtone": {
+              "clipped_fraction": 4.958710983079948e-06,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226645,
+              "recovery_db": 35.78918373563441,
+              "relative_mae": 0.012779254466295242,
+              "relative_p95_error": 0.029549112543463707,
+              "relative_rmse": 0.01623830944299698,
+              "structure_correlation": 0.8120847460943745
+            },
+            "thin": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 967988,
+              "recovery_db": 0.328517289719665,
+              "relative_mae": 0.9450592994689941,
+              "relative_p95_error": 0.9464603066444397,
+              "relative_rmse": 0.9628843665122986,
+              "structure_correlation": -0.0014978458479717762
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 5.3,
+          "clipped_fraction_by_channel": {
+            "B": 0.18481718877828662,
+            "G1": 0.220451916875653,
+            "G2": 0.22049468495146218,
+            "R": 0.17108719334896075
+          },
+          "computed_ev": 5.38082163967142,
+          "exposure_seconds": 0.3333333,
+          "f_number": 0.0,
+          "file": "church/DSC05318.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.93963943275958,
+          "green_clipped_fraction": 0.22047330091355757,
+          "green_near_black_fraction": 0.0015883551712900794,
+          "iso": 100,
+          "linearity_error_ev": -0.04249900020608788,
+          "measured_response_ev": 5.338322639465332,
+          "near_black_fraction_by_channel": {
+            "B": 0.012628651882031479,
+            "G1": 0.0015725139284865296,
+            "G2": 0.001604196414093629,
+            "R": 0.12786690417379687
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "5",
+          "timestamp": "2026:04:17 15:48:36.617",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        }
+      ],
+      "hdr_source_ev_distribution": {
+        "median": 5.380821704864502,
+        "p05": 0.0,
+        "p95": 5.380821704864502
+      },
+      "hdr_valid_fraction": 1.0,
+      "iso": 100,
+      "key": "church",
+      "label": "Church interior",
+      "normal": "church/DSC05314.ARW",
+      "signal_band_ranges_normal_equivalent": {
+        "dense": [
+          8.733052527531981e-05,
+          0.0019139242358505726
+        ],
+        "midtone": [
+          0.008007891476154327,
+          0.01919817551970482
+        ],
+        "thin": [
+          0.2679058313369751,
+          0.5077009201049805
+        ]
+      }
+    },
+    {
+      "all_frames_clipped_fraction": 0.0,
+      "all_frames_near_black_fraction": 0.03687146015458429,
+      "analysis_grid_shape": [
+        3188,
+        4782
+      ],
+      "best_by_band": {
+        "dense": {
+          "computed_ev": 0.0,
+          "file": "New folder/DSC05298.ARW",
+          "normal_relative_rmse": 0.21237939596176147,
+          "normal_to_best_improvement": 1.0,
+          "relative_rmse": 0.21237939596176147
+        },
+        "midtone": {
+          "computed_ev": 3.0588939775925477,
+          "file": "New folder/DSC05300.ARW",
+          "normal_relative_rmse": 0.05409694463014603,
+          "normal_to_best_improvement": 1.064769007358373,
+          "relative_rmse": 0.05080627277493477
+        },
+        "thin": {
+          "computed_ev": -3.0,
+          "file": "New folder/DSC05299.ARW",
+          "normal_relative_rmse": 0.015351561829447746,
+          "normal_to_best_improvement": 1.0049280058058447,
+          "relative_rmse": 0.015276280231773853
+        }
+      },
+      "capture_count": 3,
+      "f_number_recorded": 0.0,
+      "frames": [
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9998382775425191,
+              "pixel_count": 970799,
+              "recovery_db": -1.2878035395576903,
+              "relative_mae": 0.898440420627594,
+              "relative_p95_error": 5.3002190589904785,
+              "relative_rmse": 1.1598188877105713,
+              "structure_correlation": 0.07551436211057524
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.2582207942165771,
+              "pixel_count": 3226878,
+              "recovery_db": 17.56864923717321,
+              "relative_mae": 0.10408402979373932,
+              "relative_p95_error": 0.31652066111564636,
+              "relative_rmse": 0.13230234384536743,
+              "structure_correlation": 0.592106996432886
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968138,
+              "recovery_db": 36.31964766845573,
+              "relative_mae": 0.01210529264062643,
+              "relative_p95_error": 0.03237970545887947,
+              "relative_rmse": 0.015276280231773853,
+              "structure_correlation": 0.6112615307772586
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -3.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": -3.0,
+          "exposure_seconds": 0.0025,
+          "f_number": 0.0,
+          "file": "New folder/DSC05299.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9683633076017027,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.5804902074225439,
+          "iso": 100,
+          "linearity_error_ev": -0.003972530364990234,
+          "measured_response_ev": -3.0039725303649902,
+          "near_black_fraction_by_channel": {
+            "B": 0.7028792229539149,
+            "G1": 0.5800964065895372,
+            "G2": 0.5808840082555505,
+            "R": 0.6559613318870902
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "2",
+          "timestamp": "2026:04:16 22:33:02.071",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.7689140594499995,
+              "pixel_count": 970799,
+              "recovery_db": 13.457752374613136,
+              "relative_mae": 0.16775132715702057,
+              "relative_p95_error": 1.0,
+              "relative_rmse": 0.21237939596176147,
+              "structure_correlation": 0.37639391710996195
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226878,
+              "recovery_db": 25.33654525895521,
+              "relative_mae": 0.03978106006979942,
+              "relative_p95_error": 0.10067952424287796,
+              "relative_rmse": 0.05409694463014603,
+              "structure_correlation": 0.8838392238271481
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968138,
+              "recovery_db": 36.27694867812586,
+              "relative_mae": 0.01216494757682085,
+              "relative_p95_error": 0.032978467643260956,
+              "relative_rmse": 0.015351561829447746,
+              "structure_correlation": 0.6112638996026213
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 0.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 3.358474664769129e-05,
+            "G2": 3.391272268917265e-05,
+            "R": 0.0
+          },
+          "computed_ev": 0.0,
+          "exposure_seconds": 0.02,
+          "f_number": 0.0,
+          "file": "New folder/DSC05298.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9976615622650605,
+          "green_clipped_fraction": 3.374873466843197e-05,
+          "green_near_black_fraction": 0.29147437431354617,
+          "iso": 100,
+          "linearity_error_ev": 0.0,
+          "measured_response_ev": 0.0,
+          "near_black_fraction_by_channel": {
+            "B": 0.4083573280605281,
+            "G1": 0.29140907428368723,
+            "G2": 0.2915396743434051,
+            "R": 0.3921502607803101
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "1",
+          "timestamp": "2026:04:16 22:33:01.946",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0016956510368995004,
+              "pixel_count": 955975,
+              "recovery_db": 10.715769549159548,
+              "relative_mae": 0.19431176781654358,
+              "relative_p95_error": 0.6430259346961975,
+              "relative_rmse": 0.2912135124206543,
+              "structure_correlation": 0.3048066651106376
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226878,
+              "recovery_db": 25.881653288431682,
+              "relative_mae": 0.037679918110370636,
+              "relative_p95_error": 0.09666676074266434,
+              "relative_rmse": 0.05080627277493477,
+              "structure_correlation": 0.894434272062273
+            },
+            "thin": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968138,
+              "recovery_db": 2.341220057879526,
+              "relative_mae": 0.7336817979812622,
+              "relative_p95_error": 0.82254558801651,
+              "relative_rmse": 0.7637284994125366,
+              "structure_correlation": 0.0007639949828264703
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 3.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.10480959810078258,
+            "G1": 0.13251071694513145,
+            "G2": 0.13255440335385676,
+            "R": 0.09239786957258687
+          },
+          "computed_ev": 3.0588939775925477,
+          "exposure_seconds": 0.1666667,
+          "f_number": 0.0,
+          "file": "New folder/DSC05300.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9816682763887525,
+          "green_clipped_fraction": 0.1325325601494941,
+          "green_near_black_fraction": 0.06791449087360749,
+          "iso": 100,
+          "linearity_error_ev": -0.05319553513344122,
+          "measured_response_ev": 3.0056984424591064,
+          "near_black_fraction_by_channel": {
+            "B": 0.20176810572058435,
+            "G1": 0.06824682899644054,
+            "G2": 0.06758215275077442,
+            "R": 0.18258236003163264
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "3",
+          "timestamp": "2026:04:16 22:33:02.342",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        }
+      ],
+      "hdr_source_ev_distribution": {
+        "median": 3.058893918991089,
+        "p05": 0.0,
+        "p95": 3.058893918991089
+      },
+      "hdr_valid_fraction": 1.0,
+      "iso": 100,
+      "key": "dinner",
+      "label": "Dinner with white shirt",
+      "normal": "New folder/DSC05298.ARW",
+      "signal_band_ranges_normal_equivalent": {
+        "dense": [
+          0.00016770910588093102,
+          0.0011621663579717278
+        ],
+        "midtone": [
+          0.004751642234623432,
+          0.03237883746623993
+        ],
+        "thin": [
+          0.34229806065559387,
+          0.7671764492988586
+        ]
+      }
+    },
+    {
+      "all_frames_clipped_fraction": 0.0,
+      "all_frames_near_black_fraction": 0.0,
+      "analysis_grid_shape": [
+        3188,
+        4782
+      ],
+      "best_by_band": {
+        "dense": {
+          "computed_ev": 5.906890595608519,
+          "file": "_DSC5307.ARW",
+          "normal_relative_rmse": 0.08101494610309601,
+          "normal_to_best_improvement": 3.041299147938315,
+          "relative_rmse": 0.026638269424438477
+        },
+        "midtone": {
+          "computed_ev": 3.0,
+          "file": "_DSC5305.ARW",
+          "normal_relative_rmse": 0.021135134622454643,
+          "normal_to_best_improvement": 1.0577104006185087,
+          "relative_rmse": 0.01998196728527546
+        },
+        "thin": {
+          "computed_ev": 0.0,
+          "file": "_DSC5303.ARW",
+          "normal_relative_rmse": 0.02037159353494644,
+          "normal_to_best_improvement": 1.0,
+          "relative_rmse": 0.02037159353494644
+        }
+      },
+      "capture_count": 5,
+      "f_number_recorded": 0.0,
+      "frames": [
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9998006791367857,
+              "pixel_count": 968288,
+              "recovery_db": -6.545553018610011,
+              "relative_mae": 1.6197148561477661,
+              "relative_p95_error": 14.6451416015625,
+              "relative_rmse": 2.1246023178100586,
+              "structure_correlation": 0.02588348143247505
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.5397762912899139,
+              "pixel_count": 3226696,
+              "recovery_db": 14.71541413500631,
+              "relative_mae": 0.1454329788684845,
+              "relative_p95_error": 0.42207038402557373,
+              "relative_rmse": 0.18375082314014435,
+              "structure_correlation": 0.2963594046453279
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968110,
+              "recovery_db": 25.947976346723895,
+              "relative_mae": 0.039942458271980286,
+              "relative_p95_error": 0.09905380755662918,
+              "relative_rmse": 0.05041980743408203,
+              "structure_correlation": 0.48882757855820624
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -6.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": -6.0,
+          "exposure_seconds": 0.0015625,
+          "f_number": 0.0,
+          "file": "_DSC5306.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.8732499872068386,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.6082721723611179,
+          "iso": 100,
+          "linearity_error_ev": 0.004104137420654297,
+          "measured_response_ev": -5.995895862579346,
+          "near_black_fraction_by_channel": {
+            "B": 0.729794183226833,
+            "G1": 0.6052546615890728,
+            "G2": 0.611289683133163,
+            "R": 0.8016640323631015
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "4",
+          "timestamp": "2026:04:17 06:55:19.106",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.9922605671040021,
+              "pixel_count": 968288,
+              "recovery_db": 8.885819991484944,
+              "relative_mae": 0.28330397605895996,
+              "relative_p95_error": 1.9681448936462402,
+              "relative_rmse": 0.35950836539268494,
+              "structure_correlation": 0.1828124680144687
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226696,
+              "recovery_db": 25.811605291496118,
+              "relative_mae": 0.040071796625852585,
+              "relative_p95_error": 0.10747785866260529,
+              "relative_rmse": 0.051217660307884216,
+              "structure_correlation": 0.7550756940257694
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968110,
+              "recovery_db": 33.742365558277136,
+              "relative_mae": 0.016131622716784477,
+              "relative_p95_error": 0.040218859910964966,
+              "relative_rmse": 0.020553307607769966,
+              "structure_correlation": 0.8376912936311621
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -3.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "computed_ev": -3.0,
+          "exposure_seconds": 0.0125,
+          "f_number": 0.0,
+          "file": "_DSC5304.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9823526758017015,
+          "green_clipped_fraction": 0.0,
+          "green_near_black_fraction": 0.28415099728330884,
+          "iso": 100,
+          "linearity_error_ev": -0.006844282150268555,
+          "measured_response_ev": -3.0068442821502686,
+          "near_black_fraction_by_channel": {
+            "B": 0.3614979479195037,
+            "G1": 0.2853024883673458,
+            "G2": 0.28299950619927194,
+            "R": 0.3661739679381117
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "2",
+          "timestamp": "2026:04:17 06:55:18.063",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.2256973131960739,
+              "pixel_count": 968288,
+              "recovery_db": 21.828697051732114,
+              "relative_mae": 0.06246238946914673,
+              "relative_p95_error": 0.3562404215335846,
+              "relative_rmse": 0.08101494610309601,
+              "structure_correlation": 0.6426466589024252
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226696,
+              "recovery_db": 33.49989963083884,
+              "relative_mae": 0.01629534177482128,
+              "relative_p95_error": 0.04268569126725197,
+              "relative_rmse": 0.021135134622454643,
+              "structure_correlation": 0.9477157265727877
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968110,
+              "recovery_db": 33.819499953756676,
+              "relative_mae": 0.015965260565280914,
+              "relative_p95_error": 0.040250636637210846,
+              "relative_rmse": 0.02037159353494644,
+              "structure_correlation": 0.8472048334504508
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 0.0,
+          "clipped_fraction_by_channel": {
+            "B": 4.899962059731521e-05,
+            "G1": 0.0019541468503542405,
+            "G2": 0.001965429226181199,
+            "R": 1.9022610405918892e-06
+          },
+          "computed_ev": 0.0,
+          "exposure_seconds": 0.1,
+          "f_number": 0.0,
+          "file": "_DSC5303.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9989991630336745,
+          "green_clipped_fraction": 0.00195978803826772,
+          "green_near_black_fraction": 0.1395442943451158,
+          "iso": 100,
+          "linearity_error_ev": 0.0,
+          "measured_response_ev": 0.0,
+          "near_black_fraction_by_channel": {
+            "B": 0.15495365829724286,
+            "G1": 0.13983035504849584,
+            "G2": 0.13925823364173576,
+            "R": 0.16617916307860878
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "1",
+          "timestamp": "2026:04:17 06:55:17.927",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968288,
+              "recovery_db": 31.25032463285661,
+              "relative_mae": 0.02062816731631756,
+              "relative_p95_error": 0.09051963686943054,
+              "relative_rmse": 0.027383172884583473,
+              "structure_correlation": 0.9363402972479156
+            },
+            "midtone": {
+              "clipped_fraction": 3.6569915480107204e-05,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226696,
+              "recovery_db": 33.98723512792658,
+              "relative_mae": 0.015412600710988045,
+              "relative_p95_error": 0.04053603857755661,
+              "relative_rmse": 0.01998196728527546,
+              "structure_correlation": 0.948108403929506
+            },
+            "thin": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968110,
+              "recovery_db": 2.347936417528405,
+              "relative_mae": 0.7267374396324158,
+              "relative_p95_error": 0.7896775603294373,
+              "relative_rmse": 0.7631381750106812,
+              "structure_correlation": -0.0013913560899171502
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 3.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.18102650728605335,
+            "G1": 0.25636457187057066,
+            "G2": 0.25643403719615643,
+            "R": 0.09172079583255276
+          },
+          "computed_ev": 3.0,
+          "exposure_seconds": 0.8,
+          "f_number": 0.0,
+          "file": "_DSC5305.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9857449747168128,
+          "green_clipped_fraction": 0.25639930453336357,
+          "green_near_black_fraction": 5.939646111227433e-05,
+          "iso": 100,
+          "linearity_error_ev": 0.006779193878173828,
+          "measured_response_ev": 3.006779193878174,
+          "near_black_fraction_by_channel": {
+            "B": 0.05209650157139881,
+            "G1": 5.98228299662001e-05,
+            "G2": 5.8970092258348564e-05,
+            "R": 0.02243618504565689
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "3",
+          "timestamp": "2026:04:17 06:55:18.980",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968288,
+              "recovery_db": 31.489879857174238,
+              "relative_mae": 0.020126651972532272,
+              "relative_p95_error": 0.0934799537062645,
+              "relative_rmse": 0.026638269424438477,
+              "structure_correlation": 0.9375793633506485
+            },
+            "midtone": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 3226696,
+              "recovery_db": 1.7950703462424817,
+              "relative_mae": 0.7338659763336182,
+              "relative_p95_error": 0.8243539929389954,
+              "relative_rmse": 0.8132919669151306,
+              "structure_correlation": -0.006828897482767247
+            },
+            "thin": {
+              "clipped_fraction": 1.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 968110,
+              "recovery_db": -0.15763635893011219,
+              "relative_mae": 0.9913289546966553,
+              "relative_p95_error": 0.9736931324005127,
+              "relative_rmse": 1.018314242362976,
+              "structure_correlation": -0.00011615312549567399
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 6.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.5585018080663214,
+            "G1": 0.6460638020976823,
+            "G2": 0.6464590132276673,
+            "R": 0.5641462101450074
+          },
+          "computed_ev": 5.906890595608519,
+          "exposure_seconds": 6.0,
+          "f_number": 0.0,
+          "file": "_DSC5307.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.886436832383374,
+          "green_clipped_fraction": 0.6462614076626748,
+          "green_near_black_fraction": 0.0,
+          "iso": 100,
+          "linearity_error_ev": 0.09897783929748716,
+          "measured_response_ev": 6.005868434906006,
+          "near_black_fraction_by_channel": {
+            "B": 0.0,
+            "G1": 0.0,
+            "G2": 0.0,
+            "R": 0.0
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "5",
+          "timestamp": "2026:04:17 06:55:25.582",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        }
+      ],
+      "hdr_source_ev_distribution": {
+        "median": 3.0,
+        "p05": 0.0,
+        "p95": 5.906890392303467
+      },
+      "hdr_valid_fraction": 1.0,
+      "iso": 100,
+      "key": "christmas",
+      "label": "Child beside Christmas tree",
+      "normal": "_DSC5303.ARW",
+      "signal_band_ranges_normal_equivalent": {
+        "dense": [
+          0.00030270119896158576,
+          0.005331906955689192
+        ],
+        "midtone": [
+          0.027364518493413925,
+          0.0995880588889122
+        ],
+        "thin": [
+          0.30517709255218506,
+          0.6809477806091309
+        ]
+      }
+    },
+    {
+      "all_frames_clipped_fraction": 0.08762470305049204,
+      "all_frames_near_black_fraction": 0.0006960963504400389,
+      "analysis_grid_shape": [
+        3188,
+        4782
+      ],
+      "best_by_band": {
+        "dense": {
+          "computed_ev": 1.6780719051126378,
+          "file": "whiteshirt/DSC05329.ARW",
+          "normal_relative_rmse": 0.06225885450839996,
+          "normal_to_best_improvement": 1.0647130843154187,
+          "relative_rmse": 0.05847477167844772
+        },
+        "midtone": {
+          "computed_ev": 1.6780719051126378,
+          "file": "whiteshirt/DSC05329.ARW",
+          "normal_relative_rmse": 0.03425680845975876,
+          "normal_to_best_improvement": 1.1210082237817547,
+          "relative_rmse": 0.030558926984667778
+        },
+        "thin": {
+          "computed_ev": -1.3219280948873622,
+          "file": "whiteshirt/DSC05328.ARW",
+          "normal_relative_rmse": 1.0522667169570923,
+          "normal_to_best_improvement": 69.23667553003742,
+          "relative_rmse": 0.015198111534118652
+        }
+      },
+      "capture_count": 3,
+      "f_number_recorded": 0.0,
+      "frames": [
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.00410677148537763,
+              "pixel_count": 874653,
+              "recovery_db": 19.340854614523106,
+              "relative_mae": 0.08578096330165863,
+              "relative_p95_error": 0.22297550737857819,
+              "relative_rmse": 0.10788405686616898,
+              "structure_correlation": 0.6156157649291695
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 2909626,
+              "recovery_db": 26.282386677619904,
+              "relative_mae": 0.038272418081760406,
+              "relative_p95_error": 0.09364647418260574,
+              "relative_rmse": 0.04851551726460457,
+              "structure_correlation": 0.8707750288774633
+            },
+            "thin": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 641484,
+              "recovery_db": 36.364207453293986,
+              "relative_mae": 0.011270403861999512,
+              "relative_p95_error": 0.026058709248900414,
+              "relative_rmse": 0.015198111534118652,
+              "structure_correlation": 0.9605723381068281
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": -1.5,
+          "clipped_fraction_by_channel": {
+            "B": 0.0006589694625443489,
+            "G1": 0.0843281502623546,
+            "G2": 0.08433792394839074,
+            "R": 0.00016884206615460422
+          },
+          "computed_ev": -1.3219280948873622,
+          "exposure_seconds": 0.05,
+          "f_number": 0.0,
+          "file": "whiteshirt/DSC05328.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9966432668788325,
+          "green_clipped_fraction": 0.08433303710537267,
+          "green_near_black_fraction": 0.1301298404672058,
+          "iso": 100,
+          "linearity_error_ev": -0.18286411855257922,
+          "measured_response_ev": -1.5047922134399414,
+          "near_black_fraction_by_channel": {
+            "B": 0.22175457211720867,
+            "G1": 0.13045850525837427,
+            "G2": 0.12980117567603733,
+            "R": 0.24915644562130995
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "2",
+          "timestamp": "2026:04:17 18:31:49.328",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 874653,
+              "recovery_db": 24.115977482018828,
+              "relative_mae": 0.049528613686561584,
+              "relative_p95_error": 0.12727658450603485,
+              "relative_rmse": 0.06225885450839996,
+              "structure_correlation": 0.8044315645059162
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 2909626,
+              "recovery_db": 29.30506201181189,
+              "relative_mae": 0.02663472108542919,
+              "relative_p95_error": 0.06465205550193787,
+              "relative_rmse": 0.03425680845975876,
+              "structure_correlation": 0.9346085986127982
+            },
+            "thin": {
+              "clipped_fraction": 0.26475371787157226,
+              "near_black_fraction": 0.0,
+              "pixel_count": 872475,
+              "recovery_db": -0.4425166788892015,
+              "relative_mae": 0.4975919723510742,
+              "relative_p95_error": 0.5624207854270935,
+              "relative_rmse": 1.0522667169570923,
+              "structure_correlation": 0.5470501198463394
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 0.0,
+          "clipped_fraction_by_channel": {
+            "B": 0.12096523873769631,
+            "G1": 0.12701888932094266,
+            "G2": 0.12704184764384635,
+            "R": 0.10171967021877838
+          },
+          "computed_ev": 0.0,
+          "exposure_seconds": 0.125,
+          "f_number": 0.0,
+          "file": "whiteshirt/DSC05327.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9967670054475642,
+          "green_clipped_fraction": 0.12703036848239452,
+          "green_near_black_fraction": 0.039320194875492424,
+          "iso": 100,
+          "linearity_error_ev": 0.0,
+          "measured_response_ev": 0.0,
+          "near_black_fraction_by_channel": {
+            "B": 0.1042795232225404,
+            "G1": 0.03865492827295163,
+            "G2": 0.03998546147803322,
+            "R": 0.10253652734769186
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "1",
+          "timestamp": "2026:04:17 18:31:49.159",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        },
+        {
+          "bands": {
+            "dense": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 874653,
+              "recovery_db": 24.66062930537707,
+              "relative_mae": 0.04656493663787842,
+              "relative_p95_error": 0.11885705590248108,
+              "relative_rmse": 0.05847477167844772,
+              "structure_correlation": 0.8249870345831943
+            },
+            "midtone": {
+              "clipped_fraction": 0.0,
+              "near_black_fraction": 0.0,
+              "pixel_count": 2909626,
+              "recovery_db": 30.297237984138402,
+              "relative_mae": 0.023874830454587936,
+              "relative_p95_error": 0.05779851973056793,
+              "relative_rmse": 0.030558926984667778,
+              "structure_correlation": 0.9462911008154349
+            },
+            "thin": {
+              "clipped_fraction": 0.9001667669560732,
+              "near_black_fraction": 0.0,
+              "pixel_count": 872475,
+              "recovery_db": -4.756687199204568,
+              "relative_mae": 1.0094643831253052,
+              "relative_p95_error": 0.845677375793457,
+              "relative_rmse": 1.729156732559204,
+              "structure_correlation": 0.21276632446758598
+            }
+          },
+          "black_levels": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "camera_exposure_compensation": 1.5,
+          "clipped_fraction_by_channel": {
+            "B": 0.14156921842522172,
+            "G1": 0.1754637712416963,
+            "G2": 0.17553048156853363,
+            "R": 0.14693156110823366
+          },
+          "computed_ev": 1.6780719051126378,
+          "exposure_seconds": 0.4,
+          "f_number": 0.0,
+          "file": "whiteshirt/DSC05329.ARW",
+          "focus_mode": "0",
+          "geometry_correlation_to_hdr": 0.9839032639625126,
+          "green_clipped_fraction": 0.17549712640511494,
+          "green_near_black_fraction": 0.001110133305206108,
+          "iso": 100,
+          "linearity_error_ev": -0.17447702977694446,
+          "measured_response_ev": 1.5035948753356934,
+          "near_black_fraction_by_channel": {
+            "B": 0.011749938471694619,
+            "G1": 0.0011468010266437241,
+            "G2": 0.0010734655837684919,
+            "R": 0.00979559483571549
+          },
+          "pixel_shift_info": "00000000 0 0 0x0",
+          "raw_shape": [
+            6376,
+            9564
+          ],
+          "sequence_number": "3",
+          "timestamp": "2026:04:17 18:31:49.822",
+          "white_levels": [
+            15360,
+            15360,
+            15360,
+            15360
+          ]
+        }
+      ],
+      "hdr_source_ev_distribution": {
+        "median": 1.6780718564987183,
+        "p05": 0.0,
+        "p95": 1.6780718564987183
+      },
+      "hdr_valid_fraction": 0.9123752313542997,
+      "iso": 100,
+      "key": "white-shirt",
+      "label": "White-shirt dinner",
+      "normal": "whiteshirt/DSC05327.ARW",
+      "signal_band_ranges_normal_equivalent": {
+        "dense": [
+          0.003747100243344903,
+          0.0069313314743340015
+        ],
+        "midtone": [
+          0.014666762202978134,
+          0.04642866551876068
+        ],
+        "thin": [
+          0.31186166405677795,
+          2.5694971084594727
+        ]
+      }
+    }
+  ],
+  "evidence_id": "controlled-79ef67c241b9aa37",
+  "method": {
+    "analysis_inset_fraction": 0.08,
+    "analysis_stride": 1,
+    "bands": "Dense, midtone, and thin bands are HDR-reference percentiles 1-10, 35-65, and 90-99.",
+    "clipping": "A green sample is clipped within 64 raw codes of the camera channel white level.",
+    "hdr_reference": "Per pixel, non-clipped bracket samples are exposure-weighted in normal-equivalent raw space; each tested frame is scored against a leave-one-out reference that excludes that frame.",
+    "near_black": "A green sample is near black within 16 raw codes of its channel black level.",
+    "normalization": "Raw green samples are divided by channel range and a robust median midtone response EV relative to the declared normal frame; reported shutter-time EV remains a separate linearity audit."
+  },
+  "plan_sha256": "e7af0ba60af88839b19c4a795a71f9e0fcc35c582acaecaf29b223fd93996cc2",
+  "recipe_code": {
+    "scripts/audit_controlled_evidence.py": "48372b9bf496e786695289e6035e0483ec24cbcec75faaa52ba55189178abe9b",
+    "scripts/run_controlled_exposure_latitude.py": "9102875d354781aa36e5ef525650708e1d0ca2f8104895c8f14485605d435ec1"
+  },
+  "retained_evidence_sha256": "350cfc2f2a87ff497c5ef1aa915bfdbf786f27a2b6aa133fed7f4f707ec18f38",
+  "review_note": "Retained sensor-domain results were not rerun: the repaired RGB/ICC helpers do not participate in this experiment. Capture membership, current source hashes, exposure metadata, timestamps, single-shot status and all summary aggregates were checked. Original-run source hashes were not recorded, so the new hashes identify the currently audited sources rather than prove byte identity at the historical run date.",
+  "schema": 3,
+  "schema_version": 1,
+  "scope": "Four complete single-shot ARW exposure brackets, measured directly in black-subtracted Bayer green samples without demosaic or tone mapping.",
+  "source_states": [
+    {
+      "bytes": 62996480,
+      "file": "church/DSC05317.ARW",
+      "sha256": "9d6d31aa083b76bb9bb050d1c80cbaee0a0b1676b94da22a43619a9a61d43d2c"
+    },
+    {
+      "bytes": 63918080,
+      "file": "church/DSC05315.ARW",
+      "sha256": "64212d7ac53d812bf62ff9bf04aa8a2cbdb48aadaa6f57094a491019ba014838"
+    },
+    {
+      "bytes": 65617920,
+      "file": "church/DSC05314.ARW",
+      "sha256": "92f2a5a8e665bc35e1a22411fe1efb7b923d0f225a87e33817dcd7c9a4f44b68"
+    },
+    {
+      "bytes": 67731456,
+      "file": "church/DSC05316.ARW",
+      "sha256": "1ffdee549d5ecab259cdbcfc77ef384b1bba72671da148ca1553445e06133c21"
+    },
+    {
+      "bytes": 67031040,
+      "file": "church/DSC05318.ARW",
+      "sha256": "fd25706be2d7ad16414b7eec997cc512a8caab6e2a97032e0dbc6fe0dc668420"
+    },
+    {
+      "bytes": 64364544,
+      "file": "New folder/DSC05299.ARW",
+      "sha256": "6ead265281f2767fe2bb37ed287466f77a9b6f0eb2be17855e232a7fd7934561"
+    },
+    {
+      "bytes": 68214784,
+      "file": "New folder/DSC05298.ARW",
+      "sha256": "3cdc5e0ddd18d6ce905be80d43ccf7f00388279d293c3569b0412ccf1c78f0c0"
+    },
+    {
+      "bytes": 72163328,
+      "file": "New folder/DSC05300.ARW",
+      "sha256": "bdc763be0fa4097ce430a03c59e4beb7f7bc34e22b2727e913941d5800eb2ca2"
+    },
+    {
+      "bytes": 63410176,
+      "file": "_DSC5306.ARW",
+      "sha256": "dd9edf58ee6278259372c323790bff83c0586fef552909e049ca865ab7464938"
+    },
+    {
+      "bytes": 66420736,
+      "file": "_DSC5304.ARW",
+      "sha256": "9aa3c92536555f7e5e4081f3509bf2fedc5a364f845de66df5ac6d683ef2b4df"
+    },
+    {
+      "bytes": 72196096,
+      "file": "_DSC5303.ARW",
+      "sha256": "a9f1612d47fbdc916a3950e93834c44c382a77003faacbb1fe5caa4cb9c719a4"
+    },
+    {
+      "bytes": 70483968,
+      "file": "_DSC5305.ARW",
+      "sha256": "492d14565e4ee0b18eeec3b458daaae45ecc994f6308f8da93df7e2b018b9f30"
+    },
+    {
+      "bytes": 65351680,
+      "file": "_DSC5307.ARW",
+      "sha256": "32a5d13b0f46d91b10c7968c56f79c5418e89a6e387b88fdc700b30c2b7f1124"
+    },
+    {
+      "bytes": 68280320,
+      "file": "whiteshirt/DSC05328.ARW",
+      "sha256": "b31bfd6965502391b9987d3168969b5b5a829b909150e5a675e562a808e18e6b"
+    },
+    {
+      "bytes": 71340032,
+      "file": "whiteshirt/DSC05327.ARW",
+      "sha256": "a3687fbc61ea005709dc13fbfa5fed54db591c49bf7715348a5b7e3cbf1efd2f"
+    },
+    {
+      "bytes": 73854976,
+      "file": "whiteshirt/DSC05329.ARW",
+      "sha256": "6e39fc9f681793a8947251bfd7c8586beefd7edc6c12eb17dcb9644494bf4df5"
+    }
+  ],
+  "summary": {
+    "best_dense_ev_by_case": {
+      "christmas": 5.906890595608519,
+      "church": 2.643856189774725,
+      "dinner": 0.0,
+      "white-shirt": 1.6780719051126378
+    },
+    "best_thin_ev_by_case": {
+      "christmas": 0.0,
+      "church": 0.0,
+      "dinner": -3.0,
+      "white-shirt": -1.3219280948873622
+    },
+    "case_count": 4,
+    "frame_count": 16,
+    "max_absolute_linearity_error_ev": 0.18286411855257922,
+    "max_all_frames_clipped_fraction": 0.08762470305049204,
+    "max_normal_green_clipped_fraction": 0.12703036848239452,
+    "median_absolute_linearity_error_ev": 0.011765802371687561,
+    "median_dense_normal_to_best_improvement": 2.0530061161268667,
+    "median_normal_green_clipped_fraction": 0.000996768386468076,
+    "median_thin_normal_to_best_improvement": 1.0024640029029224
+  }
+}

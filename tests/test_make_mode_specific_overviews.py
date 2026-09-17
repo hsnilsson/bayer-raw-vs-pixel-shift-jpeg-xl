@@ -140,6 +140,8 @@ class ModeSpecificOverviewTests(unittest.TestCase):
                 self.assertIn(mode_key, overview_sets, metadata_path)
                 layers = rgb16.get("sources", {}) if mode_key in rgb16_modes else image_sets[mode_key]
                 for key in layers:
+                    if metadata.get("schema") == 3 and key == "ps16_lossless":
+                        key = "reference"
                     self.assertIn(key, overview_sets[mode_key], (metadata_path, mode_key, key))
                     image_path = metadata_path.parent / overview_sets[mode_key][key]
                     with image_path.open("rb") as handle:

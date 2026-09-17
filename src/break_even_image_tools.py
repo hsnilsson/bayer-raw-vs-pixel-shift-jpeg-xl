@@ -96,9 +96,9 @@ def read_ppm(path: Path) -> np.ndarray:
     max_value = int(max_token)
     if width <= 0 or height <= 0:
         raise ValueError(f"invalid PPM dimensions in {path}: {width}x{height}")
-    if max_value <= 255:
+    if max_value == 255:
         dtype = np.dtype(np.uint8)
-    elif max_value <= 65535:
+    elif max_value == 65535:
         dtype = np.dtype(">u2")
     else:
         raise ValueError(f"unsupported PPM max value {max_value}")
@@ -111,7 +111,9 @@ def read_ppm(path: Path) -> np.ndarray:
 
 def read_rgb_image(path: Path) -> np.ndarray:
     tifffile = optional_tifffile()
-    if tifffile is not None and path.suffix.lower() in {".tif", ".tiff", ".dng"}:
+    if path.suffix.lower() in {".tif", ".tiff", ".dng"}:
+        if tifffile is None:
+            raise RuntimeError("TIFF reading requires tifffile; refusing an 8-bit Pillow fallback")
         try:
             # tifffile defaults to r+ here, which needlessly requires write
             # access to immutable corpus masters.  The pipeline only reads.
@@ -120,6 +122,22 @@ def read_rgb_image(path: Path) -> np.ndarray:
             arr = tifffile.imread(path)
     elif path.suffix.lower() in {".ppm", ".pnm"}:
         arr = read_ppm(path)
+    elif path.suffix.lower() == ".png":
+        with path.open("rb") as handle:
+            header = handle.read(29)
+        if header[:8] != b"\x89PNG\r\n\x1a\n":
+            raise ValueError(f"Invalid PNG signature: {path}")
+        if header[24] == 16:
+            try:
+                import imagecodecs
+            except ImportError as exc:
+                raise RuntimeError("RGB16 PNG requires imagecodecs; refusing precision loss") from exc
+            arr = imagecodecs.png_decode(path.read_bytes())
+            if arr.dtype.kind != "u" or arr.dtype.itemsize != 2:
+                raise ValueError("PNG decoder did not preserve 16-bit precision")
+        else:
+            with Image.open(path) as image:
+                arr = np.asarray(image.convert("RGB"))
     else:
         arr = np.asarray(Image.open(path))
     if arr.ndim == 2:
@@ -135,12 +153,7 @@ def read_rgb_image(path: Path) -> np.ndarray:
     if arr.dtype.byteorder == ">" and not isinstance(arr, np.memmap):
         arr = arr.astype(arr.dtype.newbyteorder("="), copy=False)
     if not (arr.dtype.kind == "u" and arr.dtype.itemsize in (1, 2)):
-        values = arr.astype(np.float64)
-        low = float(values.min(initial=0.0))
-        high = float(values.max(initial=0.0))
-        if high > low:
-            values = (values - low) / (high - low)
-        arr = np.round(np.clip(values, 0.0, 1.0) * 65535.0).astype(np.uint16)
+        raise ValueError(f"Unsupported pixel domain {arr.dtype}; explicit conversion is required: {path}")
     rgb = arr[:, :, :3]
     return rgb if isinstance(rgb, np.memmap) else np.ascontiguousarray(rgb)
 
@@ -216,11 +229,11 @@ def shift_rgb(arr: np.ndarray, shift_x: float, shift_y: float, fill: int = 0) ->
     return np.ascontiguousarray(np.stack(channels, axis=2))
 
 
-def unit_luma(arr: np.ndarray) -> np.ndarray:
+def unit_luma(arr: np.ndarray, weights: tuple[float, ...] = (.2126, .7152, .0722)) -> np.ndarray:
     rgb = arr[:, :, :3].astype(np.float32)
     peak = float(np.iinfo(arr.dtype).max) if np.issubdtype(arr.dtype, np.integer) else 1.0
-    rgb = np.clip(rgb / peak, 0.0, 1.0)
-    return rgb[:, :, 0] * 0.2126 + rgb[:, :, 1] * 0.7152 + rgb[:, :, 2] * 0.0722
+    rgb = rgb / peak
+    return np.sum(rgb * np.asarray(weights, dtype=np.float64), axis=2)
 
 
 def preview_luma(arr: np.ndarray, max_dim: int = 2048) -> np.ndarray:
@@ -228,7 +241,7 @@ def preview_luma(arr: np.ndarray, max_dim: int = 2048) -> np.ndarray:
     height, width = luma.shape
     scale = min(1.0, float(max_dim) / float(max(height, width)))
     if scale >= 1.0:
-        return luma.astype(np.float32, copy=False)
+        return luma.astype(np.float64, copy=False)
     size = (max(1, round(width * scale)), max(1, round(height * scale)))
     image = Image.fromarray(np.asarray(luma * 65535.0, dtype=np.uint16), mode="I;16")
     resized = image.resize(size, resample=Image.Resampling.BOX)
@@ -310,7 +323,7 @@ def box_blur_luma(luma: np.ndarray, radius: int) -> np.ndarray:
     if radius <= 0:
         return luma.astype(np.float32, copy=False)
     pad = int(radius)
-    padded = np.pad(luma.astype(np.float32, copy=False), pad, mode="reflect")
+    padded = np.pad(luma.astype(np.float64, copy=False), pad, mode="reflect")
     integral = np.pad(padded, ((1, 0), (1, 0)), mode="constant").cumsum(axis=0).cumsum(axis=1)
     size = 2 * pad + 1
     total = (
@@ -322,16 +335,17 @@ def box_blur_luma(luma: np.ndarray, radius: int) -> np.ndarray:
     return total / float(size * size)
 
 
-def highpass_luma(arr: np.ndarray, radius: int = 2) -> np.ndarray:
-    luma = unit_luma(arr)
+def highpass_luma(arr: np.ndarray, radius: int = 2, weights: tuple[float, ...] = (.2126, .7152, .0722)) -> np.ndarray:
+    luma = unit_luma(arr, weights)
     return luma - box_blur_luma(luma, radius)
 
 
-def structure_metrics(reference: np.ndarray, candidate: np.ndarray, radius: int = 2) -> StructureMetrics:
+def structure_metrics(reference: np.ndarray, candidate: np.ndarray, radius: int = 2,
+                      luma_weights: tuple[float, ...] = (.2126, .7152, .0722)) -> StructureMetrics:
     if reference.shape != candidate.shape:
         raise ValueError(f"reference and candidate shapes differ: {reference.shape} != {candidate.shape}")
-    ref_hp = highpass_luma(reference, radius)
-    cand_hp = highpass_luma(candidate, radius)
+    ref_hp = highpass_luma(reference, radius, luma_weights)
+    cand_hp = highpass_luma(candidate, radius, luma_weights)
     diff = cand_hp - ref_hp
     highpass_rmse = float(np.sqrt(np.mean(diff * diff)))
     ref_rms = float(np.sqrt(np.mean(ref_hp * ref_hp)))
@@ -368,6 +382,8 @@ def crop(arr: np.ndarray, spec: str | None) -> np.ndarray:
     x, y, width, height = parts
     if x < 0 or y < 0 or width <= 0 or height <= 0:
         raise ValueError("crop values must be non-negative x/y and positive width/height")
+    if x + width > arr.shape[1] or y + height > arr.shape[0]:
+        raise ValueError(f"crop exceeds image bounds: {spec} for {arr.shape}")
     return np.ascontiguousarray(arr[y : y + height, x : x + width])
 
 

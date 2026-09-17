@@ -1,0 +1,344 @@
+{
+  "schema": 3,
+  "selection": "Existing owner-approved crop coordinates and current viewer capture identities frozen before the full rebuild; no candidate-dependent selection",
+  "levels": [
+    "d003",
+    "d005",
+    "d010",
+    "d020",
+    "d022",
+    "d025",
+    "d028",
+    "d030",
+    "d100",
+    "d200"
+  ],
+  "frames": [
+    {
+      "scan_set": "adox_vlad_resolution_target",
+      "slug": "adox_vlad_resolution_target",
+      "set_id": "_DSC0001-_DSC0016",
+      "cohort": "secondary_same_sequence_target",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11204,
+            4589,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            16600,
+            1950,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-03",
+          "xywh": [
+            13000,
+            5800,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-04",
+          "xywh": [
+            17150,
+            5550,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "slug": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6938",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11502,
+            3527,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "slug": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6959",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            12224,
+            466,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "fuji_679_f_ii_1983",
+      "slug": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6980",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            1870,
+            5482,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "slug": "kodak5035_h190_1983",
+      "set_id": "_DSC6598",
+      "cohort": "diagnostic_flat_field",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7696,
+            5206,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "slug": "kodak5035_h190_1983",
+      "set_id": "_DSC6619",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            6292,
+            4355,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "slug": "kodak5035_h190_1983",
+      "set_id": "_DSC6661",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11480,
+            3038,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak5035 H190-1983",
+      "slug": "kodak5035_h190_1983",
+      "set_id": "_DSC6682",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            15775,
+            5354,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            8716,
+            2166,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "slug": "kodak_gold_200_5_1997",
+      "set_id": "_DSC6735",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7164,
+            5567,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "slug": "kodak_gold_200_5_1997",
+      "set_id": "_DSC6756",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            10885,
+            6290,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "slug": "kodak_gold_200_5_1997",
+      "set_id": "_DSC6793",
+      "cohort": "secondary_sequence_or_uncompressed",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7866,
+            5949,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "Kodak Gold 200-5 1997",
+      "slug": "kodak_gold_200_5_1997",
+      "set_id": "_DSC6814",
+      "cohort": "secondary_sequence_or_uncompressed",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            8525,
+            4844,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "slug": "konica_vx100_probable_1995",
+      "set_id": "_DSC6836",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            16201,
+            7714,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "slug": "konica_vx100_probable_1995",
+      "set_id": "_DSC6857",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            14436,
+            9669,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "slug": "konica_vx100_probable_1995",
+      "set_id": "_DSC6879",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            9269,
+            1338,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            4506,
+            6098,
+            768,
+            768
+          ]
+        }
+      ]
+    },
+    {
+      "scan_set": "konica_vx100_probable_1995",
+      "slug": "konica_vx100_probable_1995",
+      "set_id": "_DSC6917",
+      "cohort": "primary_compressed_independent",
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            3890,
+            3357,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            12331,
+            3675,
+            768,
+            768
+          ]
+        }
+      ]
+    }
+  ]
+}

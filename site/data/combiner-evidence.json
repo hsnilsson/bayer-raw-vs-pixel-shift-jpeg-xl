@@ -1,0 +1,1071 @@
+{
+  "asset_hashes": {
+    "assets/combiner-verified/adox-vlad-manual-01.png": "986506a9f56bd57a0e041e76e87651a8fbd89b479eae99933c8cfd84cb045977",
+    "assets/combiner-verified/adox-vlad-manual-02.png": "c00d06c5d43c331c9ff4e8d7dfb411d1c9365e01df8746016fccc0983b9f3f1a",
+    "assets/combiner-verified/adox-vlad-manual-03.png": "88fa8283a946be465ec611011e92dfe2cbbf119bc66cd11fa0509b4547fe15e9",
+    "assets/combiner-verified/adox-vlad-manual-04.png": "a8de98281867bd54fd60fb54a851bcb33efb339527c9a419901ed7518140d4ae",
+    "assets/combiner-verified/kodak-gold-200-manual-01.png": "527ee0d5a4c9a9654ea50d2d7a08a5cdee485a4edcd4b34e4edd9b93edb4bde6"
+  },
+  "cases": [
+    {
+      "anchor_recipe": {
+        "profile_sha256": "d1a9e05c9ce696230c09f4f606672c9a5cd6b9e5593d7b339c503afd66b02be7",
+        "rawtherapee_sha256": "54e2031e1a7d699706f15d394ea5551285cc205b5a68dd60d0d841c7779c3136",
+        "source_sha256": "57e62eefd77121e69f9098b591ec0618e85ba048dd10ec1e187d254157bb12d1"
+      },
+      "crops": [
+        {
+          "crop_xywh": [
+            11204,
+            4589,
+            768,
+            768
+          ],
+          "figure": "assets/combiner-verified/adox-vlad-manual-01.png",
+          "metrics": {
+            "detail_closer_to_anchor": "sony_arq",
+            "detail_correlation": {
+              "pixelshift2dng": 0.7557756601009936,
+              "sony_arq": 0.7637519757728816
+            },
+            "exposure_match": {
+              "pixelshift2dng": {
+                "ev": -0.08048474553961574,
+                "fit_pixels": 340656,
+                "gain": 0.9457398247495249
+              },
+              "sony_arq": {
+                "ev": 0.015640486319260457,
+                "fit_pixels": 340656,
+                "gain": 1.0109001372973205
+              }
+            },
+            "range_errors": {
+              "highlight": {
+                "anchor_y_bounds": [
+                  0.031177406377503283,
+                  0.2676558900125122
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 66996,
+                "rmse": {
+                  "pixelshift2dng": 0.014945752478984995,
+                  "sony_arq": 0.014953625372969081
+                }
+              },
+              "midtone": {
+                "anchor_y_bounds": [
+                  0.010882362030002923,
+                  0.016280138383467604
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 332526,
+                "rmse": {
+                  "pixelshift2dng": 0.000526458933571934,
+                  "sony_arq": 0.0005198735684792179
+                }
+              },
+              "shadow": {
+                "anchor_y_bounds": [
+                  0.00914316912213971,
+                  0.010564554971474537
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 65422,
+                "rmse": {
+                  "pixelshift2dng": 0.00029492336748060334,
+                  "sony_arq": 0.0003011477531329395
+                }
+              }
+            },
+            "registration": {
+              "anchor": {
+                "applied": true,
+                "confidence": 188.86184542822298,
+                "phase_peak": 0.11429998937629102,
+                "shift_x_px": -3.0,
+                "shift_y_px": 0.0,
+                "valid_fraction": 0.9857245551215278,
+                "valid_xywh": [
+                  2,
+                  2,
+                  761,
+                  764
+                ]
+              },
+              "sony": {
+                "applied": true,
+                "confidence": 496.7274637013827,
+                "phase_peak": 0.30125095592358186,
+                "shift_x_px": 1.0,
+                "shift_y_px": 1.0,
+                "valid_fraction": 0.9870215521918403,
+                "valid_xywh": [
+                  3,
+                  3,
+                  763,
+                  763
+                ]
+              }
+            },
+            "valid_xywh": [
+              7,
+              7,
+              752,
+              755
+            ]
+          },
+          "name": "manual-01"
+        },
+        {
+          "crop_xywh": [
+            13458,
+            2273,
+            768,
+            768
+          ],
+          "figure": "assets/combiner-verified/adox-vlad-manual-02.png",
+          "metrics": {
+            "detail_closer_to_anchor": "pixelshift2dng",
+            "detail_correlation": {
+              "pixelshift2dng": 0.7861122533942497,
+              "sony_arq": 0.7478368060644618
+            },
+            "exposure_match": {
+              "pixelshift2dng": {
+                "ev": -0.0936318657396368,
+                "fit_pixels": 337948,
+                "gain": 0.9371605527705889
+              },
+              "sony_arq": {
+                "ev": 0.0025260189978024822,
+                "fit_pixels": 337948,
+                "gain": 1.0017524366719357
+              }
+            },
+            "range_errors": {
+              "highlight": {
+                "anchor_y_bounds": [
+                  0.3789094043037767,
+                  0.40680042628115576
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 64335,
+                "rmse": {
+                  "pixelshift2dng": 0.0033864264026083717,
+                  "sony_arq": 0.004295897577816286
+                }
+              },
+              "midtone": {
+                "anchor_y_bounds": [
+                  0.06605996757896265,
+                  0.3591411129497828
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 332167,
+                "rmse": {
+                  "pixelshift2dng": 0.015759815959526483,
+                  "sony_arq": 0.020928143429234748
+                }
+              },
+              "shadow": {
+                "anchor_y_bounds": [
+                  0.024346036247070914,
+                  0.04462505642201904
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 64356,
+                "rmse": {
+                  "pixelshift2dng": 0.003678340071682864,
+                  "sony_arq": 0.004723596064611575
+                }
+              }
+            },
+            "registration": {
+              "anchor": {
+                "applied": true,
+                "confidence": 133.37136652880324,
+                "phase_peak": 0.09730294616018294,
+                "shift_x_px": -7.0,
+                "shift_y_px": 4.0,
+                "valid_fraction": 0.9754096137152778,
+                "valid_xywh": [
+                  2,
+                  6,
+                  757,
+                  760
+                ]
+              },
+              "sony": {
+                "applied": true,
+                "confidence": 360.4132011353441,
+                "phase_peak": 0.2575162003689841,
+                "shift_x_px": 0.0,
+                "shift_y_px": 2.0,
+                "valid_fraction": 0.9870198567708334,
+                "valid_xywh": [
+                  2,
+                  4,
+                  764,
+                  762
+                ]
+              }
+            },
+            "valid_xywh": [
+              6,
+              10,
+              749,
+              752
+            ]
+          },
+          "name": "manual-02"
+        },
+        {
+          "crop_xywh": [
+            12458,
+            6098,
+            768,
+            768
+          ],
+          "figure": "assets/combiner-verified/adox-vlad-manual-03.png",
+          "metrics": {
+            "detail_closer_to_anchor": "sony_arq",
+            "detail_correlation": {
+              "pixelshift2dng": 0.22809948369851057,
+              "sony_arq": 0.24530135928364938
+            },
+            "exposure_match": {
+              "pixelshift2dng": {
+                "ev": -0.09835247221750165,
+                "fit_pixels": 338848,
+                "gain": 0.9340991044644418
+              },
+              "sony_arq": {
+                "ev": 0.0002656673396919335,
+                "fit_pixels": 338848,
+                "gain": 1.0001841635234943
+              }
+            },
+            "range_errors": {
+              "highlight": {
+                "anchor_y_bounds": [
+                  0.10036509058782031,
+                  0.1503005720486772
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 60913,
+                "rmse": {
+                  "pixelshift2dng": 0.0017205937810297264,
+                  "sony_arq": 0.0015225194331855408
+                }
+              },
+              "midtone": {
+                "anchor_y_bounds": [
+                  0.02363249152116964,
+                  0.09584018103498693
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 336982,
+                "rmse": {
+                  "pixelshift2dng": 0.0010451280617237019,
+                  "sony_arq": 0.0009007853716130442
+                }
+              },
+              "shadow": {
+                "anchor_y_bounds": [
+                  0.013942091591967767,
+                  0.019073739454876205
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 64227,
+                "rmse": {
+                  "pixelshift2dng": 0.00025287730492462633,
+                  "sony_arq": 0.0002784784077352501
+                }
+              }
+            },
+            "registration": {
+              "anchor": {
+                "applied": true,
+                "confidence": 100.09588111816075,
+                "phase_peak": 0.07444191674559393,
+                "shift_x_px": -6.0,
+                "shift_y_px": -2.0,
+                "valid_fraction": 0.9792683919270834,
+                "valid_xywh": [
+                  2,
+                  2,
+                  758,
+                  762
+                ]
+              },
+              "sony": {
+                "applied": true,
+                "confidence": 343.6907075618058,
+                "phase_peak": 0.25079869884798556,
+                "shift_x_px": 1.0,
+                "shift_y_px": 0.0,
+                "valid_fraction": 0.9883151584201388,
+                "valid_xywh": [
+                  3,
+                  2,
+                  763,
+                  764
+                ]
+              }
+            },
+            "valid_xywh": [
+              7,
+              6,
+              749,
+              754
+            ]
+          },
+          "name": "manual-03"
+        },
+        {
+          "crop_xywh": [
+            15095,
+            6247,
+            768,
+            768
+          ],
+          "figure": "assets/combiner-verified/adox-vlad-manual-04.png",
+          "metrics": {
+            "detail_closer_to_anchor": "pixelshift2dng",
+            "detail_correlation": {
+              "pixelshift2dng": 0.33007645765576954,
+              "sony_arq": 0.3036534827766253
+            },
+            "exposure_match": {
+              "pixelshift2dng": {
+                "ev": -0.10095974200574627,
+                "fit_pixels": 337490,
+                "gain": 0.9324125047792196
+              },
+              "sony_arq": {
+                "ev": -0.005264358793441864,
+                "fit_pixels": 337490,
+                "gain": 0.9963576739654896
+              }
+            },
+            "range_errors": {
+              "highlight": {
+                "anchor_y_bounds": [
+                  0.4257400140132813,
+                  0.4337038097281638
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 65339,
+                "rmse": {
+                  "pixelshift2dng": 0.0021546228295341086,
+                  "sony_arq": 0.002270427389493925
+                }
+              },
+              "midtone": {
+                "anchor_y_bounds": [
+                  0.019917369030946475,
+                  0.42388000568407735
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 330216,
+                "rmse": {
+                  "pixelshift2dng": 0.007424274994913179,
+                  "sony_arq": 0.009579146896471238
+                }
+              },
+              "shadow": {
+                "anchor_y_bounds": [
+                  0.011816399341931143,
+                  0.015271013567106024
+                ],
+                "closer_to_anchor": "pixelshift2dng",
+                "pixels": 65236,
+                "rmse": {
+                  "pixelshift2dng": 0.00024525376859982025,
+                  "sony_arq": 0.0002809179907214538
+                }
+              }
+            },
+            "registration": {
+              "anchor": {
+                "applied": true,
+                "confidence": 67.45668235498687,
+                "phase_peak": 0.050208896707686856,
+                "shift_x_px": -10.0,
+                "shift_y_px": -2.0,
+                "valid_fraction": 0.9741007486979166,
+                "valid_xywh": [
+                  2,
+                  2,
+                  754,
+                  762
+                ]
+              },
+              "sony": {
+                "applied": true,
+                "confidence": 296.30541834006175,
+                "phase_peak": 0.20963478831834675,
+                "shift_x_px": 0.0,
+                "shift_y_px": 0.0,
+                "valid_fraction": 0.9896104600694444,
+                "valid_xywh": [
+                  2,
+                  2,
+                  764,
+                  764
+                ]
+              }
+            },
+            "valid_xywh": [
+              6,
+              6,
+              746,
+              754
+            ]
+          },
+          "name": "manual-04"
+        }
+      ],
+      "key": "adox-vlad",
+      "label": "Adox high-resolution black-and-white target (historical f/8 capture)",
+      "profiles": {
+        "anchor": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        },
+        "pixelshift2dng": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        },
+        "sony_arq": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        }
+      },
+      "render_provenance": "Fresh first-ARW anchor; retained neutral RawTherapee 5.12 combiner renders adopted by content hash",
+      "sequence": "_DSC6582-_DSC6597",
+      "source_render_hashes": {
+        "anchor": "ca70a162c32fcb979afea24041d0ea86985860ac00309197a0cd552205804bd6",
+        "pixelshift2dng": "c750ed729d0c8beef7a54c7c73da4d9722b9866f59437b7c41220f7bca16646c",
+        "sony_arq": "a2fb6bcdd8f0294a74c57d0642a93ab716201c7330c72bd55ea21066f8a19cd1"
+      }
+    },
+    {
+      "anchor_recipe": {
+        "profile_sha256": "d1a9e05c9ce696230c09f4f606672c9a5cd6b9e5593d7b339c503afd66b02be7",
+        "rawtherapee_sha256": "54e2031e1a7d699706f15d394ea5551285cc205b5a68dd60d0d841c7779c3136",
+        "source_sha256": "0c9fbec48155c438ad46796ac54b56c6a66f96d4e4a08ec4179aaa4e889071bc"
+      },
+      "crops": [
+        {
+          "crop_xywh": [
+            7866,
+            5949,
+            768,
+            768
+          ],
+          "figure": "assets/combiner-verified/kodak-gold-200-manual-01.png",
+          "metrics": {
+            "detail_closer_to_anchor": "sony_arq",
+            "detail_correlation": {
+              "pixelshift2dng": 0.3703976618978118,
+              "sony_arq": 0.41383990551770056
+            },
+            "exposure_match": {
+              "pixelshift2dng": {
+                "ev": -0.09838983587231327,
+                "fit_pixels": 340656,
+                "gain": 0.9340749130008495
+              },
+              "sony_arq": {
+                "ev": -0.001645228110841428,
+                "fit_pixels": 340656,
+                "gain": 0.9988602647657207
+              }
+            },
+            "range_errors": {
+              "highlight": {
+                "anchor_y_bounds": [
+                  0.15270903838549657,
+                  0.19051704251112528
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 65233,
+                "rmse": {
+                  "pixelshift2dng": 0.0018419282125806966,
+                  "sony_arq": 0.0014791596619108459
+                }
+              },
+              "midtone": {
+                "anchor_y_bounds": [
+                  0.030529455574131253,
+                  0.1425307172258272
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 333800,
+                "rmse": {
+                  "pixelshift2dng": 0.0016184641890640904,
+                  "sony_arq": 0.001290222780609754
+                }
+              },
+              "shadow": {
+                "anchor_y_bounds": [
+                  0.008717210226303977,
+                  0.018715434652134773
+                ],
+                "closer_to_anchor": "sony_arq",
+                "pixels": 65605,
+                "rmse": {
+                  "pixelshift2dng": 0.0002886531462335716,
+                  "sony_arq": 0.00023396699557615876
+                }
+              }
+            },
+            "registration": {
+              "anchor": {
+                "applied": true,
+                "confidence": 107.53886020418237,
+                "phase_peak": 0.0791676554852744,
+                "shift_x_px": 1.0,
+                "shift_y_px": -2.0,
+                "valid_fraction": 0.9857279459635416,
+                "valid_xywh": [
+                  3,
+                  2,
+                  763,
+                  762
+                ]
+              },
+              "sony": {
+                "applied": true,
+                "confidence": 294.31833500109883,
+                "phase_peak": 0.21156518208556788,
+                "shift_x_px": 3.0,
+                "shift_y_px": 0.0,
+                "valid_fraction": 0.9857245551215278,
+                "valid_xywh": [
+                  5,
+                  2,
+                  761,
+                  764
+                ]
+              }
+            },
+            "valid_xywh": [
+              9,
+              6,
+              753,
+              754
+            ]
+          },
+          "name": "manual-01"
+        }
+      ],
+      "key": "kodak-gold-200",
+      "label": "Kodak Gold 200-5 1997 negative",
+      "profiles": {
+        "anchor": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        },
+        "pixelshift2dng": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        },
+        "sony_arq": {
+          "curves": [
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "function": 4,
+              "kind": "parametric",
+              "parameters": [
+                2.399993896484375,
+                0.9478607177734375,
+                0.0521392822265625,
+                0.077392578125,
+                0.0392913818359375,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+          "linear_to_srgb": [
+            [
+              2.0339247350802228,
+              -0.7276402064411905,
+              -0.30663646925957955
+            ],
+            [
+              -0.22881719825852162,
+              1.2318532606395638,
+              -0.0029290935365442502
+            ],
+            [
+              -0.008560245194455049,
+              -0.1532909278259319,
+              1.1618044048450076
+            ]
+          ],
+          "name": "embedded RGB matrix/TRC",
+          "rgb_to_xyz_d50": [
+            [
+              0.7977142333984375,
+              0.135162353515625,
+              0.0313262939453125
+            ],
+            [
+              0.288055419921875,
+              0.7118682861328125,
+              7.62939453125e-05
+            ],
+            [
+              0.0,
+              1.52587890625e-05,
+              0.82489013671875
+            ]
+          ]
+        }
+      },
+      "render_provenance": "Fresh first-ARW anchor; retained neutral RawTherapee 5.12 combiner renders adopted by content hash",
+      "sequence": "_DSC6798-_DSC6813",
+      "source_render_hashes": {
+        "anchor": "aeb348946ea8d11a0526787ed03b17a923f53f2cda61143371ece7268fc8bc13",
+        "pixelshift2dng": "fb580577f687d648626b1560c2de6ea0c2e30d0572a7f18cf748aebec26534b1",
+        "sony_arq": "0306260fa13a79e2873b2a6ac61e4b1dce57c8066034e835266e524e966e4d21"
+      }
+    }
+  ],
+  "evidence_id": "combiner-3460033a8f443914",
+  "interpretation": "Tonal and spatial agreement with one source ARW after a shared-domain registration and scalar midtone exposure fit. The anchor is noisy and lower resolution; these comparisons cannot rank recovered scene latitude or absolute image quality",
+  "method": "Actual embedded ICC TRCs and XYZ D50 conversion; linear resampling; common valid support; 9x9 float64 low-pass tone error. Detail uses separate 5x5 high-pass correlation. Exposure fitting applies only to this bounded combiner audit",
+  "recipe_code": {
+    "metadata/combiner_crop_plan.json": "b069b95071e22b31904cb322a2547ade83fcca813f2e5b4de624e1688b1cf316",
+    "profiles/rawtherapee/neutral-render.pp3": "d1a9e05c9ce696230c09f4f606672c9a5cd6b9e5593d7b339c503afd66b02be7",
+    "scripts/rebuild_combiner_evidence.py": "45e036eef582aeffc4f9658ea01aeb9d67ae46998ea1e72389ef2424b08f0d60",
+    "src/break_even_image_tools.py": "1eb072ad4ec370e52fe4ea26065cf7057ebbe6311159b7a01e242405f62940eb",
+    "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+    "src/report_transforms.py": "72d4e4179edb802826c7b198064283e396795f9e28abc5eb67a5b643710376b5"
+  },
+  "schema": 3,
+  "scope": "Five approved crops from two historical sequences; one f/8 target and one Kodak Gold frame",
+  "summary": {
+    "closer_to_anchor_counts": {
+      "highlight": {
+        "pixelshift2dng": 3,
+        "sony_arq": 2
+      },
+      "midtone": {
+        "pixelshift2dng": 2,
+        "sony_arq": 3
+      },
+      "shadow": {
+        "pixelshift2dng": 4,
+        "sony_arq": 1
+      }
+    },
+    "crops": 5,
+    "sequences": 2
+  }
+}

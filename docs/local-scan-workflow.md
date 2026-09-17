@@ -1,5 +1,7 @@
 # Local Scan Workflow
 
+> This page records the earlier local acquisition and exploratory pipeline. Its matrix, metric and publication commands are historical. Use the corrected [reproduction instructions](../REPRODUCIBILITY.md) for the current release and preserve the separate RAW61 and DNG routes described there.
+
 This is the private/local workflow for adding real camera-scanned film material
 without committing private scans or generated results to Git.
 

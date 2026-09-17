@@ -29,10 +29,10 @@ DEFAULT_RENDER_INDEX = ROOT / "outputs/rawtherapee_renders/rawtherapee_render_in
 DEFAULT_EXCLUDE_CASES = ROOT / "site/publication_exclude_cases.txt"
 DEFAULT_VIEWERS = ROOT / "site/assets/review-viewers"
 DEFAULT_ANNOTATIONS = ROOT / "metadata/scan_annotations.json"
-DEFAULT_MUIMG_PROBE = ROOT / "metadata/muimg_dng_jxl_probe.json"
-DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/muimg_archive_qualification.json"
-DEFAULT_MUIMG_LOSSLESS_QUALIFICATION = ROOT / "metadata/muimg_lossless_qualification.json"
-DEFAULT_COMBINER_AUDIT = ROOT / "metadata/pixelshift_combiner_audit.json"
+DEFAULT_MUIMG_PROBE = ROOT / "metadata/historical/muimg_dng_jxl_probe.json"
+DEFAULT_MUIMG_QUALIFICATION = ROOT / "metadata/historical/muimg_archive_qualification.json"
+DEFAULT_MUIMG_LOSSLESS_QUALIFICATION = ROOT / "metadata/historical/muimg_lossless_qualification.json"
+DEFAULT_COMBINER_AUDIT = ROOT / "metadata/historical/pixelshift_combiner_audit.json"
 DEFAULT_PUBLIC_FIGURES = ROOT / "docs/figures/public-latitude-v2"
 DEFAULT_CONTROLLED_LATITUDE = ROOT / "metadata/controlled_exposure_latitude.json"
 DEFAULT_CONTROLLED_LATITUDE_FIGURES = ROOT / "docs/figures/controlled-exposure-latitude"
@@ -774,11 +774,11 @@ def viewer_records(
             candidates.append(
                 {
                     "key": "ps16_lossless",
-                    "label": "PS16 lossless / reference",
+                    "label": "PS16 reference" if metadata.get("schema")==3 else "PS16 lossless / reference",
                     "src": reference_sources.get(default_mode, relpath(reference_path, output)),
                     "sources": reference_sources,
                     "role": "ps16",
-                    "storageKind": "lossless PS16 render",
+                    "storageKind": "uncompressed source render" if metadata.get("schema")==3 else "lossless PS16 render",
                     "overview": relpath(reference_overview_path, output) if reference_overview_path.is_file() else "",
                     "overviews": ps16_overviews,
                 }
@@ -842,6 +842,9 @@ def viewer_records(
                 "scanSet": scan_set,
                 "reference": raw_sources.get(default_mode, relpath(raw61_path, output)),
                 "references": raw_sources,
+                "ps16References": reference_sources,
+                "ps16Overviews": ps16_overviews,
+                "sourceProfiles": {k:v.get("profile") for k,v in metadata.get("asset_manifest", {}).items()},
                 "referenceLabel": str(labels.get("raw61", "RAW61 local aligned")),
                 "referenceStorageMib": size_lookup.get((scan_slug, set_id, "raw61")),
                 "referenceOverview": relpath(raw61_overview_path, output) if raw61_overview_path.is_file() else "",
@@ -851,6 +854,7 @@ def viewer_records(
                 "pixelFormats": pixel_formats,
                 "pixelWidth": int(rgb16.get("width", 0)) if rgb16_sources else 0,
                 "pixelHeight": int(rgb16.get("height", 0)) if rgb16_sources else 0,
+                "pixelTransport": str(rgb16.get("transport", "identity")),
                 "candidates": candidates,
                 "metadata": {
                     "transform": default_mode,
@@ -1173,7 +1177,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     return """  <section class="crop-workspace" id="cropWorkspace" tabindex="0" aria-labelledby="cropViewerTitle">
     <aside class="crop-sidebar crop-sidebar-left">
       <div class="crop-sidebar-header">
-        <strong>Film candidates</strong>
+        <strong>Capture crops</strong>
         <span id="cropFilmCount"></span>
       </div>
       <div class="crop-choice-list" id="cropFilmList"></div>
@@ -1185,21 +1189,24 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <p id="cropViewerMeta"></p>
         </div>
         <div class="crop-actions">
+          <label class="crop-mode-label">Left reference <select id="cropReference"><option value="raw61">RAW61 baseline</option><option value="ps16">PS16 reference (codec loss)</option></select></label>
           <label class="crop-mode-label">View <select id="cropMode" title="Choose the normal or extreme-edit diagnostic view"></select></label>
           <button type="button" id="cropOverlayToggle" aria-pressed="false" aria-keyshortcuts="O" title="Toggle candidate overlay (O)">Overlay (O)</button>
           <button type="button" id="cropZoomOut" title="Zoom out">-</button>
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
+          <button type="button" id="cropNativeScale" title="One source pixel per display pixel; reset pan">1:1</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
           <button type="button" id="cropFullscreen" aria-pressed="false" title="Enter fullscreen visual review">Fullscreen</button>
         </div>
       </div>
       <div class="crop-canvas-wrap">
         <canvas id="cropCanvas" role="img" aria-label="Side-by-side crop comparison"></canvas>
+        <output id="cropScale" title="Image scale in display pixels; 100% maps each source pixel to one display pixel"></output>
         <div class="crop-status" id="cropStatus" aria-live="polite"></div>
       </div>
-      <details class="crop-latitude" id="cropLatitude" open>
+      <details class="crop-latitude" id="cropLatitude">
         <summary id="cropLatitudeHandle">
-          <span>Rendered RGB edit latitude</span>
+          <span>Explore rendered RGB edits</span>
           <button type="button" class="tone-float-toggle" id="toneFloatToggle" aria-pressed="false">Pop out</button>
         </summary>
         <div class="crop-latitude-body">
@@ -1214,9 +1221,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
             <canvas id="toneCurve" width="360" height="180" tabindex="0" aria-label="Point tone curve. Left-click to add or drag a point. Right-click an interior point to remove it."></canvas>
           </div>
           <div class="crop-histogram-wrap" title="Drag the lower-right corner to resize">
-            <div class="crop-tool-heading"><strong>Luminance histogram</strong><span>RAW61 blue · candidate amber</span></div>
+            <div class="crop-tool-heading"><strong>Display brightness</strong><span>Left reference blue · candidate amber</span></div>
             <canvas id="toneHistogram" width="512" height="128" aria-label="Shared luminance histograms"></canvas>
-            <p id="toneClipping">Clipping: -</p>
+            <p id="toneClipping" title="Pixels whose three displayed sRGB channels are all 0 or all 255; this is not sensor clipping.">Display black/white: -</p>
           </div>
           <p class="crop-scope"><strong>Scope:</strong> This tests editing latitude inside the fixed rendered RGB chain: the already-rendered 16-bit RGB pixels are decoded, adjusted identically, and only then reduced to the 8-bit display canvas. It measures neither the full latitude in the original raw files nor what a different raw developer, demosaic, white balance, highlight reconstruction, or camera profile could recover.</p>
         </div>
@@ -1232,6 +1239,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
   </section>
   <script type="application/json" id="cropViewerData">__VIEWER_DATA__</script>
   <script>
+  __REPORT_COLOR_JS__
   (() => {
     const viewers = JSON.parse(document.getElementById("cropViewerData").textContent || "[]");
     const workspace = document.getElementById("cropWorkspace");
@@ -1249,6 +1257,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     const overlayToggle = document.getElementById("cropOverlayToggle");
     const fullscreenToggle = document.getElementById("cropFullscreen");
     const modeSelect = document.getElementById("cropMode");
+    const referenceSelect = document.getElementById("cropReference");
     const latitude = document.getElementById("cropLatitude");
     const latitudeHandle = document.getElementById("cropLatitudeHandle");
     const floatToggle = document.getElementById("toneFloatToggle");
@@ -1265,11 +1274,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     const imageCache = new Map();
     const pixelCache = new Map();
     const pixelCacheOrder = [];
-    const prefetchedSources = new Set();
-    const prefetchQueue = [];
-    let activePrefetches = 0;
+    let prefetchController = null;
+    let loadController = null;
     let prefetchTimer = 0;
-    let browseCount = -1;
     let toneFrame = 0;
     let loadSerial = 0;
     const navigationZones = ["film", "view", "quality"];
@@ -1279,6 +1286,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       viewerIndex: 0,
       candidateKey: "",
       modeKey: "",
+      referenceKey: "raw61",
       overlay: false,
       zoom: 1,
       panX: 0,
@@ -1356,7 +1364,12 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return (viewer.pixelFormats && viewer.pixelFormats[state.modeKey]) || viewer.pixelFormat || "image";
     }
 
+    function referenceLabel() {
+      return state.referenceKey === "ps16" ? "PS16 reference" : currentViewer().referenceLabel || "RAW61 local aligned";
+    }
+
     function referenceSource(viewer) {
+      if (state.referenceKey === "ps16") return viewer.ps16References[state.modeKey];
       return (viewer.references && viewer.references[state.modeKey]) || viewer.reference;
     }
 
@@ -1365,6 +1378,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }
 
     function referenceOverviewSource(viewer) {
+      if (state.referenceKey === "ps16") return viewer.ps16Overviews[state.modeKey];
       return (viewer.referenceOverviews && viewer.referenceOverviews[state.modeKey]) || viewer.referenceOverview;
     }
 
@@ -1381,6 +1395,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         image.src = src;
       });
       imageCache.set(src, promise);
+      while (imageCache.size > 20) imageCache.delete(imageCache.keys().next().value);
       return promise;
     }
 
@@ -1393,13 +1408,21 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       return pixels;
     }
 
-    async function loadRgb16(viewer, src) {
-      if (pixelCache.has(src)) return pixelCache.get(src);
-      const response = await fetch(src);
+    async function loadRgb16(viewer, src, signal) {
+      if (pixelCache.has(src)) return rememberPixelSource(src, pixelCache.get(src));
+      const response = await fetch(src, { signal });
       if (!response.ok) throw new Error(`${src}: ${response.status}`);
-      const buffer = await response.arrayBuffer();
+      const packed = viewer.pixelTransport === "gzip-byteplanes-v1";
+      const buffer = packed
+        ? await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()
+        : await response.arrayBuffer();
       const expectedBytes = viewer.pixelWidth * viewer.pixelHeight * 3 * 2;
       if (buffer.byteLength !== expectedBytes) throw new Error(`${src}: expected ${expectedBytes} bytes, got ${buffer.byteLength}`);
+      if (packed) {
+        const bytes = new Uint8Array(buffer), half = bytes.length / 2, pixels = new Uint16Array(half);
+        for (let i = 0; i < half; i++) pixels[i] = bytes[i] | (bytes[half + i] << 8);
+        return rememberPixelSource(src, pixels);
+      }
       return rememberPixelSource(src, new Uint16Array(buffer));
     }
 
@@ -1529,75 +1552,34 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }
 
     function editedValue(value) {
-      const exposed = value * Math.pow(2, state.tone.exposure);
-      const ranged = (exposed - state.tone.black) / Math.max(.001, state.tone.white - state.tone.black);
+      const ranged = (value - state.tone.black) / Math.max(.001, state.tone.white - state.tone.black);
       return clamp01(curveValue(ranged));
     }
 
-    function renderRgb16(viewer, pixels, isRaw61) {
+    function renderRgb16(viewer, pixels, isReference) {
       const output = document.createElement("canvas");
       output.width = viewer.pixelWidth;
       output.height = viewer.pixelHeight;
-      const outputContext = output.getContext("2d");
+      const outputContext = output.getContext("2d", { colorSpace: "srgb" });
       const imageData = outputContext.createImageData(output.width, output.height);
       const histogramBins = new Uint32Array(256);
-      const recipe = viewer.metadata.browserTransformRecipe || {};
-      const modeKey = state.modeKey;
-      const gamma = recipe.gamma || 2.2;
-      const weights = recipe.luma_weights || [.2126, .7152, .0722];
-      const displayRange = (recipe.display_ranges || {})[modeKey] || [0, 1];
-      const displayLow = displayRange[0];
-      const displaySpan = Math.max(1e-6, displayRange[1] - displayLow);
-      const rawGain = isRaw61 && ["shadow_recovery_luma_p12", "highlight_separation_luma_p88_p998"].includes(modeKey)
-        ? Number((viewer.metadata.raw61ExposureMatch || {}).linear_gain || 1)
-        : 1;
-      const densityBlack = recipe.density_black || [0, 0, 0];
-      const densityBase = recipe.density_base || [1, 1, 1];
-      const densityLow = recipe.density_low || [0, 0, 0];
-      const densityHigh = recipe.density_high || [1, 1, 1];
-      const densityBalance = [1.07, 1, .94];
-      const densityChannel = (value, channel) => {
-        const linear = Math.pow(clamp01(value), gamma);
-        const transmission = Math.max(1e-5, Math.min(1, (linear - densityBlack[channel]) / Math.max(1e-6, densityBase[channel] - densityBlack[channel])));
-        let positive = clamp01((-Math.log(transmission) - densityLow[channel]) / Math.max(1e-6, densityHigh[channel] - densityLow[channel]));
-        positive = clamp01((positive - .035) / .90);
-        if (modeKey === "negative_density_hard_shadow_recovery") positive = Math.pow(positive, .68);
-        return logistic(clamp01(positive * densityBalance[channel]), 9, .5);
-      };
-      let clippedBlack = 0;
-      let clippedWhite = 0;
-      for (let sourceIndex = 0, targetIndex = 0; sourceIndex < pixels.length; sourceIndex += 3, targetIndex += 4) {
-        let red = pixels[sourceIndex] / 65535;
-        let green = pixels[sourceIndex + 1] / 65535;
-        let blue = pixels[sourceIndex + 2] / 65535;
-        if (modeKey === "shadow_recovery_luma_p12" || modeKey === "highlight_separation_luma_p88_p998") {
-          const lumaLinear = (
-            Math.pow(clamp01(red), gamma) * weights[0]
-            + Math.pow(clamp01(green), gamma) * weights[1]
-            + Math.pow(clamp01(blue), gamma) * weights[2]
-          ) * rawGain;
-          const transformed = modeKey === "shadow_recovery_luma_p12"
-            ? Math.pow(clamp01(lumaLinear / Math.max(1e-6, recipe.shadow_white || 1)), 1 / gamma)
-            : Math.pow(clamp01((lumaLinear - Number(recipe.highlight_black || 0)) / Math.max(1e-6, Number(recipe.highlight_white || 1) - Number(recipe.highlight_black || 0))), 1 / gamma);
-          red = transformed;
-          green = transformed;
-          blue = transformed;
-        } else if (modeKey === "negative_density_hard_print" || modeKey === "negative_density_hard_shadow_recovery") {
-          red = densityChannel(red, 0);
-          green = densityChannel(green, 1);
-          blue = densityChannel(blue, 2);
-        }
-        red = editedValue(clamp01((red - displayLow) / displaySpan));
-        green = editedValue(clamp01((green - displayLow) / displaySpan));
-        blue = editedValue(clamp01((blue - displayLow) / displaySpan));
+      const recipe = viewer.metadata.browserTransformRecipe;
+      const key = isReference ? (state.referenceKey === "ps16" ? "reference" : "raw61") : currentCandidate().key;
+      const inputProfile = (viewer.sourceProfiles || {})[key] || recipe.profile;
+      const convert = ReportColor.compileU16(recipe, state.modeKey, state.tone.exposure, inputProfile);
+      const display = new Float64Array(3);
+      let clippedBlack = 0, clippedWhite = 0;
+      for (let src = 0, dst = 0; src < pixels.length; src += 3, dst += 4) {
+        convert(pixels[src], pixels[src + 1], pixels[src + 2], display);
+        const red = editedValue(display[0]), green = editedValue(display[1]), blue = editedValue(display[2]);
         const luma = clamp01(red * .2126 + green * .7152 + blue * .0722);
         histogramBins[Math.min(255, Math.floor(luma * 256))] += 1;
-        if (Math.max(red, green, blue) <= 0) clippedBlack += 1;
-        if (Math.min(red, green, blue) >= 1) clippedWhite += 1;
-        imageData.data[targetIndex] = Math.round(red * 255);
-        imageData.data[targetIndex + 1] = Math.round(green * 255);
-        imageData.data[targetIndex + 2] = Math.round(blue * 255);
-        imageData.data[targetIndex + 3] = 255;
+        if (Math.round(Math.max(red, green, blue) * 255) === 0) clippedBlack += 1;
+        if (Math.round(Math.min(red, green, blue) * 255) === 255) clippedWhite += 1;
+        imageData.data[dst] = Math.round(red * 255);
+        imageData.data[dst + 1] = Math.round(green * 255);
+        imageData.data[dst + 2] = Math.round(blue * 255);
+        imageData.data[dst + 3] = 255;
       }
       outputContext.putImageData(imageData, 0, 0);
       return { canvas: output, histogram: histogramBins, clippedBlack, clippedWhite, pixels: output.width * output.height };
@@ -1632,7 +1614,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         histogramContext.fill();
       });
       const percent = (count, total) => `${(100 * count / Math.max(1, total)).toFixed(2)}%`;
-      clipping.textContent = `Clipping - RAW61 black ${percent(reference.clippedBlack, reference.pixels)}, white ${percent(reference.clippedWhite, reference.pixels)}; candidate black ${percent(candidate.clippedBlack, candidate.pixels)}, white ${percent(candidate.clippedWhite, candidate.pixels)}.`;
+      clipping.textContent = `Display black/white - ${referenceLabel()} black ${percent(reference.clippedBlack, reference.pixels)}, white ${percent(reference.clippedWhite, reference.pixels)}; candidate black ${percent(candidate.clippedBlack, candidate.pixels)}, white ${percent(candidate.clippedWhite, candidate.pixels)}.`;
     }
 
     function rerenderRgb16() {
@@ -1657,13 +1639,13 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       let clippedBlack = 0;
       let clippedWhite = 0;
       for (let index = 0; index < imageData.data.length; index += 4) {
-        const red = editedValue(imageData.data[index] / 255);
-        const green = editedValue(imageData.data[index + 1] / 255);
-        const blue = editedValue(imageData.data[index + 2] / 255);
+        const red = editedValue(ReportColor.encodeSrgb(ReportColor.decodeSrgb(imageData.data[index] / 255) * Math.pow(2, state.tone.exposure)));
+        const green = editedValue(ReportColor.encodeSrgb(ReportColor.decodeSrgb(imageData.data[index + 1] / 255) * Math.pow(2, state.tone.exposure)));
+        const blue = editedValue(ReportColor.encodeSrgb(ReportColor.decodeSrgb(imageData.data[index + 2] / 255) * Math.pow(2, state.tone.exposure)));
         const luma = clamp01(red * .2126 + green * .7152 + blue * .0722);
         histogramBins[Math.min(255, Math.floor(luma * 256))] += 1;
-        if (Math.max(red, green, blue) <= 0) clippedBlack += 1;
-        if (Math.min(red, green, blue) >= 1) clippedWhite += 1;
+        if (Math.round(Math.max(red, green, blue) * 255) === 0) clippedBlack += 1;
+        if (Math.round(Math.min(red, green, blue) * 255) === 255) clippedWhite += 1;
         imageData.data[index] = Math.round(red * 255);
         imageData.data[index + 1] = Math.round(green * 255);
         imageData.data[index + 2] = Math.round(blue * 255);
@@ -1691,50 +1673,21 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       toneFrame = window.requestAnimationFrame(rerenderTone);
     }
 
-    function allRgb16Sources() {
-      const ordered = [];
-      const pushViewer = (viewer) => {
-        if (!viewer) return;
-        Object.entries(viewer.pixelFormats || {}).forEach(([modeKey, pixelFormat]) => {
-          if (pixelFormat !== "rgb16le") return;
-          const sources = [
-            (viewer.references && viewer.references[modeKey]) || viewer.reference,
-            ...viewer.candidates.map((candidate) => (candidate.sources && candidate.sources[modeKey]) || candidate.src)
-          ];
-          sources.forEach((src) => {
-            if (src && !ordered.includes(src)) ordered.push(src);
-          });
-        });
-      };
-      pushViewer(currentViewer());
-      for (let distance = 1; distance < viewers.length; distance += 1) {
-        pushViewer(viewers[state.viewerIndex + distance]);
-        pushViewer(viewers[state.viewerIndex - distance]);
-      }
-      return ordered;
-    }
-
-    function pumpPrefetchQueue() {
-      while (activePrefetches < 4 && prefetchQueue.length) {
-        const src = prefetchQueue.shift();
-        if (!src || prefetchedSources.has(src)) continue;
-        prefetchedSources.add(src);
-        activePrefetches += 1;
-        fetch(src, { priority: "low" })
-          .then((response) => response.ok ? response.arrayBuffer() : null)
-          .catch(() => null)
-          .finally(() => { activePrefetches -= 1; pumpPrefetchQueue(); });
-      }
-    }
-
     function noteBrowsing() {
-      browseCount += 1;
-      if (browseCount < 3 || prefetchTimer) return;
-      prefetchTimer = window.setTimeout(() => {
-        prefetchTimer = 0;
-        prefetchQueue.push(...allRgb16Sources().filter((src) => !prefetchedSources.has(src)));
-        pumpPrefetchQueue();
-      }, 1200);
+      window.clearTimeout(prefetchTimer);
+      if (prefetchController) prefetchController.abort();
+      prefetchController = new AbortController();
+      const signal = prefetchController.signal;
+      prefetchTimer = window.setTimeout(async () => {
+        const viewer = currentViewer();
+        if (currentPixelFormat(viewer) !== "rgb16le") return;
+        const index = viewer.candidates.findIndex(c => c.key === state.candidateKey);
+        // Only adjacent qualities of the active crop, never the corpus.
+        for (const neighbor of [viewer.candidates[index - 1], viewer.candidates[index + 1]]) {
+          if (!neighbor || signal.aborted) continue;
+          try { await loadRgb16(viewer, candidateSource(neighbor), signal); } catch (_) { /* optional prefetch */ }
+        }
+      }, 600);
     }
 
     function resizeCanvas() {
@@ -1755,8 +1708,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.beginPath();
       ctx.rect(clipRect[0], clipRect[1], clipRect[2], clipRect[3]);
       ctx.clip();
-      ctx.imageSmoothingEnabled = state.zoom < 2;
       const scale = fitScale(image, width, height) * state.zoom;
+      ctx.imageSmoothingEnabled = scale * (window.devicePixelRatio || 1) < 1;
       const drawnWidth = image.width * scale;
       const drawnHeight = image.height * scale;
       ctx.drawImage(
@@ -1789,6 +1742,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     function drawPaneLabel(text, x, y) {
       ctx.save();
       ctx.font = "12px Arial, sans-serif";
+      const limit = canvas.clientWidth / 2 - 38;
+      if (ctx.measureText(text).width > limit) {
+        while (text.length && ctx.measureText(text + "…").width > limit) text = text.slice(0, -1);
+        text += "…";
+      }
       const metrics = ctx.measureText(text);
       ctx.fillStyle = "rgba(0,0,0,.62)";
       ctx.fillRect(x + 10, y + 10, metrics.width + 18, 24);
@@ -1804,6 +1762,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.fillStyle = "#101316";
       ctx.fillRect(0, 0, width, height);
       const half = width / 2;
+      document.getElementById("cropScale").textContent = state.referenceImage
+        ? `${Math.round(100 * fitScale(state.referenceImage, half, height) * state.zoom * (window.devicePixelRatio || 1))}%`
+        : "";
       drawOverview(state.referenceOverviewImage, 0, half, height);
       drawOverview(state.candidateOverviewImage, half, half, height);
       drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
@@ -1819,13 +1780,16 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       ctx.stroke();
       ctx.restore();
       const candidate = currentCandidate();
-      const referenceLabel = currentViewer().referenceLabel || "RAW61 local aligned";
-      drawPaneLabel(state.overlay ? `${candidate.label} over ${referenceLabel}` : referenceLabel, 0, 0);
+      const leftLabel = referenceLabel();
+      drawPaneLabel(state.overlay ? `${candidate.label} over ${leftLabel}` : leftLabel, 0, 0);
       drawPaneLabel(candidate.label, half, 0);
     }
 
     async function loadCurrentImages() {
       const serial = ++loadSerial;
+      if (loadController) loadController.abort();
+      loadController = new AbortController();
+      const signal = loadController.signal;
       const viewer = currentViewer();
       const candidate = currentCandidate();
       const referenceOverview = referenceOverviewSource(viewer);
@@ -1834,8 +1798,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       try {
         const rgb16 = currentPixelFormat(viewer) === "rgb16le";
         const [referenceData, candidateData, referenceOverviewImage, candidateOverviewImage] = await Promise.all([
-          rgb16 ? loadRgb16(viewer, referenceSource(viewer)) : loadImage(referenceSource(viewer)),
-          rgb16 ? loadRgb16(viewer, candidateSource(candidate)) : loadImage(candidateSource(candidate)),
+          rgb16 ? loadRgb16(viewer, referenceSource(viewer), signal) : loadImage(referenceSource(viewer)),
+          rgb16 ? loadRgb16(viewer, candidateSource(candidate), signal) : loadImage(candidateSource(candidate)),
           referenceOverview ? loadImage(referenceOverview) : Promise.resolve(null),
           candidateOverview ? loadImage(candidateOverview) : Promise.resolve(null)
         ]);
@@ -1914,9 +1878,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
         name.textContent = candidate.label;
         button.appendChild(name);
         const role = document.createElement("span");
-        const roleLabel = candidate.role === "ps16" ? "lossless PS16 render" : candidate.role;
+        const roleLabel = candidate.storageKind || candidate.role;
         const sizeLabel = Number.isFinite(candidate.storageMib)
-          ? `~${candidate.storageMib.toFixed(1)} MiB ${candidate.storageKind || "stored file"}`
+          ? `~${candidate.storageMib.toFixed(1)} MiB`
           : "";
         role.textContent = [roleLabel, sizeLabel].filter(Boolean).join(" | ");
         button.appendChild(role);
@@ -1953,7 +1917,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (mode.label) parts.push(mode.label);
       if (Array.isArray(viewer.metadata.crop) && viewer.metadata.crop.length === 4) parts.push(`crop ${viewer.metadata.crop.join(",")}`);
       if (alignment.applied) parts.push(`RAW61 shift ${alignment.shift_x_px}, ${alignment.shift_y_px}`);
-      const scopeNote = viewer.metadata.raw61ScopeNote || "";
+      const scopeNote = (viewer.metadata.raw61ScopeNote || "").replace("The left image is", "The RAW61 baseline is");
       meta.textContent = `${parts.join(" | ")}${mode.description ? ` - ${mode.description}` : ""}${scopeNote ? ` Scope: ${scopeNote}` : ""}`;
     }
 
@@ -2061,6 +2025,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       });
     }
 
+    referenceSelect.addEventListener("change", () => { state.referenceKey = referenceSelect.value; loadCurrentImages(); noteBrowsing(); });
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     modeSelect.addEventListener("focus", () => { setNavigationZone("view"); });
@@ -2164,6 +2129,12 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     });
     document.getElementById("cropZoomOut").addEventListener("click", () => { state.zoom = Math.max(.25, state.zoom / 1.35); draw(); });
     document.getElementById("cropZoomIn").addEventListener("click", () => { state.zoom = Math.min(10, state.zoom * 1.35); draw(); });
+    document.getElementById("cropNativeScale").addEventListener("click", () => {
+      if (!state.referenceImage) return;
+      state.zoom = 1 / ((window.devicePixelRatio || 1) * fitScale(state.referenceImage, canvas.clientWidth / 2, canvas.clientHeight));
+      state.panX = state.panY = 0;
+      draw();
+    });
     document.getElementById("cropReset").addEventListener("click", () => { resetView(); draw(); });
     fullscreenToggle.addEventListener("click", async () => {
       if (document.fullscreenElement === workspace) await document.exitFullscreen();
@@ -2226,6 +2197,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }, true);
     document.addEventListener("keydown", (event) => {
       if (!workspaceActive && !workspace.contains(document.activeElement)) return;
+      if (event.target.matches('input, textarea, select, [contenteditable="true"]')) return;
       if (event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')) {
         event.preventDefault();
         setOverlay(!state.overlay);
@@ -2258,11 +2230,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     setOverlay(false);
     drawToneCurve();
     resizeHistogramCanvas();
-    setViewer(0);
+    const requestedCrop = new URLSearchParams(window.location.search);
+    const requestedIndex = viewers.findIndex(viewer => viewer.scanSet === requestedCrop.get("scan")
+      && viewer.setId === requestedCrop.get("frame") && viewer.metadata.cropName === requestedCrop.get("crop"));
+    setViewer(Math.max(0, requestedIndex));
     setNavigationZone("film");
   })();
   </script>
-""".replace("__VIEWER_DATA__", viewer_json)
+""".replace("__VIEWER_DATA__", viewer_json).replace("__REPORT_COLOR_JS__", (ROOT / "src/report_color.js").read_text(encoding="utf-8"))
 
 
 def render_combiner_audit(audit: dict[str, object]) -> str:
@@ -3055,7 +3030,7 @@ def render_html(
     <h2>Visual Review</h2>
     <div class="note">
       <p><strong>What this section is for:</strong> judge whether the numeric advantage translates into useful visible detail. These are crops from the rendered route; muimg DNG candidates are covered separately below.</p>
-      <p>The locally aligned RAW61 render stays fixed on the left. Select PS16 lossless or a PS16 JXL quality on the right, then compare them side by side or overlay the selected PS16 candidate directly over RAW61. <span class="review-keyboard-hint"><span aria-hidden="true">⌨️</span> Use <kbd>←</kbd>/<kbd>→</kbd> to move between Film candidates, View, and Candidate quality; use <kbd>↑</kbd>/<kbd>↓</kbd> to change the selection; press <kbd>O</kbd> to toggle the overlay.</span></p>
+      <p>Choose the aligned RAW61 baseline or the PS16 reference on the left. The PS16 reference isolates codec loss; RAW61 shows the capture-and-render comparison. Select a PS16 JXL quality on the right and compare side by side or as an overlay. <span class="review-keyboard-hint"><span aria-hidden="true">⌨️</span> Use <kbd>←</kbd>/<kbd>→</kbd> to move between Capture crops, View, and Candidate quality; use <kbd>↑</kbd>/<kbd>↓</kbd> to change the selection; press <kbd>O</kbd> to toggle the overlay.</span></p>
     </div>
     {visual_review_html}
 
@@ -3254,6 +3229,8 @@ def render_html(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate a local HTML report for the break-even study.")
+    parser.add_argument("--verified-release", type=Path, help="Schema-3 release manifest; the default current-report path")
+    parser.add_argument("--legacy-unverified", action="store_true", help="Render historical research output outside the publishable site")
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--panels", type=Path, default=DEFAULT_PANELS)
     parser.add_argument("--contexts", type=Path, default=DEFAULT_CONTEXTS)
@@ -3357,6 +3334,24 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    if not args.legacy_unverified:
+        from render_verified_report import write_report
+        from check_verified_release import check
+        sys.path.insert(0, str(ROOT / "src"))
+        from incremental_cache import atomic_write_json, sha256_file
+        release_path = (args.verified_release or ROOT / "site/data/release.json").resolve()
+        site = release_path.parent.parent
+        output = site / "index.html" if args.output == DEFAULT_OUTPUT else args.output.resolve()
+        if output != site / "index.html":
+            raise SystemExit("The verified report must be written beside its release assets as index.html")
+        check(site, check_html=False)
+        release = read_json_object(release_path)
+        write_report(release,site)
+        print(f"Wrote verified report {output}")
+        return 0
+    if args.output.resolve().is_relative_to((ROOT / "site").resolve()):
+        raise SystemExit("Historical unverified reports cannot overwrite the publishable site")
+
     excludes = read_exclude_cases(args.exclude_cases_file, args.exclude_case)
     annotations = read_annotations(args.annotations)
     rows = filter_rows(read_rows(args.matrix), excludes)
@@ -3407,6 +3402,7 @@ def main() -> int:
         controlled_latitude=controlled_latitude,
         controlled_latitude_figures=controlled_latitude_figures,
     )
+    rendered = rendered.replace("<main>", '<main><p><strong>Historical, unverified research output. Superseded by the schema-3 report; do not publish these metrics.</strong></p>', 1)
     args.output.write_text(
         "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n",
         encoding="utf-8",

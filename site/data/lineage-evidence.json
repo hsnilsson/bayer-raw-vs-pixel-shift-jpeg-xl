@@ -1,0 +1,3815 @@
+{
+  "adoption": "Retained encodes are adopted by declared source/candidate mapping, RGB16 dimensions, embedded profile, full decode and measured image agreement with the pixel-verified source. Their original encoder jobs did not record input content hashes. Current source and candidate hashes freeze this reviewed snapshot; no claim of historical cryptographic provenance or byte-identical re-encoding is made.",
+  "boundary_check": "Original native HP loss uses reflect padding at the boundary of the valid measurement crop. Sensitivity excludes two output pixels on every side after filtering, removing all padding-dependent values. Relative-screen changes and undefined low-energy ratios are disclosed for all native crops and distances; the frozen measurement recipe is not retuned",
+  "declared_render_preset": {
+    "Color Management": {
+      "aintent": "Relative",
+      "applybaselineexposureoffset": "true",
+      "applyhuesatmap": "true",
+      "applylooktable": "false",
+      "blux": "0.036600000000000001",
+      "bluy": "0.0001",
+      "dcpilluminant": "0",
+      "fbw": "false",
+      "gamut": "true",
+      "grex": "0.15959999999999999",
+      "grey": "0.84040000000000004",
+      "inputprofile": "(camera)",
+      "labgridcieahigh": "-0.75163000000000002",
+      "labgridciealow": "0.51763000000000003",
+      "labgridciebhigh": "-0.81799999999999995",
+      "labgridcieblow": "-0.33582000000000001",
+      "labgridciegx": "-0.69164000000000003",
+      "labgridciegy": "-0.70909",
+      "labgridciemx": "0",
+      "labgridciemy": "0",
+      "labgridciewx": "-0.18964",
+      "labgridciewy": "-0.16636000000000001",
+      "offstrc": "1",
+      "opacitycurvewli": "1;0;0.5;0.34999999999999998;0.34999999999999998;0.5;0.69999999999999996;0.34999999999999998;0.34999999999999998;1;0.5;0.34999999999999998;0.34999999999999998;",
+      "outputbpc": "true",
+      "outputprofile": "RTv4_Large",
+      "outputprofileintent": "Relative",
+      "preser": "0",
+      "pyrwavtrc": "2",
+      "redx": "0.73470000000000002",
+      "redy": "0.26529999999999998",
+      "refi": "0",
+      "residtrc": "0",
+      "shiftx": "0",
+      "shifty": "0",
+      "sigmatrc": "1",
+      "tonecurve": "false",
+      "trcexp": "false",
+      "wavexp": "false",
+      "wcat": "brad",
+      "will": "D50",
+      "wmidtcie": "0",
+      "workingprofile": "ProPhoto",
+      "workingtrc": "none",
+      "workingtrcgamma": "2.3999999999999999",
+      "workingtrcslope": "12.92",
+      "wprim": "def",
+      "wsmoothcie": "false"
+    },
+    "Exposure": {
+      "auto": "false",
+      "black": "0",
+      "brightness": "0",
+      "clampoog": "true",
+      "clip": "0.02",
+      "compensation": "0",
+      "contrast": "0",
+      "curve": "0;",
+      "curve2": "0;",
+      "curvefromhistogrammatching": "false",
+      "curvemode": "Standard",
+      "curvemode2": "Standard",
+      "highlightcompr": "0",
+      "highlightcomprthreshold": "0",
+      "histogrammatching": "false",
+      "saturation": "0",
+      "shadowcompr": "50"
+    },
+    "HLRecovery": {
+      "enabled": "false",
+      "hlbl": "0",
+      "hlth": "1",
+      "method": "Coloropp"
+    },
+    "White Balance": {
+      "compatibilityversion": "2",
+      "enabled": "true",
+      "equal": "1",
+      "green": "0.92600000000000005",
+      "itcwb_alg": "false",
+      "itcwb_green": "0",
+      "itcwb_nopurple": "false",
+      "itcwb_prim": "beta",
+      "itcwb_rangegreen": "1",
+      "itcwb_sampling": "false",
+      "setting": "Camera",
+      "standardobserver": "TWO_DEGREES",
+      "temperature": "5513",
+      "temperaturebias": "0"
+    }
+  },
+  "evidence_id": "lineage-5e124d41d93f060b",
+  "frames": [
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.002,
+          "FNumber": 4.5,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.002,
+          "FNumber": 4.5,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "3ac6d3eb718b8b83fe537b989f5ebf0d129e78a9e915309dfc2ac1349d43b552",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "a8a44a5c73aabb265b47fb59d0ddef485191162e08e88a2193a7588caec57cb5",
+          "released_file_sha256": "223190af6fdab884aac0dd44603510dedb92ce662217f1b97117abf2904abfad"
+        },
+        {
+          "image_codestream_sha256": "09d45a9eee2bdf36ed808cd6427e1b8ef761f0dc531dec069267a6cccf4121a5",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "2af688a7922d6a1114c150ac90d7baa26f3aa03085c1a63624dc4e5ea9549279",
+          "released_file_sha256": "4c68d3fa9815ab4827a4e3f3b67369b1ebf1e6163d5ea2e314200bdfb19ee161"
+        },
+        {
+          "image_codestream_sha256": "b0e1bd8b0e4068c8288f31a0f16200da971217c64e5e200204c5c5e68825580f",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "fbfd3b4786956ca80630528a0f8324468502fd45bb387ba70b1882c894f414e6",
+          "released_file_sha256": "8a329e863f9ff0bc8834a253dd44cf1aec37de1b5516050a11aeac1b6cb346d9"
+        },
+        {
+          "image_codestream_sha256": "0fa77539377f6a5296743b02127e1dd3486b4d9a4d11fcb574fdc9a30b08df1b",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "8becb59c127aea3f74cabd14106c478451fe24b4ffe5b5805104715a4e92bfde",
+          "released_file_sha256": "0e224c5f7e28d307cb00e64a090719d39fcab5a815710ae5a483d9857e0b427d"
+        },
+        {
+          "image_codestream_sha256": "b50674b41b83cd31018525422d03b36fb8112822d52d9abaa5facd1b3ec06ae0",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6f9774e2e1e240443b91e4659e8b9b1072a38894f1e0947cde451addb7a87204",
+          "released_file_sha256": "31f52dc31a0e03278f96e8d7c6b55445ec4c83f242d0a3a6133a0416845cbf5d"
+        },
+        {
+          "image_codestream_sha256": "e7e9a6b1fb949b05da5dec61b83aad7562decf185bfede77f06da5068860e802",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f7ee1bd9978066c83e2c51b5f9171a87938f91a7893a94d9fa9598575e79c93c",
+          "released_file_sha256": "f349c0af0fd0619af9c2a6f15ff3fdcfdf618cd98f96369bead7e0674df2fec0"
+        },
+        {
+          "image_codestream_sha256": "4fb90c583c82b6615de4cd6a47f317b122cedd65fad35042c692040239a10dd9",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5e04e761b7f420ba691137c2aa70680c6cc95c425464b86e32e3f9a39a403b5d",
+          "released_file_sha256": "e1a0cfd901c4a85348a7d0a545f67202d6ae22a60099fbd97f5a05c3381b6a09"
+        },
+        {
+          "image_codestream_sha256": "57105ec93000150eb7ee7c406d8f214b03ca27f6048edc02d42cf75ac854d332",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "540d3b70dae356d38529a9629192599a44da91bc81aa0a99cb0271bef00175e4",
+          "released_file_sha256": "8bf302d185ee08608ae405c9796bc866219f21048792b074c62e7cfe2f8f61e5"
+        },
+        {
+          "image_codestream_sha256": "0d73380e8546f74a6b8b3c640e84636e544961efcc144cffedd961a2e9b3cb0d",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "9d2574180715defb309b342eaee951da2ee5df21bbbef57377810fee288d447a",
+          "released_file_sha256": "9805d523a1c0f9a73f3d4af78b8e315667ea735385fdb9d3b752cb73f3363a15"
+        },
+        {
+          "image_codestream_sha256": "dd94ae21fcb723e952878ffb0d1e6ee4caa0d36df0fa74f362323b8de0f7b62d",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "ab6a154ca3ef07e1542ee45dbc627db6107ed684c6c0a41ef575db3388054e92",
+          "released_file_sha256": "8df02fb2032b270f06485596c47770b7d0d4a44c84f987fd2be140d90414ed56"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 1.1205673217773438e-05,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.014334568323055864,
+              "candidate_loss": 0.014204342650079478,
+              "level": "d003",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.02417963308300391,
+              "candidate_loss": 0.023964346007851665,
+              "level": "d005",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.046440533247931626,
+              "candidate_loss": 0.04603288089564211,
+              "level": "d010",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.0840569225873837,
+              "candidate_loss": 0.08334472482923826,
+              "level": "d020",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.0910591480610549,
+              "candidate_loss": 0.0902811561959131,
+              "level": "d022",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10182996455287435,
+              "candidate_loss": 0.10094746197910914,
+              "level": "d025",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.11081354140817379,
+              "candidate_loss": 0.10989849662947843,
+              "level": "d028",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.11673949662386507,
+              "candidate_loss": 0.11577069873881071,
+              "level": "d030",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.21326895448214672,
+              "candidate_loss": 0.21157011161462047,
+              "level": "d100",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.27126468289687705,
+              "candidate_loss": 0.26908484847859576,
+              "level": "d200",
+              "raw61_interior_loss": 0.5496565715037638,
+              "raw61_loss": 0.5457394526759229,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-02",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 1.150369644165039e-05,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.027845302277443106,
+              "candidate_loss": 0.027645042001602272,
+              "level": "d003",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.04724319794017391,
+              "candidate_loss": 0.046908928664941486,
+              "level": "d005",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09217806406462667,
+              "candidate_loss": 0.09157567535070743,
+              "level": "d010",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.16664901223723771,
+              "candidate_loss": 0.16552106742634934,
+              "level": "d020",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.17915555963646518,
+              "candidate_loss": 0.17793815595279477,
+              "level": "d022",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.19641569848101464,
+              "candidate_loss": 0.1951350991613556,
+              "level": "d025",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2111427375348975,
+              "candidate_loss": 0.20976896235881895,
+              "level": "d028",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2198113287773362,
+              "candidate_loss": 0.21838709629646447,
+              "level": "d030",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.32455036293709794,
+              "candidate_loss": 0.32229129313464744,
+              "level": "d100",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3860410501654254,
+              "candidate_loss": 0.38319447461008227,
+              "level": "d200",
+              "raw61_interior_loss": 0.7015653150579182,
+              "raw61_loss": 0.6974463722732723,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-03",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 9.685754776000977e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.03398731651315272,
+              "candidate_loss": 0.033993972055282276,
+              "level": "d003",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.06517737560545189,
+              "candidate_loss": 0.06518718201262115,
+              "level": "d005",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.15228319716252717,
+              "candidate_loss": 0.152368084320664,
+              "level": "d010",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.29915984904953546,
+              "candidate_loss": 0.2992389002599512,
+              "level": "d020",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.32489068962614226,
+              "candidate_loss": 0.3249938964328122,
+              "level": "d022",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.36224248376122986,
+              "candidate_loss": 0.3623664163010529,
+              "level": "d025",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3947972617875243,
+              "candidate_loss": 0.3949286912831795,
+              "level": "d028",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4155976575819458,
+              "candidate_loss": 0.4157432494727345,
+              "level": "d030",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6575194011969405,
+              "candidate_loss": 0.6574461148082033,
+              "level": "d100",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7952317715698092,
+              "candidate_loss": 0.795040967624192,
+              "level": "d200",
+              "raw61_interior_loss": 0.9162616629180399,
+              "raw61_loss": 0.9165283657355593,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-04",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 1.1444091796875e-05,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.039146026167596396,
+              "candidate_loss": 0.03824910052053824,
+              "level": "d003",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.06742415970010486,
+              "candidate_loss": 0.06587118680267821,
+              "level": "d005",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.14017708615260233,
+              "candidate_loss": 0.13711938994854997,
+              "level": "d010",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2370832338451142,
+              "candidate_loss": 0.2318557871931623,
+              "level": "d020",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2525632082415172,
+              "candidate_loss": 0.2470075780816691,
+              "level": "d022",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2723671472644108,
+              "candidate_loss": 0.2664479635322921,
+              "level": "d025",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2904031219008021,
+              "candidate_loss": 0.28408368709133447,
+              "level": "d028",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3013353550879842,
+              "candidate_loss": 0.29473516490333734,
+              "level": "d030",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4355886542853715,
+              "candidate_loss": 0.42607086490639245,
+              "level": "d100",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5118751265472572,
+              "candidate_loss": 0.5004412363072757,
+              "level": "d200",
+              "raw61_interior_loss": 0.7842930417534407,
+              "raw61_loss": 0.7676863251624704,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "adox_vlad_resolution_target",
+      "set_id": "_DSC0001-_DSC0016"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "03ac5a0e9f5629d7581461e1dcf69c14984126630b950337b1bf006aaf13d8e4",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "545ff33ca8b9dff9871be1b18b6276a17b8af48fb37bbb9d2f4cef00033d2a8f",
+          "released_file_sha256": "60c638f9e1dbb0183a5baed51ed4347aa99b2dad6786a50864cb8c6fe957abb5"
+        },
+        {
+          "image_codestream_sha256": "0a04c054c02c78226dce5cad36bdc991bdac3266f00a5b1e9fc9de9aadf098d3",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5c753b9a1bce9da29b9f0187b0e43aa248d2e1573e38e0992d24f291d78c63fc",
+          "released_file_sha256": "d93887da3251a8bd5d28a3495c0ea044139e26eec56a8f4e7dc870b12d5c5e0b"
+        },
+        {
+          "image_codestream_sha256": "6a40604e1a1b00e93f928df99bd9373e3d71dc3b30effe0c11ea51a227c8a54d",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "ba863656b7e71fe1679639f6520d6d383ca962922754b0f9b6f69d05b7e06f39",
+          "released_file_sha256": "7275ca366789c769115aca97ada0c9aef48909c312cff5ea12a15bdb0cd8ceee"
+        },
+        {
+          "image_codestream_sha256": "5728ea3abc45eabb31c5c87a987484c43239b946e9429b8396917f9c6c63765b",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "07a70a3380982bf8bfc7652d872ea4916c4cf9069d330ee7a65b184125c7ae20",
+          "released_file_sha256": "f587bd25508afe8e22b7e4b734d2c5a1cdc2b822770eda795c0064c977ac6645"
+        },
+        {
+          "image_codestream_sha256": "15817597cb59b73b28ab991116f92e23029c93c60580a48e4abeefc7674f56ce",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f78b74dbd55db8f4924e7adde895c2dd9007bbc107a2b1c3a9cc8e01166e8ac4",
+          "released_file_sha256": "0fccf2156d9a4cfaf2d07eacbb2e9b80ef2667919963cf437d89f11a779fe075"
+        },
+        {
+          "image_codestream_sha256": "90db3d0583be905b6bf1ed596d379dc89908130797afef6762b36e409e692e62",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "447ae306906dce74a13b897020cfb12b67e6b7b79c5ac71b8fd5e98c44b63b81",
+          "released_file_sha256": "e44fe7168478ef777d152bd33176d0556e8ea76f578704d27097e2baf8ff3abd"
+        },
+        {
+          "image_codestream_sha256": "83edf657f2fb9504d86258326619019c6d9c6afb2213601db9444122af78f059",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c79c0a7b2f84031bf69430b9d4b6a1cff3edd59b7b2809ee4e5f7882eb4dee16",
+          "released_file_sha256": "6a2c776395d9a1da216df2e30c9a8c604547c47d5c4e88d128e8dfb1bf4bef61"
+        },
+        {
+          "image_codestream_sha256": "6251f7dd76ba2598078c569ec9912e0cef8ef3ede54ddb74ad9878b48949d188",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "881e3715686a846bb1638706d9e802f100fb0692ce0f186c91e181d2c9dc3c8a",
+          "released_file_sha256": "8ed1f1d774cc39c6ab77c5b097b189eb090079854205183d8f0cf47fb7560560"
+        },
+        {
+          "image_codestream_sha256": "560d71a8e1f3aeaddbc3491d3bded68fc75bf3815aa421fcba88fbd6ffe53cf0",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "eef1a91a209ce52bc4116bcb63f7d32736900f09fc5157237a57d933d671db75",
+          "released_file_sha256": "672ffe9b4388431a4d036a174dfec96a5d8f41fe1ec45894ac5667207ab4e987"
+        },
+        {
+          "image_codestream_sha256": "9e4089259d2a10f04f973c8691aca802591c8a15125164baedc822a9f2c3aa68",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "13b70de63e19327ad3dce08ee24cb2b931b90aeba0e742d61d804ac8aa66632f",
+          "released_file_sha256": "9a3b5cfaba729acbf190bdf9eb956172b2ff78f3fe6ff6d8807b57a0342396da"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 5.766749382019043e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.045072893123257705,
+              "candidate_loss": 0.045003658441033184,
+              "level": "d003",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.08447043984665664,
+              "candidate_loss": 0.08435775405649162,
+              "level": "d005",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.19444579339688586,
+              "candidate_loss": 0.1941518523311335,
+              "level": "d010",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4366629209490051,
+              "candidate_loss": 0.43597211614744585,
+              "level": "d020",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4755908195188236,
+              "candidate_loss": 0.4750132537115955,
+              "level": "d022",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5230485106651116,
+              "candidate_loss": 0.5223734738982562,
+              "level": "d025",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5603876095404847,
+              "candidate_loss": 0.5597386399730626,
+              "level": "d028",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5803902054574444,
+              "candidate_loss": 0.5796854155305149,
+              "level": "d030",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8000408522076122,
+              "candidate_loss": 0.7992038771258002,
+              "level": "d100",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8744207094747039,
+              "candidate_loss": 0.8736823782231411,
+              "level": "d200",
+              "raw61_interior_loss": 1.171568598747817,
+              "raw61_loss": 1.1704462530604811,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6938"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "2440222ced18d87b3c253ace8b81b9ed891c2c32b526190fcc2edcc0eba17326",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c2f1fd0ac87772569d9b7a774d47b88ff437e6869afb21daec41f9673fc3542e",
+          "released_file_sha256": "5ddf32c19ef68890c5739d486446184f51b6da0f76b6335ae03dc01d9fb94a1c"
+        },
+        {
+          "image_codestream_sha256": "1da44755194f1b00d4bc763a2da5534cada15d57634d23834b31a6cbb4688a23",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "bb5df7b886d18b683ce220c683a70f31418a83060096740120db472098772438",
+          "released_file_sha256": "f141410abaf9992a4bc3bf9b785e40044cfbf57c39cc9a9d923fbba0c0e7e4d4"
+        },
+        {
+          "image_codestream_sha256": "a92c140197a0f6ef29bc5936c7deaafa4bf15e9c6f7e4bac1de609e6666db5de",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7bbbaacf0b81feb4b0adc7c49b6874782179d9da58653dc8c1c3611f9a83b545",
+          "released_file_sha256": "1e466e63227ad68cb855860eb596bbfaea80d75b56e011d20e6d830de4ffcecc"
+        },
+        {
+          "image_codestream_sha256": "333b6dcf21f5e1274bd13cf3a8e4dac96ae8274c96c738d56985e491e5366bfa",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "48d17ba84ede23d6b76aa6acb111c34776f7fc7a48fcc2a6a5bb159d85d18ccf",
+          "released_file_sha256": "255fef690b20f8414fa7b1a3cec9b0b199bcff37ac803a3043f6eb0f19c53573"
+        },
+        {
+          "image_codestream_sha256": "475bdf102e4073de86f73eb0f897fcbb09c383c76bc727c48a87e94037519d62",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "eb576f9eaf3e64406855876bd112b6f721d0272807473214d0dbbf6ea5f2268a",
+          "released_file_sha256": "0a36294dd498fcc5bdbb9b57169022aa74a371d951eeacf3283a862b9920f67e"
+        },
+        {
+          "image_codestream_sha256": "7dbba70e8756f1f210e0bdbbd73fe6d0ad726544f7bf53bb59dac33db1b90867",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7732dd33a1eae5f7814d09811d34c8644597bd2da7535282f68b4a60026922f7",
+          "released_file_sha256": "0b12018e63e808c4e421a8944e76d2d50d80fde66301e9fe8eacece27c959401"
+        },
+        {
+          "image_codestream_sha256": "d0518abf5c122f35551106cc0bbf01f2e7886f29548c61db43b1945ebed0778f",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "47058c5c7fa5633e9e292dcd6bd008fc6e4c1d8bd16e9ac49ea1da249cc7d6bb",
+          "released_file_sha256": "0a93900af00a0223465d5710bb5a80ebceab3624963b1828078c61e47073fcfd"
+        },
+        {
+          "image_codestream_sha256": "521be04ff628f46b17661bb6fd2c4f7ce3bd7d0108242cf66a5c265d9c873846",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "704570cbe6187102e3903bbb1a204c6d370c6ef0958e8dc2ba0272c36d295e9d",
+          "released_file_sha256": "11208e803c6524c58e2ae0a427040625e0bd72291ab0cbbc6b09f887aace83df"
+        },
+        {
+          "image_codestream_sha256": "56534640886160deae3c56a9be9544960e31de06f2f47aaebecd3050676e665d",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "fd9a2cd3669833e3454130f0b9cab82938389ee9da9133d901a7031bf17ae713",
+          "released_file_sha256": "1bff976aff1a70d561c2069f0cae2b5fdb7b3445d9d734a579826cd669458a71"
+        },
+        {
+          "image_codestream_sha256": "83e31ed4da4428fc22989715c3f00f148f952f1df9dcb5faab852f700a4ed069",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "be02ae7005d7c531ab2e1adf9a5e5fd7f4c5567dfd6c710e8efb25a923667950",
+          "released_file_sha256": "5a36de6b9b83ef110c7d2db3503aa6627f18585481200e56abb53ddddead5796"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.316470146179199e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05122269827758698,
+              "candidate_loss": 0.05110154324859951,
+              "level": "d003",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09143659558043528,
+              "candidate_loss": 0.09122192287488196,
+              "level": "d005",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.1889024567423388,
+              "candidate_loss": 0.1885014375145378,
+              "level": "d010",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3790180829767137,
+              "candidate_loss": 0.3782369691723158,
+              "level": "d020",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4124615396512814,
+              "candidate_loss": 0.4116089426134117,
+              "level": "d022",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4524929520273308,
+              "candidate_loss": 0.4516006126621556,
+              "level": "d025",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4879233179699887,
+              "candidate_loss": 0.48691780228603687,
+              "level": "d028",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5081457077449351,
+              "candidate_loss": 0.507084745619737,
+              "level": "d030",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6951635344840147,
+              "candidate_loss": 0.6938693039871535,
+              "level": "d100",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7805782359237348,
+              "candidate_loss": 0.7792110829164177,
+              "level": "d200",
+              "raw61_interior_loss": 1.1134505296174029,
+              "raw61_loss": 1.1115757442819758,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6959"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.004,
+          "FNumber": 6.3,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "408003d0d7583a501a0ee5dda98f335dd4d13cc714ade5ceda537acf1bc3e149",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "2aa1dbaab13aafdfaf23a6e4abf9cccd8971ae69cb35fd5dfbbcec25dc164e99",
+          "released_file_sha256": "2b547dac58b2b42bb9fa75b0b1c4e5a5d5bb31f5be16fc447e0b3f32dacd374c"
+        },
+        {
+          "image_codestream_sha256": "7f4d39a6ec30ed1632ac97eb3d6693a36b024d2135eab0530931411889339cae",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f714b39c0c9bf7ec137280a7b2c893cb545f6b18e4c1d3fd82f8d77508940c9c",
+          "released_file_sha256": "647e8d1c38f1576d75edb1bbe28145888002366734bbd0949cf39b324dfe3275"
+        },
+        {
+          "image_codestream_sha256": "25eedd8ad132e648f579646a0ae8ba6091cf11bdcad4b3a7c4c203a57ea21b2a",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "4e6f625d922aea3d39e1594951ea17dab74a536217678b5882bac187643e429a",
+          "released_file_sha256": "30ac71946a399a0f736ac8100f533565156ec9740ea457dc0389c9f630230ee0"
+        },
+        {
+          "image_codestream_sha256": "d5214033bbbc2b1d2811b4884c431b7525af526d341b7a9c7ddda276fa020c14",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "fd312151b4c5e43c680ecb479304151f3421868595e86b9d2c733a52ea01632a",
+          "released_file_sha256": "0d20968cc133cebbd94fada253b604dc020518264d4989d6085abfbe8a53ac40"
+        },
+        {
+          "image_codestream_sha256": "cf2b0b2813fad946ff1a09404979e464b942c3bfcf5d0920da968390a05e62e6",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5a288f85f53205e48977593df278a38fe10d6ff6273382b9e2ddc6c37820c185",
+          "released_file_sha256": "8a417cdc5c43fcc1e9974bc5e7606f05602c78ecfef691f598276fac92ebad7c"
+        },
+        {
+          "image_codestream_sha256": "355af051a6562c8e9e5da5f308228c8d75d7b671bcc878d836d46ccc9c7e61d3",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "207875748616c49b5ddb9fa4e2ae0371ce1575ac41a678b588fe9a19a63c2f28",
+          "released_file_sha256": "921f7d266055b0d4e5a89c315b7106cc4b2fc49b5168105c4be7fcc320dbfec1"
+        },
+        {
+          "image_codestream_sha256": "1042f430e03684e10b02246d5a168c4ca662862842623c2ac2a45b20d47a9bdc",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "4200d8a99705fb305a59eff23ed46b7b9457ff33acf3ac1ad7d137573eac4b5f",
+          "released_file_sha256": "2a6447edbdfc4808005ba36abec13aef9e62764248c990bb8a572d2d9b15a060"
+        },
+        {
+          "image_codestream_sha256": "3c2144cd3f39e8d772c3b7e4afccc7b525828335bcc45d5e7df8e105d6e96033",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b65e761a7e019c57440614b6735d231dc9f45cb1a6b6d53ae3857e9a9e772b2d",
+          "released_file_sha256": "72f99002cef597da126759cc3548d42a8f724056cb8ee558f458e679d2fc818b"
+        },
+        {
+          "image_codestream_sha256": "16fc09109e7fb2f6bfe3eaa4d7c8f94f22fe78628c952ecf5529454c39e21e03",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6144ea91bce606eb03abde5b559fd7f498005e77c258777ad637eadba847c642",
+          "released_file_sha256": "efe342f93f7bc28300c603cb97924164af4c4705ee83df3e2c37d6ca5b0a17c7"
+        },
+        {
+          "image_codestream_sha256": "30a20cf3be548625f955ad6a25ce0073f889da7886dc81d4e2f2be6917b34d31",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3398246ca33d8892eca8ed9405d695e0269a55fd58a5c148f06e935af363e9c5",
+          "released_file_sha256": "aa4d6395d019abd7fcb5e08d7fd0d81eeea0885d62278f407699bde490ea34c8"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.614493370056152e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05889633149592676,
+              "candidate_loss": 0.058831365107331966,
+              "level": "d003",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.11001090919073926,
+              "candidate_loss": 0.10992925624389303,
+              "level": "d005",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2967328866862009,
+              "candidate_loss": 0.2965801175881382,
+              "level": "d010",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5769043734295741,
+              "candidate_loss": 0.5767482067540417,
+              "level": "d020",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6113029393970083,
+              "candidate_loss": 0.6111641064968378,
+              "level": "d022",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6539373582946488,
+              "candidate_loss": 0.6537817329264342,
+              "level": "d025",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6904506557988027,
+              "candidate_loss": 0.6902214057854953,
+              "level": "d028",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7121874601166365,
+              "candidate_loss": 0.7119592134525848,
+              "level": "d030",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.929203854794392,
+              "candidate_loss": 0.9287384150299607,
+              "level": "d100",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9707045710564995,
+              "candidate_loss": 0.9701959148943925,
+              "level": "d200",
+              "raw61_interior_loss": 1.2257669212614914,
+              "raw61_loss": 1.2252463243302274,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6980"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "c904410f4bfc80ec3eb64fba6e16acc0640987ffac75e9e68e9dfeb6283e75eb",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "1ce8c8d74eb5e32069950f043f81ae27e6c97d6c885fcd7e0f15aba9ada35966",
+          "released_file_sha256": "0f58173f693d0663e1c217f04beba7cbe8c907229527d01bb7066f6585f8873c"
+        },
+        {
+          "image_codestream_sha256": "1aa175f284c1563dfd68d413eab3b711910de0a6aad3b333b47330151a70b8f6",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6b01fcaa1b9a56102601e67080b9a199d00111fd8e20454b624db41b62f02932",
+          "released_file_sha256": "aefea4daa55b8c5727df9cd13a48e54cdd2f233f337178191e0e69999ef2ee01"
+        },
+        {
+          "image_codestream_sha256": "4890bdf04b0b3014708ea872aa34d7db83ecc447352ea818a9efd14e15872083",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5e0c714b5cc36beb90493e179603630c8ccd503b4f368378fc333dd742fd2e94",
+          "released_file_sha256": "ce1c7a1d3b73c6e04392cd2fc99332a2ac4274770bbb05721475f30d31e8beae"
+        },
+        {
+          "image_codestream_sha256": "aaa289e3c780feae1ce0c1bf191e8966ed485a5cf69a1c88b51a444e5a8442b2",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3f09548d4ba4b64964c499b702b599a7c25f1a15cb2183a08ff3dfaa4b15728f",
+          "released_file_sha256": "6a9bf8e4ca256861cbdc90b7cebb4b5ee0adbb540319d1067792f801b0432ed1"
+        },
+        {
+          "image_codestream_sha256": "776f9d42133b25709714c80fbc6559282b3cad4ab7f2f714ff7204279e8e08e7",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "bba29ab8434a77406dcff24f07909edc88a62a3aecb7adb740f0d53c6662c53b",
+          "released_file_sha256": "361e588da85a0d8aae159f8449ef9fc111a231e25942f23c9f71732576fdf740"
+        },
+        {
+          "image_codestream_sha256": "c86b2e49642642d0c11ce08b80b225a3c3fe35b611ccce42110839267a4209c8",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7c2895a01906405fb787e935f772acd3fe5a8070634e782f6e6df8926727679d",
+          "released_file_sha256": "cc6dfdbce2e853a6492855faea74057667554e52df6c896a657ef5666dc18839"
+        },
+        {
+          "image_codestream_sha256": "ac82dcef72ec8ad764501c15669c9046806d4d216603fb2caa3ce5601252c8cd",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3cb0ebae0fb927d609f3e67e8a269148c37370429b8936b566b7bcd63f86e1c0",
+          "released_file_sha256": "7a1a60aa72799df28b0a39cbb7d6cf67731a4f6c42e58641b09baf8b59e02022"
+        },
+        {
+          "image_codestream_sha256": "4f224de0dcc564434b640caaa2546aba44bbaf9e96239e6d724636fa751129ec",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "566816e87f4356d50c47c6506ba569e456a072d2f4dc2d8d6693d83709375528",
+          "released_file_sha256": "f41f6da429555e39ed3523126817263c6eede2d830a71c7e00de0b04060cbd16"
+        },
+        {
+          "image_codestream_sha256": "2be8d11737347246eb631c0a59a6ffac42e860ef70943c0c986d6e830d1e68ad",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c1f1b2d3c68c125204891fd24de7b71b2b5bc0a1f4ec1845bcedfae371ba61ff",
+          "released_file_sha256": "e48b7dfa87d972b89d9c85eacd64520c4a6dda77d3a75acc30f102e082f192a0"
+        },
+        {
+          "image_codestream_sha256": "f1ddfcfd7364607361e7147db20e59485d4c92b0b6b7306a246aad2624632ed0",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6b70ea9f2cdba9143b0601b0d80d364f3f39e06edb758bec775e3cbe48155b67",
+          "released_file_sha256": "3321337757e224988f4e0a720f530a85e6d0000e42158cfdc01b16724d64606d"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 0.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 1.1980533599853516e-05,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.06122625823864864,
+              "candidate_loss": 0.06123460340655139,
+              "level": "d003",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.12232881185095716,
+              "candidate_loss": 0.122372773997251,
+              "level": "d005",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4457996432856205,
+              "candidate_loss": 0.4458772086793868,
+              "level": "d010",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6983591010509759,
+              "candidate_loss": 0.6984552136789963,
+              "level": "d020",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7310822713925273,
+              "candidate_loss": 0.7311602825659576,
+              "level": "d022",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7735058551215862,
+              "candidate_loss": 0.7735802312066371,
+              "level": "d025",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8084799769188721,
+              "candidate_loss": 0.8085792954280991,
+              "level": "d028",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8281898756442287,
+              "candidate_loss": 0.8283072419915087,
+              "level": "d030",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9970696060961223,
+              "candidate_loss": 0.9970474271016218,
+              "level": "d100",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 1.0003290051141327,
+              "candidate_loss": 1.0003276762898679,
+              "level": "d200",
+              "raw61_interior_loss": 1.2052068977974237,
+              "raw61_loss": 1.2054297541422345,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6598"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "41651d45ee0bfdc93bf4fbb7983f7b4e4fe1c7435f190bdea6b044770a6fd1da",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "e0cb9106516e60d459272d0745115b884a27824b251564b5988cbfb524342e71",
+          "released_file_sha256": "a74f7f87c9bb14c19a46785a588b5d9a659195c5d84302579c461ec50e35e032"
+        },
+        {
+          "image_codestream_sha256": "cef7c66e676965ff0945081fc89e15db4fbcfc3fb793b23e2ad8b94c593fb6e8",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "0462adc8f6842b92ae08fba52325553794141a664d3a8cc39273d2a85a95efea",
+          "released_file_sha256": "84dd7d367326c50b476b4af01b79fcfd6aed790a552cc5e3e3bf8716a9201bde"
+        },
+        {
+          "image_codestream_sha256": "5310d452f8a8058e5fbb6bb3909f66398aa97d5fb42ef73f4f7d8bf112ba60af",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "a8508929bdc9881dbc458526859e907004e35e074b211978256aaa1656d172ac",
+          "released_file_sha256": "ccd3049dac99ab48ede7af71d8998c8b08f0a1584871ab75b6486502a625db7b"
+        },
+        {
+          "image_codestream_sha256": "9c19f5f979f64180f604ab9a26e753d7f48954d0341961b36d350e629f5afe62",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "69a16feb39a8378dae8d302a3be556fbd568476e10f597066acbac6f8b498688",
+          "released_file_sha256": "66eac30959ca40a858145ac7713d73e41dcd8225543ce272a32e21e3ad8cb4d7"
+        },
+        {
+          "image_codestream_sha256": "73f9d61ff3dbe6c2390553543c8529bb13c8e5c1b8d63a55cb6008acf1414119",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "dd625b91e8feedde7c420322bcc9cb330a4d9d20a3fe5b922c4aa1e42d59f33c",
+          "released_file_sha256": "b399d88a2778787a39981653c3be8191a1f20411c8359140988aef19a5e94889"
+        },
+        {
+          "image_codestream_sha256": "89103c1897204f581d87cf226364bc9231e380bef8055960a1b8a6db647e4fc2",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "651a89eb86c58b3663440ad1e2ddaedd12af30c416548d806f065985a2d2acd9",
+          "released_file_sha256": "274c332f3e987bcbea091656b8def6a2b4d52b0c513d665067f654a0d436fc7b"
+        },
+        {
+          "image_codestream_sha256": "b4d9c146b1815406ed94f1c059f6816da9f9e36efac70dbbb25e4f1f26597ddf",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f27294d4e054062aac8d813ccf35add8069aeb7db765cc5afc2de69be0fe1e4f",
+          "released_file_sha256": "30308c1765202973ff838c0cd8f6938e473d764c3649c5926424336277ea468c"
+        },
+        {
+          "image_codestream_sha256": "068a5c66761a43f0ea448c6361929088b1b73e1f2b3b4c23c762eb6b4b8592f9",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "fdbc5516e1573e0ff07c328d2685fc66fb875ad21d69bad4dd4da43c00faf1ec",
+          "released_file_sha256": "e82ec5558d7c2bf487ef04c08314c48cbde8522246f5f5b5d3b36d83ed068b4b"
+        },
+        {
+          "image_codestream_sha256": "510ed4c09e7db378e678c61870b0e6fcfb8df7f407657cdb8d95791e98eff124",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "cb81e3dbfaac23bafee82751e2611214df0dd130f3b91ce91e5082b5e4314346",
+          "released_file_sha256": "7e816409a13431ea108acc24bc5ce37ecef99afc4bbae4f93fa8c76059f204f9"
+        },
+        {
+          "image_codestream_sha256": "ee543190e2304ccac91d8579555e54b8e7b7d0fe2d2cdcc1eb1c1f3c930e2726",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "edfb46d797139e5d94d0a7f7372e517057fa6f43d4bcf7bc6c82ee1c204789d6",
+          "released_file_sha256": "1dc449065eefa04ef3409abcfa99e0e68ea543c70a1e237e94bc4d64c53d09e4"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.525086402893066e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05549713078422019,
+              "candidate_loss": 0.05534750698778961,
+              "level": "d003",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10062814994206148,
+              "candidate_loss": 0.1003110047081177,
+              "level": "d005",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.20882672087618157,
+              "candidate_loss": 0.20813969454955025,
+              "level": "d010",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.44337169646293484,
+              "candidate_loss": 0.4417970062053079,
+              "level": "d020",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4755075545469402,
+              "candidate_loss": 0.4737982488241818,
+              "level": "d022",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.512352547291929,
+              "candidate_loss": 0.510575291567268,
+              "level": "d025",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5415467265455486,
+              "candidate_loss": 0.5396236031878265,
+              "level": "d028",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5574400937700076,
+              "candidate_loss": 0.5555306905709971,
+              "level": "d030",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7209480134811402,
+              "candidate_loss": 0.7185718390134114,
+              "level": "d100",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7807820942975383,
+              "candidate_loss": 0.77844257267271,
+              "level": "d200",
+              "raw61_interior_loss": 1.0701626382953282,
+              "raw61_loss": 1.0671230985583793,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6619"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "a0e88fa41cb94b546adf53dc0578710314c11d53f92c96dc39844d271e75a942",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6b6798c933c8313c3b696f3ccda8eb89d83a91abf439f6cd3602fd75bdd42e44",
+          "released_file_sha256": "7a3cfe816411c9712aacfacf42b54ff91ad37baa8594e867e10d5e25e21e210a"
+        },
+        {
+          "image_codestream_sha256": "8db3a6e9b69cfacfa0a9f5bbbba527eaafe2cce19faea4b01480f7e46312195a",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3251601695555105671e33b4897c89ce2c4311df4423e6e29f741c6c63f6e59a",
+          "released_file_sha256": "113d45c7ab57666a32866a543940dbd5ced4e41e00ab8bee9d27ee6b0d755b42"
+        },
+        {
+          "image_codestream_sha256": "02b8d08f8bd1d190c948e229cc528546be38a0c012613545e0534c25360fc45f",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d007a70e74f22881b2d1269ffea6c5b35711ea919d71096f315fb332ed368dff",
+          "released_file_sha256": "b837645ab2774e6571ff25b914f86b19ecac958a37244317571a20f52144fe14"
+        },
+        {
+          "image_codestream_sha256": "014245ba9503fecd2b62b4a41173efdba6ced3044b621f5e34f433c447898800",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b847039b8544ce835b451f65ceb6af34d7bf2128ad8bd05aa63738130c071737",
+          "released_file_sha256": "a49571c04a2ba2f9c38fecb7444a8f09ce4e76d2b34ba48eeefdf22dcc4280ba"
+        },
+        {
+          "image_codestream_sha256": "42c8fa0ea3ee56e66b6c58e442a870efab63e58acf228c0ebd942f5abd92ea98",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "ef1c880513f1bd7d642399095360e8e68c028a48e327d4a68ff4dc8cbe87d154",
+          "released_file_sha256": "e3e246721143a0ca8f72fd510a1268f6c18e8ce9e563714e7635909c00a58f3a"
+        },
+        {
+          "image_codestream_sha256": "61a339e60803c78e4172434baf3089f62457e904d5eda45c31f79ba0b2306f63",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "13229fcd7153ff33c4bbeac064072e24fd07a3e87f7ab6788b47661bd7fe72ba",
+          "released_file_sha256": "de01d71352770fd990a99ad1072609e3eb0d6e8b5732ad2b30b417a3c80ddaaf"
+        },
+        {
+          "image_codestream_sha256": "17c3f0dc2d5c652ce67dc985e8fe5b7bae7dbbb3393cbc253dadd126b29ca23d",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "2e0980b4cc32373c985629a7ed3d309ce34d1e563fac91d13ee4a80dc8eddf94",
+          "released_file_sha256": "935a774ac7948c119666c8796a323a9a5723052fc9e88361fc09a66c4dc5d1d7"
+        },
+        {
+          "image_codestream_sha256": "86947b76a8b90432366f276a60da66bfc6235f61eeacf67c7a1408bb1521acb5",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "99bbbdb231e0e23c300dbc04377b125900bda087667c7e3cda3209eadc8762d3",
+          "released_file_sha256": "f6ebf576c24e3426871a9d4515675a7a0f299e6c3001446ff8bfc4b8b7798fd7"
+        },
+        {
+          "image_codestream_sha256": "492808239d9b702647012b754462aab92bdc54148b92a841904fc55ca53850f3",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "cd1acefb849519a42a4f7776e2e2247eab0e71d203d2aeddf362104932a92025",
+          "released_file_sha256": "6e02da7385e1717011f518b588ae24947f9366e20d476d54d1ae18acb0c702a3"
+        },
+        {
+          "image_codestream_sha256": "ecbd89b876f097693c7852334f6f83dff694fea28e8acd26dac503e98473d35a",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "590f34eba788e9c7275eda952d333082d51fd916a25605e2aace9e25290e11fb",
+          "released_file_sha256": "e133d6fd90c085f7c7a2c09ec1b2e6600b317196b5ccc622493ce0d7ba405c4d"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 2.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 8.016824722290039e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.06010266425012393,
+              "candidate_loss": 0.059988328985208825,
+              "level": "d003",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10797910013146458,
+              "candidate_loss": 0.1077693397750603,
+              "level": "d005",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.22187530176444573,
+              "candidate_loss": 0.22139438694152733,
+              "level": "d010",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.45911723680736066,
+              "candidate_loss": 0.4580818022548422,
+              "level": "d020",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4907060111389252,
+              "candidate_loss": 0.48954231074335686,
+              "level": "d022",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5276256380180877,
+              "candidate_loss": 0.5263894884334569,
+              "level": "d025",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5571658431317673,
+              "candidate_loss": 0.5558732672848022,
+              "level": "d028",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5729284596284798,
+              "candidate_loss": 0.5716413143968092,
+              "level": "d030",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7331626252074847,
+              "candidate_loss": 0.7314293856291157,
+              "level": "d100",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7926446847295491,
+              "candidate_loss": 0.7907574913295656,
+              "level": "d200",
+              "raw61_interior_loss": 1.045045985548964,
+              "raw61_loss": 1.0436028430331048,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6661"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "c8430e4ea60006d635470da04e85eead39ab58cd7a8f34db94e2b2db9f23368f",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c09574e030ee6580ca2d343e099e2928061540a1ccb4803445aebc731fe9f9c6",
+          "released_file_sha256": "826c93bd5083883dd07aa49c72e0a7f4aa97ac05fcccaaac8973818cb51c07ae"
+        },
+        {
+          "image_codestream_sha256": "e7a601e53543456b285d7aefd7d70aad31a2c010de176171ae15e236dc9c1731",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "483a18062f44b1e969e4b62d71e727f3a513442ad54dc70702a071bb28c7c7a2",
+          "released_file_sha256": "582bf7c140d603a0d2fa81580b0bc55a6e8646e238fb8183365b76e3d7b93d07"
+        },
+        {
+          "image_codestream_sha256": "673c7cc8531a11472c958e7284663249cdf5edf44908cb8821e50a1eaaa6dc37",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5e58de44a895d72ffd0693ec4999c938e94d1e402da6961f4225817fb4e3d884",
+          "released_file_sha256": "d4ba2d8833016e550df15d8c0e74f6696337dfbb91275d4287e028da700accaa"
+        },
+        {
+          "image_codestream_sha256": "738e6df22a7a98e0cb53067311cbae049d12ea0b4decfc37cc1fa1998b7d024c",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b237466e22a79650f1246da172323ccee35f958ef54216a3f50c223c435893a6",
+          "released_file_sha256": "9be9472c777bebef3778d6a6cb98bc4939d68b25289c7180871cd01b46bf4ef6"
+        },
+        {
+          "image_codestream_sha256": "13439f6fd7a1b9671882bbc5fbcafe104c36c29b8bc49eb3106d76733d7dcc37",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "9df008b2cac48cd630a2df47a940674f3a6a777f44375db3cd2aa1c697be987e",
+          "released_file_sha256": "f6625395bd760fcb25daf5427f4c504eecb81c266080e691cf126cad74d85725"
+        },
+        {
+          "image_codestream_sha256": "5c3b1b54f3359985caf1f5af538b5077c1486f392e98b42a59795bd98d6b012e",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d4580e2b3e366e494880e6c2d9935a4669abfff756d1562518ee3586a4cde132",
+          "released_file_sha256": "bf5acfe77f18d8813e0dcd7296ad4f5bef86c720dc3f50a178c6d2c6482ae3ba"
+        },
+        {
+          "image_codestream_sha256": "359391d26f1c866f161210bf68a6f5d22d103c6a9e6438a850d6aa73fce6e102",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b737949af58fd52445a7d89991d5f769b4e4f7ee54cb90ad1a09af0d2d490d82",
+          "released_file_sha256": "2ca857a34c36626500fb77d6de93cd5c2eaf4025e2971a93537edf117e674f03"
+        },
+        {
+          "image_codestream_sha256": "e417820de3a26d368ed5cee4272836b1f9e6aa92ffb9d2ce92866cf73ee6fd02",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c740194983416e3294e42aaad4bf2de1a35d02550ed042d038056460a6822b5f",
+          "released_file_sha256": "60ca1a81129ab0bd35c4547df186462ecbd91643e90fa96002ec7ad7da4311c3"
+        },
+        {
+          "image_codestream_sha256": "5be703bbd10c15437a670e7fbbb2a5b25f41f01450d392115d55871a3d524757",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "888fa0a330ce404f7b49b80e186943bfd39681ade975d17333431559a46bf353",
+          "released_file_sha256": "e32e9873cf001d8f801764a585ed127e11902ab5b73e912e00307ba9b87ac3b0"
+        },
+        {
+          "image_codestream_sha256": "58a63b8dbc8209cb641f9237388a1916ebb7dc61ff986f8fabf7c5196a22d3f9",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6cacaf3ee43a88cdc7c38d93d2d5a96e47d5eae04f30b38fbb82c63761063f20",
+          "released_file_sha256": "c8bcf7c14451611ddf12e68000a4c40a56a31d61ccfd8129d85d2de6be06bc39"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 2.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 4.932284355163574e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.04768600136741317,
+              "candidate_loss": 0.04766010978695545,
+              "level": "d003",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09113771334424327,
+              "candidate_loss": 0.09111828725904812,
+              "level": "d005",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.22827202208795422,
+              "candidate_loss": 0.2282555330165105,
+              "level": "d010",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5441731868865454,
+              "candidate_loss": 0.5438530278912809,
+              "level": "d020",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5788470280717174,
+              "candidate_loss": 0.5784949080211391,
+              "level": "d022",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6234160731908818,
+              "candidate_loss": 0.6230274131785657,
+              "level": "d025",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6600249376003081,
+              "candidate_loss": 0.6596459507679746,
+              "level": "d028",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6818590308537185,
+              "candidate_loss": 0.6814972709487387,
+              "level": "d030",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.909298356581784,
+              "candidate_loss": 0.9086905902543382,
+              "level": "d100",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9498959939598166,
+              "candidate_loss": 0.9494008767164341,
+              "level": "d200",
+              "raw61_interior_loss": 1.2157399139904854,
+              "raw61_loss": 1.2151261421414974,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-02",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 5.736947059631348e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05221669811079284,
+              "candidate_loss": 0.05211531279752225,
+              "level": "d003",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09757961200732039,
+              "candidate_loss": 0.09739828485084484,
+              "level": "d005",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.23579381542610772,
+              "candidate_loss": 0.2352716854646658,
+              "level": "d010",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5488051462054856,
+              "candidate_loss": 0.5474281667558689,
+              "level": "d020",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5827987546852662,
+              "candidate_loss": 0.5813151867723297,
+              "level": "d022",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6269510384377862,
+              "candidate_loss": 0.625315290026512,
+              "level": "d025",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6630135155008041,
+              "candidate_loss": 0.661299078957961,
+              "level": "d028",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6844415171952137,
+              "candidate_loss": 0.6826472477148506,
+              "level": "d030",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9023634161992702,
+              "candidate_loss": 0.9000657196491118,
+              "level": "d100",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9412297132252612,
+              "candidate_loss": 0.9388847215416479,
+              "level": "d200",
+              "raw61_interior_loss": 1.16312951669734,
+              "raw61_loss": 1.160657989640954,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6682"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "1df8bc0219da1b1bf510cd302836bc9998fe07c958265ff7e442966fdfd74521",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6b87512d2ea7fa67befd79520fca5f8d8a3b0dd84e6b443f587c47c6864bdc17",
+          "released_file_sha256": "588b9b53913bb3fb2ae0f139a026114e3fca161ecf53e5bf80e61cb3447b87c0"
+        },
+        {
+          "image_codestream_sha256": "abe128b5f26bf9030020cafc77ca0608737f91afed3e762adc0c809263238c08",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "758954b115faf540c5a83579184cb21c2bca10929c3e79c55a6da9f814a05ceb",
+          "released_file_sha256": "c603574cea47b1581a8a1bfcef528eded3e82c29d1046390cb2c15c808a70bea"
+        },
+        {
+          "image_codestream_sha256": "b41f80b22c61a163270fd90957a3e548718069f19afca9df96c374b2b9f380b4",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f10338acf61c253ddef87d865744a17624834e62744c0ca8ebb602e48855fe4f",
+          "released_file_sha256": "c6d68a12491cbeb19d68324fbdd85af52be901b3d166639ea8bc2020544c0862"
+        },
+        {
+          "image_codestream_sha256": "fc8eb10d611ac6aa5b4edf20d3d5538a3f005cb385dfd30d88e20042f5c4873c",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "879dd16cc487ef2f6ef3fc1f024716f87b2a95250c980df9a219c67404d7c32d",
+          "released_file_sha256": "a6606e6874c40d9bb609e9155b82b1d58adce7f3b0bcb10a4da5b593400d9bd8"
+        },
+        {
+          "image_codestream_sha256": "f1db263168be3121332709e9a8ba8cd7f58f329ddfcecc3a55f4957842be794d",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "19e79242a2dc293586bca822e8993473dc5b8ecb10f38aba7ab1aa4d8cd7f948",
+          "released_file_sha256": "81980ae7f057dc99e2776b4133a82d61a7286ca639b33caaf4b7e63332c29389"
+        },
+        {
+          "image_codestream_sha256": "4d1c44b8ebf6b529cf8b4aef96c7e80255045e5df785fe052aeacbcd94115363",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3b54a6571294df9dff6eaab7fed67917c70156a4997a39f48cd3970268fc29dc",
+          "released_file_sha256": "c10c70cec0ef15dc7c3031d36a971380ae5aa5f7a19ca80632218fc89505e1d2"
+        },
+        {
+          "image_codestream_sha256": "5ae3eedc83e31d4f547ebbb86fa4ca1a5bc997987352e0be96d51d74e1437a0f",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "4c891d9b4ea27b6405d05a2ea5fec93bbd93978c25ad1a455b1f21a41e43bdcf",
+          "released_file_sha256": "1ef33f0ace4b5eaf928349d2eff7381e0fc3932bab3047520eed0eff64b2eee4"
+        },
+        {
+          "image_codestream_sha256": "ec549531ac930f40f485b69d64999b349c002cf9438b52a6f14036b4b036026b",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "343042754fccec5f5be32c3d0bc4efcc6df9212841b8e6c7c2a0c99042fdaebf",
+          "released_file_sha256": "e4d2178413cd8bc4ea74a5f31c98fef73f0ed38d3b7c35f2e12f2a93229e5a13"
+        },
+        {
+          "image_codestream_sha256": "a17a3bb2630d29dd1ed7f2e6380d15507ec3b376a26ada98edd485cb387336c9",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "a736cf67524e35ee6f9ebf7d8155a82ef2a0f6d041b4c098af01dd8345639613",
+          "released_file_sha256": "815d6eed1cace8c093c2d4902ebd0b2aa1a08cff3228a132bb37b351e8dea5f6"
+        },
+        {
+          "image_codestream_sha256": "d6f4f8eeb153e88d74016fe8213fd1fd58fa674a131df61ceec135a5ddcb5bd6",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d4efb3f2b09f55ddbd7ec2f4d39ff506ab597f4c3512fc907efa756e18c62a02",
+          "released_file_sha256": "1b5f242ade8e36e38bf65049548b95c773f2181ad04ad94d7d298b6003b12596"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.450580596923828e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05608662203800712,
+              "candidate_loss": 0.056010748128684035,
+              "level": "d003",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09927936783973146,
+              "candidate_loss": 0.09911767363073438,
+              "level": "d005",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.20442227839225735,
+              "candidate_loss": 0.20399446168189048,
+              "level": "d010",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.42371357299863854,
+              "candidate_loss": 0.4228350046859693,
+              "level": "d020",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.45931714109712063,
+              "candidate_loss": 0.4583078767496928,
+              "level": "d022",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.503545073031506,
+              "candidate_loss": 0.5024406223232311,
+              "level": "d025",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5374496305245181,
+              "candidate_loss": 0.5362980244035258,
+              "level": "d028",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5574284977640949,
+              "candidate_loss": 0.556157782501232,
+              "level": "d030",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.738301797419995,
+              "candidate_loss": 0.7363657071996674,
+              "level": "d100",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7947737061162703,
+              "candidate_loss": 0.7927904095299959,
+              "level": "d200",
+              "raw61_interior_loss": 1.1814332860250196,
+              "raw61_loss": 1.179277062179448,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6735"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "718df5575a5256424c749965bfa42fdb54799a83a4b477b500f3a49c0d488419",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "59df714203efa680c4b375814a212afc03c9460a9ac56ac112dd5e999df4fedf",
+          "released_file_sha256": "23a9215f69e80194d146526ad54359bc595125f1cab50be31c4624ba4de04430"
+        },
+        {
+          "image_codestream_sha256": "2dcbc78f3a56382e08176ca4b9765a088679a3096fee84e0a44792a4a10a4c6b",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "dede341cc841c329489c41c0025145586e62c1eb6411b31fd9ebc4a2431efcc1",
+          "released_file_sha256": "73b981efa0eaa5a7affff0c395c2b079c807a980bff6f3e7716edb5727394575"
+        },
+        {
+          "image_codestream_sha256": "86b8ee681fbcf00ddb4e8a01adc0150ccaccd6fdf509d81be72448d57a7ffa6f",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3290fd66487a3694e2ee6324a4355acda6fc24c1d65f43af4a7a711b5d21cbda",
+          "released_file_sha256": "b3f97cecd7e4a249c2779f6eaa61494b50f8487d5e028bfc902e87355e9293eb"
+        },
+        {
+          "image_codestream_sha256": "2f11d43a06287e2a7dc0bf86be7bb6521cdc53e8ccbf960ed315c01c8072d8b9",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "9a33b8e6cb7917b6fd4edcb823a642659306ccc948c8a66357a5f12b3e9295cc",
+          "released_file_sha256": "e7d6201eaec38589e39696e7c2906d89527dd1623f1cee0d0d3f87e3f4e6dd51"
+        },
+        {
+          "image_codestream_sha256": "cadf712feb472fa8e302e780d1d19b84da520daaad0b0f24b482072052557b1a",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f37a1f6270d8017ff8a125a988f548cd3f7684dd6ed35d144c83191c0609ee83",
+          "released_file_sha256": "9e87774d3a9b2ee9d68c9f8fa8df7b220ab2fb5a7ba21bd9222b9c355518e01e"
+        },
+        {
+          "image_codestream_sha256": "5c52613498a94ead14256129a2cb192d14ec8bed27527ed0ecacacee624e8fb2",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c2f9718ba10c81f5b5bd50781b845240328dee88db49bdd8c38925640a42c057",
+          "released_file_sha256": "568aeab6aa018a28cc5435b7f94ae36e2e50845b9441e7a0afc408946d03c405"
+        },
+        {
+          "image_codestream_sha256": "bfc97bed4e8af14dcfa8e5da3aaaece4a76b52e9c79d7d406e6f3b19da2e5ddd",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d8211c43d92e72db9da517501516825da0929cf89e9cbb6a6426f39d659835cc",
+          "released_file_sha256": "cf533bdddba3bdfbbf6de91e1645cfe90958142b6956730da2ceca305d8fd1e6"
+        },
+        {
+          "image_codestream_sha256": "10bc0a9df623c8daa4097d30847973a4f8861a6e086e608c6fdf1f5fe915792a",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6149b9c80ab75837c9d517fabf5257face09ed47047f86a445f44f468a11addb",
+          "released_file_sha256": "1cda1ff21f24aac1fb78b5feee3690145e63259049f6b76f298d53cfea41e9f9"
+        },
+        {
+          "image_codestream_sha256": "524c76a070bec24f6580187427691a70049ff49f1cc604048ee9e0a07d9f09f3",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "e5ce56e0562cfc3ed46f9fc07e8dc3b84ade731069b1180dc21643170331d5d6",
+          "released_file_sha256": "a9042e3aaaa2fe0c280a594d50e9d1e83be28c3312bf988c50b2eb24de67419b"
+        },
+        {
+          "image_codestream_sha256": "abe97cf1c01aa54a155f208300eddb82df4bec414a3577d7c978f19af0ae76b4",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "17775a79e7ceb8383318798e7698870bec9ffdc8f6b008c0d7670d719971cc28",
+          "released_file_sha256": "b90a6173154eb12002048c6c4e1f0b1a79d026e55539bd43e7e92ea4884766c6"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 5.9157609939575195e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.052287049507205204,
+              "candidate_loss": 0.05221081198788512,
+              "level": "d003",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.09703196263434095,
+              "candidate_loss": 0.09687036480205038,
+              "level": "d005",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.21620762988120523,
+              "candidate_loss": 0.21586448319984194,
+              "level": "d010",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5018908871674235,
+              "candidate_loss": 0.5011337428570432,
+              "level": "d020",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5361468825039114,
+              "candidate_loss": 0.5353392958928179,
+              "level": "d022",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.579356743104605,
+              "candidate_loss": 0.5784492055977573,
+              "level": "d025",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6146942489529154,
+              "candidate_loss": 0.6137178579411666,
+              "level": "d028",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6356572623371793,
+              "candidate_loss": 0.6346913874961365,
+              "level": "d030",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.854928349373014,
+              "candidate_loss": 0.853685731184761,
+              "level": "d100",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9006453666761259,
+              "candidate_loss": 0.8996322145270896,
+              "level": "d200",
+              "raw61_interior_loss": 1.2140176234060904,
+              "raw61_loss": 1.2124909196677156,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6756"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "8712ebc2796046ec91ee7ec0b17de9988a9f925ead05f0fffa23b5f95e3c9f98",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d168cb90e1eda871fc78e4487b1eeaa25253997c1fd26edea5ee14dd1b467f2c",
+          "released_file_sha256": "aad3e14d65e5989a465b7fc39f1d08ef7a02139f094b1c816bbe839ad1f00e22"
+        },
+        {
+          "image_codestream_sha256": "7a44d52365ec646ea73ddea5355bbcf4feca9fd27aec11d1474c714eb28ca3a2",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "47e25c262b422d376b65fb215031fb59d50fcf78f7aacfcad1880a88e8d0d136",
+          "released_file_sha256": "24832ed605d30032ee029258471c22bee61f25eca8eeb3aa35d9ac9fdc5cada2"
+        },
+        {
+          "image_codestream_sha256": "f752473ab383f41cae32df1405c9ddd979416b32712634b1ba3954406c25f2f2",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "44cdfe92aeeec7c93e7ea4b40c0902b50410d28727cb79fa84b2e02839f84bb8",
+          "released_file_sha256": "6ea375b8bdffb9aa82703d668ed4d4be275e21ad82de5a20cfab67499ec6f2ce"
+        },
+        {
+          "image_codestream_sha256": "011ac505d992d5eaad6af5fed16a6d23c6f6c86bfb1b58eb3f9171838c596eab",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "fccafc49d85386ce208b3fd058a117aa1dea5990eb139e16252995981f1627b6",
+          "released_file_sha256": "572f7184bf8c944381892d651d52f3243ba3b36ba997f4abc946500c73f159ab"
+        },
+        {
+          "image_codestream_sha256": "589ae9b9193657f7e6e7d18a966f3f194a908409960e75383bb0fddcf0612955",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "a2a1a69093e37f021decf3ac43f5e83416b02f7c1b347e7e0921a2851735cff1",
+          "released_file_sha256": "d770fbda3e29e50ad312971057b0dd6b324cbc2607d7c72c3463b9ef3cce575d"
+        },
+        {
+          "image_codestream_sha256": "0fa1618a2ae731ad3f401141c6346da910f3845fcfe958927e4f5ba18ed1ecbf",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "75a14e7bbc9076d438ecd300a602cf27f9bf1e423bf1758c265b353f3eeaea8f",
+          "released_file_sha256": "956b1df30ef3fb65908776f34c0dbfd03038f498096bb826ea8a4056a8819f92"
+        },
+        {
+          "image_codestream_sha256": "3222e1750e2fa86cfbe8adebdd6a02d674812eb3ecc99211ad1fc6b8da812b49",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "27cec7e3d337a26951eca054fc00e74c597c1094d06b0c2804f51c74be38645e",
+          "released_file_sha256": "1f73f6b1a2d39825b8a97f7b999b4431fc98654e91b176038bace6fed47aa6d2"
+        },
+        {
+          "image_codestream_sha256": "caef2838f4b630a081a03ab3ad1ae362076f72a7689c6fcb1a971d538ed4ff6c",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "05e20d0ea032918be6c93ed57bc2c41fb12db4c9beadbe8a03d869d04f7e3a44",
+          "released_file_sha256": "22466a1020b1a97380dc4a1121d1f2dec442e24e4b5620909bc952c445456618"
+        },
+        {
+          "image_codestream_sha256": "b2a08a9718bce25a355dbd2505215bf5947ef0d967799a953684b8c325471735",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "774e47efbd435fc0f945d2aef87e93e54febb6ba2d5b40fcc3d92ba8b328e57f",
+          "released_file_sha256": "71b029f749c99a04e991b759079e10e99fab6f094261ad6658e9d18143f0ebdb"
+        },
+        {
+          "image_codestream_sha256": "fbe8b6fedd5c9b4ab5fb5ce0fe825bb4d0f4cc39a81b958cf0ecf60666dc8f73",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "225d4bca84302d1a2ccc5137be582fbfac802d526eec8b7e74a05fd3245cbe71",
+          "released_file_sha256": "20903e2be28ee3a99a087a824508a56df65e68abc95f26e0db894e112c36b3a7"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.867813110351562e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05900888105538812,
+              "candidate_loss": 0.05855772903421328,
+              "level": "d003",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10337399706153368,
+              "candidate_loss": 0.10257776483375566,
+              "level": "d005",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.21030076770594505,
+              "candidate_loss": 0.20869200856703607,
+              "level": "d010",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.41647850385527185,
+              "candidate_loss": 0.41340889412477233,
+              "level": "d020",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4531536666738687,
+              "candidate_loss": 0.4497527657312151,
+              "level": "d022",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.495432678747652,
+              "candidate_loss": 0.491702667488657,
+              "level": "d025",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5303321088564558,
+              "candidate_loss": 0.5263622025936812,
+              "level": "d028",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5474741469825468,
+              "candidate_loss": 0.5433860668987956,
+              "level": "d030",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7173195399105241,
+              "candidate_loss": 0.7121708584075817,
+              "level": "d100",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.780302266357876,
+              "candidate_loss": 0.7750628902742085,
+              "level": "d200",
+              "raw61_interior_loss": 1.1734888508116808,
+              "raw61_loss": 1.1660394604093431,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6793"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.008,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "6011021eacc77a99c487f2b3e05b18de54ec83211c502873d5c6b5eadc4e4c1f",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "182ed9efaa7d87d6d0183cd6ff7b4cbff53d875f32d30864caf7ec864373804f",
+          "released_file_sha256": "755d5d39830e98905734421cdfc3500bf87faf0633a39bc98c7889d8cc032e6a"
+        },
+        {
+          "image_codestream_sha256": "59f143e2de252917af2fc51d003a40e22301229e615e3833259a156ad18004a9",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7073579dd09aa48528cd0f3215b6a8f2d11b7a39dcac68fb7a2ac569da83ab42",
+          "released_file_sha256": "db1d9aa2619b20414de81263fdc74b39aaf4b20f22b93fa4e5306b87bf6f32e0"
+        },
+        {
+          "image_codestream_sha256": "0a794d3f98e5c387cb75060377018743fe98cec4d245a4e5b4e4a652c0e868c4",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c84d21d3e02b48e58c1e353003e43034b52360e48945352cd87fe67c735df06e",
+          "released_file_sha256": "572db9a22158d12215a619e99fb9a40cbc10b22cc511046cebeec16a6bf74eca"
+        },
+        {
+          "image_codestream_sha256": "51afa15c6929134f2cca96d34bd461e3f33b20092ed15cb25fb6311513a1d04f",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "85474717d03bd162ec2cc4fe2420f0b6c9138cc32a1a6c5da112d339a0ef1793",
+          "released_file_sha256": "213826d10b59bcb4e351ffb6b505ac7bdaeb07b3e9d154af89d2b7e31610e02c"
+        },
+        {
+          "image_codestream_sha256": "08cc47c17a1a2fb065d3f737d82a32c846a68f195c1be535b148a4594c72044e",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "8be6079dd713005bf709d9fbd5f654413ecd092fe84552cb07f36691406f8846",
+          "released_file_sha256": "501727f6f7911e04a683a26127cfe3101c2d960a1263fb07f86d51b4c7499610"
+        },
+        {
+          "image_codestream_sha256": "c5e2af62f03a0213dfc6e734b1037cf33dd5bffca25e0abf63ae86713dc7da95",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "d17e6de5ce981f135915104624a9c7e01a5a0cb691203e5737d3aeff241644ed",
+          "released_file_sha256": "ffcbe80acb3c0b92ee5b11764983721c127bc72108e94bda664bce82f8e10ca5"
+        },
+        {
+          "image_codestream_sha256": "fc1e22827580d86f080dcda6463207d334499772e69feca4cba89c30a03c9c9a",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "62ebf2225472257d61217b9a488788e78bbf5c969eb6629c79fa19bd3816189e",
+          "released_file_sha256": "b89a1b9cc536301d5d7d1306744288b359fdab9878a1a8d8fde4930295485290"
+        },
+        {
+          "image_codestream_sha256": "4cb0cb890699e0291b6d1c5a56a5a65af5fab92a2d78cc25c124a5016a9fa2b9",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "14fe94ea9993fa311af3f62eff61fcee0fb8f639f4891dedcef9ecb6926613f2",
+          "released_file_sha256": "e783a6c7295173182c063c39b8a5ecac299cd08b1ce21012a16aa262bba1480a"
+        },
+        {
+          "image_codestream_sha256": "00543d740b7d12ce32dfb1128268d666cefc33b27ca9cbfde72a9cdf42848bce",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "44b0208c95a600dbc775a1cc105b231ad5dd5589e9fd23794f9f275f51df04fa",
+          "released_file_sha256": "315c47c4ce95a43904e494f82b0fb458285cb90d668682cad2841400ae4c202a"
+        },
+        {
+          "image_codestream_sha256": "11754eb90baf15ccc576a8d2c8f570c3fd2875a6c0bb48c3aec44a727b51f16d",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b7787a34e2d528465522aeef557ea53a3207eb7fac41d095c208c1bc5ec48372",
+          "released_file_sha256": "9a9f76ec80462e31d03887842ba2e4a71a8ee72ceff1fa0bdf251f072caec121"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 5.558133125305176e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05685508317911251,
+              "candidate_loss": 0.05669935319462022,
+              "level": "d003",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10290808205384686,
+              "candidate_loss": 0.10258333654134161,
+              "level": "d005",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2227077709771477,
+              "candidate_loss": 0.2220586869127677,
+              "level": "d010",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.49023848390731667,
+              "candidate_loss": 0.4890752361114246,
+              "level": "d020",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5234103888141176,
+              "candidate_loss": 0.5221289489817186,
+              "level": "d022",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.564704288599594,
+              "candidate_loss": 0.563282104414962,
+              "level": "d025",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5981425952890331,
+              "candidate_loss": 0.596631073426926,
+              "level": "d028",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6179920597363268,
+              "candidate_loss": 0.6164326574171735,
+              "level": "d030",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8234370521089993,
+              "candidate_loss": 0.8212359883364935,
+              "level": "d100",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8713511947658226,
+              "candidate_loss": 0.8691589006169046,
+              "level": "d200",
+              "raw61_interior_loss": 1.1594243712164547,
+              "raw61_loss": 1.156785770099731,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6814"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "4e01ff56f9176a9672dd1de6811dd877b6656ba64ac3ceb88f405991679126c9",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "f356c7c2f561338b78998e16d75d9f80dde3d6ed13c039adf9d27045242a8cb9",
+          "released_file_sha256": "010f0e97fbc4f0a85910293b11e8bd4387f39d72260b52f43241896bedb64133"
+        },
+        {
+          "image_codestream_sha256": "4eba07c253a1036771e5ee7ebce542746c815cb52e02b3fdd21ffd95682931c8",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "531e8cc73fff91284f4461a82e36d68c70502e85ef8fd7235cc1b511473b5978",
+          "released_file_sha256": "6b57098590e81f65c202a342cf489b1449bb557d68049da06bc3cca6111a5f05"
+        },
+        {
+          "image_codestream_sha256": "fac6cce5e0a4baa223915851bb45ad808f7502af66414ec4bd532aa1538542aa",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c79438ecbaa5341db5eb44dfce5c28e86d05b0c590bf6c9b69cc6382d9873b25",
+          "released_file_sha256": "857acd159f7a21b37d96cf62cc9904811ec0f279fec4d63c15fa5db77f6c278c"
+        },
+        {
+          "image_codestream_sha256": "37ec22270bd5dd3cb4a1fd6ec9f4c6aac6530e24fd70c94bc67ba4c65a62223c",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "85d6bf1417f2bfcb1409dec9bc6fb3bce1bd7c8123f78fbf43cdc90d001808b7",
+          "released_file_sha256": "e0ac724f7c5765a19d3b13d4c62639838dfb1a9dfe50c06d90e2f469312917dc"
+        },
+        {
+          "image_codestream_sha256": "199dbc5f31fde2dfb5de66c53e5ff8b01132905b01ec0026d6054959a1440672",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "0f86aaa68c1dc49ef0dd848c6eb6094af97a81009c4c56b569849c6095b80be8",
+          "released_file_sha256": "2055b8e09fd216286e73b82b719ae5fd509fa223c41daac34b2cda7ac2b9b683"
+        },
+        {
+          "image_codestream_sha256": "ee60fa5b8d62b4cf4101289ae92247eb678888b8cd34faf74bdade3d758f751c",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "e7676725aa5b7f38e6a08a3285a52650214984e4fbfcb0a1faf869461023afeb",
+          "released_file_sha256": "434143a8c49507bfa77bb0475a83929eae18890bd76d88f45f48ebe868ab2d4e"
+        },
+        {
+          "image_codestream_sha256": "33692f40779c79d46ed0fe3e34a97eea6045e130df12cb957bc31cf7d86d7388",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "8ebc55e03859e18165f5664691e9899a185adfd55e430459e3479a5a34f2e986",
+          "released_file_sha256": "41222d123f0805f272fe531d76184dd28691a1a980fe34351bd7ac306d75070c"
+        },
+        {
+          "image_codestream_sha256": "d5f74da7d4966f7317871b31c02a726f4078da1ef72f67251ed6d4574cd83da0",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "2abbf590b1c0d95e6ecbfec14cf88791c2fa2dbd666c2c11b2d3c6fc137643e6",
+          "released_file_sha256": "61022bd6d4ccc45b58ccda038d5f840d2293def29a312343a1a128980aace388"
+        },
+        {
+          "image_codestream_sha256": "bcfee50929f74af9c3dcaabc8302519679e2176e5825542cdcb599a101144825",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "88a1262f23920ea1949301c31063cdc32be568db9a7aaa58fb0e05945a63c071",
+          "released_file_sha256": "7eaa7ba0d028370cabc2c28f4b6b03807931c565ed48d2cb2d2009614b1458a9"
+        },
+        {
+          "image_codestream_sha256": "1862a6b53c2e6e9798a9c8562a4f4fcd3131dcdb384861a3b78100abc61b5b73",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "67ebd040d27c4441de55636cf86b202a03a99734b53f00bc2ff36d10573d3416",
+          "released_file_sha256": "433b079889217e05a69522006432dbd98eb91ec1894ac3205afd179a9f133ed8"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 3.0,
+            "negative_density_hard_shadow_recovery": 3.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 7.152557373046875e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.056604657808718616,
+              "candidate_loss": 0.05649287460354659,
+              "level": "d003",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.10870328931016943,
+              "candidate_loss": 0.1085597558925095,
+              "level": "d005",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.24504115379976346,
+              "candidate_loss": 0.24468024608123304,
+              "level": "d010",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5502952328465291,
+              "candidate_loss": 0.5496319797965397,
+              "level": "d020",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5809992502270838,
+              "candidate_loss": 0.5802509892341364,
+              "level": "d022",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6191186059832119,
+              "candidate_loss": 0.6182584769463016,
+              "level": "d025",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6514741441544325,
+              "candidate_loss": 0.6504662524825342,
+              "level": "d028",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6697409860044223,
+              "candidate_loss": 0.668681908157429,
+              "level": "d030",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8457547802826529,
+              "candidate_loss": 0.8445285466266003,
+              "level": "d100",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8918302127807206,
+              "candidate_loss": 0.8906821736903436,
+              "level": "d200",
+              "raw61_interior_loss": 1.1493561049721557,
+              "raw61_loss": 1.1480726259325544,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6836"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.00625,
+          "FNumber": 8,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "2618aab55bd4a16f719442182913a374cd19ff9c2a93d62fe7f58f7f60f4de3a",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7c69d0c8a1d5eee031932028a49a9040b9aa41d13535fb625a49145204ada010",
+          "released_file_sha256": "77068eebd45a3ad45eac4763ac39d16d8546bb699cd6bf260872372f1c95c012"
+        },
+        {
+          "image_codestream_sha256": "22e6ff57ba6ce331c40d18a2e3574fe2d340b27aca80aeb6a2fdcc36de788615",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "559c8e422420ba7584d68ff28e627f88d663c549edf01e44d94bb22d8c6cf969",
+          "released_file_sha256": "53cc2c548532b1b81bd8b148205871e43c8e980cdae8f8e8ab5952be6707bb89"
+        },
+        {
+          "image_codestream_sha256": "2fb1198e79b11789a33745d26483481cbae51d756f813a157d263718937170d8",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "38150539fd931b4bedbb7c4934975862a1ab50033651a44c06450cf852a21753",
+          "released_file_sha256": "bf12a2746448c75e44c90bd6ef97eb01167130456e6225576784a2d796f9d530"
+        },
+        {
+          "image_codestream_sha256": "9b8c7a4e15de2a1f546c16a832e0ca4c7e3a9fcdbcda28cb6aa1785b9d03e965",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6baa47ffb4a0781625bbe817551854a033c025e4d437bdeca5d08da3da607d41",
+          "released_file_sha256": "530592c4b2ed881d4a11101d7c9dbc5ff7969cbdc21bbad74b7b28ff0bd58bd0"
+        },
+        {
+          "image_codestream_sha256": "830bdd11d878c65b91ed445b243e89dce8a2dcad4dd1f1da4901121e9b7250da",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c2088d6d146413bb39305ff78a2e35673db2e6c9bc74f10121c96ce64aca9d91",
+          "released_file_sha256": "7f3e18b4740108ec05c754e44a666c65552967a195125df78a3d6991a4098201"
+        },
+        {
+          "image_codestream_sha256": "9053c8105828c084a0ae9e8f097db1c95e58a1d4c6bc7b134d2e98c30a6c38c1",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "8bcbd71dc6ca00bf507d4953310931e1c752de6e52eddce7572735d4a8cd7db7",
+          "released_file_sha256": "49664f589baf93d394683a2cefb927168462bea3d70c441cabff910df6c2c37e"
+        },
+        {
+          "image_codestream_sha256": "c90dd0e3039db90fcefb27060763f97eb193a420fb38a1f52830809cb2cc5cad",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "008484556be961ab98ebf752860adfddeaf5d7490968dd21e0fa0b8b1614d7e5",
+          "released_file_sha256": "3c89d21b7cee31b0bfda1b6245f582533d90c9b33242c94da496657fb9321236"
+        },
+        {
+          "image_codestream_sha256": "5085daf4f5224963985bb583823243370025881f2be06717ff51a7f234e5cb9f",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5d0bc85006850bf47a7251eaff5e58e0d593e586d54194b6a50e6ef915c287fe",
+          "released_file_sha256": "eb1285517846be3aa2d4c2f0e21099338e0d1a3fb96d6c8c06d62c2b9621bacb"
+        },
+        {
+          "image_codestream_sha256": "50db3af04b89ccae85e83292593d50a3becd62fa6e471d240c16765e4cc1881b",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "2b1c1ce12b039a80a2d5aee65a217c1025b3683862e06ba687db4cf7bc5a1a65",
+          "released_file_sha256": "5223440d918d27df5a83210af6995fc9f74c93a0c62ae0a0691b84fedef9d9c3"
+        },
+        {
+          "image_codestream_sha256": "fc3e008f1369934bfea4219a9bd38c42932ae4a1cd4102e2a173e84cff961f41",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "c5b914028d7bbf18e711f9d2f8692b74cae489e7ca57391eb6947ce6e40cad3d",
+          "released_file_sha256": "67bb2ca519feb29a4dc04a443588f373b0cb5d864480e92c7c736fc78349752a"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 4.0,
+            "negative_density_hard_shadow_recovery": 2.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 3.553926944732666e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.04629889640486781,
+              "candidate_loss": 0.046260729576689905,
+              "level": "d003",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.08790528162659325,
+              "candidate_loss": 0.0878073186152599,
+              "level": "d005",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2486467047711928,
+              "candidate_loss": 0.24848427886616112,
+              "level": "d010",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5629405104375282,
+              "candidate_loss": 0.5627069164599189,
+              "level": "d020",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.597677399167463,
+              "candidate_loss": 0.5974512034941815,
+              "level": "d022",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6447950463905058,
+              "candidate_loss": 0.6445098389412601,
+              "level": "d025",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6836877736001825,
+              "candidate_loss": 0.6833854645749758,
+              "level": "d028",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7061911970629169,
+              "candidate_loss": 0.7058328401406466,
+              "level": "d030",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9402075032718827,
+              "candidate_loss": 0.9395979866479889,
+              "level": "d100",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9781759032904632,
+              "candidate_loss": 0.9775659331751109,
+              "level": "d200",
+              "raw61_interior_loss": 1.2318743339085325,
+              "raw61_loss": 1.2313453868019015,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6857"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.004,
+          "FNumber": 5.6,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.004,
+          "FNumber": 5.6,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "091002b579573ab7c2504ee5ff6d058ba4edd7711f8113d825322126dffb68c7",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "7f5af80891f370373db6155088da183f47baf361115cd7f4e5edf1089a8532c2",
+          "released_file_sha256": "43f2dc1191301b2e547755c977f28401cb5f399025d52b974856017ee7ffaae5"
+        },
+        {
+          "image_codestream_sha256": "830a9791894dc2c3dfa2ffaa111fc8a1e922ba4aa9597d27cd5e931a3ce2de34",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3f10491ef487a3c500afc45a092debd7efd90b6c47395c1110983fc65cb8a908",
+          "released_file_sha256": "1099fe88adaea7af557e190be208d45007e7c06d482bd96b69e659e5ce0f7aee"
+        },
+        {
+          "image_codestream_sha256": "dbfc002b18cde6fa437215066d5c5b4191dffe1c6ab6a4b18c5a081cfa54d93f",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "8e72ef1d5afd8ef89dd595d64cd497e116326c0cdda1274981c4d1cf651a918c",
+          "released_file_sha256": "fb3c82fa7afb8d7cf58e4876d60d01a4f704dad052d68c0e7b50e95ee541325c"
+        },
+        {
+          "image_codestream_sha256": "283d6343583635929352b83c95bd34da2e62a9c9a73727fd40f6b5bda78b883a",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "bb75e5928e9d2d89e7dc104f6d40efe565c481d9022f5c0bb2a242f1fa70b09d",
+          "released_file_sha256": "f1edc6deeeb34c992e6dfa3b3d90dbcb865ab3cb492d2f5b1dcb550e980bec6e"
+        },
+        {
+          "image_codestream_sha256": "7ee580cb9c3c6d1165ae6a52ccdeb29f91993b657fbe1ab2e380f757a154e4fd",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "ec916a30798675c7e1b1198e04c533f522fcd5c46247f9f22e33f8ce54764329",
+          "released_file_sha256": "3a91f4cc1a16a3a2bda6c0b73e2e986459eea1304869b3606e68edfafd198009"
+        },
+        {
+          "image_codestream_sha256": "796fe972485801e450a0303bfb7de5fbbb552a2c8481d92dd324e7b6a2afab82",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "bc83c0149926aaceadffe146bc06113c9f70f1fedecb6e75400f5a78a84ced4a",
+          "released_file_sha256": "155f11153e1c6bcc330631d8dccad7d8be6dfe176abed28b2d1e768ad944a712"
+        },
+        {
+          "image_codestream_sha256": "a1e31e1ca22f8a505e8863d0422a50268dc3030694077406a696300c889f70a8",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "a8d814a5c3134ad76215fa9c86cf242104902381da2ac8bcb31d3c08c73e04c7",
+          "released_file_sha256": "53fb849a2131d3bf334f811577a41f2095d9a86840ae295daa94301064cedd07"
+        },
+        {
+          "image_codestream_sha256": "a5d6d4df02d2ecc194fa9c7d0a8d78bc2ece5f783e77b5ed58f7b34b7902e26d",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "4daab5d293f004ccab2f230ce0d2c70ee7d5bb31ccf966f437d1e21847e439ae",
+          "released_file_sha256": "83589e417f8be73158059c970623e3801e010dae1aba1b0baae0396be3089578"
+        },
+        {
+          "image_codestream_sha256": "4ec15b9b38a0a15b9f019527a1e1344b6f140d855e054040bcf8f7f4bc83471a",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "755b32a21239edaf9006546f89bcba68614eedd0d8ba27d451bf3d44d81920f7",
+          "released_file_sha256": "f39a6073b5d4bbbb00f8392b5fefacb483c7f3da34b28c398c27a1c925df9969"
+        },
+        {
+          "image_codestream_sha256": "88d617fa04942b36f639c94084f6a12193c36eb5573500ccbc2b30f5737f0edb",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "490006b39a1f43ae27341d2c7eb6fe1b39f5ae813691257cf41321a13c111083",
+          "released_file_sha256": "622a5dcde4a7f94d7994b1e5045969f949decf7837ef024c52463bb5d018bf8d"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 2.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 8.255243301391602e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.04431622962711542,
+              "candidate_loss": 0.04427211569268309,
+              "level": "d003",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.07870818217181139,
+              "candidate_loss": 0.0786206702211426,
+              "level": "d005",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.1588290408619338,
+              "candidate_loss": 0.1586838710358495,
+              "level": "d010",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.2948748761825778,
+              "candidate_loss": 0.2946087795701477,
+              "level": "d020",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3188155957083345,
+              "candidate_loss": 0.31857414232495423,
+              "level": "d022",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3540061171668955,
+              "candidate_loss": 0.3536955686881925,
+              "level": "d025",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3853313911205127,
+              "candidate_loss": 0.38508654586271795,
+              "level": "d028",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.40325144412127717,
+              "candidate_loss": 0.40294747462042113,
+              "level": "d030",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5762568089065572,
+              "candidate_loss": 0.5757036768150172,
+              "level": "d100",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6786311803241869,
+              "candidate_loss": 0.678109335171952,
+              "level": "d200",
+              "raw61_interior_loss": 0.9430811282833447,
+              "raw61_loss": 0.9425435894082473,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-02",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 2.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 2.0,
+            "negative_density_hard_shadow_recovery": 2.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 3.829598426818848e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.03969702913289403,
+              "candidate_loss": 0.03965998628187022,
+              "level": "d003",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.07531750422861054,
+              "candidate_loss": 0.075276220226277,
+              "level": "d005",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.174603969044816,
+              "candidate_loss": 0.17449194244599703,
+              "level": "d010",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.3799526517212198,
+              "candidate_loss": 0.37961500013938937,
+              "level": "d020",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.42379001305931124,
+              "candidate_loss": 0.4234137074229836,
+              "level": "d022",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.47449372476671786,
+              "candidate_loss": 0.4741477573129092,
+              "level": "d025",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5125223844521868,
+              "candidate_loss": 0.5121032166180968,
+              "level": "d028",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5313376956466538,
+              "candidate_loss": 0.5309084787379448,
+              "level": "d030",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7441737611996472,
+              "candidate_loss": 0.7434315632203504,
+              "level": "d100",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8391958056080157,
+              "candidate_loss": 0.8384445471867074,
+              "level": "d200",
+              "raw61_interior_loss": 1.0564744585698518,
+              "raw61_loss": 1.0558267410998265,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6879"
+    },
+    {
+      "capture_color_and_exposure_metadata": {
+        "dng_source": {
+          "AsShotNeutral": "0.392187 1 0.581488",
+          "BaselineExposure": 0.35,
+          "ColorMatrix1": "0.9185 -0.4857 0.0505 -0.3651 1.1061 0.2982 -0.0161 0.0698 0.6769",
+          "ColorMatrix2": "0.82 -0.2976 -0.0719 -0.4296 1.2053 0.2532 -0.0429 0.1282 0.5774",
+          "ExposureTime": 0.005,
+          "FNumber": 5.6,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WhiteBalance": 1
+        },
+        "raw_source": {
+          "ExposureTime": 0.005,
+          "FNumber": 5.6,
+          "ISO": 100,
+          "Make": "SONY",
+          "Model": "ILCE-7RM5",
+          "WB_RGGBLevels": "2611 1024 1024 1761",
+          "WhiteBalance": 1
+        }
+      },
+      "encodes": [
+        {
+          "image_codestream_sha256": "28858c66fc0a363ade70d09231e342e7ee45caac911d2cbd4b7500d854fe358a",
+          "level": "d003",
+          "metadata_only_repair": true,
+          "original_file_sha256": "6db5c2bbd0c1c3c9c8be3a712ba559bb2ef7af212f4d8fe4b68f6e738b8f0757",
+          "released_file_sha256": "9d2ef47ffe4aac7cc4e06535b3b4dc86c9a1d3c8a6e8ded8349d34e0ef197fde"
+        },
+        {
+          "image_codestream_sha256": "f4e70eff2d25a93f96cae71827fe994ec3fe34cdee2bfaf0496456169c646ae7",
+          "level": "d005",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b9cc4abff0f9c98a9e60f588d87cb3bfbdf71446f5d734b5a2e23d4310528994",
+          "released_file_sha256": "87c046ab49ac0aa7c123ff67b0b412ade8b3b4953a144b5ff98c3f5981d0cfef"
+        },
+        {
+          "image_codestream_sha256": "3b585210548adeec33b8486aa7ed309878728f8bac7be05c5865e8549268b10c",
+          "level": "d010",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b727226e7a08870e58066f536fe2f8aded6616656f749abfcc65e76d3303ee8f",
+          "released_file_sha256": "966407f54297b004b654c5c9a9b33c20f440d33027eb3e6ecfd99945c2ff612b"
+        },
+        {
+          "image_codestream_sha256": "f3347bf8a43ec3d59342be7b2add23f28c42c1ecf7efc3062fd12cc7f6c7dcc3",
+          "level": "d020",
+          "metadata_only_repair": true,
+          "original_file_sha256": "00337a4aa5a31bcfa9cf8029f324e20554617a2a6618963ac164911a7b8576d7",
+          "released_file_sha256": "5b558fd0a7620bdaea4be6dbf9e5d785393d4ea4c379d2d803a792e9e0e14ce8"
+        },
+        {
+          "image_codestream_sha256": "053d981af940b92c53702709a81d7d15514fad740c45a96a1fb13de862dbb284",
+          "level": "d022",
+          "metadata_only_repair": true,
+          "original_file_sha256": "b8ca40a5818f8c877c9255c87d898743d7930593dccf9da3746dbfe8e288fc8a",
+          "released_file_sha256": "3caaca605fc1538992497bfbd90e8c424619f8675f96a2dd94b40bb4cc4851e4"
+        },
+        {
+          "image_codestream_sha256": "bd1eed178d19dcbf8c9dcb5c300c81bd69b5e0a82148a6e87082b0ab0908a597",
+          "level": "d025",
+          "metadata_only_repair": true,
+          "original_file_sha256": "3e23c09cd41163f9fd0fcb3a989471313b23e16f305cd6bb51e9480180114118",
+          "released_file_sha256": "29dbe10cb3f9e869e1533050e049cdb1344cce08eb8a0705a026cc370768adb4"
+        },
+        {
+          "image_codestream_sha256": "e545b8835d408d1764cd4802e4d54e6ae52bb4ce507430786c137d0046b60230",
+          "level": "d028",
+          "metadata_only_repair": true,
+          "original_file_sha256": "13bdb57ae991d9d074789092684aeb198a726a9063ad58cf2c32585644a2824e",
+          "released_file_sha256": "6dbbf0dd8a5a42c4badd7ba3e1d563df3e95d70c8423c8b9e57c555a5fc9b203"
+        },
+        {
+          "image_codestream_sha256": "0ea40342ddb9af4e564f65657eff894ff602bb37e66dc432498e9a7a5d419268",
+          "level": "d030",
+          "metadata_only_repair": true,
+          "original_file_sha256": "686cd4f90416c9f1a17b362e5147ee7d5c8ee6269f8d4ea0134904dc0668efc6",
+          "released_file_sha256": "bf4fcdd0cb2cf68d6bf209a07b1894e07e0fa0a3c8ff68ccd919321bb8bdf2b8"
+        },
+        {
+          "image_codestream_sha256": "b6474fff00c5c731b03aa93ead4c9f5e282fe3d0d41b2e94d043d90b91eb13ee",
+          "level": "d100",
+          "metadata_only_repair": true,
+          "original_file_sha256": "5ea7fa741dc039bab0264d59e71a8e80ca139e59d855018026cf782282f55f56",
+          "released_file_sha256": "e08f51f94c093c77f33139eefdc32cea48cf378a36d6e5b3928af7b45857fb8d"
+        },
+        {
+          "image_codestream_sha256": "42cde712a9a948b5f2e0bff60b7bb14fe8cce861bc449f9f39695ed5b3a69e29",
+          "level": "d200",
+          "metadata_only_repair": true,
+          "original_file_sha256": "dd6acda85168c5b647888c7a9e9faef5f933f094e913c945f1ae8803fc60b4d6",
+          "released_file_sha256": "4979a43e17e060499c3a5d2522562e445685bf9be96ce76a2eb9eea7e111a4f3"
+        }
+      ],
+      "raw_viewer_quantization": [
+        {
+          "crop": "manual-01",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 2.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 4.0,
+            "negative_density_hard_shadow_recovery": 2.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 1.5385448932647705e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.05815306879570139,
+              "candidate_loss": 0.058123398020787156,
+              "level": "d003",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.11271407745791438,
+              "candidate_loss": 0.11267614351872728,
+              "level": "d005",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.38393337185034493,
+              "candidate_loss": 0.38366886760274677,
+              "level": "d010",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6554653503782919,
+              "candidate_loss": 0.6550923765748852,
+              "level": "d020",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.6906856644256364,
+              "candidate_loss": 0.6903252675579608,
+              "level": "d022",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7347035455295872,
+              "candidate_loss": 0.7344247124255532,
+              "level": "d025",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7726001901500686,
+              "candidate_loss": 0.772287590259594,
+              "level": "d028",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7936466167674083,
+              "candidate_loss": 0.7933180963544036,
+              "level": "d030",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9858477658282029,
+              "candidate_loss": 0.985682841770951,
+              "level": "d100",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.9993694320061752,
+              "candidate_loss": 0.9992990202330132,
+              "level": "d200",
+              "raw61_interior_loss": 1.2287459400966032,
+              "raw61_loss": 1.228828928437708,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        },
+        {
+          "crop": "manual-02",
+          "max_display_code_error_by_mode": {
+            "highlight_separation_luma_p88_p998": 1.0,
+            "identity": 1.0,
+            "negative_density_hard_print": 1.0,
+            "negative_density_hard_shadow_recovery": 1.0,
+            "shadow_recovery_luma_p12": 1.0
+          },
+          "max_linear_error": 4.425644874572754e-06,
+          "native_highpass_boundary_sensitivity": [
+            {
+              "candidate_interior_loss": 0.038702593515217584,
+              "candidate_loss": 0.038654333125814566,
+              "level": "d003",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.07269518040298721,
+              "candidate_loss": 0.0726148080453441,
+              "level": "d005",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.1705063509159104,
+              "candidate_loss": 0.17033765740151544,
+              "level": "d010",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.38049845622895134,
+              "candidate_loss": 0.3801189680644214,
+              "level": "d020",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4222983505595366,
+              "candidate_loss": 0.42182294791777664,
+              "level": "d022",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.4747179227205474,
+              "candidate_loss": 0.4740634209842729,
+              "level": "d025",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5120238127961417,
+              "candidate_loss": 0.511341398733099,
+              "level": "d028",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.5310929551951356,
+              "candidate_loss": 0.5305083132517658,
+              "level": "d030",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.7479425671659742,
+              "candidate_loss": 0.7470290630068381,
+              "level": "d100",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            },
+            {
+              "candidate_interior_loss": 0.8421296864285719,
+              "candidate_loss": 0.8412578814814166,
+              "level": "d200",
+              "raw61_interior_loss": 1.061011737176481,
+              "raw61_loss": 1.0601545654007978,
+              "relative_screen_changed": false
+            }
+          ],
+          "outside_unit_range_channel_fraction": 0.0,
+          "source_resampling_support_inside_bounds": true
+        }
+      ],
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6917"
+    }
+  ],
+  "preset_sha256": "d1a9e05c9ce696230c09f4f606672c9a5cd6b9e5593d7b339c503afd66b02be7",
+  "recipe_code": {
+    "scripts/audit_render_lineage.py": "7ce6a3ffff7576a8ad1bc7674ff2211a0ad1f063c51aee0d05b98fe48e339b7f",
+    "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+    "src/report_transforms.py": "72d4e4179edb802826c7b198064283e396795f9e28abc5eb67a5b643710376b5"
+  },
+  "render_limit": "The neutral preset uses camera white balance and camera input profiles. RAW and DNG can therefore resolve different color and exposure interpretation. Capture metadata is disclosed, but retained TIFFs do not preserve a complete effective RawTherapee parameter dump. The primary result compares these retained rendered workflows; it does not isolate sensor sampling alone.",
+  "schema": 3,
+  "viewer_limit": "Measurements use floating-point linear RAW resampling. Browser RAW buffers quantize that result to unsigned RGB16; all resulting display differences and any out-of-range resampling values are disclosed per crop. Candidate and PS16 crop buffers retain their original decoded RGB16 codes."
+}

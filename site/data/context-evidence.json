@@ -1,0 +1,453 @@
+{
+  "asset_hashes": {
+    "assets/context-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016.png": "beb6e88a86cd1fc0bbc8790ceadbe9915a2ff5dba013ccad50299e197727e5a6",
+    "assets/context-verified/fuji_679_f_ii_1983/_DSC6938.png": "5f49ec2d949634a96f282e7761d19f6f4bdabceb7b11128b3aa98b462f89e5c6",
+    "assets/context-verified/fuji_679_f_ii_1983/_DSC6959.png": "d5ddae84aeb110af853292e11bbde322628b59872a1f066188ac49aad9e7914a",
+    "assets/context-verified/fuji_679_f_ii_1983/_DSC6980.png": "be581105a367871a466ccd6fec0c59e6753f8f4b7974e04ecf27f73d37697eee",
+    "assets/context-verified/kodak5035_h190_1983/_DSC6598.png": "bcc467ac46897acd1ff62dfaaecfd11dcd183ee368731a43ac10a98d7d32c562",
+    "assets/context-verified/kodak5035_h190_1983/_DSC6619.png": "75da9aacb0e3f172653a3ee254b5b1d6f61f54929613dc710dde8cb2d4b527cf",
+    "assets/context-verified/kodak5035_h190_1983/_DSC6661.png": "0d0432750c8a05f886bde830f67f71bd0c2fd5cb81dcaa7e58b4cf3520afcd80",
+    "assets/context-verified/kodak5035_h190_1983/_DSC6682.png": "0cdab3ee0b4ea8fe01561ac95a722d229fe98a4523dc7b03d094353d0d19d947",
+    "assets/context-verified/kodak_gold_200_5_1997/_DSC6735.png": "8a4c5af44e607ebf16d01292fa0771d56ee0a535f652bb3792647e875fb85c9f",
+    "assets/context-verified/kodak_gold_200_5_1997/_DSC6756.png": "0f748b28543f3f5a8c01186ea1f3f5fe4106c431cfe08cf1eae2eb56cdb4762f",
+    "assets/context-verified/kodak_gold_200_5_1997/_DSC6793.png": "3170f0cea8f2c798d86f1f3a6212d1dda6b208484b51093030b351c7ddceba32",
+    "assets/context-verified/kodak_gold_200_5_1997/_DSC6814.png": "d06565c153abba2f3bd173899e9cf52ab5dc96fd46127e1a110e060ace2fe13c",
+    "assets/context-verified/konica_vx100_probable_1995/_DSC6836.png": "b8ec968553ad40c22b8c23b0d3769d8763da459681ca48d6b381116f962ddb31",
+    "assets/context-verified/konica_vx100_probable_1995/_DSC6857.png": "e64e2978aa8afca94bffe0658b8524d8ca58c992f5ff388e366ae270a1400df9",
+    "assets/context-verified/konica_vx100_probable_1995/_DSC6879.png": "4210c3021d9fba1f666ef4a208fcf28b57c57e32b41cace611f488997c2b9453",
+    "assets/context-verified/konica_vx100_probable_1995/_DSC6917.png": "a717d263394ad13283a09db12efea09b382c858d6b1b6f2c521a3c084cd6731c"
+  },
+  "evidence_id": "contexts-e4530838f25d9372",
+  "method": "20x20 linear-light box means followed by ICC-managed sRGB display; neutral PS16 location aids only",
+  "recipe_code": {
+    "src/break_even_image_tools.py": "1eb072ad4ec370e52fe4ea26065cf7057ebbe6311159b7a01e242405f62940eb",
+    "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+    "src/report_transforms.py": "72d4e4179edb802826c7b198064283e396795f9e28abc5eb67a5b643710376b5"
+  },
+  "records": [
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11204,
+            4589,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            16600,
+            1950,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-03",
+          "xywh": [
+            13000,
+            5800,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-04",
+          "xywh": [
+            17150,
+            5550,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "adox_vlad_resolution_target",
+      "set_id": "_DSC0001-_DSC0016",
+      "source_sha256": "cbebb0cd074449d91ff87fd009038b078a50a6e7377902cd1b8468568dd9ddf5",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11502,
+            3527,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/fuji_679_f_ii_1983/_DSC6938.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6938",
+      "source_sha256": "267f4f0613db27eae1186c660651d1fc4fc9a006e44fea10896511b8c438595e",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            12224,
+            466,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/fuji_679_f_ii_1983/_DSC6959.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6959",
+      "source_sha256": "523f4c4ca70167e62676f1e81b641ec7bf4a93358b0ccd7cf9829e684e85dc5b",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            1870,
+            5482,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/fuji_679_f_ii_1983/_DSC6980.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "fuji_679_f_ii_1983",
+      "set_id": "_DSC6980",
+      "source_sha256": "9e5077a0fac7f3da9c8c84f8d8f69beba58f868ee93193a120f165753547ee44",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7696,
+            5206,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak5035_h190_1983/_DSC6598.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6598",
+      "source_sha256": "c190f35a311c2f69b7875d2df844f3865a95c68352c0b2c3883a7222e86b8389",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            6292,
+            4355,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak5035_h190_1983/_DSC6619.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6619",
+      "source_sha256": "72465db4a1f6a23582c032eda40755e018f63663bd990b20910bf60b752febc7",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            11480,
+            3038,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak5035_h190_1983/_DSC6661.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6661",
+      "source_sha256": "88d8975b0e8525acd67f5bd36cf51b516c0cb1007a1f9fbfe36e4f08328e1568",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            15775,
+            5354,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            8716,
+            2166,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak5035_h190_1983/_DSC6682.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak5035 H190-1983",
+      "set_id": "_DSC6682",
+      "source_sha256": "e5def46eb49bfefc0e36be27837a3560bf4e5a60a44e71d0dcefef83a9f10193",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7164,
+            5567,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak_gold_200_5_1997/_DSC6735.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6735",
+      "source_sha256": "1beff0a5c0e228e0764c4bd8616c9bb396482551954e32527819122e2078e4da",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            10885,
+            6290,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak_gold_200_5_1997/_DSC6756.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6756",
+      "source_sha256": "5e32299946fafa21a8cf1a660f899b0f5c75c411370eb93083561ca8b4d7fad4",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            7866,
+            5949,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak_gold_200_5_1997/_DSC6793.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6793",
+      "source_sha256": "b91223638c870937daa5a5bf2ef9e0a5b0132d108d4bf37e01f550949ec790e9",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            8525,
+            4844,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/kodak_gold_200_5_1997/_DSC6814.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "Kodak Gold 200-5 1997",
+      "set_id": "_DSC6814",
+      "source_sha256": "0071853b8afef1e4b5156fd5ce97568748e28ba6898d22565271f4ee54459e2b",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            16201,
+            7714,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/konica_vx100_probable_1995/_DSC6836.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6836",
+      "source_sha256": "79b141c865d39fdc1e32968005ba1ddc2135e6cc3aa6f930141beacb3460b18b",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            14436,
+            9669,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/konica_vx100_probable_1995/_DSC6857.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6857",
+      "source_sha256": "6898bb4eb1b97f95fdc7271d0837288bfc6bfa1a3ebb9b64d621e2eaa2acd6b5",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            9269,
+            1338,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            4506,
+            6098,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/konica_vx100_probable_1995/_DSC6879.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6879",
+      "source_sha256": "847c97ca307fff2eeef6aedc0e58410b76d2356877bbca0b9bae6c36d682b3cd",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    },
+    {
+      "crops": [
+        {
+          "name": "manual-01",
+          "xywh": [
+            3890,
+            3357,
+            768,
+            768
+          ]
+        },
+        {
+          "name": "manual-02",
+          "xywh": [
+            12331,
+            3675,
+            768,
+            768
+          ]
+        }
+      ],
+      "file": "assets/context-verified/konica_vx100_probable_1995/_DSC6917.png",
+      "icc_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+      "scan_set": "konica_vx100_probable_1995",
+      "set_id": "_DSC6917",
+      "source_sha256": "4b107639b72f8bf989ffd744b87a908a3c45a609a0c86ace8471aeadc6b3a780",
+      "source_shape": [
+        12752,
+        19136,
+        3
+      ]
+    }
+  ],
+  "schema": 3,
+  "script_sha256": "0cf56ae15956be7599bf2210e83b6aa4e8d221e6f5fd3b6eb3a3ffc99b9ef3f9"
+}

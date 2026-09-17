@@ -382,8 +382,8 @@ class ArchivalBreakEvenTests(unittest.TestCase):
 
         self.assertEqual(rows[0].retained_size_mib, 98.0)
         self.assertEqual(rows[0].size_status, "within_5pct_budget")
-        self.assertEqual(rows[0].metadata_risk, "pass")
-        self.assertEqual(rows[0].verdict, "ps16_jxl_likely_wins")
+        self.assertEqual(rows[0].metadata_risk, "blocked_missing_metadata_diff")
+        self.assertTrue(rows[0].verdict.startswith("blocked"))
 
 
 if __name__ == "__main__":
