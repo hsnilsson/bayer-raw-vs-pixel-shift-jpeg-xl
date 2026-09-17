@@ -1724,8 +1724,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function drawOverview(image, x, paneWidth, height) {
       if (!image) return;
-      const maxWidth = Math.min(320, paneWidth * .54);
-      const maxHeight = Math.min(170, height * .27);
+      const maxWidth = Math.min(384, paneWidth * .65);
+      const maxHeight = Math.min(204, height * .32);
       const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
       const drawnWidth = image.width * scale;
       const drawnHeight = image.height * scale;
@@ -1765,13 +1765,13 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       document.getElementById("cropScale").textContent = state.referenceImage
         ? `${Math.round(100 * fitScale(state.referenceImage, half, height) * state.zoom * (window.devicePixelRatio || 1))}%`
         : "";
-      drawOverview(state.referenceOverviewImage, 0, half, height);
-      drawOverview(state.candidateOverviewImage, half, half, height);
       drawImageFit(state.referenceImage, 0, 0, half, height, [0, 0, half, height]);
       drawImageFit(state.candidateImage, half, 0, half, height, [half, 0, half, height]);
       if (state.overlay) {
         drawImageFit(state.candidateImage, 0, 0, half, height, [0, 0, half, height]);
       }
+      drawOverview(state.referenceOverviewImage, 0, half, height);
+      drawOverview(state.candidateOverviewImage, half, half, height);
       ctx.save();
       ctx.strokeStyle = "rgba(255,255,255,.5)";
       ctx.beginPath();
@@ -2197,7 +2197,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }, true);
     document.addEventListener("keydown", (event) => {
       if (!workspaceActive && !workspace.contains(document.activeElement)) return;
-      if (event.target.matches('input, textarea, select, [contenteditable="true"]')) return;
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.target.matches('input, textarea, [contenteditable="true"]')) return;
+      // Keep native dropdown selection, but let left/right leave the view column.
+      if (event.target.matches('select') &&
+          (event.target !== modeSelect || !["ArrowLeft", "ArrowRight"].includes(event.key))) return;
       if (event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')) {
         event.preventDefault();
         setOverlay(!state.overlay);
