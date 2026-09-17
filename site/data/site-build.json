@@ -1,5 +1,5 @@
 {
-  "html_sha256": "1014b1174135f7bf982c483517a0c0ecccc0055a4455ec5a89f292abc0e570f7",
+  "html_sha256": "ceb08900a9a28ca7ecfacd118fb10f61c2df7bb4225f8b9919bd4bcba84986c8",
   "redirects": {
     "assets/review-viewers/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/index.html": "6cec4c4b450bb773bdefc61be40ed5a8c6ce7ac7cf58882c85b6864792b21d85",
     "assets/review-viewers/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/index.html": "12117e941b41cd1679cc032bda5e5edf9bf1ab3ee7881faa1c5c6da3d90e0453",
@@ -24,5 +24,5 @@
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-01/index.html": "84a225401667fd053fe1866aebade679f3b300da3a6176ba228d2847eae55a14",
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/index.html": "eb507ebf7074144afbf1aea91bc32badac0c3783e0207a040490c7c19802eddd"
   },
-  "release_sha256": "8832b9890904f0111ec95c15814b1fc135f9fd14daf4ce549087386e3263e6f7"
+  "release_sha256": "41c6441c64a7a33ae8ed523ac027cd5f2a0bb28ed4ff0d6abe31d94e5b498617"
 }
