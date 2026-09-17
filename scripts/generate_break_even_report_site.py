@@ -1196,7 +1196,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <button type="button" id="cropZoomIn" title="Zoom in">+</button>
           <button type="button" id="cropNativeScale" title="One source pixel per display pixel; reset pan">1:1</button>
           <button type="button" id="cropReset" title="Reset zoom and pan">Reset</button>
-          <button type="button" id="cropFullscreen" aria-pressed="false" title="Enter fullscreen visual review">Fullscreen</button>
+          <button type="button" id="cropFullscreen" aria-pressed="false" title="Enter fullscreen visual review"><svg class="fullscreen-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="1.2"/><path d="M8 16 16 8M11 8h5v5M8 11v5h5"/></svg><span class="fullscreen-label">Fullscreen</span></button>
         </div>
       </div>
       <div class="crop-canvas-wrap">
@@ -1279,7 +1279,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     let prefetchTimer = 0;
     let toneFrame = 0;
     let loadSerial = 0;
-    const navigationZones = ["film", "view", "quality"];
+    const navigationZones = ["film", "reference", "view", "quality"];
     let activeNavigationZone = "film";
     let workspaceActive = false;
     const state = {
@@ -1323,10 +1323,11 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (!navigationZones.includes(zone)) return;
       activeNavigationZone = zone;
       filmSidebar.dataset.navigationActive = String(zone === "film");
+      referenceSelect.closest(".crop-mode-label").dataset.navigationActive = String(zone === "reference");
       modeSelect.closest(".crop-mode-label").dataset.navigationActive = String(zone === "view");
       qualitySidebar.dataset.navigationActive = String(zone === "quality");
       if (!focusControl) return;
-      let control = modeSelect;
+      let control = zone === "reference" ? referenceSelect : modeSelect;
       if (zone === "film") control = filmList.querySelector('[aria-pressed="true"]') || filmList.querySelector("button");
       if (zone === "quality") control = qualityList.querySelector('[aria-pressed="true"]') || qualityList.querySelector("button");
       if (control) control.focus();
@@ -1341,7 +1342,8 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
 
     function updateFullscreenButton() {
       const active = document.fullscreenElement === workspace;
-      fullscreenToggle.textContent = active ? "Exit fullscreen" : "Fullscreen";
+      fullscreenToggle.querySelector(".fullscreen-label").textContent = active ? "Exit fullscreen" : "Fullscreen";
+      fullscreenToggle.title = active ? "Exit fullscreen visual review" : "Enter fullscreen visual review";
       fullscreenToggle.setAttribute("aria-pressed", String(active));
     }
 
@@ -1983,6 +1985,14 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (button) button.focus();
     }
 
+    function moveReference(delta) {
+      const nextIndex = Math.max(0, Math.min(referenceSelect.options.length - 1, referenceSelect.selectedIndex + delta));
+      if (nextIndex === referenceSelect.selectedIndex) return;
+      referenceSelect.selectedIndex = nextIndex;
+      referenceSelect.dispatchEvent(new Event("change", { bubbles: true }));
+      setNavigationZone("reference", true);
+    }
+
     function moveMode(delta) {
       const modes = currentViewer().metadata.viewModes || [];
       const currentIndex = Math.max(0, modes.findIndex((mode) => mode.key === state.modeKey));
@@ -2026,6 +2036,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
     }
 
     referenceSelect.addEventListener("change", () => { state.referenceKey = referenceSelect.value; loadCurrentImages(); noteBrowsing(); });
+    referenceSelect.addEventListener("focus", () => { setNavigationZone("reference"); });
     overlayToggle.addEventListener("click", () => setOverlay(!state.overlay));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     modeSelect.addEventListener("focus", () => { setNavigationZone("view"); });
@@ -2199,10 +2210,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (!workspaceActive && !workspace.contains(document.activeElement)) return;
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (event.target.matches('input, textarea, [contenteditable="true"]')) return;
-      // Keep native dropdown selection, but let left/right leave the view column.
-      if (event.target.matches('select') &&
-          (event.target !== modeSelect || !["ArrowLeft", "ArrowRight"].includes(event.key))) return;
-      if (event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')) {
+      // Both dropdowns share column navigation; up/down changes their selection.
+      if (event.target.matches('select') && event.target !== modeSelect && event.target !== referenceSelect) return;
+      if (event.key.toLowerCase() === "o") {
         event.preventDefault();
         setOverlay(!state.overlay);
         return;
@@ -2220,6 +2230,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (event.key === "ArrowDown") {
         event.preventDefault();
         if (activeNavigationZone === "film") moveViewer(1);
+        if (activeNavigationZone === "reference") moveReference(1);
         if (activeNavigationZone === "view") moveMode(1);
         if (activeNavigationZone === "quality") moveCandidate(1);
         return;
@@ -2227,6 +2238,7 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
       if (event.key === "ArrowUp") {
         event.preventDefault();
         if (activeNavigationZone === "film") moveViewer(-1);
+        if (activeNavigationZone === "reference") moveReference(-1);
         if (activeNavigationZone === "view") moveMode(-1);
         if (activeNavigationZone === "quality") moveCandidate(-1);
       }
@@ -2799,7 +2811,8 @@ def render_html(
       cursor: pointer;
     }}
     #cropOverlayToggle {{ min-width: 116px; text-align: center; }}
-    #cropFullscreen {{ min-width: 116px; text-align: center; }}
+    #cropFullscreen {{ min-width: 116px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }}
+    .fullscreen-icon {{ flex: 0 0 auto; }}
     .crop-actions button[aria-pressed="true"] {{ background: #075985; border-color: #7dd3fc; }}
     .crop-canvas-wrap {{ position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #101316; }}
     #cropCanvas {{
@@ -3034,7 +3047,7 @@ def render_html(
     <h2>Visual Review</h2>
     <div class="note">
       <p><strong>What this section is for:</strong> judge whether the numeric advantage translates into useful visible detail. These are crops from the rendered route; muimg DNG candidates are covered separately below.</p>
-      <p>Choose the aligned RAW61 baseline or the PS16 reference on the left. The PS16 reference isolates codec loss; RAW61 shows the capture-and-render comparison. Select a PS16 JXL quality on the right and compare side by side or as an overlay. <span class="review-keyboard-hint"><span aria-hidden="true">⌨️</span> Use <kbd>←</kbd>/<kbd>→</kbd> to move between Capture crops, View, and Candidate quality; use <kbd>↑</kbd>/<kbd>↓</kbd> to change the selection; press <kbd>O</kbd> to toggle the overlay.</span></p>
+      <p>Choose the aligned RAW61 baseline or the PS16 reference on the left. The PS16 reference isolates codec loss; RAW61 shows the capture-and-render comparison. Select a PS16 JXL quality on the right and compare side by side or as an overlay. <span class="review-keyboard-hint"><span aria-hidden="true">⌨️</span> Use <kbd>←</kbd>/<kbd>→</kbd> to move between Capture crops, Left reference, View, and Candidate quality; use <kbd>↑</kbd>/<kbd>↓</kbd> to change the selection; press <kbd>O</kbd> to toggle the overlay.</span></p>
     </div>
     {visual_review_html}
 

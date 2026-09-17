@@ -1024,7 +1024,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('id="cropReference"', html)
             self.assertIn('currentViewer().referenceLabel || "RAW61 local aligned"', html)
             self.assertIn("hard visual check", html)
-            self.assertIn('const navigationZones = ["film", "view", "quality"]', html)
+            self.assertIn('const navigationZones = ["film", "reference", "view", "quality"]', html)
             self.assertIn('let activeNavigationZone = "film";', html)
             self.assertIn('let workspaceActive = false;', html)
             self.assertIn('workspaceActive = workspace.contains(event.target);', html)
@@ -1080,7 +1080,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('aria-keyshortcuts="O"', html)
             self.assertIn('overlayToggle.textContent = enabled ? "Side-by-side (O)" : "Overlay (O)";', html)
             self.assertIn(
-                '''event.key.toLowerCase() === "o" && !event.target.matches('input, textarea, [contenteditable="true"]')''',
+                'event.key.toLowerCase() === "o"',
                 html,
             )
             self.assertIn("event.preventDefault();\n        setOverlay(!state.overlay);", html)
