@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/"src"),str(ROOT/"scripts")]
 from incremental_cache import fingerprint, sha256_file, atomic_write_json
 from rebuild_verified_report import LEVELS, atomic_bytes
+from native_registration import validate_recipe
 
 REPORT_CODE = ("scripts/build_verified_release.py", "scripts/render_verified_report.py",
                "scripts/generate_break_even_report_site.py", "scripts/finalize_verified_viewers.py",
@@ -60,7 +61,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
         if sha256_file(ROOT/path) != expected:
             raise ValueError(f"Analysis code changed after the run: {path}")
     frames, candidates, metrics, assets, recipes = [], [], [], {}, {}
-    elapsed=[];decoder_peaks=[]
+    elapsed=[];decoder_peaks=[];refinement_elapsed=[]
     seen = set()
     for item in inventory:
         directory = results/item["slug"]/item["set_id"]
@@ -101,7 +102,9 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
                        "lossless_pilot":audit["lossless_pilot"],"littlecms_max_display_code_error":audit["littlecms_max_display_code_error"]})
         for level in LEVELS:
             record = read(directory/(level+".json"))
+            validate_recipe(ROOT, item, record["analysis_recipe"])
             elapsed.append(record["decode_seconds_and_metrics"])
+            refinement_elapsed.append(record.get("native_registration_seconds",0))
             decoder_peaks.extend(t["sampled_peak_working_bytes"] for t in record["tool_runs"] if t["tool"].lower()=="djxl.exe")
             key = (item["slug"],item["set_id"],level)
             if key in seen: raise ValueError(f"Duplicate candidate {key}")
@@ -160,9 +163,10 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     decision = [r for r in primary if r["decision_level"]]
     release = {"schema":3,"status":"validated", "analysis_identity":code,"environment":environment,
                "source":{"repository":"https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl",
-                         "ref":"report-2026-09-17-adox-crops"},
+                         "ref":"report-2026-09-17-adox-alignment"},
                "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
+                         "native_registration":"The four Adox f/4.5 crops refine the coarse RAW61 shift on a 0.025-pixel grid below the upscaled RAW Nyquist frequency, then resample the original RAW render once. Their separately hash-bound recipe records code, selection, parameters and residual checks. All distances and modes are remeasured on the resulting common valid support; PS16 and JXL samples are unchanged",
                          "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
                          "color":"Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
                          "structure":"Linear ICC Y minus float64 5x5 box blur with reflect padding at the cropped measurement boundary; mismatch RMS / reference high-pass RMS. Favorable structure screens require reference HP RMS > 2^-23 (float32 precision guard); native boundary sensitivity is audited separately",
@@ -175,9 +179,10 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
                           "native_crops":sum(len(f["crops"]) for f in frames)},
                "frames":frames,"candidates":candidates,"asset_hashes":assets,"analysis_recipes":recipes,
                "execution":{"candidate_stages":len(elapsed),"decode_measure_export_seconds_sum":sum(elapsed),
+                            "native_registration_seconds_sum":sum(refinement_elapsed),
                             "decode_measure_export_seconds_median":statistics.median(elapsed),"decode_measure_export_seconds_max":max(elapsed),
                             "maximum_sampled_decoder_working_bytes":max(decoder_peaks),
-                            "timing_scope":"Per-candidate decode, measurements and crop exports; excludes reference preparation, source/metadata audits and auxiliary experiments. Cached stages retain their original timing; this is not total rebuild wall time",
+                            "timing_scope":"Per-candidate decode, measurements and crop exports; excludes reference preparation, source/metadata audits and auxiliary experiments. Native registration refinements are recorded separately. Cached stages retain their original timing; this is not total rebuild wall time",
                             "observations":read(results/"execution-notes.json") if (results/"execution-notes.json").is_file() else {}}}
     evidence={}
     for key,filename in (("dng","dng-evidence.json"),("public","public-evidence.json"),("combiner","combiner-evidence.json"),

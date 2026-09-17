@@ -41,6 +41,22 @@ class ReleaseMutationTests(unittest.TestCase):
         def mutate(data):next(iter(data["analysis_recipes"].values()))["profile"]="0"*64
         self.reject_release(mutate,"Altered analysis recipe")
 
+    def test_rejects_missing_subpixel_refinement_even_with_new_recipe_hash(self):
+        def mutate(data):
+            key,recipe=next((k,r) for k,r in data["analysis_recipes"].items() if "native_registration" in r)
+            recipe.pop("native_registration")
+            new_key=fingerprint(recipe)
+            data["analysis_recipes"][new_key]=data["analysis_recipes"].pop(key)
+            for row in data["candidates"]:
+                if row["recipe_sha256"]==key:row["recipe_sha256"]=new_key
+        self.reject_release(mutate,"native registration recipe")
+
+    def test_rejects_measured_shift_different_from_recipe(self):
+        def mutate(data):
+            row=next(r for r in data["candidates"] if r["slug"]=="adox_vlad_resolution_target")
+            next(m for m in row["measurements"] if m["scope_kind"]=="native_crop")["alignment"]["shift_x_px"]+=1
+        self.reject_release(mutate,"registration differs")
+
     def test_rejects_missing_native_measurement(self):
         def mutate(data):data["candidates"][0]["measurements"].pop()
         self.reject_release(mutate,"measurement scope")

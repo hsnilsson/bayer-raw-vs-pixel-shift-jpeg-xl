@@ -17,7 +17,8 @@ from incremental_cache import sha256_file,atomic_write_json,fingerprint
 from rebuild_verified_report import run,close_image,LEVELS
 from break_even_image_tools import read_rgb_image,highpass_luma
 from image_color import image_profile,RgbProfile
-from report_transforms import sample_raw_crop,transform,MODES
+from report_transforms import transform,MODES
+from native_registration import registered_raw, METHOD
 
 
 def codestream_sha256(path):
@@ -84,13 +85,13 @@ def audit(args):
         try:
             for crop in item["crops"]:
                 scope=next(s for s in scopes if s["name"]==crop["name"])
+                alignment=scope["alignment"]
                 x,y,w,h=crop["xywh"];gx,gy=shift
+                if alignment.get("method")==METHOD:
+                    gx+=alignment["shift_x_px"];gy+=alignment["shift_y_px"]
                 if not (x-gx>8 and y-gy>8 and x+w-gx<saved["shape"][1]-8 and y+h-gy<saved["shape"][0]-8):
                     raise ValueError("Native RAW resampling footprint reaches the source boundary")
-                linear=sample_raw_crop(raw,profile,tuple(crop["xywh"]),tuple(saved["shape"]),shift)
-                alignment=scope["alignment"]
-                ix,iy=(int(alignment["shift_x_px"]),int(alignment["shift_y_px"])) if alignment["applied"] else (0,0)
-                linear=np.roll(linear,(iy,ix),(0,1))
+                linear=registered_raw(raw,profile,tuple(crop["xywh"]),tuple(saved["shape"]),shift,alignment)
                 codes=profile.encode_u16(linear)
                 exported=Path(crop["metadata"]).parent/"raw61.rgb16le"
                 if not exported.is_file():exported=args.results/"viewer-pixels"/(hashlib.sha256(codes.astype('<u2').tobytes()).hexdigest()+".rgb16le")
@@ -142,7 +143,7 @@ def audit(args):
              "render_limit":"The neutral preset uses camera white balance and camera input profiles. RAW and DNG can therefore resolve different color and exposure interpretation. Capture metadata is disclosed, but retained TIFFs do not preserve a complete effective RawTherapee parameter dump. The primary result compares these retained rendered workflows; it does not isolate sensor sampling alone.",
              "viewer_limit":"Measurements use floating-point linear RAW resampling. Browser RAW buffers quantize that result to unsigned RGB16; all resulting display differences and any out-of-range resampling values are disclosed per crop. Candidate and PS16 crop buffers retain their original decoded RGB16 codes.",
              "boundary_check":"Original native HP loss uses reflect padding at the boundary of the valid measurement crop. Sensitivity excludes two output pixels on every side after filtering, removing all padding-dependent values. Relative-screen changes and undefined low-energy ratios are disclosed for all native crops and distances; the frozen measurement recipe is not retuned",
-             "recipe_code":{p:sha256_file(ROOT/p) for p in ("scripts/audit_render_lineage.py","src/image_color.py","src/report_transforms.py")}}
+             "recipe_code":{p:sha256_file(ROOT/p) for p in ("scripts/audit_render_lineage.py","src/image_color.py","src/report_transforms.py","src/native_registration.py")}}
     payload["evidence_id"]="lineage-"+fingerprint(payload)[:16]
     atomic_write_json(args.output,payload)
     print(payload["evidence_id"])

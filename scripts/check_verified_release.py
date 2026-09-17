@@ -21,6 +21,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"src"))
 from incremental_cache import fingerprint,sha256_file
 from viewer_overviews import verify_overview_binding
+from native_registration import validate_recipe
 
 LEVELS=("d003","d005","d010","d020","d022","d025","d028","d030","d100","d200")
 MODES=("identity","shadow_recovery_luma_p12","highlight_separation_luma_p88_p998","negative_density_hard_print","negative_density_hard_shadow_recovery")
@@ -100,6 +101,7 @@ def check(site:Path,check_html=True):
         recipe=release["analysis_recipes"][row["recipe_sha256"]]
         require(recipe["code"]==release["analysis_identity"] and recipe["reference"]==f["reference"]["sha256"] and
                 recipe["raw"]==f["raw_render"]["sha256"] and recipe["profile"]==f["profile"]["icc_sha256"],"Wrong recipe source")
+        validate_recipe(ROOT, f, recipe)
         require(row["level"] in LEVELS and row["cohort"]==f["cohort"],"Candidate cohort or distance mismatch")
         require(row["decision_level"]==(row["level"] not in ("d100","d200")),"Stress control entered decision denominator")
         require(row["raw61_bytes"]==f["raw61"]["bytes"],"Wrong paired RAW byte denominator")
@@ -113,6 +115,8 @@ def check(site:Path,check_html=True):
         require(scopes==expected and len(scopes)==len(row["measurements"]),"Lost, duplicate or unknown measurement scope")
         native=[]
         for m in row["measurements"]:
+            scope=next(s for s in recipe["scopes"] if s["name"]==m["scope"])
+            require(m["alignment"]==scope["alignment"],"Measured registration differs from its recipe")
             reduced=m["scope"]=="full_frame_box10"
             require(m["scope_kind"]==("reduced_full_frame" if reduced else "native_crop") and m["scale"]==(.1 if reduced else 1),"Wrong measurement scale")
             require(m["candidate"]["transform"]==m["raw61"]["transform"],"Mismatched baseline transform")

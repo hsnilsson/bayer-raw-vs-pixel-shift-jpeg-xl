@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "reason": "Owner observed approximately one-pixel residual RAW61 misregistration in the newly approved Adox crops. Refine those native baselines using only RAW61 and the PS16 reference; remeasure their complete distance/mode matrix on common valid support.",
+  "cases": [
+    {
+      "slug": "adox_vlad_resolution_target",
+      "set_id": "_DSC0001-_DSC0016",
+      "crops": ["manual-01", "manual-02", "manual-03", "manual-04"]
+    }
+  ]
+}

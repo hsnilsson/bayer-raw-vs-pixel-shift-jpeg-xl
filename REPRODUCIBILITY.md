@@ -4,12 +4,12 @@ The [published report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg
 
 ## Get this report's source version
 
-The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-adox-crops](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-adox-crops) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
+The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-adox-alignment](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-adox-alignment) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
 
 Run these commands in PowerShell with Git installed. The report scripts below use Python 3.12 on Windows. Git LFS supports the fixture acquisition option described later.
 
 ```powershell
-git clone --branch report-2026-09-17-adox-crops --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
+git clone --branch report-2026-09-17-adox-alignment --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
 Set-Location report-reproduction
 git rev-parse HEAD
 ```
@@ -17,13 +17,13 @@ git rev-parse HEAD
 For an existing clean checkout, select the same snapshot with:
 
 ```powershell
-git fetch origin tag report-2026-09-17-adox-crops
-git switch --detach report-2026-09-17-adox-crops
+git fetch origin tag report-2026-09-17-adox-alignment
+git switch --detach report-2026-09-17-adox-alignment
 ```
 
 ## Validate a public checkout
 
-Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
+Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-alignment/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
 
 ```powershell
 python -m venv .venv
@@ -40,7 +40,7 @@ The last two checks use the standard library and verify the committed release an
 
 ## Reproduce the public codec experiment
 
-The separate [metadata and ICC audit](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/docs/metadata-icc-audit.md) provides a synthetic round trip, file-to-file EXIF/XMP comparisons and a recommended sidecar package. It needs no private photographic inputs. The report also bundles this document beside its evidence downloads.
+The separate [metadata and ICC audit](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-alignment/docs/metadata-icc-audit.md) provides a synthetic round trip, file-to-file EXIF/XMP comparisons and a recommended sidecar package. It needs no private photographic inputs. The report also bundles this document beside its evidence downloads.
 
 Pull the public fixtures with Git LFS, or use the downloader and its source sidecars:
 
@@ -54,7 +54,7 @@ Or use the downloader:
 .\.venv\Scripts\python.exe scripts/download_testdata.py --include-loc --loc-count 3
 ```
 
-Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
+Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-alignment/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-alignment/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
 
 Replace each quoted `<...>` placeholder below with your actual local directory or file. Keep the quotes around paths containing spaces. Use a persistent scratch directory. The public experiment writes its output under `results/public-reproduction` for comparison with the committed evidence.
 
@@ -74,6 +74,7 @@ Owner access is required to the declared RAW/DNG originals, retained neutral TIF
 ```powershell
 .\.venv\Scripts\python.exe scripts/create_verified_inventory.py --archive '<archive-checkout>' --rgb16-root '<retained-rgb16-matrix>' --f45-root '<retained-f45-root>'
 .\.venv\Scripts\python.exe scripts/run_responsive.py scripts/run_verified_rebuild.py --archive '<archive-checkout>' --f45-root '<retained-f45-root>' --tools '<libjxl-0.11.2-bin>' --exiftool '<ExifTool.exe>' --scratch '<persistent-scratch>' --lossless-pilot
+.\.venv\Scripts\python.exe scripts/run_responsive.py scripts/refine_native_registration.py
 ```
 
 The ignored `results/verified_report/private_inventory.json` contains local paths; it is never published. The inventory creator refuses to overwrite an existing inventory. The rebuild verifies source content and precision, checks real-image lossless round trips, repairs photographic metadata independently of image encoding, decodes each candidate once and shares that decode across all approved scopes. A completed candidate has an atomic checkpoint; a completed frame has a receipt. Resume with the same inputs and flags. An unchanged frame reuses content-verified metrics and pixels; source audit and small lossless controls still run. Metric changes do not automatically require re-encoding a valid retained JXL.
@@ -81,6 +82,10 @@ The ignored `results/verified_report/private_inventory.json` contains local path
 Use the responsive launcher shown above: it checks that the 64-bit Windows process priority was actually set before loading the stage. The responsive policy permits one heavy job, four codec threads and one numerical thread, with below-normal priority, an 8 GiB available-memory reserve and a 20 GiB scratch-space floor. Use persistent scratch, not existing Windows Temp files. Never run the following heavy auxiliary stages concurrently with the full RGB batch.
 
 The rebuild entry point composes the unchanged measurement engine with a stable preview writer. It retains an existing PNG only when its pixels and all profile/metadata bytes match, apart from the ICC creation timestamp. A changing timestamp therefore cannot invalidate already completed candidates after a partial interruption. Changed pixels or color profiles still force replacement. The two-level interrupted-run regression checks this behavior explicitly.
+
+The following native-registration stage is mandatory for the four Adox f/4.5 crops declared in `metadata/native_registration_plan.json`. It corrects residual integer-registration errors using a band-limited local phase fit at 0.025-pixel spacing. The fit uses only RAW61 and PS16, with a fixed 32-pixel interior margin, a 0.15-cycle-per-PS16-pixel spectral cutoff and a ±2-pixel search around the coarse shift. An independent pass on the newly sampled RAW must leave no more than 0.10 pixel on either axis by the same estimator. This is a numerical consistency check, not an absolute geometric accuracy claim. The original RAW render is sampled once at the final shift. PS16/JXL codes, crop positions and encoded files are unchanged. Conservative integer valid bounds exclude fractional support and filter borders; all selected native distances and modes are remeasured, including their reference-derived tone recipes.
+
+The core environment identity remains frozen; each affected analysis recipe additionally binds the refinement source code, selection plan and parameters. The refinement reuses only hash-verified RGB16 crops from the prior full JXL decode, with their actual decoded ICC. Whole-frame results are reused only after recomputing and exactly matching the complete original scope. The publication gate rejects a missing or changed refinement. Repeat both stages when resuming: a completed core frame and unchanged refinement reuse their verified outputs.
 
 ## Auxiliary evidence and release assembly
 
