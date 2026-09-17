@@ -1,0 +1,1314 @@
+{
+  "evidence_id": "metadata-c6baf70fbc6d654e",
+  "exiftool": {
+    "sha256": "a731bd095ac9075e54cb0ad8daf85951eefcd87f6d52f44ae711d3bc7afa03c5",
+    "version": "13.12"
+  },
+  "limits": "Fields absent from the fixture are untested. Missing means not reported by ExifTool in the photographic-tag view, which excludes ICC. ICC is checked using djxl --icc_out. This is the report's PPM-input workflow, not every TIFF/JXL application path. Matrix/TRC comparison covers the fixture profile only.",
+  "python_packages": {
+    "Pillow": "12.3.0",
+    "numpy": "2.5.3",
+    "tifffile": "2026.8.23"
+  },
+  "recipe_code": {
+    "scripts/audit_metadata_roundtrip.py": "0821ac448495d94154b7e2e0c669122112d3a53f20f69d5e188f3c543c16430e",
+    "scripts/rebuild_verified_report.py": "e2cc42970f4ff61aaa57d1717aabd844f328506a42297fa870817634a72ef25a",
+    "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+    "tests/fixtures/rtv4_large.icc": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37"
+  },
+  "records": [
+    {
+      "curated_fields_after_copy": {
+        "counts": {
+          "preserved": 15
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ]
+      },
+      "distance": 0,
+      "icc": {
+        "byte_exact": true,
+        "decoded_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37",
+        "matrix_trc_equivalent": true,
+        "source_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37"
+      },
+      "jxl_to_decoded_png": {
+        "candidate_sha256": "7121870d8f679c08511a8855a9dd185fac4e9596bbe6b8609aa016fb4b6433a2",
+        "counts": {
+          "preserved": 24
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ],
+        "source_sha256": "e9a43f84b36b8a869b1212adaa5adf79413e9a871d36309be6fc57143470ba71"
+      },
+      "jxl_to_decoded_ppm": {
+        "candidate_sha256": "0b04b1718fca1113e3086cf069a24a87231bd6a0fddb39843052cf6b685db5ef",
+        "counts": {
+          "missing": 24
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "missing"
+          }
+        ],
+        "source_sha256": "e9a43f84b36b8a869b1212adaa5adf79413e9a871d36309be6fc57143470ba71"
+      },
+      "pixel_exact": true,
+      "ppm_input_to_jxl_before_metadata_copy": {
+        "candidate_sha256": "562a7de2a0658f5aed9cf29f6aa5543c3f1dc1acb15ce4ad85a928cf64c319d6",
+        "counts": {
+          "missing": 41
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSVersionID",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:BitsPerSample",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Compression",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageHeight",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageWidth",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PhotometricInterpretation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PlanarConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:RowsPerStrip",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:SamplesPerPixel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Software",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripByteCounts",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripOffsets",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Subject",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Title",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "missing"
+          }
+        ],
+        "source_sha256": "dd5faecb8674662fbccbdc95929ce0fa9b8ceeea384424554ea1ca326cab1031"
+      },
+      "tiff_to_jxl_after_copy": {
+        "candidate_sha256": "e9a43f84b36b8a869b1212adaa5adf79413e9a871d36309be6fc57143470ba71",
+        "counts": {
+          "added": 1,
+          "changed": 3,
+          "missing": 18,
+          "preserved": 20
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "GPS:GPSLatitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSVersionID",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:BitsPerSample",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Compression",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageHeight",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageWidth",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:PhotometricInterpretation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PlanarConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "changed"
+          },
+          {
+            "field": "IFD0:RowsPerStrip",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:SamplesPerPixel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Software",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripByteCounts",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripOffsets",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "changed"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "added"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "changed"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-dc:Subject",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Title",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ],
+        "source_sha256": "dd5faecb8674662fbccbdc95929ce0fa9b8ceeea384424554ea1ca326cab1031"
+      }
+    },
+    {
+      "curated_fields_after_copy": {
+        "counts": {
+          "preserved": 15
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ]
+      },
+      "distance": 0.05,
+      "icc": {
+        "byte_exact": false,
+        "decoded_sha256": "476f960708a1fbeaf3dbf569b2cd82b1fadcbb1b56f6cb90e642b0ea2be483bb",
+        "matrix_trc_equivalent": false,
+        "source_sha256": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37"
+      },
+      "jxl_to_decoded_png": {
+        "candidate_sha256": "b7a20ec4953a3472bea3b0060112ae72de8e03ed3e091f57d6cc13bba5937fbc",
+        "counts": {
+          "preserved": 24
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ],
+        "source_sha256": "e2f5abb7a62d8f700b29502b3e618ea567983219c6b1c2847bc273450e455f74"
+      },
+      "jxl_to_decoded_ppm": {
+        "candidate_sha256": "15dbd29049728b176c927d5c077adaccdf53306138a62ae615f08a5ed4171bb7",
+        "counts": {
+          "missing": 24
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "missing"
+          }
+        ],
+        "source_sha256": "e2f5abb7a62d8f700b29502b3e618ea567983219c6b1c2847bc273450e455f74"
+      },
+      "pixel_exact": false,
+      "ppm_input_to_jxl_before_metadata_copy": {
+        "candidate_sha256": "24ad019baa4faf13f6fa7a8b0ba05d743b42c29048520cffeb5e26b592ac114d",
+        "counts": {
+          "missing": 41
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "missing"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSVersionID",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:BitsPerSample",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Compression",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageHeight",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageWidth",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PhotometricInterpretation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PlanarConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:RowsPerStrip",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:SamplesPerPixel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Software",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripByteCounts",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripOffsets",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Subject",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Title",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "missing"
+          }
+        ],
+        "source_sha256": "dd5faecb8674662fbccbdc95929ce0fa9b8ceeea384424554ea1ca326cab1031"
+      },
+      "tiff_to_jxl_after_copy": {
+        "candidate_sha256": "e2f5abb7a62d8f700b29502b3e618ea567983219c6b1c2847bc273450e455f74",
+        "counts": {
+          "added": 1,
+          "changed": 3,
+          "missing": 18,
+          "preserved": 20
+        },
+        "fields": [
+          {
+            "field": "ExifIFD:ColorSpace",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ComponentsConfiguration",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:CreateDate",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:DateTimeOriginal",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExifVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ExposureTime",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FNumber",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FlashpixVersion",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:FocalLength",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:ISO",
+            "status": "preserved"
+          },
+          {
+            "field": "ExifIFD:LensModel",
+            "status": "preserved"
+          },
+          {
+            "field": "GPS:GPSLatitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLatitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitude",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSLongitudeRef",
+            "status": "missing"
+          },
+          {
+            "field": "GPS:GPSVersionID",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Artist",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:BitsPerSample",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Compression",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Copyright",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageDescription",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:ImageHeight",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ImageWidth",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Make",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Model",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:Orientation",
+            "status": "preserved"
+          },
+          {
+            "field": "IFD0:PhotometricInterpretation",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:PlanarConfiguration",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:ResolutionUnit",
+            "status": "changed"
+          },
+          {
+            "field": "IFD0:RowsPerStrip",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:SamplesPerPixel",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:Software",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripByteCounts",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:StripOffsets",
+            "status": "missing"
+          },
+          {
+            "field": "IFD0:XResolution",
+            "status": "changed"
+          },
+          {
+            "field": "IFD0:YCbCrPositioning",
+            "status": "added"
+          },
+          {
+            "field": "IFD0:YResolution",
+            "status": "changed"
+          },
+          {
+            "field": "XMP-aux:LensInfo",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-dc:Subject",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-dc:Title",
+            "status": "missing"
+          },
+          {
+            "field": "XMP-x:XMPToolkit",
+            "status": "preserved"
+          },
+          {
+            "field": "XMP-xmp:CreateDate",
+            "status": "preserved"
+          }
+        ],
+        "source_sha256": "dd5faecb8674662fbccbdc95929ce0fa9b8ceeea384424554ea1ca326cab1031"
+      }
+    }
+  ],
+  "schema": 3,
+  "scope": "Synthetic 64x64 RGB16 TIFF, PPM input, explicit curated metadata copy; distances 0 and 0.05",
+  "source": "Generated pixels and fictional metadata; no private photographic inputs",
+  "tools": {
+    "cjxl": {
+      "sha256": "b6ae9f8a2c47fb371f62afa9ebf4e87db2fdd42b0b643ab2e90e0382d323f551",
+      "version": "cjxl v0.11.2 332feb1 [AVX2,SSE2]"
+    },
+    "djxl": {
+      "sha256": "48b8e42736f2e05ed9b4fd99e26717fc91a393cef63432c3ae194fbdcc9115e9",
+      "version": "djxl v0.11.2 332feb1 [AVX2,SSE2]"
+    }
+  }
+}

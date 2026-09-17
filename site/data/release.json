@@ -8328,8 +8328,9 @@
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/preview_shadow_recovery_luma_p12_reference.png": "32690943484771de6f5c6171bca768b0b715728cc8b52e662318691d24690a77",
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/raw61.rgb16le.gz": "62242397039728adb3c6575cf908ae0755498dd69b80b39cfe25b9c6d6ec9e0b",
     "assets/review-viewers/konica_vx100_probable_1995/_DSC6917/manual-02/reference.rgb16le.gz": "1ad7779de86e7e899969cecc537b3c8af089f7108dad25d4e702692c8ddc8a46",
-    "data/reproduction.md": "a9f510d07828b24b5b06c7eb8d1aad7f8a017ed9e748179748ac204223160ae3",
-    "data/review-notes.md": "cc2b90ac4aec04ca23df2f8f51eae6b4ef084a436117e641437127ebbd55fc83"
+    "data/metadata-icc-audit.md": "3fc9a836a95387d4f181b0be92c36317000c196f2a6aea9935b8fff653c9c393",
+    "data/reproduction.md": "519764ce44db75f2626ff7ef37eeabcff4e5dc006583e1cbdbcb3f091d3aad94",
+    "data/review-notes.md": "4fac54211f17db7e140423923a1a3898a6ecffd203e0f94c958f951577dcf423"
   },
   "candidates": [
     {
@@ -137840,6 +137841,17 @@
       },
       "sha256": "2bc1d9a39734bc79a27dcc4ce8e1e970d7d7a8bbf863cba6ef06eb96470d8057"
     },
+    "metadata": {
+      "evidence_id": "metadata-c6baf70fbc6d654e",
+      "file": "data/metadata-evidence.json",
+      "recipe_code": {
+        "scripts/audit_metadata_roundtrip.py": "0821ac448495d94154b7e2e0c669122112d3a53f20f69d5e188f3c543c16430e",
+        "scripts/rebuild_verified_report.py": "e2cc42970f4ff61aaa57d1717aabd844f328506a42297fa870817634a72ef25a",
+        "src/image_color.py": "349c07b59603a9c856e8875180e213047439a39040dd9af5b8ebe48291cfb00d",
+        "tests/fixtures/rtv4_large.icc": "42075b188a0cb5ce59a879874961904e432810199b58e765e835c296c96eff37"
+      },
+      "sha256": "be8828679e1d6195b105bdf8f50705135a62a0ed4147446c0290f4bf79dd3613"
+    },
     "overviews": {
       "evidence_id": "overviews-2979be0ca938a922",
       "file": "data/overview-evidence.json",
@@ -140281,7 +140293,7 @@
       }
     }
   ],
-  "measurements_csv_sha256": "f0d733783537b359cade7670c3bf392c9de915854e5e3f7fb9aae0fe931c72fe",
+  "measurements_csv_sha256": "ffe8b439be229c557a1f4e218d10dd3741f082b11e6fbea8b3819cd5ba11df81",
   "method": {
     "budget": "Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
     "color": "Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
@@ -140293,22 +140305,23 @@
     "structure": "Linear ICC Y minus float64 5x5 box blur with reflect padding at the cropped measurement boundary; mismatch RMS / reference high-pass RMS. Favorable structure screens require reference HP RMS > 2^-23 (float32 precision guard); native boundary sensitivity is audited separately"
   },
   "report_code": {
-    "scripts/build_verified_release.py": "6e5e230db65c1d2978084bd941764a43ffffff547931bd5d336a611a933ed466",
-    "scripts/check_verified_release.py": "a89f4b26e30d9ac1b6996a7c67005e16664b8d584b7049a66c8a2d38505e3dfe",
+    "scripts/build_verified_release.py": "335d9eef8a1e5b3a5ed24a3fd7578a3e235d14cd0d981c05c410a1108a85c376",
+    "scripts/check_verified_release.py": "83b392230eabc9db6865878120c1a7bd6e3e3a0efcb3fa22b459a0feea99f5b0",
     "scripts/finalize_verified_viewers.py": "3c5f2e747f88db510006d6b4864d9ba79057247d00893a85474ece1732639597",
     "scripts/generate_break_even_report_site.py": "c6bfcafd47452b956588d62f4aff0b4d8e1386bc5fe06f36df07ceda9eeb018c",
-    "scripts/render_verified_report.py": "51cf85e3f4db02a3ccd7a791885d05ee4970edf8b898476c562abc7052641cf3",
+    "scripts/render_verified_report.py": "eb4ba51b49544ce98d26be7b14da9cb0341ac9bf0a5ec1c105569602b4619dca",
     "scripts/run_responsive.py": "b257f600bfa8e34257fa9a9771a87ae45764f9fb51189c8985d20ee5b73d77ad",
     "scripts/run_verified_rebuild.py": "7391d7d4f1b723ef4a9fde13aa1b4de92c2999c8a9b38c225dbf6688d08ce55b",
     "src/preview_cache.py": "93423d798347beebe85ecc9f37af31ca65b37e1767b042de815869826127a2bd",
     "src/report_color.js": "827c90976d15e7c827e411acbad5a1c6724b39954d72f47984c8631e15183f48",
+    "src/report_metadata.py": "fc1d4be8525220af6347235ddd3b4b3fcc303bb037cd6cbb07b77950a5342748",
     "src/report_styles.css": "5c927d6ba3ef0d1431766587390e6bc14269d65d6e3720c13bfe6fa985908430",
     "src/viewer_overviews.py": "531eb92dc0b637d71931a2dcd6155bfcdba17cf3af56642ce1d5b0d4ccb5404f"
   },
-  "run_id": "verified-85ed4d189d0a966d",
+  "run_id": "verified-444fa95c5f853f16",
   "schema": 3,
   "source": {
-    "ref": "report-2026-09-17-viewer-layout",
+    "ref": "report-2026-09-17-metadata-audit",
     "repository": "https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl"
   },
   "status": "validated",

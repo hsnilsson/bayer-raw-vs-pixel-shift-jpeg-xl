@@ -8,6 +8,7 @@ testdata/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
 
 # Release provenance binds exact bytes, including line endings, across platforms.
 REPRODUCIBILITY.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/metadata-icc-audit.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 scripts/*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 src/* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 metadata/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -15,6 +15,21 @@ sys.path[:0] = [str(ROOT/"src"),str(ROOT/"scripts")]
 from incremental_cache import fingerprint, sha256_file, atomic_write_json
 from rebuild_verified_report import LEVELS, atomic_bytes
 
+REPORT_CODE = ("scripts/build_verified_release.py", "scripts/render_verified_report.py",
+               "scripts/generate_break_even_report_site.py", "scripts/finalize_verified_viewers.py",
+               "scripts/check_verified_release.py", "scripts/run_responsive.py", "scripts/run_verified_rebuild.py",
+               "src/preview_cache.py", "src/viewer_overviews.py", "src/report_color.js", "src/report_styles.css",
+               "src/report_metadata.py")
+REPORT_DOCUMENTS = {"REPRODUCIBILITY.md": "data/reproduction.md",
+                    "docs/metadata-icc-audit.md": "data/metadata-icc-audit.md"}
+
+
+def copy_documents(site, assets):
+    for source, destination in REPORT_DOCUMENTS.items():
+        atomic_bytes(site/destination, (ROOT/source).read_bytes())
+    for relative in (*REPORT_DOCUMENTS.values(), "data/review-notes.md"):
+        assets[relative] = sha256_file(site/relative)
+
 
 def read(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -145,7 +160,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     decision = [r for r in primary if r["decision_level"]]
     release = {"schema":3,"status":"validated", "analysis_identity":code,"environment":environment,
                "source":{"repository":"https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl",
-                         "ref":"report-2026-09-17-viewer-layout"},
+                         "ref":"report-2026-09-17-metadata-audit"},
                "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
                          "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
@@ -167,7 +182,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     evidence={}
     for key,filename in (("dng","dng-evidence.json"),("public","public-evidence.json"),("combiner","combiner-evidence.json"),
                          ("controlled","controlled-evidence.json"),("contexts","context-evidence.json"),("lineage","lineage-evidence.json"),
-                         ("overviews","overview-evidence.json")):
+                         ("overviews","overview-evidence.json"),("metadata","metadata-evidence.json")):
         path=site/"data"/filename
         attachment=read(path)
         if attachment.get("schema")!=3:raise ValueError(f"Unverified auxiliary evidence: {key}")
@@ -184,12 +199,9 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
             if sha256_file(ROOT/relative)!=expected:raise ValueError(f"Changed auxiliary analysis code: {relative}")
         evidence[key]={"file":"data/"+filename,"sha256":sha256_file(path),"evidence_id":attachment["evidence_id"],"recipe_code":attachment_code}
     release["evidence"]=evidence
-    atomic_bytes(site/"data/reproduction.md",(ROOT/"REPRODUCIBILITY.md").read_bytes())
-    for relative in ("data/reproduction.md","data/review-notes.md"):
-        assets[relative]=sha256_file(site/relative)
+    copy_documents(site, assets)
     release["experiment_sha256"]=sha256_file(ROOT/"metadata/verified_experiment.json")
-    release["report_code"]={p:sha256_file(ROOT/p) for p in ("scripts/build_verified_release.py","scripts/render_verified_report.py",
-                                "scripts/generate_break_even_report_site.py","scripts/finalize_verified_viewers.py","scripts/check_verified_release.py","scripts/run_responsive.py","scripts/run_verified_rebuild.py","src/preview_cache.py","src/viewer_overviews.py","src/report_color.js","src/report_styles.css")}
+    release["report_code"]={p:sha256_file(ROOT/p) for p in REPORT_CODE}
     release["collection_sizes"]=[{"level":level,"primary_frames":len(primary)//len(LEVELS),
                                   "raw61_total_bytes":sum(f["raw61"]["bytes"] for f in frames if f["cohort"]=="primary_compressed_independent"),
                                   "jxl_total_bytes":sum(r["encoded_bytes"] for r in primary if r["level"]==level)} for level in LEVELS]
@@ -203,13 +215,69 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     return release
 
 
+def refresh_public(site, source_ref):
+    """Update report packaging while retaining hash-verified measurements/assets.
+
+    This path needs only the public release. Scientific code, existing evidence
+    and all image/pixel assets must remain unchanged; no private audit is rerun.
+    """
+    release = read(site/"data/release.json")
+    unsigned = {k:v for k,v in release.items() if k not in ("run_id", "measurements_csv_sha256")}
+    if release["run_id"] != "verified-" + fingerprint(unsigned)[:16]:
+        raise ValueError("Existing release identity is invalid")
+    for relative, expected in release["environment"]["code"].items():
+        if sha256_file(ROOT/relative) != expected:
+            raise ValueError("Scientific code changed; a report-only refresh is insufficient: " + relative)
+    for item in release["evidence"].values():
+        if sha256_file(site/item["file"]) != item["sha256"]:
+            raise ValueError("Existing scientific evidence changed: " + item["file"])
+        for relative, expected in item["recipe_code"].items():
+            if sha256_file(ROOT/relative) != expected:
+                raise ValueError("Existing evidence code changed: " + relative)
+    documents = {*REPORT_DOCUMENTS.values(), "data/review-notes.md"}
+    for relative, expected in release["asset_hashes"].items():
+        if relative not in documents and sha256_file(site/relative) != expected:
+            raise ValueError("Existing image/pixel asset changed: " + relative)
+    csv_path = site/"data/measurements.csv"
+    if sha256_file(csv_path) != release["measurements_csv_sha256"]:
+        raise ValueError("Existing measurements CSV changed")
+    with csv_path.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    attachment = read(site/"data/metadata-evidence.json")
+    if attachment["schema"] != 3:
+        raise ValueError("A verified metadata audit is required")
+    for relative, expected in attachment["recipe_code"].items():
+        if sha256_file(ROOT/relative) != expected:
+            raise ValueError("Metadata audit code changed: " + relative)
+    release["evidence"]["metadata"] = {"file": "data/metadata-evidence.json",
+        "sha256": sha256_file(site/"data/metadata-evidence.json"), "evidence_id": attachment["evidence_id"],
+        "recipe_code": attachment["recipe_code"]}
+    copy_documents(site, release["asset_hashes"])
+    release["source"]["ref"] = source_ref
+    release["report_code"] = {p:sha256_file(ROOT/p) for p in REPORT_CODE}
+    release.pop("run_id"); release.pop("measurements_csv_sha256")
+    release["run_id"] = "verified-" + fingerprint(release)[:16]
+    for row in rows:
+        row["run_id"] = release["run_id"]
+    buffer = io.StringIO(newline="")
+    writer = csv.DictWriter(buffer, fieldnames=list(rows[0])); writer.writeheader(); writer.writerows(rows)
+    atomic_bytes(csv_path, buffer.getvalue().encode("utf-8"))
+    release["measurements_csv_sha256"] = sha256_file(csv_path)
+    atomic_write_json(site/"data/release.json", release)
+    return release
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results",type=Path,default=ROOT/"results/verified_report")
     parser.add_argument("--site",type=Path,default=ROOT/"site")
     parser.add_argument("--verify-private",action="store_true",help="Rehash retained full sources and candidates before assembling the release")
+    parser.add_argument("--refresh-public",action="store_true",help="Refresh report packaging using unchanged public evidence; no private inputs")
+    parser.add_argument("--source-ref",help="Exact source tag for a report-only refresh")
     args=parser.parse_args()
-    release=build(args.results,args.site,args.verify_private)
+    if args.refresh_public and (args.verify_private or not args.source_ref):
+        parser.error("--refresh-public requires --source-ref and cannot be combined with --verify-private")
+    release=refresh_public(args.site,args.source_ref) if args.refresh_public else build(args.results,args.site,args.verify_private)
     print(release["run_id"],release["summary"])
     return 0
 

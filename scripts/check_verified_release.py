@@ -68,12 +68,15 @@ def check(site:Path,check_html=True):
     site=site.resolve();release=read(site/"data/release.json")
     require((site/"data/reproduction.md").read_bytes()==(ROOT/"REPRODUCIBILITY.md").read_bytes(),
             "Published reproduction instructions differ from the repository source")
+    require((site/"data/metadata-icc-audit.md").read_bytes()==(ROOT/"docs/metadata-icc-audit.md").read_bytes(),
+            "Published metadata audit differs from the repository source")
     public_values(release)
     require(release.get("schema")==3,"A complete schema-3 release is required")
     unsigned={k:v for k,v in release.items() if k not in ("run_id","measurements_csv_sha256")}
     require(release["run_id"]=="verified-"+fingerprint(unsigned)[:16],"Release identity does not match its contents")
     require(release["analysis_identity"]==fingerprint(release["environment"]),"Mixed analysis environment")
     require("overviews" in release["evidence"],"Missing full-frame overview evidence")
+    require("metadata" in release["evidence"],"Missing metadata audit evidence")
     overviews=read(safe_path(site,release["evidence"]["overviews"]["file"]))
     for group in (release["environment"]["code"],release["report_code"]):
         for relative,expected in group.items():require(sha256_file(ROOT/relative)==expected,"Code changed after release: "+relative)
@@ -188,6 +191,18 @@ def check(site:Path,check_html=True):
         data=read(p);public_values(data)
         require(data["evidence_id"]==item["evidence_id"] and data["schema"]==3,"Mixed auxiliary release")
         for relative,expected in data.get("recipe_code",{}).items():require(sha256_file(ROOT/relative)==expected,"Changed auxiliary code: "+relative)
+        if name=="metadata":
+            require(data["evidence_id"]=="metadata-"+fingerprint({k:v for k,v in data.items() if k!="evidence_id"})[:16],"Metadata audit identity mismatch")
+            for tool,record in data["tools"].items():
+                require(record["sha256"]==release["environment"]["tools"][tool+".exe"],"Metadata audit codec differs from report")
+            require([r["distance"] for r in data["records"]]==[0,.05],"Incomplete metadata round trip")
+            for row in data["records"]:
+                selected=row["curated_fields_after_copy"]
+                require(bool(selected["fields"]) and all(r["status"]=="preserved" for r in selected["fields"]),"Curated metadata preservation failed")
+                for key in ("curated_fields_after_copy","ppm_input_to_jxl_before_metadata_copy","tiff_to_jxl_after_copy","jxl_to_decoded_ppm","jxl_to_decoded_png"):
+                    require(row[key]["counts"]==dict(Counter(r["status"] for r in row[key]["fields"])),"Incorrect metadata field counts")
+                if row["distance"]==0:
+                    require(row["pixel_exact"] and row["icc"]["byte_exact"] and row["icc"]["matrix_trc_equivalent"],"Metadata lossless pilot failed")
         if name=="dng":
             require(data["provenance"]["djxl_sha256"]==release["environment"]["tools"]["djxl.exe"],"DNG decoder differs from pinned tool")
             for route in data["routes"]:
@@ -281,6 +296,8 @@ def check(site:Path,check_html=True):
                     "Standalone viewer selects another capture or crop")
         text=(site/"index.html").read_text(encoding="utf-8")
         require(release["run_id"] in text,"HTML release label mismatch")
+        require('<details id="metadata"><summary>Metadata and ICC preservation</summary>' in text,
+                "Missing collapsed metadata audit section")
         match=re.search(r'<script type="application/json" id="cropViewerData">(.*?)</script>',text,re.S)
         require(match is not None,"Missing crop viewer manifest")
         viewers=json.loads(match.group(1));require(len(viewers)==summary["native_crops"],"HTML viewer denominator mismatch")
