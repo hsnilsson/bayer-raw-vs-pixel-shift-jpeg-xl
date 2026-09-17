@@ -13,7 +13,7 @@ jpegxl-study/
 
 The archive is private and excluded from Git. A Git clone alone contains the public
 project, not the private images. Copy the entire private `archive/` folder into
-the checkout, including `study-20260917`, `legacy-20260917`, `tooling-extra` and
+the checkout, including `study-20260917`, `tooling-extra` and
 the operational receipts. `tooling-extra` supplies Node for the viewer tests.
 Do not edit preserved payloads, records or checksum manifests.
 The archive README documents restoration of the original frozen study and Git
@@ -82,3 +82,26 @@ retained measurements; the binaries in the archive require compatible Windows x6
 For routine development, commit code and intended public report changes normally.
 `archive/`, `results/` and `work/` stay ignored. The history rewrite removed older
 generated assets; see `docs/HISTORY-REWRITE.md` before using historical checkouts.
+
+## Presentation-only changes
+
+For viewer keyboard behavior, layout or report styling, commit the source changes
+first, then refresh the public packaging and render it. This checks the existing
+scientific code, evidence and image hashes without recomputing measurements:
+
+```powershell
+$python = './archive/study-20260917/tooling/python/python.exe'
+$runtime = './scripts/study_runtime.py'
+$sourceRef = git rev-parse HEAD
+& $python -I -S -B $runtime rendered scripts/build_verified_release.py --refresh-public --source-ref $sourceRef
+& $python -I -S -B $runtime rendered scripts/render_verified_report.py
+& $python -I -S -B $runtime rendered scripts/check_verified_release.py
+& $python -I -S -B $runtime rendered scripts/check_report_site.py
+```
+
+Stop if a command fails. Commit the refreshed public files after the checks pass.
+The refresh changes release identifiers and their CSV labels, but retains all
+measurement values and scientific image assets. Rendering HTML alone leaves the
+release's report-code hashes stale and correctly fails the publication gate.
+Use the consolidated checkout or a worktree of it; do not merge old-history
+worktrees from the former C: repository into this repository.
