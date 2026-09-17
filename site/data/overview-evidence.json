@@ -1,245 +1,245 @@
 {
   "asset_hashes": {
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_highlight_separation_luma_p88_p998.webp": "ee65bd636e904b796792495c7d99d0af9848c4984ea600cd36f1f7a0f685c159",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_identity.webp": "5ac73f3927de4509ac9d4b232e78ee953c91573111d16472f83886df34566eb4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_negative_density_hard_print.webp": "e5dca2b5936e6fe3fe4b4d80f7bcd428728372b37f7ff085e10cf2d2669a3093",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_negative_density_hard_shadow_recovery.webp": "16a7febe67fccae40a7a79dcea724d257f4776ed67f6bec5c54b421665deed65",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_shadow_recovery_luma_p12.webp": "3b72402c96ca1fafd2ca7305ec86f5291ea1568086aa7a40d31a5787afa72cb8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_highlight_separation_luma_p88_p998.webp": "a56a52eef56e021dceb34c68cf8c4a6702e6255b41937f3e7845e6592072ba6e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_identity.webp": "714547476660526750fea3c6b2b53f715d30efb1e3b23502a35ebcd906bb19e6",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_negative_density_hard_print.webp": "e06d0a32ee17b925299892fb8e7adeb6a7c436b7be07757404761fa110c325ff",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_negative_density_hard_shadow_recovery.webp": "34502267e023dab96ee8d8c2f832256b26e7c96f011167f97acb050f1b889bbc",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_shadow_recovery_luma_p12.webp": "f894cd21239ff3587edf09f4cb21502a4adb457f7d05832907b718f7da4d072c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_highlight_separation_luma_p88_p998.webp": "6ba2b9ef8e4bc94e197db0e56f66e3d828fab411e6a7515d103b58ec0d884723",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_identity.webp": "fe03a007e05084fe229851f3b1244f4d4e55d2d37d00aeaf92c72ff85ed01387",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_negative_density_hard_print.webp": "16fb0182f62f0397e3038755f56f7e0593cf23b176e1c0da0c9aafa71a926297",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_negative_density_hard_shadow_recovery.webp": "59ae6f3b53070b316fbf720348431efcce4068ee3c49047bf7879e85c8b119a6",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_shadow_recovery_luma_p12.webp": "e64080910e7290e868a66999330a29816a2749620fb3b05c95f753865c051f3c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_highlight_separation_luma_p88_p998.webp": "a81eb483734594616774b3753c50ebab6b76f5539f698e7a6612c9365f9bb925",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_identity.webp": "53161072eb42db99a45e91ad8781cad2ae4a8662c51d6c6d15e04396fa675f6f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_negative_density_hard_print.webp": "378b41bd7efcd5323abe9bf4ed1c33539b550fb2b9300c47240c342e354abba0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_negative_density_hard_shadow_recovery.webp": "1e5d97f4441ffa325cc799650d1ba7114b76022ce4b1bd1242aef0e4f29ba4ce",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_shadow_recovery_luma_p12.webp": "258a13d7d51bfb7c1fef19fdf84896187c82f6e3c704453844c1d807d149a6d0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_highlight_separation_luma_p88_p998.webp": "c500e8d692865390c777c999e1f5409feebde3a593176da1d10dc0aabcebd56a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_identity.webp": "a09bd0ae5072d7138f6bb1b15038dbb070cbd3f30854d80ea1ba78ec160b57eb",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_negative_density_hard_print.webp": "68ce73bb8e0e91fde33fe3359918a20844bce851d0f0b7f5dce2cc6bb3a76f21",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_negative_density_hard_shadow_recovery.webp": "a4687b80716c123eb8c68c0fd6536888400a7c567e1ab04c02bd95e43e05b7c7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_shadow_recovery_luma_p12.webp": "0e975da70f8fce06b884be400cd2f43ea8937f88f6ddb5fd12d44a5f2d095ecb",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_highlight_separation_luma_p88_p998.webp": "c6cf8176ee36c6fbf6d9afa328960a564d125dc0721c69c1e06019f949c3eb41",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_identity.webp": "d7ea55354307af0dd9e2097a77c3f5b7ab61c78ca7c5162ef0b980905eb21f54",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_negative_density_hard_print.webp": "2e4f1a6438666d92f23e2b3cdc11fdb7f6037bec66aba08c3aa739392864f043",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_negative_density_hard_shadow_recovery.webp": "c86df96f3e94097b6f95b4ac5b9e2e5aac0a355a472e507f5de80bda6ccc853b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_shadow_recovery_luma_p12.webp": "7db86ffe270d9541fca85fa77ffba4c69f2268c4192d1b8acd98875f34adbe5e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_highlight_separation_luma_p88_p998.webp": "cad026383a8c964107380c71bbd58fc7e3f1143884f4651ea98c1341976e8a19",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_identity.webp": "b8a6a0dc5a0ad607f7d19afb7f3dab6180c66e878e347bd65eb778459143ddb7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_negative_density_hard_print.webp": "4df25a9bdf883ecabe3b96bbfd23f04522324fdfcf837fa260c6b1bd804ce621",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_negative_density_hard_shadow_recovery.webp": "20eabc415dff6512b9376550a51c3e06521e8c85743b97b4bf7dcb78784029fe",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_shadow_recovery_luma_p12.webp": "9ddfcb1865d8a4a405a8a0f413e8b37ec9ba38aaff676d58acbfe8b695ee8cd9",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_highlight_separation_luma_p88_p998.webp": "3de998c14a6f40a44c072f3a0efa84c0a38f05c6db5625fb322fe83023c876b4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_identity.webp": "03fd1c316d75e2eb2af18aa8c97f288226f6600d842a1f373a993a0043615a3a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_negative_density_hard_print.webp": "b8ae24d12d619d1e52385b3b97dc9967249453816a05f2c7460f87f24ba8918c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_negative_density_hard_shadow_recovery.webp": "6bc4fee5afbc5ccda063d993a2688c47e0f0e4c4f040f27d665eaf68e7410847",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_shadow_recovery_luma_p12.webp": "e9c645cdfb01dc589ec2707f2a630f94988f34519ecc081c6386fb4820b00ec3",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_highlight_separation_luma_p88_p998.webp": "b73557952477038b5d2b9e4b0ce4ca87ef7087e76d17d3ae97a35c9643950ab6",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_identity.webp": "6bedbbffd8b1b1d5b10814ac8b51120199e7003a388e04a0bbf668c49399f44a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_negative_density_hard_print.webp": "b00fa0a5277f9d2a728820c05406a780a53dbdada51be148a2df6c6e4fab9da2",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_negative_density_hard_shadow_recovery.webp": "9410b89dde3ba83bf8269ce5f30a2fa09d1d7b731f15f283809aea0d1f8e7d3f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_shadow_recovery_luma_p12.webp": "ce71c23a3a2e921f8105af898de3c6831f875546108e31ee8193d14151e939c3",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_highlight_separation_luma_p88_p998.webp": "31ab3c6b891a0077d0c29025223ed3366460b6134e9ba1de2dc75699add0c6dc",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_identity.webp": "ef29905726a0bc3ea45deb9e222bc2a3275ee4fb94a3af5c3063ed1bcbe218ba",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_negative_density_hard_print.webp": "e99aefd6889b1ce2c3ae84d27a561c82d3751e85c43d2a6ad10063d0e2a61409",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_negative_density_hard_shadow_recovery.webp": "584f03339b55e7387f247159ddaf27dd5388377872af8f5f1432e8d72b25bddc",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_shadow_recovery_luma_p12.webp": "4b4679d8dd2564e229d8c841ff37f1e7da06cd1d9efd73990751ea8c4242a04b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_highlight_separation_luma_p88_p998.webp": "32621dd9a69185db136dc1e67d8922f28bf6506f72d963b9567b8bbb1ad36367",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_identity.webp": "64fa31860312653d1e96be21d2cc183010b4165ebb167ceb7a9ea4c18882bde0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_negative_density_hard_print.webp": "4bc39bd8e4b7b95571ce5c3fe2a206e5d323aa8f98b56ff0b3add4d915b088b7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_negative_density_hard_shadow_recovery.webp": "51dab70cc5d402709e67d522da27b916d02106b7cdee066e4df4ca74059c9619",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_shadow_recovery_luma_p12.webp": "b90211c3c82a9a18a9e411fd3af8608555ea2fa07ddf5ad6b8b6b8730d718903",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_highlight_separation_luma_p88_p998.webp": "49efdc152fb541ffab9ca88a260d3f08ffe7d16a389dc0a6199196a31179acab",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_identity.webp": "eb8638d2606be83f22c50d2e519b830824910d5868d0535209e77d4f22a95198",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_negative_density_hard_print.webp": "1b75bc43746cc015ed09a59038b4636358380572ad07fcc2769a0eadd5cbee6b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_negative_density_hard_shadow_recovery.webp": "f1fadea8f88786f8fcb0ec431a79f1a4d86b711028e31fa11c19005772924e27",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_shadow_recovery_luma_p12.webp": "9ec007b9ac143cde593773f47f72c1de405ce98fa2a88d2d3d7c36b85017b9f4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_highlight_separation_luma_p88_p998.webp": "4350c4d778aaba1f5c6a8b371de906f4874c140301d3736966541b0d0d6cab83",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_identity.webp": "bb2647363985e780bc045e7ba66c11364c491f6ca042cd378f461d8f43581f53",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_negative_density_hard_print.webp": "d5cbb8debd445c7c05975e633b1cef4b1fb638319cae908b13e71adcb691b55c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_negative_density_hard_shadow_recovery.webp": "b5028510a6d5bdf9c0ecc1406d6cd83f15930aa553e1f91969a88e7d0cb05f13",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_shadow_recovery_luma_p12.webp": "dfa3e31183a6a3daabfcf4eaf218aa07eb73e7b4e7c7b561f45f66da1fa4cbb0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_highlight_separation_luma_p88_p998.webp": "3b3456818f35d8d43e7ab3498e6505723a2649ffa79abe5184a7a87708329ec8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_identity.webp": "6a886063804591460721b9c46df852e4caf57bf26e00ee81d4a5f0d119f73810",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_negative_density_hard_print.webp": "7fb703d7115850994fe7d817a762b605aff37827366b4f09f394a71c21738c69",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_negative_density_hard_shadow_recovery.webp": "0b7d609ccb05165979be33ab0162f60126125bb1a9c562029b1ab7785b5dbfe0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_shadow_recovery_luma_p12.webp": "279c6eaec863d54df61303a575e93712c90ba1b6626187c9e21f7be6baad1e5f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_highlight_separation_luma_p88_p998.webp": "6236ca68622ad20950842a094993c34e34557a209c910d427bac38c5c9556048",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_identity.webp": "1d56ea0cfd0959ea5bbab7d9b2b3ab4c2b60e333d79ac20572887eaafad04624",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_negative_density_hard_print.webp": "27e1fcb7fdb40e936966390bff510259de6721e06a957e4b5d8cf8b93942cf1a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_negative_density_hard_shadow_recovery.webp": "261a3c3ea534935f4e325d23298639ba61780f25c0bfc521760580993616012f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_shadow_recovery_luma_p12.webp": "0a92e12919d7d260e7f18de7db96506954545aa765651fa1f9e02f029759689a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_highlight_separation_luma_p88_p998.webp": "dfd4650a53e12f8011bae6fe8ed80081f1348756ec863f312f6bee763c15cede",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_identity.webp": "f343b7a168611049813566e2c27b9677810676990950d00a286e99fcd31f927b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_negative_density_hard_print.webp": "dff0bdebce8e5d2da2ed81ba3a07a3cf38e0e2f97a0f15bdeb885d40d0a3aeaf",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_negative_density_hard_shadow_recovery.webp": "b21ae82d809ff671fc3467a5004058306fb949730e88039b1b89283f74c503c4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_shadow_recovery_luma_p12.webp": "5ae1011a114b291dfbf3f3809c90f0813b0e969b3178442792dc3f6536de5c19",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_highlight_separation_luma_p88_p998.webp": "fcd6c1b15c36bd696f4c0da9c909c53089d65f52ad0bd175150287db0b2b4002",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_identity.webp": "71ba726344be2c6ca45941f16bdf2a49c75ce91070f392a822be32d3f366cd33",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_negative_density_hard_print.webp": "34e605c12ddd3baaf33f6bb36db840cb225c5f6559b1b0e288e34d46a49e7685",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_negative_density_hard_shadow_recovery.webp": "33ef3fd1c89505626cc73a4414cac040fea62a721c3c9818fde8d64d891412e8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_shadow_recovery_luma_p12.webp": "a0a680f3feef37de141db9bebe0abf3a9a8d3b88fb2172f642a4c893ecff0399",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_highlight_separation_luma_p88_p998.webp": "cad373cdde2bf76a918cbfb7c9af403757992b298a2a9e5798ec9c08586ebace",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_identity.webp": "82937ef5240c2f4b8918f56ec5be31861188297eca091c149c73929adbace0c8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_negative_density_hard_print.webp": "0665e3b163e3e095763bc2dcb3fd93a33c7e5b5f35b9bc66e4eb8d317fd8328a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_negative_density_hard_shadow_recovery.webp": "b72271f5998055c5d7c43592cfd27e157030857a7e0f5e5e90703fd6aa3803ba",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_shadow_recovery_luma_p12.webp": "9ed5cd50f36081a6ff526da66969eeb5f7bf5ae904ac60fe8afa5bd89d0a2cb5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_highlight_separation_luma_p88_p998.webp": "8b75564aef2d0732648293703b7c274979007cc011a99d0f873098ce790728c3",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_identity.webp": "279e716e6c987aeca1e4681f2c79568b6cb080f17dbf60bbe7fc643aa1e15d14",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_negative_density_hard_print.webp": "688fa18bc2c24ceedf217ad3935248b314476269617d2ab99ec234e2fc7f37b8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_negative_density_hard_shadow_recovery.webp": "c050194733f4d3ab095695b41689399dcc9a46a6a5f1ee1871bcfd849d084d2d",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_shadow_recovery_luma_p12.webp": "196cf76ee2242881750b406c164275c82f7f77e90a431ba4e17754dd894abccf",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_highlight_separation_luma_p88_p998.webp": "fd9fb80710d0b112f9e1293e01dde33c5e8b55a3d487a977ede58d0ae4db19a7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_identity.webp": "90584e75f5eed32b33179b63ad40a4d785bc10603b37645b31cfe1076b999c76",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_negative_density_hard_print.webp": "056c815f711b36285b2fe74d810db9b005fbf33c1820559f2fa03401697decc5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_negative_density_hard_shadow_recovery.webp": "c39faa712c6bf4c279837c3b631b73cf59520b82859f90c10aba5f4d19b2cf2f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_shadow_recovery_luma_p12.webp": "af6020d946e86ae91bce51662d65e25ad54a11c200e1e627cf04d340d189c0e4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_highlight_separation_luma_p88_p998.webp": "ee526a6ed5f969a9c720327ce723dd00932833dae26db456f41bf21de47ff65a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_identity.webp": "09e59f453030ac5890f13babf369fb03f7f1fc8f1437c31a382906c342717b0a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_negative_density_hard_print.webp": "e5d67998cdc4f698c3c443bc4d4c6e28c6113ac7054b8c2e57506780addda2d1",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_negative_density_hard_shadow_recovery.webp": "4545317ed9d1a8cc4ad6b79809934cefeaf858c8feb6c9d0ef1be92335e057f1",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_shadow_recovery_luma_p12.webp": "238d73c70898eab1b9b027210811883d2d2cf4351b3fbc677771ad7655a69f39",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_highlight_separation_luma_p88_p998.webp": "e7e4bbfbdf9087c8e705697f37337721fe2dd3198efa647dac3c45afa612b49c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_identity.webp": "87a84cfcc8648fa9657c0523d7cba381aae2dea4c02adf8f004b1b3183b51dde",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_negative_density_hard_print.webp": "dbf357f719b4caf2d89f2e6d1888e9dcddd4cc08a6b6c88d0e0d50eb399fe623",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_negative_density_hard_shadow_recovery.webp": "bc054f3c46e81a236603f0ab3f565463ba8e78b496dc1870e5d9a5ce21eb3220",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_shadow_recovery_luma_p12.webp": "79ef60ecd766bd4fec00086111415d7d4e8892d2e4e82e4eed0256e3e9a24048",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_highlight_separation_luma_p88_p998.webp": "df27f1e17f36c9deb9d79997b278b68dee6ad2b9957f916ac35b727e33b7b323",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_identity.webp": "76a50a794377bf9a9f8cf1d37030b1484e345f71c7843241897922cf28e28404",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_negative_density_hard_print.webp": "c19ccefae87702cef3b98fcad3cf29ae9cdd35c4d9a242ae705dfc487236dbf2",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_negative_density_hard_shadow_recovery.webp": "022bf0621fb56720ad874a8eb46b16ae74868fd0661a8eb07595cbb1e743f946",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_shadow_recovery_luma_p12.webp": "97d31eb3b28554ee1ac0e402554b9e88c0462e0409286623676b6cdee70ad80e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_highlight_separation_luma_p88_p998.webp": "97cebefb0da86eb3827541e4fde6558d7e7051d7580977bd9ed29aee829f52a6",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_identity.webp": "cc546602f1482035879d36adbf89c2c42c29648a93c83b4b4d3831a651f97a0a",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_negative_density_hard_print.webp": "bbbba1d29126b56fb3a783115eee9206a32624b983e5a26370a0d2801ac1a842",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_negative_density_hard_shadow_recovery.webp": "4b3b52e54893455275799ee174c38ac305332de92984799d066e043627e1cee4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_shadow_recovery_luma_p12.webp": "eebf5bc681e3f9af22ac6f7ce32fd44ba09c8523615b159a329f0a4ca80fe830",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_highlight_separation_luma_p88_p998.webp": "7431c53b5dec0900b8c9d8c61f87084303e72579bea5902b6f0e35a7f82787ac",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_identity.webp": "5284ecae0310cd7126cb96512ab59f595f9e2812b277c7ed93e3940a01d4dc0e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_negative_density_hard_print.webp": "a13f9a4ec0786576db48cfd2de9096435552aa0aef599c76ca21b716fba84f8c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_negative_density_hard_shadow_recovery.webp": "75d4435dc2858dc24cfbce11ce04a5baa7e907029597616eba26484f13279a5b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_shadow_recovery_luma_p12.webp": "72926389c678d8fe311500311e92bff9caba07b787de4af1def509ad74bc768c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_highlight_separation_luma_p88_p998.webp": "fc00baf4dff88e3490dc4563f68fb70435c5226df44d01cb9b64b9a253f1cbe7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_identity.webp": "7e74b67a2f6fd7e94c7477317620ae6d34fd489c67f99caf5c39ef5a5b44787d",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_negative_density_hard_print.webp": "7f5f0261cb55100497b342032ad9c044903341a4fa508efbd0396a67bccb6380",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_negative_density_hard_shadow_recovery.webp": "05d8017425a8d6cc3c9ed55d180017b706e23c592758e92c3924e7719aa88354",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_shadow_recovery_luma_p12.webp": "ec48b12c6b5612089852de6efb77423e49ba3111bf093394708d47129926096c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_highlight_separation_luma_p88_p998.webp": "d8536e3b27688e676df1f0acb048b5ade1cb916494cc03a145c31e52d8e71959",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_identity.webp": "18bb2fa3c344e909f0dfbcd65b3f06edf5c2d906d33cb4c7e8bad6504d145b00",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_negative_density_hard_print.webp": "9bef3d8a206cc3fee3eb3e94c4e3493a7fd3ce7dc1eec6cfcf7f79225a1f4464",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_negative_density_hard_shadow_recovery.webp": "d4d50b6a11dd2e806f2afa893b4d4f080fff17897ffdb674f689218f7ce3b29f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_shadow_recovery_luma_p12.webp": "d7eb63c5466114a7b7a079e8655e0a503f3cb0f23cec861f1aa3aaff227ffb6c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_highlight_separation_luma_p88_p998.webp": "03303f2eb78fab9b1eab15224eb03e842b85558505a89dd8b4fb682e669b27e5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_identity.webp": "7c3786ef5d99e8e8f5850d201c138d275bc3938e96e7c69161dcd979a9f378b7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_negative_density_hard_print.webp": "414275bec5ca67849291658e5b9f3276a963c9187fcdb7d479b22050d7bc16e1",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_negative_density_hard_shadow_recovery.webp": "51ea0c9bcf9da0ffb74d089f0a8482c9d402f2401e0944fbb8dc804e36e0a9c8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_shadow_recovery_luma_p12.webp": "37f2a6a25ac41f306c568602d6547f9bc97bcd76077607533066d053181e4d6f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_highlight_separation_luma_p88_p998.webp": "fd4c725bc7d2980f3e03f83ee689c2a0b5a3a29149e5fe19aa94680a887f97e2",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_identity.webp": "7968c0c75653923df41d08fcb1f7dc39b0d6dca1c7a5e9581f3b7428a5a3a4d9",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_negative_density_hard_print.webp": "53bacb77c6c69dd87b28ed8b97589b886ab4ebafe49b34f4caf5a320a2937648",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_negative_density_hard_shadow_recovery.webp": "a26183300ce66f02594f0bdff5a80c213dbc623442371ca4f2c1211895732e23",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_shadow_recovery_luma_p12.webp": "3c829065b86b718e56ffd6e884788e3d07b11bd099737f7e512a01caa1c04cb4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_highlight_separation_luma_p88_p998.webp": "c8d27c77e43ec28674a7c8f5e81209dea7d526d0cd94f1e98197fa597873f74c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_identity.webp": "fd1a636cfe75c0cc5baa4b96a429436fde080df7084a04043e569002ceddc7ae",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_negative_density_hard_print.webp": "e5051f03829c8137237e80eef14a15b68cd06d1a6cd8bfae7a828cec786d34ae",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_negative_density_hard_shadow_recovery.webp": "3ba4f060fea965ec2936eda8c1107f73e3358a0aeae7f50956d673ef95992083",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_shadow_recovery_luma_p12.webp": "242ce1afe9f35ed75b9753041281270e4d9707193dd88678cb1a661694504352",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_highlight_separation_luma_p88_p998.webp": "66ad5c88e6a7140e7766e323795c81c93d676f7d93547d8f64b6ce189f43f8de",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_identity.webp": "652c7dbe132e06b0d7ba825ad1d584fbb9aa4bc4fd7b6fc2a2e1ac5c6fb6ee44",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_negative_density_hard_print.webp": "dfee8e545157242e7c20a6fbac84a8c16594139a8cb46f04d2d85e8b8a7a7ea9",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_negative_density_hard_shadow_recovery.webp": "932e63820985b0842a6ccdb7a921ac070a86bd731dc462c8f2c68ecbde567e26",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_shadow_recovery_luma_p12.webp": "9517195df97f8e85616567866f2ac75ad61df24b73f3499ae236a9b618c6f7cc",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_highlight_separation_luma_p88_p998.webp": "2e1737fb8a65d1300d28062f9316c3361f4601c4e8cee7aff7ede89bf94dd660",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_identity.webp": "8e189153943bc81d63532506405fd155609978185f96577e496a0e3c3c4a231c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_negative_density_hard_print.webp": "59481aa17ca36acedf3c4b3f091f6fc284a0f45e1e0ae8c5a235c1c33580b594",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_negative_density_hard_shadow_recovery.webp": "5b23d536782afa1be3fe6ac8fdb84331dd39a6e84f92bea3351401ce5335fb09",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_shadow_recovery_luma_p12.webp": "b65750f411061aa96e6445f119a289836e04df72ad1a2ef8f67b08b7528f394d",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_highlight_separation_luma_p88_p998.webp": "95193f7a12413fe175299dd3be95efc04e19e00a58f537be68b1290c78e9928f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_identity.webp": "5f3e82aa4f3a529e6d03429be0761dcae37b57d2a63dc3686299d9f3ee97ffe5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_negative_density_hard_print.webp": "332c57a9d4fe67f1ad2a20789b4064762c40112b698079794916e5632a29f390",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_negative_density_hard_shadow_recovery.webp": "d5e1f00f1954e84b2e46ebd70986217341268bb5da590d1f7b355e8b7f13294e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_shadow_recovery_luma_p12.webp": "d53569b3a122eb4196223f1c34672b7d81fc13b7862fd9734aefdad5649cd8e5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_highlight_separation_luma_p88_p998.webp": "99c7c0eb8118f77f97295d367f94382133232070f172e25f0d676b761d42ccf0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_identity.webp": "86508f54bf3d94c18e27577017779ea2c2efe2228d448364d39868bc95332b90",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_negative_density_hard_print.webp": "d72945635eed4c30760796c630e6d856e7f471ce0827f1c18fb568b45a13805f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_negative_density_hard_shadow_recovery.webp": "3777a193d33531ae9db66b568acc78da4930c570ca688b93f70c98e9bf1f98d8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_shadow_recovery_luma_p12.webp": "224c7abce2b5c77aec237a70d064bcf7c9f850f9d96d731e14da5a7fac51d122",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_highlight_separation_luma_p88_p998.webp": "6dceb5614214f27b6a6224cc0d619fb630b903d97248b0525dffab7fda80399b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_identity.webp": "44966ca12cbd1ad1f82acd99b2c8f9da514387443db6e08959c91a58a416515c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_negative_density_hard_print.webp": "ef79cff3ac7a7a75e4b928faca6e1514e28c2ca017b99a18046ecb2c14214468",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_negative_density_hard_shadow_recovery.webp": "8999a5547849d347c0c606b903d0507bc781e63b843d717c97fda87c0c5f6780",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_shadow_recovery_luma_p12.webp": "4d49cf500a1d8ee14b524ca089d457356420f0455205378d82c80492adca7e2f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_highlight_separation_luma_p88_p998.webp": "12f3ae1c13745700b6e17484730dde28fb8e4afe404d09162141fafdc7961583",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_identity.webp": "96911d24bdb38d40cb36f0aac72c38121ec643e905c1b8b4d1e301147898a71f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_negative_density_hard_print.webp": "ba556c89e729500d1c2464797b90afb6a673993df1a007cf0888b1a02520cc66",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_negative_density_hard_shadow_recovery.webp": "05b3478b71b617ad7e874dabb354fcd6bb40dc9ed2dbfd622df586d7e44d91c2",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_shadow_recovery_luma_p12.webp": "62099de911216003daddd7d035df97daa7f302e78503adb397bb9410ee3ca250",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_highlight_separation_luma_p88_p998.webp": "a53a4329c3080ad216548ecba08b58c8429f4c7faa796883e2238b2e26c0b073",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_identity.webp": "4a5108723222a7fa3fb537bb9296d08477187987157aa95e75fd024345afc1db",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_negative_density_hard_print.webp": "2abf7ebb77438b5f9395b2bbad93fabdcd9e57d6f2432a74ae83cf071cbba27e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_negative_density_hard_shadow_recovery.webp": "099aa1ed852a52172b88cbeb6cf95abd47cfbf3b2455bec155305d7c6f4746ca",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_shadow_recovery_luma_p12.webp": "d9aace3b36a035cf82e2c2c7e91ae06c646e88564b478d2afda5653d80930af8",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_highlight_separation_luma_p88_p998.webp": "1f190705c6fd905aa0dd1ef00084b7e5d558ed5e1c09ab13f7034f9e3cd9a792",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_identity.webp": "0550c27b8928279c0cf0da90647ff6cab3a2c73c9b657445f5c08b239752722c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_negative_density_hard_print.webp": "78611fd754b3aa235123222185721d9c8afa3257acbecdcc26c472ab9fa5c628",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_negative_density_hard_shadow_recovery.webp": "5e3d5a48d7051ce8f48eeb38c300a1c6110ecc74ff9e1a45e0709bf8f55331cc",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_shadow_recovery_luma_p12.webp": "ee12fe9685a2feb34e097a491d729f2b4cc5d09177f19a1d173254682fdae1ef",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_highlight_separation_luma_p88_p998.webp": "ee1e3f2eac762a3c8764a80ba7e532d1cd1546b70198dd98d60432c37931231c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_identity.webp": "65c806ae96e74f64d2b1fb14d386a57285a166f794d89f75dbb700dcb71d201d",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_negative_density_hard_print.webp": "8c50a4c5a3552ae9e0c7edf2299cd25bad91acaff7606498352847439c1c7b18",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_negative_density_hard_shadow_recovery.webp": "06450cfa49845c29c3618a9f4b2e8613dda38617481eaeb1c4592e35041d4ac5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_shadow_recovery_luma_p12.webp": "2718f4cb74f072b144441485639a43430d3ced92cfa5fe5237122d5381ed3a96",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_highlight_separation_luma_p88_p998.webp": "d370fa1568bbb04972e9b63296609cc614aa0a156a5ac47ffb92ed9c1b3468db",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_identity.webp": "a6630a99b3a6e2fd9ed8f933006e8b0ad02690d4ef4b2de14418af23f6f08beb",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_negative_density_hard_print.webp": "fc85696931248c0e8c01596525f481490c4d701a69039e8dba8989c5754fe604",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_negative_density_hard_shadow_recovery.webp": "409b29ebac70c9721bbebc4a40243a899021ec3fccb59ba35b3ea387fb1833da",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_shadow_recovery_luma_p12.webp": "7bd38e0d483210d9aca6fc53764fe74a2c5f11305616ca82aa55f3da06436ddb",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_highlight_separation_luma_p88_p998.webp": "f074fa032499e876040f3f95d7d55ade32a299581fea915ac6cc52fd0bd313ff",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_identity.webp": "7edd0254523a68f6fd2dc55eeff3c9c55b958a6eb55fc00c28a4659ba9cfe955",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_negative_density_hard_print.webp": "29105095e984402ca8214aa645db40d6e13abe3c1aae841036483bbc266bf1b2",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_negative_density_hard_shadow_recovery.webp": "6c6ba640e3dec4ca53fac03489e2fefe92fa79b3beb415172239dced28d8df8e",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_shadow_recovery_luma_p12.webp": "e2528e9481d4d4b2c5e5d52c8b1a0ebe7010a739cbe34429b77e36e04e434259",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_highlight_separation_luma_p88_p998.webp": "300122e092f5b16a713ed4417a2b5248f2562d0d788ade160f3b121e434e6e14",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_identity.webp": "9b8caff0143540da3d2c88b12894d311441d0413196c23ede8272869c3bc0ffe",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_negative_density_hard_print.webp": "efba41d59ec2ef37516e532ea3ed6934a5b626c8c9d30782b0302337f40a4376",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_negative_density_hard_shadow_recovery.webp": "eb8813ebefc2c6471bd749a438d30b4cd3309575508525cef7cf239d407f6551",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_shadow_recovery_luma_p12.webp": "3af11b5f2e3b2bede21e8b54cfe9a2367411993a1959915f24dcfe0f2f69f183",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_highlight_separation_luma_p88_p998.webp": "0600c9d593d77a06482aaddbb0080918fd453b1c9c93e4f5c8ceec2480b7b625",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_identity.webp": "a334d68267d2224ad37f0c6f53fdceef8db917ecc0d35af3505a27a7b6541df0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_negative_density_hard_print.webp": "e25c01589f526b133f2d1f71a2a1137a16233af410abb1ca4e717c1b43594dd5",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_negative_density_hard_shadow_recovery.webp": "75c073a500c55608e7b735ed5c51631f695206eb8cd2caa22a96602d5e3259bf",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_shadow_recovery_luma_p12.webp": "0d9f3ee360a07f90dd91503be31adb81839f704d320784f773adcc0fa6480ae7",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_highlight_separation_luma_p88_p998.webp": "e91dc44f9664bc4090956aceb0191c934b29ff99e00113210e603e7a6fc23960",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_identity.webp": "ad506ace8c382c6c654847dedd543d2f7bd9d0ecea668ac344cc7ca2aba1d750",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_negative_density_hard_print.webp": "988afe8f41c283f75906af9d1399eb3a935e2382ebab29cd8ce350880e00cd3c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_negative_density_hard_shadow_recovery.webp": "06a98d92b598d00312ed8469eb3cb087cd7fa9dad0fd61dcae909e8b1a4ddfe3",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_shadow_recovery_luma_p12.webp": "ac819d2ca2da2fa0d0ede304926f06c9d8f5fa968f734a30a8f91051528ca0c0",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_highlight_separation_luma_p88_p998.webp": "c67cb8489c276b62e989a8b03a46e83585a1eda1ec778c914453515c8b3f9274",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_identity.webp": "057e5bc9542b3b9e28799988815c194f6860afe86181bf81531ee0b17ff18c58",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_negative_density_hard_print.webp": "6c1f056f69ed24dbbbe21834e166c61651971926f2ca94dd561e87963110fb42",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_negative_density_hard_shadow_recovery.webp": "ef05370e9d9e71846d183d605fcd7d9d419ad05e38d0170e1f85c9a14ea0669f",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_shadow_recovery_luma_p12.webp": "323e5f558bed0294f71ab5d328c613069fd55b4378fa80f1395566faad98bd63",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_highlight_separation_luma_p88_p998.webp": "a7a61f5ce66c4a4e7ca8f17cb0fdd2855fc8141b162221aaa5360fd4ed72beeb",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_identity.webp": "f0d73c879efc3ab55f4ce214f57590b7f951cbecaf33870fde0c551ee557905c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_negative_density_hard_print.webp": "23753dddda20cd2ad8bd0c248e8e1a99597fedfbd36d87069e87b53ba6431e9c",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_negative_density_hard_shadow_recovery.webp": "9b53688e7b16a040081576c26e96c20a6021acb2bce914ca62d071f3b8a05f33",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_shadow_recovery_luma_p12.webp": "2ac4ca71d5efac60e3fcfad6fd43e1e101773a6e29d445fcf9b42c41274e27a4",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_highlight_separation_luma_p88_p998.webp": "4e6c9d9a9e25d0350da277a1ed7a6d31e327a8369da192331dab3dcaa679b140",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_identity.webp": "cfb13ce6f632a167467e6319e6cb54d76a00b2a9a2e371e4a0e54070458695cf",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_negative_density_hard_print.webp": "7f3f795df19fe4fb566914df1de36ca30c220fec92fc398c3bffcd2ad07ec405",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_negative_density_hard_shadow_recovery.webp": "c0d45126b786df130bbdabe81c5297a654b7b2d3eecb5fe5a69815c0da05d66d",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_shadow_recovery_luma_p12.webp": "e86a945027e065bb6a9de580d24438c93b81c03dbec19072e9a300f02d7a91c6",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_highlight_separation_luma_p88_p998.webp": "7a2f33597eda0fe80a427eb10273fb374658774c6a02ad2163cd4333124e3c3b",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_identity.webp": "673e124ece1a8b06ed0b6f2f5a5bc0d64991fb6926cc804ea3d1bea82e8f68a1",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_negative_density_hard_print.webp": "395f4fc2f96fb36f775f78ef0d3316c095a4364ee4905915809c7db052235842",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_negative_density_hard_shadow_recovery.webp": "51464996f3acf837201cd843537a64f9eabba7a6f7a853576b2afaf515622360",
-    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_shadow_recovery_luma_p12.webp": "c9e15438e807cdb6e9c343be98573a50b398c663544794781da174ed50dbbfe8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_highlight_separation_luma_p88_p998.webp": "67845153ed763961f26944abcbe348a05044df67b434d391a628549f9b20babe",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_identity.webp": "e8c5f2e66349cf2701cb96f27cab1428b750808f14a933656cd89ae4b3091e5f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_negative_density_hard_print.webp": "8fbc697eb6f9e8041893278d59ceb88e5330c8dd586affef91139e2689ca7167",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_negative_density_hard_shadow_recovery.webp": "7bb754739f268230e963097d8a448fd2de5308b6be6997c37b5d957b6efa9214",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d003_shadow_recovery_luma_p12.webp": "2f1bf35cfbb1890bbbd6fa7c72f7a0d4aba98bb98f4aba762c7df30a4b7034a7",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_highlight_separation_luma_p88_p998.webp": "909f986f4e396f68250be564a7ee6484892ba4579ff357945ae688cf56aada4e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_identity.webp": "e4452058f03cc019fd69183b89100c624ebc32f73d071b3c94fa5b5ad43bf066",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_negative_density_hard_print.webp": "e5f115b74423080cf9c1797bb7f917d6dddf1ef20337e0d033ea326337c4de04",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_negative_density_hard_shadow_recovery.webp": "d2232e8d94fb0255bdc9eb7b02b2f049733514afbd8131fe3fb233137ecb03f4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d005_shadow_recovery_luma_p12.webp": "fbbad1dff447aaf9f518d797f79e7c1a6e9830f0b4cde2849b031ea4a3b0fc34",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_highlight_separation_luma_p88_p998.webp": "a4c4f55f4f5d93f401ed9e269f7234287dec9ea24a17a8d7eb6d4c1311fa5ce4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_identity.webp": "1f4af1e17594703583c3861dfb92ed380b094c33cba63753e72db6e8a744b8c6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_negative_density_hard_print.webp": "13e3aae8a625b67269840052f55e7a8ac18e6294c5e8f39d26af083cb9456e5b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_negative_density_hard_shadow_recovery.webp": "20e1603358aefeb72cf132e0e3b780f4c22bf0f7b3e4c08c3fcbe0cfeb71e747",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d010_shadow_recovery_luma_p12.webp": "8c4da39e44c447b7abb6d059e1cfcaa20bc99323f768e480b516ee4305c3b25f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_highlight_separation_luma_p88_p998.webp": "0087b990d3e76b6f2741a032c0af4f887ab7104dfc94dc3583cc444d0c2e5046",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_identity.webp": "3ef0785bb571503ab4070db954885cd7141825667fc8a0a96751dc9a65fa0783",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_negative_density_hard_print.webp": "d1369a54231f15acaca33e0e5a0634254d745c33ceb3548f94f9a169d01c67c8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_negative_density_hard_shadow_recovery.webp": "0e80e23432b532bf5f2ddf9d02388c292aa00b7811e0d3aa3454e27ca7b02fce",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d020_shadow_recovery_luma_p12.webp": "617c5a5e22c7949112ac0c0d56c744a2eb265dbc372f495bf5eca7cd3888ab7d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_highlight_separation_luma_p88_p998.webp": "d281a3150fad9c902e19ea296f34c69b714a7cdf150ecb8a33a791e4607fd708",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_identity.webp": "bc179d9ce77043cf33a97693aefbe02f40aaa0251f8ad4f3127a1b16a5a8b445",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_negative_density_hard_print.webp": "8ff5b54b30efd40c46207e2e7accd78629930718834a4e9090dadc129c67b6e4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_negative_density_hard_shadow_recovery.webp": "9bef4a9d9542b33cefd8ad23c8771f077084be17e29f45423169dcbd5501af0a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d022_shadow_recovery_luma_p12.webp": "b686e78fc3fe1dbde3a485a58f4c09f38d45d59246ab246e03bf9e8782662c97",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_highlight_separation_luma_p88_p998.webp": "39eecb8caadea7982a09743251a3fa8f5c2d83381a21de61dc3b14156a7e2851",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_identity.webp": "0162dd4fcbbdd2c802e6571851fd6d3d06e6625996ce3c72c71c05f9766a9a19",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_negative_density_hard_print.webp": "d4184c281ff9dae79f1c657535e6e5add62cfc129cc087e6e4c20dcba3d8fbe0",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_negative_density_hard_shadow_recovery.webp": "43806805b66334a09091445d088a45f63775942ba7a22b5e93c9365f47b92634",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d025_shadow_recovery_luma_p12.webp": "6e54557ace7c4c62f970572b3de5462908242981160f8520283186c45e61a85e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_highlight_separation_luma_p88_p998.webp": "40c23d44b3318d22e62c545bda4b220b8a979b06b25836d5e268507fb28fccf4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_identity.webp": "04cab6138a6b7da0794601bf695540f42e8ebda62f8833a7f187f7883982ef94",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_negative_density_hard_print.webp": "b44847c04700ec9f817f70112f179d9b0a40fb6235d4ab87966d2f2e0793b056",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_negative_density_hard_shadow_recovery.webp": "7ea01d75ccb703cbbc12fba6a2548da89403dabf3c1851722211c117c38e6567",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d028_shadow_recovery_luma_p12.webp": "db77781109af25c3f73ae67a56ef9574c4592c3e859b9ad7e0acb95f33590255",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_highlight_separation_luma_p88_p998.webp": "c405db0c085a83162d295a2890e597a8be5726891d8f79342820d17299c64ec2",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_identity.webp": "55fc8f3f406d19755cd1aab3cf8e12fbfb5d82b7d02a0fff9948b70b1798997f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_negative_density_hard_print.webp": "61975dfd109f00353455470e17c4b19cccd9bd5585a07647306fb217f2ad94ee",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_negative_density_hard_shadow_recovery.webp": "94e102c15dbbf7a9c8ae5fafc9dfef268e5f673923c8daf43e330fc40ac0aacd",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d030_shadow_recovery_luma_p12.webp": "4b114af00dcae577343e7ab7fa57d3d2e30d8e9778ffcc135ed1f1dd37748b99",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_highlight_separation_luma_p88_p998.webp": "330ca649b25b3bcfb2b632c1228d9b1be54b9324832254555c99a251b036a5e6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_identity.webp": "0d64a5c4b4aaf0590f2d637299fdc6762626985d015275bab281ef627bbae0ef",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_negative_density_hard_print.webp": "4f6aab7320667ab17444a90c87128cbf23cfb0899fba50e7faffb2453c1a9941",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_negative_density_hard_shadow_recovery.webp": "7681715e3c8abc4b793de752f84b664ac610c24d43d1001a460a0d5c62903444",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d100_shadow_recovery_luma_p12.webp": "81df81f824209d45b14aa648f314f76a0d691d026ced1abdc8c52485d0fc36b2",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_highlight_separation_luma_p88_p998.webp": "919490e8f25f4fe73fc88513c8c8f0eb7b9423866972cd75b8e3ce69e930bd02",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_identity.webp": "b5939d43cab3e470c5aade24a750ceba61b3c2bb7d4916193609e405c48585b4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_negative_density_hard_print.webp": "a80c7d0f9d03700c24a4830032b6ba373aeecfe9608065ac8bb23ac6236dd2fe",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_negative_density_hard_shadow_recovery.webp": "b9a47f1eb68947d8bc49d7f995f69e48f7ee737bfffd18fe12fc79415857f8a1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/jxl_d200_shadow_recovery_luma_p12.webp": "2e89e05e244131e14a1536896dd65ff6afda8dca1d1ffca0ca15373c4f3e1538",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_highlight_separation_luma_p88_p998.webp": "ac1de76082340e26c0a74a72d3448797a395c26906bbf4365b22e0e5e16b937d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_identity.webp": "f9b68d75221b2c0fa06185878a6254a0c79fe846a00033c2df3e4698d036bf37",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_negative_density_hard_print.webp": "ba3bd238c4d0bd9224f0ea39d4a2d59e6a64830085bbff3e5c716c7cb7181122",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_negative_density_hard_shadow_recovery.webp": "c48633c7117f69903065ce53eb5ac10ca6f18b2f5b9557080e9a690a1c38a8da",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/raw61_shadow_recovery_luma_p12.webp": "9b64c4e86becdd0b6c45c5728b0fbc6e4b64990bbff3f1d8e988463fba0b9b87",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_highlight_separation_luma_p88_p998.webp": "df4c05b4f261e5af3dda403b921332942b47ac75668a74505fddfcbb38172255",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_identity.webp": "c8024181d2a319f9a24df111f6af5f7d5644d47941a1d0ac69238d4fbfe0d8da",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_negative_density_hard_print.webp": "ad56192058b1590498f3f27d2e0cb6eceab73f54e5d69c93f634493b86f987c4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_negative_density_hard_shadow_recovery.webp": "194e852679e0d25a59cdd9d74d33b5211b254d45a09aa2a7e7a67addc8c9d9fe",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-01/reference_shadow_recovery_luma_p12.webp": "4c0dbedac8c6b8ed866aa45da47bd82d86f49a74d5df6f0596f7dc4fa34603ed",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_highlight_separation_luma_p88_p998.webp": "1b26ca46c364e75d43a3ac80981b4e38aa1d7e632c766ec80a619e1f08c92b23",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_identity.webp": "7207ddbb99eb39a1fb7cf0601b13a16aad68971b0d4e3c4eb5402f5709b29e9d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_negative_density_hard_print.webp": "61638479aab0071022d824261f86ba0b67ad5117c93d76b8b285fe3dba1ad92f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_negative_density_hard_shadow_recovery.webp": "580c907849ff98bfb0771f7e5f1b5b833c5bfcb9f1dea082227943ffe018c0b3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d003_shadow_recovery_luma_p12.webp": "a55ee8d168e32e3696306ad8ba632e0a9ebcaecc24006deff4dcab5bc9c98348",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_highlight_separation_luma_p88_p998.webp": "9da8a62fd1d2b6424d4755a9aace6ac49628107bf9c5ccdf1c16e7dd4dd0c06a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_identity.webp": "111ec71a6c873261956731c7c3157f9cd850fcef3695f2169a3846ea3087c95b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_negative_density_hard_print.webp": "46cc3614e5b0f0bf1d2e7d0b2e53c407bb5824606099400d8c678a1a0c8106d3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_negative_density_hard_shadow_recovery.webp": "109524987c51ebf015e316cc5c9bcee813fec49ae7fa94eeac6a59132ea538bd",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d005_shadow_recovery_luma_p12.webp": "90b927a28dd0f35e7550b7b158f4f9d977ee806b48ea3d8f33cd959daa8aefb8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_highlight_separation_luma_p88_p998.webp": "b145e8442ad8b99e05d891f18f0eabb1a5e381fa13b7b43715c43f985b557869",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_identity.webp": "236a5bbb4fe5a7c4e4c8fc7b152fe52bb3ef561ede04149ed8d45a903e3a73cb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_negative_density_hard_print.webp": "7e15c9facbd1ce983125bf72f4530e124b70d7b6cd5a9cdd951e2f789fae4fdf",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_negative_density_hard_shadow_recovery.webp": "3782d7f452a7c7242a578d72ed3c3d106f54f2a3135b0426af4183a9fc092221",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d010_shadow_recovery_luma_p12.webp": "0417208bfff1c9b6d91d1fffbb6e366ad6dd302b7d94ae175c44d00ad3827259",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_highlight_separation_luma_p88_p998.webp": "64aae8d9f52af51c505ec744e5086b4098951751f4fc47d312f2689300fac77d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_identity.webp": "83a506ae22cf3e3238dacbd63cc1756357ac2d1a9a3490b7bd7f3b4a7136b245",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_negative_density_hard_print.webp": "9bd5823e39dfa86e243b74bde7754f79c68574dec2b16aeb4f8cb4b520f05c2e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_negative_density_hard_shadow_recovery.webp": "23ad2f7110786232b5592bd3428f22198926d96840b2963329d99b4e72c45743",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d020_shadow_recovery_luma_p12.webp": "5a934346333848ce482a71e200e7ad627bc2430602e59047542e7e2bc3e422e6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_highlight_separation_luma_p88_p998.webp": "87919997206970c345e312f238771625962bfb58a5616bc93f5f8d50e52d4f8e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_identity.webp": "bdc8f0942ec425808b654bc01daf8d663932d35819440855b8d7f406f182b4b6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_negative_density_hard_print.webp": "48979399bed6496381a5d0e87f3a548d8eef3fad4be51a782115516ff2e6490f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_negative_density_hard_shadow_recovery.webp": "d6fd164f67110f0a3bebc983f0200fc262aa166e31539090bbac304d657ac0e8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d022_shadow_recovery_luma_p12.webp": "f25b205117befa1ca7b05f5d3aa39389abb8d68fc4902b48f090969c12ec0ed7",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_highlight_separation_luma_p88_p998.webp": "5f942ec8ebb956327315a1e4e12f7ad12efa0856e5db5c5cd41bf4ed6d2183e3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_identity.webp": "f86e5138c1c868d46dd010650a0d8c400fd0103018e57136235ba98be326bfe6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_negative_density_hard_print.webp": "a83fea85b7f0ba19c3ab2ff4bf64d29515ac531259de1c4f62df2230e325a317",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_negative_density_hard_shadow_recovery.webp": "9b7e071df01546af6be3b732898fcd538751bb2576232737c8606f7512d5575d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d025_shadow_recovery_luma_p12.webp": "06a6a58c5d7b23828b6185e82cfea496da974456b79ecc3a27f2f435b14ca287",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_highlight_separation_luma_p88_p998.webp": "081f5fcdc5698d98dd8ff6af9545c2c165db7db2dc2b9b81358e056937fb9778",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_identity.webp": "990d791c422d266c693a3a2d247a55036e193bd414a16b9bab5093561c2b26d8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_negative_density_hard_print.webp": "311c791e15c776121e340f3dcdfb6c2b5c9019d983a5fa191eb93c441b031ccb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_negative_density_hard_shadow_recovery.webp": "69054ec9d1b397e8c2aae8de1d5f5c28c88a961ea5317bfc29d232514b8177e2",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d028_shadow_recovery_luma_p12.webp": "b9fc7568abba9ba9dedecc47a50a92342a05e7e103223aa9343b502ac02a2877",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_highlight_separation_luma_p88_p998.webp": "3a21fa21a09ef205ae0d07a89fc9774a91c23e702897fa07a16bdd798d66819a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_identity.webp": "e0dfcd34c3b9729d83526c4802d1cbbbeb9f8b1e72793f310b6a77d3921a481e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_negative_density_hard_print.webp": "e626e67ccef428f0a9323ebe52dbcf97d836ecb98627a4058add45f8f31235e9",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_negative_density_hard_shadow_recovery.webp": "ac0ac52864981863632f95800ef103dd93734921e969488d9b719c7154274e18",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d030_shadow_recovery_luma_p12.webp": "5151c6f5bb6fa307d15c2029d9bfbc3b9040189938af556fd4368eaff049b623",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_highlight_separation_luma_p88_p998.webp": "344a4bda7a92b922028556e2961cfed6d626d206fd638c8919fe307b54b68856",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_identity.webp": "8826b5c20eec4bd2ae16f4f666b15cc5c4ff61afc4bc94e59aa7c2911deef415",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_negative_density_hard_print.webp": "a6fc4e0691b450ad9a26a989229b46de4480b9065a2d98ec7c83bf1919fdf716",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_negative_density_hard_shadow_recovery.webp": "535400814afe21c20f5aad44cff31a9cbfaa53136e93ee64e60da465cc1fbdac",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d100_shadow_recovery_luma_p12.webp": "a6e5d8b5a15b4edf99f8d120ac79d7d6a27a30ef2cc57264d3200ce2736e2665",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_highlight_separation_luma_p88_p998.webp": "e26e0341dc630c54e4bc5f8d6f823c7ec386a71c552e1dcf1714a9853ee31dc5",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_identity.webp": "3a44e87ce3daa389a8ea9c60bfb851f069b7c0ffb35aab3b39a26db4a2151dd3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_negative_density_hard_print.webp": "78c74aff5f0e60b614e33a864857b200ba0c1e542111dfca61f796e9ad27a01b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_negative_density_hard_shadow_recovery.webp": "a4e3bb097e338eb23ad26c7591a7f50f63421aba464d7e719fbfdc7fbcabd046",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/jxl_d200_shadow_recovery_luma_p12.webp": "226ea9264ef8b1d11e2676769eac7b69ccb1bfb942ef66a0b6d8ca494ad53107",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_highlight_separation_luma_p88_p998.webp": "3b14e7504a7683069e727f54f55d5e9975ecbe5e106f55c1c62220e41471121e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_identity.webp": "f942ba420c4e991841d0c5a91042dbb13a1e5269b31e4e2aad1cb916d107b452",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_negative_density_hard_print.webp": "15da4dacb483cd5e1c418f46341a5d4a7029afc25047dd9c4c8a55667e917922",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_negative_density_hard_shadow_recovery.webp": "08a5259813b30d4ca6f8106e290c1b689d02b407451417961c8c4235e19517aa",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/raw61_shadow_recovery_luma_p12.webp": "e3de2dfaf850e67e3909c424db5676f51f5ec73691bf8b84cea12c9586778d3d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_highlight_separation_luma_p88_p998.webp": "41ef8522f19f82e1d7d6b5ab50572c71bdcac7a0ef5c4e6d2a30e7f31815a6c4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_identity.webp": "09105bd0051c040ee8cf61f4a26d4a1bc88e082493702deeca5d877d05b26956",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_negative_density_hard_print.webp": "0b1da4cbcaaa9dac75003fd6eb61a0cf60aafef4f3762e7c9afee4ac96ba6b54",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_negative_density_hard_shadow_recovery.webp": "7e8571b3d3800332eb64e696733e995e73b3828dd763460aca7532c59530a27d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-02/reference_shadow_recovery_luma_p12.webp": "6bab6cc40a8b506afe518b6ec39251d18476d93e18d94a4ddf8068ed31ddeefb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_highlight_separation_luma_p88_p998.webp": "04629fd71b84de8d267e321cd4139d56699b3dac98e1c2ea44360c7b5bf75da5",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_identity.webp": "a18cdf1078bce6dc7d1d31cdbb352c8da9b0cbb1bccf9d15a0712e25733edb46",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_negative_density_hard_print.webp": "cb5452ebab66630b068b2619742b9b4082115d271228a797775bcacfc4e606df",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_negative_density_hard_shadow_recovery.webp": "cc83775bd68abd51328e01a4b39359b4667dbdffa71012590c3d6bb81007569c",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d003_shadow_recovery_luma_p12.webp": "dc99a9e15c6b0680655d10277b6b212059dcac1dd4e0468ce8ed58bdc7919111",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_highlight_separation_luma_p88_p998.webp": "24a98a07f4bb39182dd19c429dd9c546c0810b13ee4647226bc24fb64d607f60",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_identity.webp": "af3502060cd8ec394b68e32a3e842939b3879bbf70fa68698097dbc1e43b7200",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_negative_density_hard_print.webp": "c7bfa5122d33be6095350df8c4d05e2ad044e7c9249407dbf594be5ef9b4bd78",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_negative_density_hard_shadow_recovery.webp": "c9f1ab5ce233d2281f980786609111191abe69fa927fe7a248d2ea7e106abf98",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d005_shadow_recovery_luma_p12.webp": "de6d32650c8e3301aef3a04a29fe2b5f1af33a848eb0530c07a02db7d3ae117c",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_highlight_separation_luma_p88_p998.webp": "20cd65731d2f4b0e7a9b500cb3242e2dd7c1933fdf1358067dbb45bd0470d056",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_identity.webp": "3163b9cd120795e3bffb6f6372d762e872566fb8874832f3b7bad3d66cebfa79",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_negative_density_hard_print.webp": "886b88f079aa468b23cf19a83d3667f760be8db96bb07dcc63d18d720ce3b382",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_negative_density_hard_shadow_recovery.webp": "ee0eedcd565a5005fded4c8618c4f18b6cdeb2ba42cd7323424c62e3f6b6faf3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d010_shadow_recovery_luma_p12.webp": "5cf5089e7ad3d5fa1ee7de41838ca78aad2b76f172678e2cdc512392dcdacbd1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_highlight_separation_luma_p88_p998.webp": "c68ebc5ce93674671d2a75ebbda4371107006508a5535c79e9eb7677ccce131f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_identity.webp": "aa6205e2893b99684c736f89c291c357ce294b174a29ac4066ad4c195be6645c",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_negative_density_hard_print.webp": "4af70c100158d46a716605ed19941d2889d255954e4f6ee8f3f3848f315320aa",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_negative_density_hard_shadow_recovery.webp": "8ece31c28c6317aff82f0ecc4c3423baac8d49d32e0ac74a47bbed32602a9751",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d020_shadow_recovery_luma_p12.webp": "a5cf1bf32fab3e9abebf2b7eb2f8d0ec27e407064cdcf93b6b6a4ab52b5221d6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_highlight_separation_luma_p88_p998.webp": "275257b4aa454d9b53e032a727298e7072d75bacbdb75831bf8e2484684ae8b6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_identity.webp": "fa416c19d6022a47f5b17e1a61787452e167c220935bd07e88865585a8877998",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_negative_density_hard_print.webp": "daeb29421c985ccd1165bf52e2d0b35ba972768a6842e8a018c91b6f9d960f50",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_negative_density_hard_shadow_recovery.webp": "a33678fbeb045f5a1818ff83b20b0ca9672deb3bc4e4a4603c15f1afb190aa22",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d022_shadow_recovery_luma_p12.webp": "200db171ff04aeb01d371f4191b6e941113030992c62121c3d04af7c119cedf8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_highlight_separation_luma_p88_p998.webp": "aad32aaa3471e7651b4a1b11074ba8af9ad51fa6f87c89b692c31efb4620e09e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_identity.webp": "9ae023757e777183e924dff5a4d59ab57893a833756fbfe68a8fea64c5804ecc",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_negative_density_hard_print.webp": "ba5a64c1d09c9bef50f8fea3628005839b10d26e21ec739920a83566ff6e1823",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_negative_density_hard_shadow_recovery.webp": "8e02fe8475c5f209c39403921b69a924e68c6b2dec3c7d7ae3200c86173bb682",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d025_shadow_recovery_luma_p12.webp": "26ffc704bd10d117796310f02e79e7c5bd13b23651bbc6896574fb8919078af3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_highlight_separation_luma_p88_p998.webp": "0f303520605e14ca113f4d98f8b75137cf51e4d990e6d8221874292638c61915",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_identity.webp": "28561f87a465e47922c5e486bc692e0361e8a78204ba3f7866d17fc7a7ae57a0",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_negative_density_hard_print.webp": "63ecbe24b674408d6241cceacbb0a37cbc847191e078bc2b76e84194e6099457",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_negative_density_hard_shadow_recovery.webp": "94c0ff067c5ac2e57ac349a8dc4cecbf396fa1e67d43db8478cdb59b45d121f6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d028_shadow_recovery_luma_p12.webp": "b316bef034cf17dff87d832e8000c155c6f8256714dc5341a0c56a9d4495871a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_highlight_separation_luma_p88_p998.webp": "1c1d9ce147b61ce2a45ff1787e4b46cd5a235b0b5cc3f8b3c2f0413191205b62",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_identity.webp": "9637a9ae1263013f936e1973fa287f85c0bd6c5fbffe881b84f31bce912dd805",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_negative_density_hard_print.webp": "fbade8cadbf21ae9c523eec07f4160d2ca34b131fabe8be656001fee20c621d8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_negative_density_hard_shadow_recovery.webp": "6a2cdb8000a17ce1d7d5b4b293d563d7cb1bde1849157c37b265c45f4c601543",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d030_shadow_recovery_luma_p12.webp": "b9f5e7ec43b307b43a5f8e84984260805c879ac57ee34557f6465a2a9b3e2d6a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_highlight_separation_luma_p88_p998.webp": "28f9a05bbdc64fb69209cbb85fbb13bc72acfce16e422aa9dcd941c3fc29f881",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_identity.webp": "530acda339803b53fd5ec3e1731ef1f415423c50bf190b74fbcf26a46b517e4d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_negative_density_hard_print.webp": "a2c645b5017430c4559f46eefba13e9686aaf3c3e3b831a49b01557155245c99",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_negative_density_hard_shadow_recovery.webp": "b626f9244b4708b74c7fedf57d913e586603d6a921304865fb85b11acb2fa2b1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d100_shadow_recovery_luma_p12.webp": "f4850ab342f7110c3ed9e0241795e96dd6b977cb1e8e56d0bb239a041ca50f01",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_highlight_separation_luma_p88_p998.webp": "fe3dbbbacc97a0525520669d657fc25784c038d16ce98c6c48e0529f971ab1a6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_identity.webp": "8ddbe1fe6d5914e3c89dad499ece88e27874fe7fae59906e4ff9a759bfb78fd4",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_negative_density_hard_print.webp": "dda490ade65c4b1f4463af050e843ec63a3818804b9ac02affeea3c9e0904646",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_negative_density_hard_shadow_recovery.webp": "d8bdd800279b07bef0cfe0a75a4a899dcd4204a5fe7a35e5678019967408f213",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/jxl_d200_shadow_recovery_luma_p12.webp": "632df2ba37932ab40bcafdc73bdc4b513a8866b3fe2cc0e7b41424fa779cc8be",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_highlight_separation_luma_p88_p998.webp": "1e277e62b02c14f675f4448284d2f7e00d74531d6038bf5ad3404d199425c404",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_identity.webp": "8a36138608291efdc9a7e585d7a41f116191416dd61d7982f08dd28c7571bdda",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_negative_density_hard_print.webp": "020584ca07955044e509b8a858e3272e7b8ce845bce03c151bde6f3ad10d66bf",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_negative_density_hard_shadow_recovery.webp": "f6ccb57b78e75fe0f29c929c9dfa8fa14dc4e6c9c8a24df084e33ad5536e5d8f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/raw61_shadow_recovery_luma_p12.webp": "6d1851aae38f14bcacbce472cfca9d2213635d0a3dc3ab16a3eaf8ad6f9bfdaf",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_highlight_separation_luma_p88_p998.webp": "970081c7c6b237aaa7c296057978c391be83a1ba0c01c195bcb81184ffbd46fa",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_identity.webp": "0eac4b606783ee84ece5c0a7dc13ddb72bc9f0ad10a02e1c8553b27b9fcf5fe9",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_negative_density_hard_print.webp": "ba8a47af026b7c647153d60776cdb8db94417270712c9fe80722eac3698fb69d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_negative_density_hard_shadow_recovery.webp": "4a1b3d8766af6f7964a6ed2a291f7a4668c763f5dfbad4d45e64602919838341",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-03/reference_shadow_recovery_luma_p12.webp": "bb72a487e8115cf1454cb7991c7c537f42d777dc7912434805ed6449061fb6db",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_highlight_separation_luma_p88_p998.webp": "ae3012a2bd650fa55cc27e478d8173287df77d686070851350c2a73af51fa1db",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_identity.webp": "c1a8f30fbf19c2e96f8eee17231f73e5daf86e14ad421e7ff1b1e151b8c35f7b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_negative_density_hard_print.webp": "6bcd29b0c4666001544973020cda085cd654634baf58d481c2a9be55b0cc4301",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_negative_density_hard_shadow_recovery.webp": "51db25ec08719e7bc69630c5e9404ea406e5fcc8819fec51a28986d0e4aef666",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d003_shadow_recovery_luma_p12.webp": "ec37efe7b1a757dd3274522cfbd569ccbf724f6015983ee5812e73d42c13437d",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_highlight_separation_luma_p88_p998.webp": "b274d9dfc55d92a9ab8c6a1196980d0726a50db31094929de5e7c6342ad362dc",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_identity.webp": "1fc0adae74bcdaf887474a8f8f61390d19a8f3cf277549a6482dfb0a27bf6767",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_negative_density_hard_print.webp": "2664135fd44056026ea75aab4cfd62ac1be62d6025fb6791c2a4a97acfc3485b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_negative_density_hard_shadow_recovery.webp": "7909ae84d718dcd5932991d95163ece513ad4c8ba58877da1a967b41879af13a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d005_shadow_recovery_luma_p12.webp": "fd6321939250974a4a7a2c3efc64f601f85f7f421b23beeb5b60df7ef482b2f5",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_highlight_separation_luma_p88_p998.webp": "557787da3f5a2814c7d94778227a678973470d914f24135899fcbb667d1e3385",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_identity.webp": "d5815e5a17488a51b1292799c4e0c84ce30e20689b61c276efd5b3416f5b0437",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_negative_density_hard_print.webp": "49485500eed68035a0d3568c21131755554bb7d726d5b97ab5ad5da8ce7970ab",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_negative_density_hard_shadow_recovery.webp": "663bfba1f088cb328ef6c15cfdf3c370b70d9f8d87a35d67dbe445a8fed55bfb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d010_shadow_recovery_luma_p12.webp": "58ec9ed2832f4426c6ea13a5792440526bf44948a903a1474221abab9d183344",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_highlight_separation_luma_p88_p998.webp": "31a5bc81e1f63bded65661f7327ce6e5e14ebf5591fccdf1ae89bb3b093c36ae",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_identity.webp": "42316ccd0990417622e994b321e6956754ebc1bdcb8443e8f446f7cd8f03a3c1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_negative_density_hard_print.webp": "5de5a0bfd6ed249ff391e1555d15915fbfd260688ba5d108ddde10192a7241ca",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_negative_density_hard_shadow_recovery.webp": "81daa0a4fbd3f15819ee5659e766716881814b254ceb15b4d79c78ac4a7dac31",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d020_shadow_recovery_luma_p12.webp": "90974990b2cccf7be3dcdab5adadd231afee11ac7625f5513d86f64e0032071a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_highlight_separation_luma_p88_p998.webp": "bc54cbf0814473e5467bb2b55161a5f7aaf2dc87cf5c88dcb55969181fec5871",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_identity.webp": "878564ada306c7cf1714cb44aa7215058edc0447ce5bad6fd894fcc420536a17",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_negative_density_hard_print.webp": "b36b93fbc57f2e8508b6258f50d9415bae13746bdae7ac902ac0b9e6bc7f504c",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_negative_density_hard_shadow_recovery.webp": "5a19b70ae4abac54f9fe94aa0084c69cedd40a881f9fcb3e33816cafd2e02efe",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d022_shadow_recovery_luma_p12.webp": "6577d7a3894824238869f1c6bb5cb427f310c797caa4a881fadc53d3814fc445",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_highlight_separation_luma_p88_p998.webp": "2cddefe91cafec7e764a5810e32c310832dc668b7cde8588379bc182548e8b19",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_identity.webp": "442eba3c40cfc7643626ff6419ad5add773689923668508ec65879e304847539",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_negative_density_hard_print.webp": "29cfca8099750b8ba5ac83d706dd8b95514c350a5f1c7a3dc7303356c2b91ad1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_negative_density_hard_shadow_recovery.webp": "112fd46c5f35e07953c8e52109dafba96d5fc24a945065289225c9784213f0a1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d025_shadow_recovery_luma_p12.webp": "f564c08142922d26d7f432fecceb618a70e6bc246a7efc6d12f1edf88f90a9e7",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_highlight_separation_luma_p88_p998.webp": "24cd4c81e3d2fb625c6dcff848a9bc90ef3e3eb20a85466ac90e659d696f4d47",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_identity.webp": "7f52862d07241e933c39b7a82bbe3bf4b7671bfed68ee4eca8bc339b4427fc2f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_negative_density_hard_print.webp": "b84f532e3316833aa15c4a707f9e36d3639e9e778a5f4f7cf6549d3f760e0fdb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_negative_density_hard_shadow_recovery.webp": "0641343a3eded4ba1d049298145aa78fd6b3ac39bd34a2289992672d484806c6",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d028_shadow_recovery_luma_p12.webp": "988aa7cca7002966a6197c2be3db616790a9a345d25e7d33ba96b2e36d62f081",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_highlight_separation_luma_p88_p998.webp": "5fad69b6fd2f0c631e719f745318d7b84f89ee5c4a3637304026f1fb14407fb3",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_identity.webp": "239737d7fee917a6b62368f7ff902d527473dd9a0365d1bec77ac15db7dd96f8",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_negative_density_hard_print.webp": "7251d0d175dd3d9c6e11fe3634bd4523717b353d1b6b49354d908e6b266516b2",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_negative_density_hard_shadow_recovery.webp": "a2b69158661eecb98ec724a7c77b19aeb65a130b1b01822ea818921eb5bbf589",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d030_shadow_recovery_luma_p12.webp": "6e3d10bba2d3e2a3673d74de340e9b6d20927c968a6154d24fde88cf4dd401d9",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_highlight_separation_luma_p88_p998.webp": "894b39cf3fab48241ca8d3a80544a585b562dff48894ad99ea20557f4fba0b63",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_identity.webp": "b07ddb155ed7c8276d5815f5bd4ae540e2e8673a69d97b6935308f44fd87bbb1",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_negative_density_hard_print.webp": "2ef4b07782d60cf6c3a1ea1b2afcb66c998d9ca362def30a69c73eaa86d87020",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_negative_density_hard_shadow_recovery.webp": "9aca943151c4b26e6da12e1c41efce1c10ae431874d861b58da87e7b8b4ae0dc",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d100_shadow_recovery_luma_p12.webp": "5e2d9d3eb5a4a61e717fa7a69e8b796462c77e2dd0ea7e5cc76c2d2d1151ef21",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_highlight_separation_luma_p88_p998.webp": "273e6082c12042662f0266e94dd2d5fc010f9c2728e2914a019ffe39049e6052",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_identity.webp": "508a907b3c3f9016fcf8f585ac0749b4ab02bfa25b741fa2b52504c62ffb2b8e",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_negative_density_hard_print.webp": "0c09c38f6897a52e4effdcc5435c61ed7e4fd0408dd94050deae3684f5303141",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_negative_density_hard_shadow_recovery.webp": "bd509d7ea4aa2f9da3af477baeb3b83e80aeda53bb25dfe7699229a2c1248910",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/jxl_d200_shadow_recovery_luma_p12.webp": "c5a738f5945985c5da89d1349d487cbd9264ed602c77c9db091e89e8d065e79f",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_highlight_separation_luma_p88_p998.webp": "d6e7b8353bc880a0479d73334167a00bb28531fbeaca4b3ca84a6a6700e11fb5",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_identity.webp": "43ff4998ad4c5b86c91abf0164f2960f8c22a935ddf60eb219339818aa5421d5",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_negative_density_hard_print.webp": "a3bb52b2ecf399552ec848f73ccac10d7fa2daf225c215aafb7d3f3de93abf45",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_negative_density_hard_shadow_recovery.webp": "74ebd04e49c678d51d0803f0d7eaad6a2d4ebfc8d1bf71a026d0d285c6da761a",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/raw61_shadow_recovery_luma_p12.webp": "346f292d406918927c9a4801e59abba24e73430f282b2f07f1dd4233736a312c",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_highlight_separation_luma_p88_p998.webp": "d664c1e104bffca6bda761fd880cb154a5ebb077fffa94ee3fb49c34f384b087",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_identity.webp": "51e0b7f5f2b7c991b4c758be121cb7de95d814dc1db7da90bdfe244e5ed8f780",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_negative_density_hard_print.webp": "f7f2dedc9ccfc90aa7a4e2a3858e8ab4be9b5113e2223cd8a5948ef7656527fb",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_negative_density_hard_shadow_recovery.webp": "06d6007fcfec428c96f21d4a6433f0dd6533b7aeef264b712c0f0f83f8c7d01b",
+    "assets/overviews-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016/manual-04/reference_shadow_recovery_luma_p12.webp": "3a6abb2777977a41d5148abb08757c08f680862ea6e0a065b578382e27ea2277",
     "assets/overviews-verified/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d003_highlight_separation_luma_p88_p998.webp": "95067e15a32c3f7a7a6806f129767661a85e030ebfb995acdf03bc29733caf5a",
     "assets/overviews-verified/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d003_identity.webp": "6c4d3d3ef48ea337a0a665b00138c316acaf21eac9f3dda8f43d8dea748935dd",
     "assets/overviews-verified/fuji_679_f_ii_1983/_DSC6938/manual-01/jxl_d003_negative_density_hard_print.webp": "66a92931489e006eef9c557cda3020f76c57bc6c384ae068dbb1fdb959ae2495",
@@ -1323,7 +1323,7 @@
   },
   "decoder_downsampling_requested": 8,
   "decoder_sha256": "48b8e42736f2e05ed9b4fd99e26717fc91a393cef63432c3ae194fbdcc9115e9",
-  "evidence_id": "overviews-2979be0ca938a922",
+  "evidence_id": "overviews-5c036c81d774faa3",
   "method": "Full-frame RGB16 sources, ICC-linear box reduction covering every pixel, shared native-crop tone recipes, sRGB WebP navigation images with crop outlines",
   "recipe_code": {
     "scripts/build_verified_overviews.py": "9c3f4c3497203cdb8e03feb471ebbac07ba2bd066acb9e5e8f79305cbbf87d5a",
@@ -1336,12 +1336,12 @@
     {
       "crop": "manual-01",
       "crop_xywh": [
-        11204,
-        4589,
+        11336,
+        4629,
         768,
         768
       ],
-      "recipe_sha256": "91f3b552a41de853824a12bddbfe1ca322e05ae59ce10e6288dabfa49c79a051",
+      "recipe_sha256": "b5ba1679c646f90a402fa3d3e3755a9f753ba25dc4b8b7703e3c312bc395dad3",
       "reference_shape": [
         12752,
         19136,
@@ -1352,8 +1352,8 @@
       "sources": {
         "jxl_d003": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1384,8 +1384,8 @@
         },
         "jxl_d005": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1416,8 +1416,8 @@
         },
         "jxl_d010": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1448,8 +1448,8 @@
         },
         "jxl_d020": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1480,8 +1480,8 @@
         },
         "jxl_d022": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1512,8 +1512,8 @@
         },
         "jxl_d025": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1544,8 +1544,8 @@
         },
         "jxl_d028": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1576,8 +1576,8 @@
         },
         "jxl_d030": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1608,8 +1608,8 @@
         },
         "jxl_d100": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1640,8 +1640,8 @@
         },
         "jxl_d200": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1672,8 +1672,8 @@
         },
         "raw61": {
           "crop_xywh": [
-            5597.470944816054,
-            2290.90134880803,
+            5662.888795986622,
+            2310.8699811794227,
             383.5183946488294,
             383.3977415307403
           ],
@@ -1704,8 +1704,8 @@
         },
         "reference": {
           "crop_xywh": [
-            11204.0,
-            4589.0,
+            11336.0,
+            4629.0,
             768.0,
             768.0
           ],
@@ -1739,12 +1739,12 @@
     {
       "crop": "manual-02",
       "crop_xywh": [
-        16600,
-        1950,
+        16713,
+        2046,
         768,
         768
       ],
-      "recipe_sha256": "70f1f7960f8650f60db32ecc1c41f2b25090662a605258bba645a57020e92a52",
+      "recipe_sha256": "80c7a2c2dfec050600b30b786fa3615e3b6b29f7aac0d9bdaac3b19081fc3757",
       "reference_shape": [
         12752,
         19136,
@@ -1755,8 +1755,8 @@
       "sources": {
         "jxl_d003": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1787,8 +1787,8 @@
         },
         "jxl_d005": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1819,8 +1819,8 @@
         },
         "jxl_d010": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1851,8 +1851,8 @@
         },
         "jxl_d020": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1883,8 +1883,8 @@
         },
         "jxl_d022": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1915,8 +1915,8 @@
         },
         "jxl_d025": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1947,8 +1947,8 @@
         },
         "jxl_d028": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -1979,8 +1979,8 @@
         },
         "jxl_d030": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -2011,8 +2011,8 @@
         },
         "jxl_d100": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -2043,8 +2043,8 @@
         },
         "jxl_d200": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -2075,8 +2075,8 @@
         },
         "raw61": {
           "crop_xywh": [
-            8295.582775919733,
-            971.473964868256,
+            8351.013168896321,
+            1019.3986825595985,
             383.5183946488294,
             383.3977415307403
           ],
@@ -2107,8 +2107,8 @@
         },
         "reference": {
           "crop_xywh": [
-            16600.0,
-            1950.0,
+            16713.0,
+            2046.0,
             768.0,
             768.0
           ],
@@ -2142,12 +2142,12 @@
     {
       "crop": "manual-03",
       "crop_xywh": [
-        13000,
-        5800,
+        12126,
+        5746,
         768,
         768
       ],
-      "recipe_sha256": "5835f6170346553707a5f8643afc152f0be4972cdf43a9a0799dde99cb3a2a73",
+      "recipe_sha256": "0f3a646b12d2fd00f1410cfae47ca529e3484b504d7f6293b5375626bc3ad318",
       "reference_shape": [
         12752,
         19136,
@@ -2158,8 +2158,8 @@
       "sources": {
         "jxl_d003": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2190,8 +2190,8 @@
         },
         "jxl_d005": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2222,8 +2222,8 @@
         },
         "jxl_d010": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2254,8 +2254,8 @@
         },
         "jxl_d020": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2286,8 +2286,8 @@
         },
         "jxl_d022": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2318,8 +2318,8 @@
         },
         "jxl_d025": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2350,8 +2350,8 @@
         },
         "jxl_d028": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2382,8 +2382,8 @@
         },
         "jxl_d030": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2414,8 +2414,8 @@
         },
         "jxl_d100": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2446,8 +2446,8 @@
         },
         "jxl_d200": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2478,8 +2478,8 @@
         },
         "raw61": {
           "crop_xywh": [
-            6494.844063545151,
-            2896.4501254705146,
+            6058.392140468228,
+            2869.492471769134,
             383.5183946488294,
             383.3977415307403
           ],
@@ -2510,8 +2510,8 @@
         },
         "reference": {
           "crop_xywh": [
-            13000.0,
-            5800.0,
+            12126.0,
+            5746.0,
             768.0,
             768.0
           ],
@@ -2545,12 +2545,12 @@
     {
       "crop": "manual-04",
       "crop_xywh": [
-        17150,
-        5550,
+        13718,
+        2388,
         768,
         768
       ],
-      "recipe_sha256": "ce181c07ee175e755b09b4a99e3d04add448adca61d37cb47bc24540c37aa500",
+      "recipe_sha256": "dad3e6c4ec0f0904277c2888c7098978834bc81b0719ea4e0f3ca7a2c34f7e50",
       "reference_shape": [
         12752,
         19136,
@@ -2561,8 +2561,8 @@
       "sources": {
         "jxl_d003": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2593,8 +2593,8 @@
         },
         "jxl_d005": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2625,8 +2625,8 @@
         },
         "jxl_d010": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2657,8 +2657,8 @@
         },
         "jxl_d020": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2689,8 +2689,8 @@
         },
         "jxl_d022": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2721,8 +2721,8 @@
         },
         "jxl_d025": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2753,8 +2753,8 @@
         },
         "jxl_d028": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2785,8 +2785,8 @@
         },
         "jxl_d030": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2817,8 +2817,8 @@
         },
         "jxl_d100": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2849,8 +2849,8 @@
         },
         "jxl_d200": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],
@@ -2881,8 +2881,8 @@
         },
         "raw61": {
           "crop_xywh": [
-            8570.73724916388,
-            2771.64617314931,
+            6853.893185618729,
+            1191.128920953576,
             383.5183946488294,
             383.3977415307403
           ],
@@ -2913,8 +2913,8 @@
         },
         "reference": {
           "crop_xywh": [
-            17150.0,
-            5550.0,
+            13718.0,
+            2388.0,
             768.0,
             768.0
           ],

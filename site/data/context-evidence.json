@@ -1,6 +1,6 @@
 {
   "asset_hashes": {
-    "assets/context-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016.png": "beb6e88a86cd1fc0bbc8790ceadbe9915a2ff5dba013ccad50299e197727e5a6",
+    "assets/context-verified/adox_vlad_resolution_target/_DSC0001-_DSC0016.png": "33747533204bb3448abd72c9444e70bdfbcbcf691fbc6cb492fd677852bf31ab",
     "assets/context-verified/fuji_679_f_ii_1983/_DSC6938.png": "5f49ec2d949634a96f282e7761d19f6f4bdabceb7b11128b3aa98b462f89e5c6",
     "assets/context-verified/fuji_679_f_ii_1983/_DSC6959.png": "d5ddae84aeb110af853292e11bbde322628b59872a1f066188ac49aad9e7914a",
     "assets/context-verified/fuji_679_f_ii_1983/_DSC6980.png": "be581105a367871a466ccd6fec0c59e6753f8f4b7974e04ecf27f73d37697eee",
@@ -17,7 +17,7 @@
     "assets/context-verified/konica_vx100_probable_1995/_DSC6879.png": "4210c3021d9fba1f666ef4a208fcf28b57c57e32b41cace611f488997c2b9453",
     "assets/context-verified/konica_vx100_probable_1995/_DSC6917.png": "a717d263394ad13283a09db12efea09b382c858d6b1b6f2c521a3c084cd6731c"
   },
-  "evidence_id": "contexts-e4530838f25d9372",
+  "evidence_id": "contexts-74e3b53a64c524cd",
   "method": "20x20 linear-light box means followed by ICC-managed sRGB display; neutral PS16 location aids only",
   "recipe_code": {
     "src/break_even_image_tools.py": "1eb072ad4ec370e52fe4ea26065cf7057ebbe6311159b7a01e242405f62940eb",
@@ -30,8 +30,8 @@
         {
           "name": "manual-01",
           "xywh": [
-            11204,
-            4589,
+            11336,
+            4629,
             768,
             768
           ]
@@ -39,8 +39,8 @@
         {
           "name": "manual-02",
           "xywh": [
-            16600,
-            1950,
+            16713,
+            2046,
             768,
             768
           ]
@@ -48,8 +48,8 @@
         {
           "name": "manual-03",
           "xywh": [
-            13000,
-            5800,
+            12126,
+            5746,
             768,
             768
           ]
@@ -57,8 +57,8 @@
         {
           "name": "manual-04",
           "xywh": [
-            17150,
-            5550,
+            13718,
+            2388,
             768,
             768
           ]

@@ -4,12 +4,12 @@ The [published report](https://hsnilsson.github.io/bayer-raw-vs-pixel-shift-jpeg
 
 ## Get this report's source version
 
-The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-metadata-audit](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-metadata-audit) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
+The [source repository](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl) contains the code, report data and reproduction instructions. The fixed tag [report-2026-09-17-adox-crops](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/tree/report-2026-09-17-adox-crops) selects this documentation edition and its complete report snapshot. Cloning that tag checks out its exact commit; `git rev-parse HEAD` prints the full commit identifier.
 
 Run these commands in PowerShell with Git installed. The report scripts below use Python 3.12 on Windows. Git LFS supports the fixture acquisition option described later.
 
 ```powershell
-git clone --branch report-2026-09-17-metadata-audit --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
+git clone --branch report-2026-09-17-adox-crops --single-branch https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl.git report-reproduction
 Set-Location report-reproduction
 git rev-parse HEAD
 ```
@@ -17,13 +17,13 @@ git rev-parse HEAD
 For an existing clean checkout, select the same snapshot with:
 
 ```powershell
-git fetch origin tag report-2026-09-17-metadata-audit
-git switch --detach report-2026-09-17-metadata-audit
+git fetch origin tag report-2026-09-17-adox-crops
+git switch --detach report-2026-09-17-adox-crops
 ```
 
 ## Validate a public checkout
 
-Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-metadata-audit/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
+Install the [pinned numerical/image dependencies](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/requirements-report.txt) into an isolated environment. Use a Python 3.12 installation for the first command. All subsequent Python commands name that environment's executable explicitly, so they work without an activation step. JPEG XL experiments also need the separate libjxl **0.11.2** CLI: `cjxl.exe`, `djxl.exe` and `jxlinfo.exe`.
 
 ```powershell
 python -m venv .venv
@@ -40,7 +40,7 @@ The last two checks use the standard library and verify the committed release an
 
 ## Reproduce the public codec experiment
 
-The separate [metadata and ICC audit](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-metadata-audit/docs/metadata-icc-audit.md) provides a synthetic round trip, file-to-file EXIF/XMP comparisons and a recommended sidecar package. It needs no private photographic inputs. The report also bundles this document beside its evidence downloads.
+The separate [metadata and ICC audit](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/docs/metadata-icc-audit.md) provides a synthetic round trip, file-to-file EXIF/XMP comparisons and a recommended sidecar package. It needs no private photographic inputs. The report also bundles this document beside its evidence downloads.
 
 Pull the public fixtures with Git LFS, or use the downloader and its source sidecars:
 
@@ -54,7 +54,7 @@ Or use the downloader:
 .\.venv\Scripts\python.exe scripts/download_testdata.py --include-loc --loc-count 3
 ```
 
-Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-metadata-audit/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-metadata-audit/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
+Use either acquisition method for missing fixtures. Existing sources with matching sidecars can be reused. [Data origins and rights](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/THIRD_PARTY_DATA.md) and [test-data acquisition details](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/blob/report-2026-09-17-adox-crops/TESTDATA.md) are part of the same source snapshot. The six selected paths are declared by `PUBLIC_V2_INPUTS` in `scripts/run_public_latitude_v2.py`.
 
 Replace each quoted `<...>` placeholder below with your actual local directory or file. Keep the quotes around paths containing spaces. Use a persistent scratch directory. The public experiment writes its output under `results/public-reproduction` for comparison with the committed evidence.
 

@@ -2,6 +2,25 @@
 
 Review date: 2026-09-17. The owner reviewed the repaired report and approved publication on the same date. The initial publication used commit [d42e26a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/d42e26a97ddd109675d2a29c4db806f2fe1840c2); the subsequent editorial revision used [0220f2a](https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl/commit/0220f2a54b4c362214818e0a47126dda67ff1e4c). This record describes the machine-assisted numerical and visual checks performed during the repair. Owner approval concerns publication; the visual checks documented below use the stated machine-assisted method.
 
+## Adox f/4.5 crop revision (local, 2026-09-17)
+
+The owner selected four new centers with magenta marks on the existing 956×637 context map and approved the coordinate-rendered preview. The context recipe reduces the original 19136×12752 image in 20×20 blocks, so marker coordinates are multiplied by 20; no image-generation output is used as measurement evidence. Names and the 768×768 source-pixel crop size are retained.
+
+| Crop | Original-image rectangle (x, y, width, height) | Region |
+|---|---|---|
+| manual-01 | 11336, 4629, 768, 768 | Small central radial target |
+| manual-02 | 16713, 2046, 768, 768 | Upper-right diagonal target |
+| manual-03 | 12126, 5746, 768, 768 | Dark end of the right grayscale wedge |
+| manual-04 | 13718, 2388, 768, 768 | Center of the upper-right circular target |
+
+The same-sequence RAW anchor and retained PS16/JXL sources are reused. Native crop measurements, local registration, shared tone recipes, viewer buffers, context maps, full-frame overview markings and boundary/quantization audits are regenerated. The capture remains in `secondary_same_sequence_target`; this selection does not create an independent RAW61 storage-budget pair. The historical f/8 combiner selections remain separate.
+
+- All ten Adox levels were decoded and measured again, producing 250 records. The 200 native-crop records changed; the 50 Adox full-frame records and the 1,650 records for other captures are unchanged. All 160 retained JXL file hashes and exact byte counts were checked against the preceding release. Full private source and candidate hashes were verified during assembly.
+- The four PS16 RGB16 buffers match the selected original TIFF pixels exactly. All 48 Adox RGB16 transports were checked, and the new context map is pixel-identical to the approved coordinate-rendered preview. All 240 Adox full-frame overviews were regenerated with the new crop coordinates and shared tone recipes. Other viewer manifests receive the updated shared overview evidence identity.
+- Local registration passed for all four crops, retaining 97.15–98.44% valid support. The re-evaluated crop-boundary audit still changes 0 of 220 defined comparisons; the maximum RAW viewer quantization difference remains four display codes. Primary budget summaries and the separate historical DNG, combiner, public and controlled evidence remain unchanged after review.
+- All 212 automated tests passed. The release gate validated 16 frames, 160 candidates, 1,900 measurement rows and 2,956 bound assets; all 1,677 local report references resolved. Publication and Markdown checks passed.
+- Browser review covered all four new regions: the circular target against d025 at 100%, the grayscale wedge in shadow recovery, the diagonal target at d200 with hard inversion, and the central target with the same-sequence RAW anchor. Crop switching and the PS16/RAW reference selector worked; browser warning/error logs were empty.
+
 ## Metadata audit supplement (local, 2026-09-17)
 
 - The synthetic 64×64 RGB16 fixture uses fictional photographic metadata and the existing libjxl 0.11.2 binaries with ExifTool 13.12. Both lossless and d=0.05 preserve all 15 source-present curated fields after explicit copying. PPM retains none of the JXL's 24 photographic fields; the 16-bit PNG retains all 24. The generic diff exports field names and statuses, without metadata values or private paths.

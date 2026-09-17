@@ -160,7 +160,7 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     decision = [r for r in primary if r["decision_level"]]
     release = {"schema":3,"status":"validated", "analysis_identity":code,"environment":environment,
                "source":{"repository":"https://github.com/hsnilsson/bayer-raw-vs-pixel-shift-jpeg-xl",
-                         "ref":"report-2026-09-17-metadata-audit"},
+                         "ref":"report-2026-09-17-adox-crops"},
                "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
                          "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",

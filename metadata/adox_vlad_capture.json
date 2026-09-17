@@ -29,10 +29,10 @@
     "local_archive_path": "input/_superseded/adox_vlad_resolution_target_f8"
   },
   "analysis_status": {
-    "replacement_measurements": "visual_review_only",
+    "replacement_measurements": "verified_secondary_same_sequence_target",
     "historical_results": "Existing _DSC6577 results and the _DSC6582-_DSC6597 combiner audit describe the superseded f/8 capture.",
-    "crop_plan": "Four f/4.5 review crops are published from metadata/adox_vlad_f45_crop_plan.json.",
-    "visual_review": "DNG-derived PS16 and standalone JXL crops are compared with the aligned first ARW from the same sequence, including NegPy stress views.",
+    "crop_plan": "Four owner-selected 768x768 f/4.5 crops were repositioned from the annotated context map on 2026-09-17. Coordinates in metadata/adox_vlad_f45_crop_plan.json and metadata/verified_experiment.json describe the same measured viewer regions.",
+    "visual_review": "The DNG-derived PS16 render and ten standalone JXL levels are compared with the aligned first ARW from the same sequence. Each crop is measured and displayed using the five fixed report transformations.",
     "raw61_storage_budget": "No independent single-shot RAW61 supplied; set remains unpaired_secondary."
   },
   "verification": {
