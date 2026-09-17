@@ -144,13 +144,13 @@ def build(results: Path, site: Path, verify_private: bool) -> dict:
     primary = [r for r in candidates if r["cohort"] == "primary_compressed_independent"]
     decision = [r for r in primary if r["decision_level"]]
     release = {"schema":3,"status":"validated local review", "analysis_identity":code,"environment":environment,
-               "method":{"budget":"encoded file bytes <= independent compressed RAW61 bytes, without tolerance",
+               "method":{"budget":"Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
                          "native":"Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
-                         "reduced":"Nonoverlapping 10x10 linear-light box means; incomplete bottom/right blocks omitted. Separate diagnostic scope, never evidence of native grain retention",
+                         "reduced":"Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
                          "color":"Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
                          "structure":"Linear ICC Y minus float64 5x5 box blur with reflect padding at the cropped measurement boundary; mismatch RMS / reference high-pass RMS. Favorable structure screens require reference HP RMS > 2^-23 (float32 precision guard); native boundary sensitivity is audited separately",
-                         "interpretation":"RAW61-vs-PS16 includes capture, demosaic, color, scaling, alignment and noise differences; PS16 is a comparison reference, not scene truth",
-                         "fitting":"No candidate-specific tone, color or exposure fitting in rendered-JXL measurements",
+                         "interpretation":"The retained PS16 render is the common reference. RAW61-vs-PS16 measures the combined effects of capture, demosaic, color, scaling, alignment and noise in this workflow",
+                         "fitting":"A shared reference-derived recipe applies the same tone, color and exposure treatment to each rendered-JXL comparison",
                          "provenance":"Retained neutral source renders adopted; legacy PPMs checked pixel-for-pixel against retained TIFFs; original capture identities frozen by content hash"},
                "summary":{"cohort_frames":dict(Counter(f["cohort"] for f in frames)),"frames":len(frames),"candidates":len(candidates),
                           "primary_frames":len({r["set_id"] for r in primary}),"primary_candidate_rows":len(primary),

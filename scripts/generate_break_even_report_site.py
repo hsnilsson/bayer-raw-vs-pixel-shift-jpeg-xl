@@ -1223,9 +1223,9 @@ def crop_viewer_workspace(records: list[dict[str, object]]) -> str:
           <div class="crop-histogram-wrap" title="Drag the lower-right corner to resize">
             <div class="crop-tool-heading"><strong>Display brightness</strong><span>Left reference blue · candidate amber</span></div>
             <canvas id="toneHistogram" width="512" height="128" aria-label="Shared luminance histograms"></canvas>
-            <p id="toneClipping" title="Pixels whose three displayed sRGB channels are all 0 or all 255; this is not sensor clipping.">Display black/white: -</p>
+            <p id="toneClipping" title="Pixels whose three displayed sRGB channels reach all 0 or all 255 after the current edits.">Display black/white: -</p>
           </div>
-          <p class="crop-scope"><strong>Scope:</strong> This tests editing latitude inside the fixed rendered RGB chain: the already-rendered 16-bit RGB pixels are decoded, adjusted identically, and only then reduced to the 8-bit display canvas. It measures neither the full latitude in the original raw files nor what a different raw developer, demosaic, white balance, highlight reconstruction, or camera profile could recover.</p>
+          <p class="crop-scope"><strong>Reading the edits:</strong> Lift the shadows or steepen the curve to see how the two images hold up under the same adjustment. The histogram shows where their displayed brightness distributions separate; the black/white counts show how much of each crop reaches the display endpoints. Use the image alongside it to locate changes in texture, edges and color. Edits start from the retained 16-bit RGB renders, giving a direct comparison of their editing headroom within this rendering workflow.</p>
         </div>
       </details>
     </section>

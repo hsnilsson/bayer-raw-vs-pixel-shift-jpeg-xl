@@ -138949,30 +138949,30 @@
       }
     }
   ],
-  "measurements_csv_sha256": "93b47f7b16f797a7fd41e1b5467049a27fec48e365cf052c205a5a84eb0f0afa",
+  "measurements_csv_sha256": "4bfb66b48a82929b5a2aa5607db4c0f17b04e82c54293d86ea69bf5dc928e09f",
   "method": {
-    "budget": "encoded file bytes <= independent compressed RAW61 bytes, without tolerance",
+    "budget": "Final encoded file bytes <= paired independent compressed RAW61 bytes; photographic metadata is included",
     "color": "Embedded ICC TRCs, XYZ D50 conversion, linear working RGB means over 64x64 patches, CIEDE2000 in Lab D50",
-    "fitting": "No candidate-specific tone, color or exposure fitting in rendered-JXL measurements",
-    "interpretation": "RAW61-vs-PS16 includes capture, demosaic, color, scaling, alignment and noise differences; PS16 is a comparison reference, not scene truth",
+    "fitting": "A shared reference-derived recipe applies the same tone, color and exposure treatment to each rendered-JXL comparison",
+    "interpretation": "The retained PS16 render is the common reference. RAW61-vs-PS16 measures the combined effects of capture, demosaic, color, scaling, alignment and noise in this workflow",
     "native": "Approved original-coordinate crops, linear-light RAW resampling and local registration; common valid support excludes fill and two filter-border pixels",
     "provenance": "Retained neutral source renders adopted; legacy PPMs checked pixel-for-pixel against retained TIFFs; original capture identities frozen by content hash",
-    "reduced": "Nonoverlapping 10x10 linear-light box means; incomplete bottom/right blocks omitted. Separate diagnostic scope, never evidence of native grain retention",
+    "reduced": "Nonoverlapping 10x10 linear-light box means summarize broader image structure; incomplete bottom/right blocks omitted. Native crops provide the grain and fine-detail measurements",
     "structure": "Linear ICC Y minus float64 5x5 box blur with reflect padding at the cropped measurement boundary; mismatch RMS / reference high-pass RMS. Favorable structure screens require reference HP RMS > 2^-23 (float32 precision guard); native boundary sensitivity is audited separately"
   },
   "report_code": {
-    "scripts/build_verified_release.py": "0086c56f8c8e2a806f58d20236c9d3280a8887b969e5ff5cd0bf76c5a218b413",
+    "scripts/build_verified_release.py": "564a3bf75f8898de95a5fbbb271c63ec1f2c7171f2c77d8429c4fa3dd46818e0",
     "scripts/check_verified_release.py": "cd0cde303a899d963ab842225155ef1f37b579989e718ced56b7a27c189821b4",
     "scripts/finalize_verified_viewers.py": "9876736fe5fb5f5eb994c50951d9ab006ae90c0100c522926ddd662e80169174",
-    "scripts/generate_break_even_report_site.py": "ce77be342a6e8898618b366142290d47eccdd7260976540116e62e4c598059be",
-    "scripts/render_verified_report.py": "a8502aefa93095a0b88aa6fb3a4c7bc2062a5ad4be72104efd0b795b761aa61a",
+    "scripts/generate_break_even_report_site.py": "c6bfcafd47452b956588d62f4aff0b4d8e1386bc5fe06f36df07ceda9eeb018c",
+    "scripts/render_verified_report.py": "fc213443864a972ce1f6a5f5cfb97fa5cc42e63fcb7c1542f117bffe726b0f57",
     "scripts/run_responsive.py": "b257f600bfa8e34257fa9a9771a87ae45764f9fb51189c8985d20ee5b73d77ad",
     "scripts/run_verified_rebuild.py": "7391d7d4f1b723ef4a9fde13aa1b4de92c2999c8a9b38c225dbf6688d08ce55b",
     "src/preview_cache.py": "93423d798347beebe85ecc9f37af31ca65b37e1767b042de815869826127a2bd",
     "src/report_color.js": "827c90976d15e7c827e411acbad5a1c6724b39954d72f47984c8631e15183f48",
     "src/report_styles.css": "5c927d6ba3ef0d1431766587390e6bc14269d65d6e3720c13bfe6fa985908430"
   },
-  "run_id": "verified-431887d6014a2c83",
+  "run_id": "verified-9c2433ddff20ae0e",
   "schema": 3,
   "status": "validated local review",
   "summary": {

@@ -1138,7 +1138,7 @@ class BreakEvenPipelineTests(unittest.TestCase):
             self.assertIn('"pixelFormats": {"identity": "rgb16le", "negpy": "image"}', html)
             self.assertIn('"pixelWidth": 2', html)
             self.assertIn('id="cropLatitude"', html)
-            self.assertIn("This tests editing latitude inside the fixed rendered RGB chain", html)
+            self.assertIn("retained 16-bit RGB renders", html)
             self.assertIn(
                 ".crop-workspace:has(.crop-latitude[open]:not(.is-floating)) { height: clamp(860px, 96vh, 1040px); }",
                 html,
